@@ -3,12 +3,16 @@ import { CartItem, Page } from "@/data";
 interface NavProps {
   currentPage: Page;
   navigate: (page: Page) => void;
+  navigateToWizard: (plan?: string) => void;
   cart: CartItem[];
   cartOpen: boolean;
   setCartOpen: (v: boolean) => void;
+  updateCartQty: (id: number, type: string, delta: number) => void;
+  removeFromCart: (id: number, type: string) => void;
+  onCheckout: () => void;
 }
 
-export default function Nav({ currentPage, navigate, cart, cartOpen, setCartOpen }: NavProps) {
+export default function Nav({ currentPage, navigate, navigateToWizard, cart, cartOpen, setCartOpen, updateCartQty, removeFromCart, onCheckout }: NavProps) {
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
   const cartTotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
 
@@ -50,22 +54,22 @@ export default function Nav({ currentPage, navigate, cart, cartOpen, setCartOpen
 
             <div className="flex items-center gap-5">
               <button
-                onClick={() => navigate("meal-plan-wizard")}
+                onClick={() => navigateToWizard()}
                 className={`flex items-center gap-1.5 text-[11px] tracking-[0.3em] uppercase font-semibold transition-colors ${currentPage === "meal-plan-wizard" ? "text-[#F2C94C]" : "text-[#F2C94C]/70 hover:text-[#F2C94C]"}`}
               >
                 <span className="opacity-50 text-[9px]">02</span>
                 Meal Plans
               </button>
               <div className="flex items-center gap-5 text-white/40 text-[11px] tracking-wider uppercase">
-                {["Cut", "Maintain", "Build"].map((l) => (
-                  <button key={l} onClick={() => navigate("meal-plan-wizard")} className="hover:text-white transition-colors">{l}</button>
+                {["CUT", "MAINTAIN", "BUILD"].map((l) => (
+                  <button key={l} onClick={() => navigateToWizard(l)} className="hover:text-white transition-colors">{l}</button>
                 ))}
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-5 shrink-0">
-            <button className="text-white/50 hover:text-white transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block">
+            <button onClick={() => navigate("account")} className="text-white/50 hover:text-white transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block">
               Rewards
             </button>
             <button
@@ -120,7 +124,7 @@ export default function Nav({ currentPage, navigate, cart, cartOpen, setCartOpen
               </div>
             ) : (
               <>
-                <div className="flex-1 p-5 space-y-4">
+                <div className="flex-1 p-5 space-y-3">
                   {cart.map((item) => (
                     <div key={`${item.id}-${item.type}`} className="flex gap-3 bg-[#1A1A1A] p-3">
                       <img src={item.img} alt={item.name} className="w-16 h-16 object-cover shrink-0 bg-[#222]" />
@@ -129,7 +133,33 @@ export default function Nav({ currentPage, navigate, cart, cartOpen, setCartOpen
                         {item.planLabel && <p className="text-[11px] text-[#F2C94C] mt-0.5">{item.planLabel}</p>}
                         <div className="flex items-center justify-between mt-2">
                           <span className="font-mono text-[13px] text-[#CDFF3A]">${(item.price * item.qty).toFixed(2)}</span>
-                          <span className="text-white/30 text-[11px]">×{item.qty}</span>
+                          {/* Qty stepper */}
+                          {item.type !== "plan" ? (
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => updateCartQty(item.id, item.type, -1)}
+                                className="w-6 h-6 bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-[14px] transition-colors"
+                              >−</button>
+                              <span className="text-[13px] w-5 text-center font-mono">{item.qty}</span>
+                              <button
+                                onClick={() => updateCartQty(item.id, item.type, 1)}
+                                className="w-6 h-6 bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-[14px] transition-colors"
+                              >+</button>
+                              <button
+                                onClick={() => removeFromCart(item.id, item.type)}
+                                className="w-6 h-6 ml-1 text-white/30 hover:text-red-400 flex items-center justify-center transition-colors"
+                              >
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => removeFromCart(item.id, item.type)}
+                              className="text-white/30 hover:text-red-400 text-[11px] transition-colors"
+                            >
+                              Remove
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -144,17 +174,17 @@ export default function Nav({ currentPage, navigate, cart, cartOpen, setCartOpen
 
                 <div className="p-5 border-t border-white/10 mt-4">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-white/50 text-[13px]">Subtotal</span>
+                    <span className="text-white/50 text-[13px]">Subtotal ({cartCount} item{cartCount !== 1 ? "s" : ""})</span>
                     <span className="font-mono font-bold text-[16px]">${cartTotal.toFixed(2)}</span>
                   </div>
                   <button
-                    onClick={() => { setCartOpen(false); navigate("checkout"); }}
+                    onClick={() => { setCartOpen(false); onCheckout(); }}
                     className="w-full bg-[#CDFF3A] text-[#111111] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors"
                   >
                     Proceed to Checkout
                   </button>
                   <button
-                    onClick={() => { setCartOpen(false); navigate("ready-to-go"); }}
+                    onClick={() => setCartOpen(false)}
                     className="w-full text-white/30 text-[11px] uppercase tracking-widest mt-3 hover:text-white transition-colors"
                   >
                     Continue Shopping

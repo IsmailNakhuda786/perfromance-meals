@@ -2,9 +2,10 @@ import { Page } from "@/data";
 
 interface FooterProps {
   navigate: (page: Page) => void;
+  navigateToWizard: (plan?: string) => void;
 }
 
-export default function Footer({ navigate }: FooterProps) {
+export default function Footer({ navigate, navigateToWizard }: FooterProps) {
   return (
     <footer className="bg-[#0A0A0A] text-white py-16 border-t border-white/5">
       <div className="max-w-[1440px] mx-auto px-6">
@@ -26,12 +27,16 @@ export default function Footer({ navigate }: FooterProps) {
           <div>
             <div className="font-mono text-[9px] tracking-[0.4em] uppercase mb-5 text-[#CDFF3A]">01 / Ready-to-Go</div>
             <ul className="space-y-3">
-              {["All Meals", "Low Carb", "High Carb", "Breakfast", "Just Protein", "Build-A-Box"].map((l) => (
-                <li key={l}>
-                  <button onClick={() => navigate(l === "Build-A-Box" ? "build-a-box" : "ready-to-go")}
-                    className="text-[13px] text-white/35 hover:text-white transition-colors">
-                    {l}
-                  </button>
+              {[
+                { label: "All Meals", action: () => navigate("ready-to-go") },
+                { label: "Low Carb", action: () => navigate("ready-to-go") },
+                { label: "High Carb", action: () => navigate("ready-to-go") },
+                { label: "Breakfast", action: () => navigate("ready-to-go") },
+                { label: "Just Protein", action: () => navigate("ready-to-go") },
+                { label: "Build-A-Box", action: () => navigate("build-a-box") },
+              ].map((l) => (
+                <li key={l.label}>
+                  <button onClick={l.action} className="text-[13px] text-white/35 hover:text-white transition-colors">{l.label}</button>
                 </li>
               ))}
             </ul>
@@ -40,12 +45,15 @@ export default function Footer({ navigate }: FooterProps) {
           <div>
             <div className="font-mono text-[9px] tracking-[0.4em] uppercase mb-5 text-[#F2C94C]">02 / Meal Plans</div>
             <ul className="space-y-3">
-              {["Cut Plan", "Maintain Plan", "Build Plan", "How It Works", "Nutrition Guide"].map((l) => (
-                <li key={l}>
-                  <button onClick={() => navigate("meal-plan-wizard")}
-                    className="text-[13px] text-white/35 hover:text-white transition-colors">
-                    {l}
-                  </button>
+              {[
+                { label: "Cut Plan", action: () => navigateToWizard("CUT") },
+                { label: "Maintain Plan", action: () => navigateToWizard("MAINTAIN") },
+                { label: "Build Plan", action: () => navigateToWizard("BUILD") },
+                { label: "How It Works", action: () => navigate("how-it-works") },
+                { label: "Nutrition Guide", action: () => navigate("how-it-works") },
+              ].map((l) => (
+                <li key={l.label}>
+                  <button onClick={l.action} className="text-[13px] text-white/35 hover:text-white transition-colors">{l.label}</button>
                 </li>
               ))}
             </ul>
@@ -54,12 +62,15 @@ export default function Footer({ navigate }: FooterProps) {
           <div>
             <div className="font-mono text-[9px] tracking-[0.4em] uppercase mb-5 text-white/25">Account</div>
             <ul className="space-y-3">
-              {["My Account", "Rewards", "Order Tracking", "Subscription", "Gift Cards"].map((l) => (
-                <li key={l}>
-                  <button onClick={() => navigate("account")}
-                    className="text-[13px] text-white/35 hover:text-white transition-colors">
-                    {l}
-                  </button>
+              {[
+                { label: "My Account", action: () => navigate("account") },
+                { label: "Rewards", action: () => navigate("account") },
+                { label: "Order Tracking", action: () => navigate("account") },
+                { label: "Subscription", action: () => navigate("account") },
+                { label: "Gift Cards", action: () => navigate("gift-card") },
+              ].map((l) => (
+                <li key={l.label}>
+                  <button onClick={l.action} className="text-[13px] text-white/35 hover:text-white transition-colors">{l.label}</button>
                 </li>
               ))}
             </ul>

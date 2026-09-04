@@ -4,16 +4,20 @@ import { CartItem, Page } from "@/data";
 interface Props {
   navigate: (page: Page) => void;
   cart: CartItem[];
+  savedAddress: { name: string; phone: string; line1: string; unit: string; postal: string } | null;
+  onComplete: () => void;
 }
 
 const DATES = ["Mon 4", "Tue 5", "Wed 6", "Thu 7", "Fri 8", "Sat 9"];
 const SLOTS = ["6am – 9am", "9am – 12pm", "12pm – 3pm", "3pm – 6pm"];
 
-export default function CheckoutPage({ navigate, cart }: Props) {
+export default function CheckoutPage({ navigate, cart, savedAddress, onComplete }: Props) {
   const [step, setStep] = useState<1 | 2>(1);
   const [date, setDate] = useState(DATES[0]);
   const [slot, setSlot] = useState(SLOTS[0]);
   const [useWallet, setUseWallet] = useState(false);
+  const [saveCard, setSaveCard] = useState(false);
+  const [autoCharge, setAutoCharge] = useState(false);
 
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const total = Math.max(0, subtotal - (useWallet ? 12.5 : 0));
@@ -51,13 +55,13 @@ export default function CheckoutPage({ navigate, cart }: Props) {
 
               {/* Address — 4 fields only */}
               <div className="grid grid-cols-2 gap-3 mb-8">
-                <input placeholder="Full name" defaultValue="Jerome Tan"
+                <input placeholder="Full name" defaultValue={savedAddress?.name ?? "Jerome Tan"}
                   className="col-span-2 sm:col-span-1 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
-                <input placeholder="Phone" defaultValue="+65 9123 4567"
+                <input placeholder="Phone" defaultValue={savedAddress?.phone ?? "+65 9123 4567"}
                   className="col-span-2 sm:col-span-1 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
-                <input placeholder="Street address + unit" defaultValue="123 Toa Payoh Lor 4, #08-22"
+                <input placeholder="Street address + unit" defaultValue={savedAddress?.line1 ?? "123 Toa Payoh Lor 4, #08-22"}
                   className="col-span-2 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
-                <input placeholder="Postal code" defaultValue="310123"
+                <input placeholder="Postal code" defaultValue={savedAddress?.postal ?? "310123"}
                   className="border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
                 <input placeholder="Delivery note (optional)"
                   className="border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] text-[#aaa] outline-none focus:border-[#111] transition-colors" />
@@ -147,11 +151,26 @@ export default function CheckoutPage({ navigate, cart }: Props) {
                 <span className="text-[#ccc] text-[11px]">or</span>
                 <div className="flex-1 h-px bg-[#E5E2DA]" />
               </div>
-              <button className="w-full border border-[#D0CCC4] bg-white py-3.5 text-[13px] text-[#888] hover:border-[#111] hover:text-[#111] transition-colors mb-8 flex items-center justify-center gap-1.5">
+              <button className="w-full border border-[#D0CCC4] bg-white py-3.5 text-[13px] text-[#888] hover:border-[#111] hover:text-[#111] transition-colors flex items-center justify-center gap-1.5">
                 <span className="font-bold text-[#E43B4F]">Pay</span>Now
               </button>
+              <p className="text-[#aaa] text-[11px] text-center mt-1.5 mb-8">Singapore instant bank transfer — no card needed</p>
 
-              <button onClick={() => navigate("confirmation")}
+              {/* Save card + auto-charge */}
+              <div className="space-y-3 mb-6">
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={saveCard} onChange={(e) => setSaveCard(e.target.checked)}
+                    className="mt-0.5 accent-[#111]" />
+                  <span className="text-[13px] text-[#333]">Save this card for faster checkout next time</span>
+                </label>
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input type="checkbox" checked={autoCharge} onChange={(e) => setAutoCharge(e.target.checked)}
+                    className="mt-0.5 accent-[#111]" />
+                  <span className="text-[13px] text-[#333]">I authorise Fresher to auto-charge my saved card for recurring orders</span>
+                </label>
+              </div>
+
+              <button onClick={() => onComplete()}
                 className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
                 Place Order — ${total.toFixed(2)}
               </button>

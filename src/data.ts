@@ -5,7 +5,9 @@ export type Page =
   | "meal-plan-wizard"
   | "checkout"
   | "confirmation"
-  | "account";
+  | "account"
+  | "how-it-works"
+  | "gift-card";
 
 export interface CartItem {
   id: number;

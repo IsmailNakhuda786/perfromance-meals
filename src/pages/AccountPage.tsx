@@ -23,6 +23,7 @@ const WALLET_HISTORY = [
 ];
 
 const ALL_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DELIVERED_DAYS = ["Mon"];
 const TIME_SLOTS = ["6:00am – 9:00am", "9:00am – 12:00pm", "12:00pm – 3:00pm", "3:00pm – 6:00pm"];
 
 // Current week's meal schedule — each delivery day has N meal slots
@@ -57,6 +58,22 @@ export default function AccountPage({ navigate }: Props) {
   const [editingTime, setEditingTime] = useState(false);
   const [editingQty, setEditingQty] = useState(false);
   const [editingPlan, setEditingPlan] = useState(false);
+
+  // Cancel subscription flow
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelStep, setCancelStep] = useState<1 | 2>(1);
+  const [subCancelled, setSubCancelled] = useState(false);
+
+  // Points redemption
+  const [redeemPts, setRedeemPts] = useState(500);
+
+  // Card management
+  const [showAddCard, setShowAddCard] = useState(false);
+
+  // Review flow
+  const [reviewOrderId, setReviewOrderId] = useState<string | null>(null);
+  const [reviewStars, setReviewStars] = useState(5);
+  const [reviewText, setReviewText] = useState("");
 
   const plan = PLANS.find((p) => p.name === activePlan) || PLANS[1];
 
@@ -464,33 +481,47 @@ export default function AccountPage({ navigate }: Props) {
               <div className="p-5 border-b border-[#E5E2DA]">
                 <h3 className="font-medium text-[15px]">This Week's Meals</h3>
                 <p className="text-[#888] text-[12px] mt-0.5">Tap "Swap" on any meal to replace it. Cut-off is 10pm the night before each delivery.</p>
+                <p className="text-[#aaa] text-[11px] mt-1">Delivered meals cannot be modified.</p>
               </div>
               <div className="divide-y divide-[#F0EDE8]">
                 {deliveryDays.map((day) => {
                   const slots = schedule[day] || [1];
+                  const isDelivered = DELIVERED_DAYS.includes(day);
                   return (
                     <div key={day} className="p-5">
                       <div className="font-mono text-[11px] tracking-[0.25em] text-[#888] uppercase mb-3 flex items-center gap-2">
                         {day}
                         <span className="text-[#ccc]">·</span>
                         <span>{timeSlot}</span>
+                        {isDelivered && (
+                          <span className="ml-1 bg-[#E5E2DA] text-[#666] text-[9px] font-bold tracking-widest px-2 py-0.5 uppercase">Delivered ✓</span>
+                        )}
                       </div>
                       <div className="space-y-2">
                         {slots.map((mealId, slotIdx) => {
                           const meal = MEALS.find((m) => m.id === mealId) || MEALS[0];
                           return (
-                            <div key={slotIdx} className="flex items-center gap-4 bg-[#F7F5F0] p-3">
-                              <img src={meal.img} alt={meal.name} className="w-14 h-14 object-cover shrink-0 bg-[#E8E5DE]" />
+                            <div key={slotIdx} className={`flex items-center gap-4 bg-[#F7F5F0] p-3 relative ${isDelivered ? "opacity-60" : ""}`}>
+                              <div className="relative shrink-0">
+                                <img src={meal.img} alt={meal.name} className="w-14 h-14 object-cover bg-[#E8E5DE]" />
+                                {isDelivered && (
+                                  <div className="absolute inset-0 bg-[#E5E2DA]/60 flex items-center justify-center">
+                                    <span className="text-[9px] font-bold text-[#666] uppercase tracking-widest">Delivered</span>
+                                  </div>
+                                )}
+                              </div>
                               <div className="flex-1 min-w-0">
                                 <div className="text-[13px] font-medium truncate">{meal.name}</div>
                                 <div className="text-[11px] text-[#888] mt-0.5">{meal.protein}g protein · {meal.carbs}g carbs · {meal.cal} kcal</div>
                               </div>
-                              <button
-                                onClick={() => setSwapTarget({ day, slotIdx })}
-                                className="shrink-0 border border-[#D0CCC4] px-3 py-1.5 text-[11px] text-[#666] hover:border-[#111] hover:text-[#111] transition-colors"
-                              >
-                                Swap
-                              </button>
+                              {!isDelivered && (
+                                <button
+                                  onClick={() => setSwapTarget({ day, slotIdx })}
+                                  className="shrink-0 border border-[#D0CCC4] px-3 py-1.5 text-[11px] text-[#666] hover:border-[#111] hover:text-[#111] transition-colors"
+                                >
+                                  Swap
+                                </button>
+                              )}
                             </div>
                           );
                         })}
@@ -542,11 +573,20 @@ export default function AccountPage({ navigate }: Props) {
                 </button>
               </div>
               <div className="bg-white border border-[#E5E2DA] p-5">
-                <h3 className="font-medium text-[15px] mb-1 text-[#c00]">Cancel Subscription</h3>
-                <p className="text-[#888] text-[13px] mb-4">We'll be sad to see you go. If cost is a concern, consider pausing instead — your plan and history are preserved.</p>
-                <button className="w-full py-3 text-[12px] font-bold tracking-widest uppercase border border-[#c00] text-[#c00] hover:bg-[#c00] hover:text-white transition-colors">
-                  Cancel Plan
-                </button>
+                {subCancelled ? (
+                  <div>
+                    <div className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#c00] mb-2">Subscription Cancelled</div>
+                    <p className="text-[#444] text-[13px]">Your plan ended. Your history and meal preferences are saved if you ever return.</p>
+                  </div>
+                ) : (
+                  <>
+                    <h3 className="font-medium text-[15px] mb-1 text-[#c00]">Cancel Subscription</h3>
+                    <p className="text-[#888] text-[13px] mb-4">We'll be sad to see you go. If cost is a concern, consider pausing instead — your plan and history are preserved.</p>
+                    <button onClick={() => { setShowCancelModal(true); setCancelStep(1); }} className="w-full py-3 text-[12px] font-bold tracking-widest uppercase border border-[#c00] text-[#c00] hover:bg-[#c00] hover:text-white transition-colors">
+                      Cancel Plan
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -573,7 +613,12 @@ export default function AccountPage({ navigate }: Props) {
                       <div className="font-bold text-[15px]">${o.total.toFixed(2)}</div>
                       <div className="text-[12px] text-green-600 font-medium">{o.status}</div>
                     </div>
-                    <button className="border border-[#D0CCC4] px-4 py-2 text-[12px] hover:border-[#111] transition-colors whitespace-nowrap">Reorder</button>
+                    <div className="flex gap-2">
+                      <button className="border border-[#D0CCC4] px-4 py-2 text-[12px] hover:border-[#111] transition-colors whitespace-nowrap">Reorder</button>
+                      {o.status === "Delivered" && (
+                        <button onClick={() => { setReviewOrderId(o.id); setReviewStars(5); setReviewText(""); }} className="border border-[#F2C94C] text-[#a07800] px-4 py-2 text-[12px] hover:bg-[#F2C94C] hover:text-[#111] transition-colors whitespace-nowrap">Review</button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -599,14 +644,42 @@ export default function AccountPage({ navigate }: Props) {
               ))}
             </div>
             <div className="bg-white border border-[#E5E2DA] p-6 mb-5">
-              <h3 className="font-medium text-[16px] mb-5">Redeem Points</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {[{ pts: 500, val: "$5 off", ok: true }, { pts: 1000, val: "$10 off", ok: true }, { pts: 2000, val: "$22 off", ok: false }, { pts: 5000, val: "Free box", ok: false }].map((r) => (
-                  <div key={r.pts} className={`border p-4 text-center ${r.ok ? "border-[#111] cursor-pointer hover:bg-[#111] hover:text-white group transition-all" : "border-[#E5E2DA] opacity-40"}`}>
-                    <div className="font-display text-[22px] font-bold group-hover:text-white">{r.val}</div>
-                    <div className="text-[11px] text-[#888] group-hover:text-white/60 mt-1">{r.pts.toLocaleString()} pts</div>
+              <h3 className="font-medium text-[16px] mb-1">Redeem Your Points</h3>
+              <p className="text-[#888] text-[13px] mb-5">You have <strong className="text-[#111]">1,234 points</strong> = <strong className="text-[#111]">$12.34 value</strong></p>
+
+              {/* Points stepper */}
+              <div className="mb-5">
+                <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Points to redeem</label>
+                <div className="flex items-center gap-4">
+                  <button onClick={() => setRedeemPts((v) => Math.max(50, v - 50))} className="w-9 h-9 border border-[#D0CCC4] text-[18px] hover:border-[#111] transition-colors flex items-center justify-center">−</button>
+                  <div className="flex-1">
+                    <input type="range" min={50} max={1234} step={50} value={redeemPts} onChange={(e) => setRedeemPts(Number(e.target.value))} className="w-full accent-[#111]" />
                   </div>
-                ))}
+                  <button onClick={() => setRedeemPts((v) => Math.min(1234, v + 50))} className="w-9 h-9 border border-[#D0CCC4] text-[18px] hover:border-[#111] transition-colors flex items-center justify-center">+</button>
+                  <div className="text-[#111] font-mono font-bold text-[16px] w-20 text-right">{redeemPts} pts</div>
+                </div>
+                <p className="text-[#888] text-[12px] mt-1">= ${(redeemPts / 100).toFixed(2)} wallet credit</p>
+              </div>
+
+              {/* Redemption options */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="border border-[#E5E2DA] p-4">
+                  <div className="font-medium text-[14px] mb-1">Apply as Wallet Credit</div>
+                  <div className="text-[#888] text-[12px] mb-3">Convert points directly to spend on your next order</div>
+                  <button onClick={() => { save(`${redeemPts} points redeemed → $${(redeemPts / 100).toFixed(2)} added to wallet`); }}
+                    className="w-full py-2.5 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                    Convert {redeemPts} pts → ${(redeemPts / 100).toFixed(2)} credit
+                  </button>
+                </div>
+                <div className="border border-[#E5E2DA] p-4">
+                  <div className="font-medium text-[14px] mb-1">Redeem for Free Meal</div>
+                  <div className="text-[#888] text-[12px] mb-3">1,000 pts = 1 free meal added to your next delivery</div>
+                  <button onClick={() => { if (redeemPts >= 1000) { save("1,000 points redeemed → 1 Free Meal added to next delivery"); } }}
+                    className={`w-full py-2.5 text-[12px] font-bold tracking-widest uppercase transition-colors ${redeemPts >= 1000 ? "bg-[#0D2818] text-[#F2C94C] hover:bg-[#F2C94C] hover:text-[#111]" : "bg-[#F0EDE8] text-[#aaa] cursor-not-allowed"}`}>
+                    Redeem 1,000 pts → 1 Free Meal
+                  </button>
+                  {redeemPts < 1000 && <p className="text-[#aaa] text-[11px] mt-1">Need {1000 - redeemPts} more pts</p>}
+                </div>
               </div>
             </div>
             <div className="bg-white border border-[#E5E2DA] p-6">
@@ -673,6 +746,102 @@ export default function AccountPage({ navigate }: Props) {
                 </div>
               </div>
             </div>
+
+            {/* ── SAVED PAYMENT METHODS ── */}
+            <div className="bg-white border border-[#E5E2DA] p-6 mt-6">
+              <h3 className="font-medium text-[16px] mb-4">Saved Payment Methods</h3>
+              <div className="border border-[#D0CCC4] p-4 mb-3 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-7 bg-[#1a1f71] flex items-center justify-center shrink-0">
+                    <span className="text-white text-[9px] font-bold">VISA</span>
+                  </div>
+                  <div>
+                    <div className="text-[14px] font-medium">Visa ending 4242</div>
+                    <div className="text-[12px] text-[#888]">Expires 08/28</div>
+                  </div>
+                  <span className="text-[10px] font-mono tracking-widest bg-[#CDFF3A] text-[#111] px-2 py-0.5 uppercase">Default</span>
+                </div>
+                <button className="border border-[#D0CCC4] px-3 py-1.5 text-[12px] text-[#888] hover:border-[#c00] hover:text-[#c00] transition-colors">Remove</button>
+              </div>
+              {!showAddCard ? (
+                <button onClick={() => setShowAddCard(true)} className="w-full border border-dashed border-[#D0CCC4] py-3 text-[12px] text-[#888] hover:border-[#111] hover:text-[#111] transition-colors">+ Add New Card</button>
+              ) : (
+                <div className="border border-[#E5E2DA] p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                    {[{ l: "Card Number", p: "•••• •••• •••• 0000" }, { l: "Name on Card", p: "Jerome Tan" }].map((f) => (
+                      <div key={f.l}>
+                        <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1">{f.l}</label>
+                        <input placeholder={f.p} className="w-full border border-[#D0CCC4] px-3 py-2 text-[14px] outline-none focus:border-[#111] transition-colors" />
+                      </div>
+                    ))}
+                    {[{ l: "Expiry", p: "MM/YY" }, { l: "CVC", p: "•••" }].map((f) => (
+                      <div key={f.l}>
+                        <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1">{f.l}</label>
+                        <input placeholder={f.p} className="w-full border border-[#D0CCC4] px-3 py-2 text-[14px] outline-none focus:border-[#111] transition-colors" />
+                      </div>
+                    ))}
+                  </div>
+                  <label className="flex items-center gap-2 mb-3 cursor-pointer">
+                    <input type="checkbox" className="w-4 h-4 accent-[#111]" />
+                    <span className="text-[13px] text-[#444]">Save card for one-click checkout</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <button onClick={() => { setShowAddCard(false); save("Card saved successfully"); }} className="bg-[#111] text-white px-5 py-2 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">Save Card</button>
+                    <button onClick={() => setShowAddCard(false)} className="border border-[#D0CCC4] px-5 py-2 text-[12px] text-[#888] hover:border-[#111] transition-colors">Cancel</button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ── SUBSCRIPTION BILLING / AUTO-CHARGE ── */}
+            <div className="bg-white border border-[#E5E2DA] p-6 mt-4">
+              <h3 className="font-medium text-[16px] mb-2">Subscription Billing</h3>
+              <p className="text-[#666] text-[13px] mb-4">Auto-charge authorisation: You have authorised Fresher to charge your saved card automatically on each billing cycle.</p>
+              <div className="border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+                <span className="text-[18px] mt-0.5">⚠</span>
+                <div className="flex-1">
+                  <div className="font-medium text-amber-800 text-[14px] mb-1">Revoke auto-charge</div>
+                  <div className="text-amber-700 text-[13px] mb-3">Revoking auto-charge will pause your subscription at the end of the current billing period. You'll need to manually renew to continue deliveries.</div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="w-4 h-4 accent-[#c00]" />
+                    <span className="text-[13px] text-amber-800 font-medium">Revoke auto-charge authorisation</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* ── INVITE & EARN ── */}
+            <div className="bg-white border border-[#E5E2DA] p-6 mt-4">
+              <div className="flex items-center gap-3 mb-1">
+                <h3 className="font-medium text-[16px]">Invite & Earn</h3>
+                <span className="bg-[#CDFF3A] text-[#111] text-[10px] font-bold tracking-widest px-2 py-0.5 uppercase">$10 per referral</span>
+              </div>
+              <p className="text-[#888] text-[13px] mb-5">Refer a friend and earn $10 wallet credit when they complete their first order.</p>
+              <div className="mb-4">
+                <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Your referral link</label>
+                <div className="flex gap-2">
+                  <div className="flex-1 border border-[#D0CCC4] px-4 py-2.5 text-[14px] text-[#666] bg-[#F7F5F0] font-mono">fresher.com.sg/ref/jerome</div>
+                  <button onClick={() => save("Referral link copied!")} className="bg-[#111] text-white px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors whitespace-nowrap">Copy</button>
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Invite by email</label>
+                <div className="flex gap-2">
+                  <input placeholder="friend@example.com" className="flex-1 border border-[#D0CCC4] px-4 py-2.5 text-[14px] outline-none focus:border-[#111] transition-colors" />
+                  <button onClick={() => save("Invite sent!")} className="border border-[#111] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap">Send Invite</button>
+                </div>
+              </div>
+              <div>
+                <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Your invites</div>
+                <div className="border border-[#E5E2DA] p-3 flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-[14px] font-medium">Sarah L.</div>
+                    <div className="text-[12px] text-[#888]">Joined 3 weeks ago</div>
+                  </div>
+                  <div className="text-[#CDFF3A] bg-[#111] text-[11px] font-bold px-3 py-1">+$10 earned</div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -708,6 +877,86 @@ export default function AccountPage({ navigate }: Props) {
                 );
               })}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── CANCEL SUBSCRIPTION MODAL ── */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setShowCancelModal(false)} />
+          <div className="relative bg-white max-w-[480px] w-full p-8">
+            <button onClick={() => setShowCancelModal(false)} className="absolute top-4 right-4 text-[#888] hover:text-[#111]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+            {cancelStep === 1 ? (
+              <>
+                <h3 className="font-display text-[22px] font-bold mb-2">Are you sure you want to cancel?</h3>
+                <p className="text-[#666] text-[13px] mb-6">Before you go, consider one of these alternatives:</p>
+                <div className="space-y-3">
+                  <button onClick={() => { setShowCancelModal(false); setShowPauseModal(true); }}
+                    className="w-full text-left border border-[#E5E2DA] p-4 hover:border-[#111] transition-colors">
+                    <div className="font-medium text-[14px]">⏸ Pause instead — keep my plan</div>
+                    <div className="text-[#888] text-[12px] mt-0.5">No charges while paused. Your plan and meals are preserved.</div>
+                  </button>
+                  <button onClick={() => { setShowCancelModal(false); setTab("subscription"); setEditingPlan(true); }}
+                    className="w-full text-left border border-[#E5E2DA] p-4 hover:border-[#111] transition-colors">
+                    <div className="font-medium text-[14px]">💰 Switch to a cheaper plan</div>
+                    <div className="text-[#888] text-[12px] mt-0.5">Change your caloric target to reduce your weekly cost.</div>
+                  </button>
+                  <button onClick={() => setCancelStep(2)}
+                    className="w-full text-left border border-[#c00]/30 p-4 hover:border-[#c00] transition-colors">
+                    <div className="font-medium text-[14px] text-[#c00]">Yes, cancel my subscription</div>
+                    <div className="text-[#888] text-[12px] mt-0.5">I understand my plan will end and I'll lose my streak.</div>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="font-display text-[22px] font-bold mb-2 text-[#c00]">Confirm cancellation</h3>
+                <div className="bg-[#FFF5F5] border border-[#fcc] p-4 mb-6 text-[13px] text-[#c00]">
+                  Your plan will end on <strong>30 Sep 2025</strong>. You'll lose your streak and rewards bonus.
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={() => setShowCancelModal(false)} className="flex-1 border border-[#D0CCC4] py-3 text-[12px] font-bold uppercase text-[#888] hover:border-[#111] transition-colors">Keep My Plan</button>
+                  <button onClick={() => { setSubCancelled(true); setShowCancelModal(false); save("Subscription cancelled"); }}
+                    className="flex-1 bg-[#c00] text-white py-3 text-[12px] font-bold uppercase hover:bg-[#900] transition-colors">
+                    Confirm Cancellation
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ── REVIEW MODAL ── */}
+      {reviewOrderId && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setReviewOrderId(null)} />
+          <div className="relative bg-white max-w-[460px] w-full p-8">
+            <button onClick={() => setReviewOrderId(null)} className="absolute top-4 right-4 text-[#888] hover:text-[#111]">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+            <h3 className="font-display text-[22px] font-bold mb-1">Write a Review</h3>
+            <p className="text-[#888] text-[13px] mb-5">Order: <span className="font-mono text-[#444]">{reviewOrderId}</span></p>
+            <div className="mb-4">
+              <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Your rating</div>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button key={star} onClick={() => setReviewStars(star)} className={`text-[32px] transition-colors ${star <= reviewStars ? "text-[#F2C94C]" : "text-[#D0CCC4]"}`}>★</button>
+                ))}
+              </div>
+            </div>
+            <div className="mb-5">
+              <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Your experience</label>
+              <textarea value={reviewText} onChange={(e) => setReviewText(e.target.value)} placeholder="Tell us about your experience..." rows={4}
+                className="w-full border border-[#D0CCC4] px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors resize-none" />
+            </div>
+            <button onClick={() => { setReviewOrderId(null); save("Review submitted — thank you!"); }}
+              className="w-full bg-[#111] text-white py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+              Submit Review
+            </button>
           </div>
         </div>
       )}

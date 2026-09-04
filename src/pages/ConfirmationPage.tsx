@@ -2,23 +2,33 @@ import { Page } from "@/data";
 
 interface Props {
   navigate: (page: Page) => void;
+  orderType: "ready" | "plan";
 }
 
-export default function ConfirmationPage({ navigate }: Props) {
+export default function ConfirmationPage({ navigate, orderType }: Props) {
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col items-center justify-center px-6 py-20">
       <div className="max-w-[600px] w-full text-center">
-        {/* Success icon */}
-        <div className="w-20 h-20 bg-[#CDFF3A] rounded-full flex items-center justify-center mx-auto mb-8">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5">
-            <path d="M20 6 9 17l-5-5" />
-          </svg>
+        {/* Hero area with decorative confetti elements */}
+        <div className="relative mb-8">
+          {/* Decorative confetti circles */}
+          <div className="absolute -top-4 left-8 w-4 h-4 bg-[#CDFF3A] rounded-full opacity-40" />
+          <div className="absolute top-2 right-12 w-6 h-6 bg-[#F2C94C] rounded-full opacity-40" />
+          <div className="absolute -top-2 right-4 w-3 h-3 bg-[#7EE8B0] opacity-40" />
+          <div className="absolute top-8 left-16 w-5 h-5 bg-[#7EE8B0] rounded-full opacity-40" />
+          {/* Success icon */}
+          <div className="w-20 h-20 bg-[#CDFF3A] rounded-full flex items-center justify-center mx-auto">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+          </div>
         </div>
 
         <div className="font-mono text-[10px] tracking-[0.45em] text-[#111]/35 uppercase mb-4">Order Confirmed</div>
-        <h1 className="font-display text-[48px] font-bold mb-4 leading-tight">
-          You're all set,<br />Jerome.
+        <h1 className="font-display text-[48px] font-bold mb-2 leading-tight">
+          Your order is confirmed!
         </h1>
+        <p className="text-[#555] text-[18px] mb-4">Jerome, your meals are being prepared.</p>
         <p className="text-[#666] text-[16px] leading-relaxed mb-10">
           Your order <strong className="text-[#111] font-mono">#FRE-20250904-7842</strong> has been confirmed. You'll receive a confirmation email and SMS shortly.
         </p>
@@ -41,6 +51,21 @@ export default function ConfirmationPage({ navigate }: Props) {
           </div>
         </div>
 
+        {/* Delivery progress timeline */}
+        <div className="bg-white border border-[#E5E2DA] px-6 py-5 mb-5">
+          <div className="flex items-center justify-between relative">
+            <div className="absolute left-0 right-0 top-3 h-px bg-[#E5E2DA] z-0" />
+            {["Confirmed", "Preparing", "Out for Delivery", "Delivered"].map((label, i) => (
+              <div key={label} className="flex flex-col items-center gap-1.5 z-10">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center border-2 ${i === 0 ? "bg-[#CDFF3A] border-[#CDFF3A]" : "bg-white border-[#D0CCC4]"}`}>
+                  {i === 0 && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>}
+                </div>
+                <span className={`text-[10px] font-mono tracking-wide ${i === 0 ? "text-[#111] font-bold" : "text-[#aaa]"}`}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Track order notice */}
         <div className="bg-[#0E0E0E] text-white p-5 mb-5 text-left flex items-center gap-4">
           <span className="text-[24px]">📦</span>
@@ -50,8 +75,8 @@ export default function ConfirmationPage({ navigate }: Props) {
           </div>
         </div>
 
-        {/* Customize Meal Plan CTA — prominent */}
-        <div className="bg-[#0D2818] border border-[#F2C94C]/30 p-5 mb-5 text-left">
+        {/* Customize Meal Plan CTA — only for plan orders */}
+        {orderType === "plan" && <div className="bg-[#0D2818] border border-[#F2C94C]/30 p-5 mb-5 text-left">
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="font-mono text-[10px] tracking-[0.3em] text-[#F2C94C] uppercase mb-2">Your Meal Plan is now active</div>
@@ -65,7 +90,7 @@ export default function ConfirmationPage({ navigate }: Props) {
               Customize →
             </button>
           </div>
-        </div>
+        </div>}
 
         {/* Rewards earned */}
         <div className="bg-[#111111] text-white p-5 mb-8 flex items-center justify-between">
@@ -85,9 +110,15 @@ export default function ConfirmationPage({ navigate }: Props) {
           <button onClick={() => navigate("account")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors">
             Go to My Account →
           </button>
-          <button onClick={() => navigate("ready-to-go")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
-            Continue Shopping
-          </button>
+          {orderType === "plan" ? (
+            <button onClick={() => navigate("ready-to-go")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
+              Browse Ready-to-Go Meals
+            </button>
+          ) : (
+            <button onClick={() => navigate("home")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
+              Back to Home
+            </button>
+          )}
         </div>
       </div>
     </div>

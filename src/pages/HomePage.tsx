@@ -2,6 +2,7 @@ import { CartItem, Page, PLANS } from "@/data";
 
 interface HomePageProps {
   navigate: (page: Page) => void;
+  navigateToWizard: (plan?: string) => void;
   addToCart: (item: CartItem) => void;
 }
 
@@ -11,7 +12,7 @@ const TESTIMONIALS = [
   { name: "Ryan K.", role: "CrossFit Athlete", text: "I run strict meal timing protocols and Fresher's USDA-standard macro labelling is the only brand I trust blindly. Consistency across every single batch.", rating: 5, plan: "Meal Plan — Maintain" },
 ];
 
-export default function HomePage({ navigate }: HomePageProps) {
+export default function HomePage({ navigate, navigateToWizard }: HomePageProps) {
   return (
     <div className="bg-[#F7F5F0]">
       {/* ── HERO — SPLIT PANEL ── */}
@@ -48,7 +49,7 @@ export default function HomePage({ navigate }: HomePageProps) {
           </div>
         </div>
 
-        <div className="relative overflow-hidden cursor-pointer group" onClick={() => navigate("meal-plan-wizard")}>
+        <div className="relative overflow-hidden cursor-pointer group" onClick={() => navigateToWizard()}>
           <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&h=1100&fit=crop&auto=format" alt="Meal Plans fresh bowl" className="absolute inset-0 w-full h-full object-cover scale-[1.04] group-hover:scale-100 transition-transform duration-700 ease-out" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0D2818] via-[#0D2818]/75 to-[#0D2818]/30 group-hover:via-[#0D2818]/58 transition-all duration-500" />
           <div className="relative h-full flex flex-col justify-between p-10 lg:p-14 text-white">
@@ -61,7 +62,7 @@ export default function HomePage({ navigate }: HomePageProps) {
               <p className="text-white/60 text-[15px] max-w-[300px] mb-9 leading-relaxed">Chef-prepared fresh meals delivered daily, calibrated to your caloric target. Cut, Maintain, or Build.</p>
               <div className="flex flex-wrap items-center gap-4">
                 <button
-                  onClick={(e) => { e.stopPropagation(); navigate("meal-plan-wizard"); }}
+                  onClick={(e) => { e.stopPropagation(); navigateToWizard(); }}
                   className="inline-flex items-center gap-2.5 bg-[#F2C94C] text-[#111111] px-7 py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors"
                 >
                   Get My Plan →
@@ -107,7 +108,7 @@ export default function HomePage({ navigate }: HomePageProps) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
             {PLANS.map((plan) => (
-              <div key={plan.name} className="border border-white/10 p-7 hover:border-white/25 transition-colors cursor-pointer" onClick={() => navigate("meal-plan-wizard")}>
+              <div key={plan.name} className="border border-white/10 p-7 hover:border-white/25 transition-colors cursor-pointer" onClick={() => navigateToWizard()}>
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <span className="font-mono text-[10px] tracking-[0.3em]" style={{ color: plan.accent }}>{plan.name}</span>
@@ -123,7 +124,7 @@ export default function HomePage({ navigate }: HomePageProps) {
               </div>
             ))}
           </div>
-          <button onClick={() => navigate("meal-plan-wizard")} className="inline-flex items-center gap-2 bg-[#F2C94C] text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
+          <button onClick={() => navigateToWizard()} className="inline-flex items-center gap-2 bg-[#F2C94C] text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
             Start Meal Plan Wizard →
           </button>
         </div>

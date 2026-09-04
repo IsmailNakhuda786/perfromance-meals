@@ -4,9 +4,10 @@ import { CartItem, CATS, Meal, MEALS, Page } from "@/data";
 interface Props {
   navigate: (page: Page) => void;
   addToCart: (item: CartItem) => void;
+  cart: CartItem[];
 }
 
-export default function ReadyToGoPage({ navigate, addToCart }: Props) {
+export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
   const [activeCat, setActiveCat] = useState("all");
   const [sort, setSort] = useState("popular");
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
@@ -14,6 +15,11 @@ export default function ReadyToGoPage({ navigate, addToCart }: Props) {
 
   const filtered = (activeCat === "all" ? MEALS : MEALS.filter((m) => m.cat === activeCat))
     .sort((a, b) => sort === "price-asc" ? a.price - b.price : sort === "price-desc" ? b.price - a.price : b.reviews - a.reviews);
+
+  const getCartQty = (mealId: number) => {
+    const item = cart.find((i) => i.id === mealId && i.type === "ready");
+    return item ? item.qty : 0;
+  };
 
   const handleAdd = (meal: Meal) => {
     addToCart({ id: meal.id, name: meal.name, price: meal.price, qty: 1, img: meal.img, type: "ready" });
@@ -73,51 +79,60 @@ export default function ReadyToGoPage({ navigate, addToCart }: Props) {
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((meal) => (
-            <div key={meal.id} className="group bg-[#1A1A1A] overflow-hidden">
-              {/* Image */}
-              <div className="relative h-52 bg-[#222] overflow-hidden cursor-pointer" onClick={() => setSelectedMeal(meal)}>
-                {meal.badge && (
-                  <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold ${meal.badge === "Bestseller" || meal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111111]" : "bg-black/50 text-white backdrop-blur-sm border border-white/10"}`}>
-                    {meal.badge}
-                  </div>
-                )}
-                <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <span className="bg-white/10 backdrop-blur-sm text-white text-[11px] uppercase tracking-widest px-4 py-2 border border-white/20">View Details</span>
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-3 gap-2">
-                  <h3 className="text-[14px] font-medium leading-snug cursor-pointer hover:text-[#CDFF3A] transition-colors" onClick={() => setSelectedMeal(meal)}>{meal.name}</h3>
-                  <span className="text-[#CDFF3A] font-bold text-[15px] whitespace-nowrap font-mono">${meal.price.toFixed(2)}</span>
-                </div>
-
-                <div className="grid grid-cols-4 gap-1 mb-4">
-                  {[{ label: "CAL", val: meal.cal }, { label: "PRO", val: `${meal.protein}g` }, { label: "CARB", val: `${meal.carbs}g` }, { label: "FAT", val: `${meal.fat}g` }].map((m) => (
-                    <div key={m.label} className="bg-[#252525] px-1.5 py-2 text-center">
-                      <div className="font-mono text-[9px] text-white/25 mb-0.5 tracking-wider">{m.label}</div>
-                      <div className="font-mono text-[11px] text-white font-medium">{m.val}</div>
+          {filtered.map((meal) => {
+            const qtyInCart = getCartQty(meal.id);
+            return (
+              <div key={meal.id} className={`group bg-[#1A1A1A] overflow-hidden ${qtyInCart > 0 ? "ring-1 ring-[#CDFF3A]/40" : ""}`}>
+                {/* Image */}
+                <div className="relative h-52 bg-[#222] overflow-hidden cursor-pointer" onClick={() => setSelectedMeal(meal)}>
+                  {meal.badge && (
+                    <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold ${meal.badge === "Bestseller" || meal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111111]" : "bg-black/50 text-white backdrop-blur-sm border border-white/10"}`}>
+                      {meal.badge}
                     </div>
-                  ))}
+                  )}
+                  {/* Cart quantity badge */}
+                  {qtyInCart > 0 && (
+                    <div className="absolute top-3 right-3 z-10 bg-[#CDFF3A] text-[#111111] font-bold text-[12px] w-7 h-7 rounded-full flex items-center justify-center shadow-lg">
+                      {qtyInCart}
+                    </div>
+                  )}
+                  <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <span className="bg-white/10 backdrop-blur-sm text-white text-[11px] uppercase tracking-widest px-4 py-2 border border-white/20">View Details</span>
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="text-[11px] text-white/35">
-                    <span className="text-[#CDFF3A]">{"★".repeat(Math.round(meal.rating))}</span> {meal.rating} ({meal.reviews})
+                {/* Info */}
+                <div className="p-5">
+                  <div className="flex items-start justify-between mb-3 gap-2">
+                    <h3 className="text-[14px] font-medium leading-snug cursor-pointer hover:text-[#CDFF3A] transition-colors" onClick={() => setSelectedMeal(meal)}>{meal.name}</h3>
+                    <span className="text-[#CDFF3A] font-bold text-[15px] whitespace-nowrap font-mono">${meal.price.toFixed(2)}</span>
                   </div>
-                  <button
-                    onClick={() => handleAdd(meal)}
-                    className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${added === meal.id ? "bg-[#7EE8B0] text-[#111111]" : "bg-[#CDFF3A] text-[#111111] hover:bg-white"}`}
-                  >
-                    {added === meal.id ? "✓ Added" : "+ Add"}
-                  </button>
+
+                  <div className="grid grid-cols-4 gap-1 mb-4">
+                    {[{ label: "CAL", val: meal.cal }, { label: "PRO", val: `${meal.protein}g` }, { label: "CARB", val: `${meal.carbs}g` }, { label: "FAT", val: `${meal.fat}g` }].map((m) => (
+                      <div key={m.label} className="bg-[#252525] px-1.5 py-2 text-center">
+                        <div className="font-mono text-[9px] text-white/25 mb-0.5 tracking-wider">{m.label}</div>
+                        <div className="font-mono text-[11px] text-white font-medium">{m.val}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="text-[11px] text-white/35">
+                      <span className="text-[#CDFF3A]">{"★".repeat(Math.round(meal.rating))}</span> {meal.rating} ({meal.reviews})
+                    </div>
+                    <button
+                      onClick={() => handleAdd(meal)}
+                      className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${added === meal.id ? "bg-[#7EE8B0] text-[#111111]" : "bg-[#CDFF3A] text-[#111111] hover:bg-white"}`}
+                    >
+                      {added === meal.id ? "✓ Added" : qtyInCart > 0 ? `+ Add more` : "+ Add"}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -134,6 +149,11 @@ export default function ReadyToGoPage({ navigate, addToCart }: Props) {
               {selectedMeal.badge && (
                 <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${selectedMeal.badge === "Bestseller" || selectedMeal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>
                   {selectedMeal.badge}
+                </div>
+              )}
+              {getCartQty(selectedMeal.id) > 0 && (
+                <div className="absolute top-4 right-4 bg-[#CDFF3A] text-[#111] text-[12px] font-bold px-3 py-1">
+                  {getCartQty(selectedMeal.id)} in cart
                 </div>
               )}
             </div>
