@@ -5,6 +5,7 @@ interface HomePageProps {
   navigate: (page: Page) => void;
   navigateToWizard: (plan?: string) => void;
   addToCart: (item: CartItem) => void;
+  navigateToReferral: () => void;
 }
 
 const TESTIMONIALS = [
@@ -20,7 +21,7 @@ const STATS = [
   { val: "2.3M+", label: "Meals Delivered" },
 ];
 
-export default function HomePage({ navigate, navigateToWizard }: HomePageProps) {
+export default function HomePage({ navigate, navigateToWizard, navigateToReferral }: HomePageProps) {
   const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
@@ -155,9 +156,9 @@ export default function HomePage({ navigate, navigateToWizard }: HomePageProps) 
       </div>
 
       {/* ── PLANS SECTION — INTERACTIVE ── */}
-      <section className="bg-[#0D2818] text-white py-24 overflow-hidden relative">
-        {/* Subtle background texture */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #F2C94C 0%, transparent 50%), radial-gradient(circle at 80% 20%, #7EE8B0 0%, transparent 40%)" }} />
+      <section className="bg-[#0E0E0E] text-white py-24 overflow-hidden relative">
+        {/* Subtle warm glow texture */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "radial-gradient(circle at 15% 60%, #F2C94C 0%, transparent 45%), radial-gradient(circle at 85% 30%, #CDFF3A 0%, transparent 40%)" }} />
 
         <style>{`
           @keyframes shimmer-sweep {
@@ -377,10 +378,10 @@ export default function HomePage({ navigate, navigateToWizard }: HomePageProps) 
                 Every dollar spent earns Fresher Points. Redeem for free meals, plan upgrades, and exclusive benefits. Also earn by referring friends.
               </p>
               <div className="flex gap-3 flex-wrap">
-                <button onClick={() => navigate("account")} className="inline-flex items-center gap-2.5 bg-[#CDFF3A] text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
+                <button onClick={navigateToReferral} className="inline-flex items-center gap-2.5 bg-[#CDFF3A] text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
                   Join Rewards →
                 </button>
-                <button onClick={() => navigate("account")} className="border border-white/20 text-white/60 px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-white hover:text-white transition-colors">
+                <button onClick={navigateToReferral} className="border border-white/20 text-white/60 px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-white hover:text-white transition-colors">
                   Refer & Earn $10
                 </button>
               </div>

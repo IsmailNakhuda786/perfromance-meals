@@ -29,10 +29,18 @@ export default function App() {
   const [wizardInitialPlan, setWizardInitialPlan] = useState("MAINTAIN");
   const [savedAddress, setSavedAddress] = useState<SavedAddress | null>(null);
   const [lastOrderType, setLastOrderType] = useState<"ready" | "plan">("ready");
+  const [accountInitialTab, setAccountInitialTab] = useState<"dashboard" | "settings">("dashboard");
+  const [accountInitialSection, setAccountInitialSection] = useState<string | undefined>(undefined);
 
   const navigate = (p: Page) => {
     setPage(p);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const navigateToAccountReferral = () => {
+    setAccountInitialTab("settings");
+    setAccountInitialSection("referral");
+    navigate("account");
   };
 
   const navigateToWizard = (plan?: string) => {
@@ -89,7 +97,7 @@ export default function App() {
         onCheckout={handleReadyCheckout}
       />
 
-      {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} addToCart={addToCart} />}
+      {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} addToCart={addToCart} navigateToReferral={navigateToAccountReferral} />}
       {page === "ready-to-go" && <ReadyToGoPage navigate={navigate} addToCart={addToCart} cart={cart} />}
       {page === "build-a-box" && <BuildABoxPage navigate={navigate} addToCart={addToCart} />}
       {page === "meal-plan-wizard" && (
@@ -102,7 +110,7 @@ export default function App() {
       )}
       {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} onComplete={() => { setLastOrderType("ready"); navigate("confirmation"); }} />}
       {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} />}
-      {page === "account" && <AccountPage navigate={navigate} />}
+      {page === "account" && <AccountPage navigate={navigate} initialTab={accountInitialTab} initialSection={accountInitialSection} />}
       {page === "how-it-works" && <HowItWorksPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "gift-card" && <GiftCardPage navigate={navigate} />}
 

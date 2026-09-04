@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MEALS, Page, PLANS } from "@/data";
 
 interface Props {
   navigate: (page: Page) => void;
+  initialTab?: Tab;
+  initialSection?: string;
 }
 
 type Tab = "dashboard" | "subscription" | "orders" | "wallet" | "settings";
@@ -34,8 +36,16 @@ const INITIAL_SCHEDULE: Record<string, number[]> = {
   Sat: [3],
 };
 
-export default function AccountPage({ navigate }: Props) {
-  const [tab, setTab] = useState<Tab>("dashboard");
+export default function AccountPage({ navigate, initialTab, initialSection }: Props) {
+  const [tab, setTab] = useState<Tab>(initialTab ?? "dashboard");
+
+  useEffect(() => {
+    if (initialSection === "referral") {
+      setTimeout(() => {
+        document.getElementById("referral-section")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 150);
+    }
+  }, [initialSection]);
 
   // Subscription state — all editable
   const [subPaused, setSubPaused] = useState(false);
@@ -811,7 +821,7 @@ export default function AccountPage({ navigate }: Props) {
             </div>
 
             {/* ── INVITE & EARN ── */}
-            <div className="bg-white border border-[#E5E2DA] p-6 mt-4">
+            <div id="referral-section" className="bg-white border border-[#E5E2DA] p-6 mt-4">
               <div className="flex items-center gap-3 mb-1">
                 <h3 className="font-medium text-[16px]">Invite & Earn</h3>
                 <span className="bg-[#CDFF3A] text-[#111] text-[10px] font-bold tracking-widest px-2 py-0.5 uppercase">$10 per referral</span>
