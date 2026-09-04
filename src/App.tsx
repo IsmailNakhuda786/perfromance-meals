@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import HTML_EXPORT from "@/htmlExport";
 import { CartItem, Page } from "@/data";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -84,22 +85,29 @@ export default function App() {
 
   const showFooter = !NO_FOOTER_PAGES.includes(page);
 
+  const downloadHTML = useCallback(() => {
+    const blob = new Blob([HTML_EXPORT], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "fresher-prototype.html";
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
   return (
     <div className="min-h-screen font-body">
 
       {/* Download banner */}
-      <div className="bg-[#111] text-white flex items-center justify-between px-4 py-2 gap-3 flex-wrap">
-        <span className="text-[12px] text-white/60">Download this prototype to your computer</span>
-        <div className="flex gap-2 flex-wrap">
-          <a href="/fresher-single.zip" download
-            className="bg-[#CDFF3A] text-[#111] text-[11px] font-bold tracking-[0.15em] uppercase px-4 py-2 hover:bg-white transition-colors whitespace-nowrap">
-            Download HTML File ↓
-          </a>
-          <a href="/fresher-prototype.zip" download
-            className="border border-white/20 text-white text-[11px] font-bold tracking-[0.15em] uppercase px-4 py-2 hover:border-white transition-colors whitespace-nowrap">
-            Download Source Code ↓
-          </a>
+      <div className="bg-[#111] text-white flex items-center justify-between px-4 py-3 gap-3 flex-wrap">
+        <div>
+          <div className="text-[13px] font-semibold text-white">Download Prototype</div>
+          <div className="text-[11px] text-white/50">Single HTML file — open in any browser, no setup needed</div>
         </div>
+        <button onClick={downloadHTML}
+          className="bg-[#CDFF3A] text-[#111] text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-white transition-colors whitespace-nowrap shrink-0">
+          ↓ Download fresher-prototype.html
+        </button>
       </div>
 
       <Nav
