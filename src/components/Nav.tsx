@@ -24,9 +24,34 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
 
       <nav className="sticky top-0 z-50 bg-[#111111] text-white shadow-xl">
         <div className="max-w-[1440px] mx-auto px-6 h-[60px] flex items-center justify-between gap-8">
-          <button onClick={() => navigate("home")} className="font-display text-[22px] font-bold tracking-tight shrink-0">
-            FRESHER<span className="text-[#CDFF3A]">.</span>
-          </button>
+          <div className="flex items-center gap-3 shrink-0">
+            <button onClick={() => navigate("home")} className="font-display text-[22px] font-bold tracking-tight">
+              FRESHER<span className="text-[#CDFF3A]">.</span>
+            </button>
+            {/* 6in60 stamp badge */}
+            <div className="relative w-[46px] h-[46px] shrink-0 select-none" title="Lose 6kg in 60 days">
+              <svg viewBox="0 0 46 46" className="w-full h-full">
+                {/* Outer serrated circle */}
+                <circle cx="23" cy="23" r="21" fill="none" stroke="#CDFF3A" strokeWidth="1.2"
+                  strokeDasharray="2.8 2.2" strokeLinecap="round" />
+                {/* Inner ring */}
+                <circle cx="23" cy="23" r="17.5" fill="#CDFF3A" />
+                {/* Text path for curved "LOSE · 6KG ·" around top */}
+                <defs>
+                  <path id="topArc" d="M 9,23 A 14,14 0 0,1 37,23" />
+                  <path id="btmArc" d="M 8.5,24 A 14.5,14.5 0 0,0 37.5,24" />
+                </defs>
+                <text fontSize="4.2" fontFamily="monospace" fontWeight="700" fill="#111" letterSpacing="0.8">
+                  <textPath href="#topArc" startOffset="50%" textAnchor="middle">LOSE · 6KG ·</textPath>
+                </text>
+                <text fontSize="4.2" fontFamily="monospace" fontWeight="700" fill="#111" letterSpacing="0.8">
+                  <textPath href="#btmArc" startOffset="50%" textAnchor="middle">IN 60 DAYS</textPath>
+                </text>
+                {/* Centre bold text */}
+                <text x="23" y="22" textAnchor="middle" fontSize="10" fontFamily="serif" fontWeight="900" fill="#111" dy="0.35em" letterSpacing="-0.5">6in60</text>
+              </svg>
+            </div>
+          </div>
 
           <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
             <div className="flex items-center gap-5">

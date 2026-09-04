@@ -156,9 +156,9 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
       </div>
 
       {/* ── PLANS SECTION — INTERACTIVE ── */}
-      <section className="bg-[#0E0E0E] text-white py-24 overflow-hidden relative">
-        {/* Subtle warm glow texture */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "radial-gradient(circle at 15% 60%, #F2C94C 0%, transparent 45%), radial-gradient(circle at 85% 30%, #CDFF3A 0%, transparent 40%)" }} />
+      <section className="text-[#111] py-24 overflow-hidden relative" style={{ backgroundColor: "#FFFBF0" }}>
+        {/* Warm radial glow — centre-right */}
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(ellipse 60% 70% at 75% 40%, #F2C94C22 0%, transparent 70%), radial-gradient(ellipse 40% 50% at 20% 70%, #CDFF3A18 0%, transparent 60%)" }} />
 
         <style>{`
           @keyframes shimmer-sweep {
@@ -183,19 +183,19 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
 
         <div className="max-w-[1440px] mx-auto px-6 relative">
           <div className="flex items-center gap-4 mb-4">
-            <span className="font-mono text-[10px] tracking-[0.45em] text-[#F2C94C] uppercase">02 / Meal Plans</span>
-            <div className="h-px w-16 bg-[#F2C94C]/25" />
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#C9A227] uppercase">02 / Meal Plans</span>
+            <div className="h-px w-16 bg-[#C9A227]/30" />
           </div>
           <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-14">
-            <h2 className="font-display text-[56px] lg:text-[72px] font-bold leading-none">
+            <h2 className="font-display text-[56px] lg:text-[72px] font-bold leading-none text-[#111]">
               Your goal.<br />
-              <span className="text-[#F2C94C]">Your macros.</span>
+              <span className="text-[#C9A227]">Your macros.</span>
             </h2>
             <div className="max-w-md">
-              <p className="text-white/45 text-[15px] leading-relaxed mb-6">
+              <p className="text-[#666] text-[15px] leading-relaxed mb-6">
                 Three plans. Every calorie calculated. Fresh meals delivered to your door every morning — chef-prepared, macro-labelled.
               </p>
-              <button onClick={() => navigate("how-it-works")} className="text-[#F2C94C]/70 text-[12px] border border-[#F2C94C]/20 px-5 py-3 hover:border-[#F2C94C] hover:text-[#F2C94C] transition-colors uppercase tracking-[0.15em]">
+              <button onClick={() => navigate("how-it-works")} className="text-[#111] text-[12px] border border-[#111]/20 px-5 py-3 hover:border-[#111] transition-colors uppercase tracking-[0.15em]">
                 How It Works →
               </button>
             </div>
@@ -204,84 +204,84 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
             {PLANS.map((plan, idx) => {
               const isHovered = hoveredPlan === plan.name;
-              const cardBgs = ["#0A0F0B", "#080C09", "#0C1009"];
+              const cardBgs = ["#FFFFFF", "#FFFFFF", "#FFFFFF"];
               return (
                 <div key={plan.name}
                   className="plan-card relative overflow-hidden cursor-pointer group/card"
                   style={{
-                    backgroundColor: cardBgs[idx],
-                    border: `1px solid ${isHovered ? plan.accent : "rgba(255,255,255,0.07)"}`,
+                    backgroundColor: isHovered ? "#111" : cardBgs[idx],
+                    border: `1.5px solid ${isHovered ? plan.accent : "#E8E2D6"}`,
                     transform: isHovered ? "translateY(-6px) scale(1.015)" : "translateY(0) scale(1)",
-                    transition: "transform 0.35s cubic-bezier(0.34,1.56,0.64,1), border-color 0.25s ease, box-shadow 0.35s ease",
-                    boxShadow: isHovered ? `0 24px 60px -12px ${plan.accent}40, 0 0 0 1px ${plan.accent}30` : "0 4px 24px -4px rgba(0,0,0,0.5)",
+                    transition: "transform 0.35s cubic-bezier(0.34,1.56,0.64,1), border-color 0.25s ease, box-shadow 0.35s ease, background-color 0.3s ease",
+                    boxShadow: isHovered ? `0 24px 60px -12px ${plan.accent}50, 0 0 0 1px ${plan.accent}25` : "0 2px 16px -4px rgba(0,0,0,0.08)",
                   }}
                   onMouseEnter={() => setHoveredPlan(plan.name)}
                   onMouseLeave={() => setHoveredPlan(null)}
                   onClick={() => navigateToWizard(plan.name)}>
 
-                  {/* Top accent bar — full width, animated grow */}
+                  {/* Top accent bar */}
                   <div className="absolute top-0 left-0 right-0 h-[3px] transition-all duration-300"
-                    style={{ backgroundColor: plan.accent, opacity: isHovered ? 1 : 0.45 }} />
+                    style={{ backgroundColor: plan.accent, opacity: isHovered ? 1 : 0.6 }} />
 
-                  {/* Radial glow blob top-right */}
+                  {/* Radial glow blob */}
                   <div className="glow-blob absolute -top-10 -right-10 w-48 h-48 rounded-full pointer-events-none transition-opacity duration-300"
-                    style={{ background: `radial-gradient(circle, ${plan.accent}55 0%, transparent 70%)`, opacity: isHovered ? 1 : 0 }} />
+                    style={{ background: `radial-gradient(circle, ${plan.accent}40 0%, transparent 70%)`, opacity: isHovered ? 1 : 0 }} />
 
                   {/* Shimmer sweep on hover */}
-                  <div className="shimmer-bar absolute inset-y-0 w-16 bg-white/5 pointer-events-none"
-                    style={{ transform: "translateX(-100%) skewX(-15deg)" }} />
+                  <div className="shimmer-bar absolute inset-y-0 w-16 pointer-events-none"
+                    style={{ background: "rgba(255,255,255,0.07)", transform: "translateX(-100%) skewX(-15deg)" }} />
 
                   <div className="relative p-7">
                     {/* Plan label + index */}
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold"
-                          style={{ backgroundColor: `${plan.accent}20`, color: plan.accent, border: `1px solid ${plan.accent}40` }}>
+                          style={{ backgroundColor: `${plan.accent}25`, color: isHovered ? plan.accent : "#111", border: `1px solid ${plan.accent}50` }}>
                           {idx + 1}
                         </div>
                         <span className="font-mono text-[11px] tracking-[0.3em] font-bold uppercase"
                           style={{ color: plan.accent }}>{plan.name}</span>
                       </div>
-                      <div className="font-mono text-[10px] text-white/25 uppercase tracking-wider">{plan.meals} meals/day</div>
+                      <div className="font-mono text-[10px] uppercase tracking-wider" style={{ color: isHovered ? "rgba(255,255,255,0.35)" : "#aaa" }}>{plan.meals} meals/day</div>
                     </div>
 
                     {/* Calorie hero + price */}
                     <div className="flex items-end justify-between mb-5 gap-3">
                       <div>
-                        <div className="text-white/30 text-[10px] uppercase tracking-[0.2em] mb-1">Daily target</div>
-                        <div className="font-display leading-none transition-transform duration-300"
-                          style={{ fontSize: isHovered ? "56px" : "48px", color: isHovered ? plan.accent : "white" }}>
+                        <div className="text-[10px] uppercase tracking-[0.2em] mb-1" style={{ color: isHovered ? "rgba(255,255,255,0.35)" : "#999" }}>Daily target</div>
+                        <div className="font-display leading-none transition-all duration-300"
+                          style={{ fontSize: isHovered ? "56px" : "48px", color: isHovered ? plan.accent : "#111" }}>
                           {plan.cal}
-                          <span className="text-[18px] font-normal text-white/30"> kcal</span>
+                          <span className="text-[18px] font-normal" style={{ color: isHovered ? "rgba(255,255,255,0.3)" : "#bbb" }}> kcal</span>
                         </div>
                       </div>
                       <div className="text-right shrink-0">
                         <div className="font-display text-[34px] font-bold leading-none" style={{ color: plan.accent }}>
                           ${plan.priceWeek}
                         </div>
-                        <div className="text-white/30 text-[11px] mt-1">/week</div>
+                        <div className="text-[11px] mt-1" style={{ color: isHovered ? "rgba(255,255,255,0.3)" : "#bbb" }}>/week</div>
                       </div>
                     </div>
 
-                    <p className="text-white/40 text-[13px] leading-relaxed mb-6">{plan.desc}</p>
+                    <p className="text-[13px] leading-relaxed mb-6" style={{ color: isHovered ? "rgba(255,255,255,0.45)" : "#666" }}>{plan.desc}</p>
 
                     {/* Macro pills */}
                     <div className="flex gap-2 mb-6">
                       {[{ l: "Protein", v: `${plan.protein}g` }, { l: "Carbs", v: `${plan.carbs}g` }, { l: "Fat", v: `${plan.fat}g` }].map((m) => (
-                        <div key={m.l} className="flex-1 text-center py-2.5 transition-colors duration-300"
-                          style={{ backgroundColor: isHovered ? `${plan.accent}15` : "rgba(255,255,255,0.04)", border: `1px solid ${isHovered ? plan.accent + "35" : "rgba(255,255,255,0.06)"}` }}>
-                          <div className="font-mono text-[14px] font-bold" style={{ color: isHovered ? plan.accent : "rgba(255,255,255,0.7)" }}>{m.v}</div>
-                          <div className="text-white/25 text-[9px] uppercase tracking-wider mt-0.5">{m.l}</div>
+                        <div key={m.l} className="flex-1 text-center py-2.5 transition-all duration-300"
+                          style={{ backgroundColor: isHovered ? `${plan.accent}18` : "#F5F0E8", border: `1px solid ${isHovered ? plan.accent + "40" : "#E8E2D6"}` }}>
+                          <div className="font-mono text-[14px] font-bold" style={{ color: isHovered ? plan.accent : "#111" }}>{m.v}</div>
+                          <div className="text-[9px] uppercase tracking-wider mt-0.5" style={{ color: isHovered ? "rgba(255,255,255,0.4)" : "#999" }}>{m.l}</div>
                         </div>
                       ))}
                     </div>
 
                     {/* CTA row */}
                     <div className="flex items-center justify-between pt-4 border-t"
-                      style={{ borderColor: isHovered ? `${plan.accent}25` : "rgba(255,255,255,0.06)" }}>
-                      <span className="text-white/25 text-[11px]">Fresh daily delivery · SG</span>
+                      style={{ borderColor: isHovered ? `${plan.accent}30` : "#E8E2D6" }}>
+                      <span className="text-[11px]" style={{ color: isHovered ? "rgba(255,255,255,0.3)" : "#bbb" }}>Fresh daily · SG</span>
                       <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-[0.15em] uppercase transition-all duration-300"
-                        style={{ color: isHovered ? plan.accent : "rgba(255,255,255,0.2)", transform: isHovered ? "translateX(0)" : "translateX(-4px)" }}>
+                        style={{ color: isHovered ? plan.accent : "#999", transform: isHovered ? "translateX(0)" : "translateX(-4px)" }}>
                         Select Plan
                         <span className="transition-transform duration-300" style={{ transform: isHovered ? "translateX(3px)" : "translateX(0)" }}>→</span>
                       </div>
@@ -291,7 +291,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
               );
             })}
           </div>
-          <button onClick={() => navigateToWizard()} className="inline-flex items-center gap-2 bg-[#F2C94C] text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
+          <button onClick={() => navigateToWizard()} className="inline-flex items-center gap-2 bg-[#111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#C9A227] hover:text-[#111] transition-colors">
             Start Meal Plan Wizard →
           </button>
         </div>
