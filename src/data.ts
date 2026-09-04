@@ -7,7 +7,8 @@ export type Page =
   | "confirmation"
   | "account"
   | "how-it-works"
-  | "gift-card";
+  | "gift-card"
+  | "handoff";
 
 export interface CartItem {
   id: number;

@@ -45,10 +45,14 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
       <div className="border-t border-white/5">
         <div className="max-w-[1440px] mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/18">
           <span>© 2025 Fresher Performance Meals Pte. Ltd. · UEN 202512345A</span>
-          <div className="flex gap-5">
+          <div className="flex gap-5 items-center">
             {["Privacy", "Terms", "Refunds"].map((l) => (
               <a key={l} href="#" className="hover:text-white/45 transition-colors">{l}</a>
             ))}
+            <button onClick={() => navigate("handoff")}
+              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
+              Dev Handoff
+            </button>
           </div>
         </div>
       </div>
