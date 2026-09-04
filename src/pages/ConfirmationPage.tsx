@@ -51,16 +51,35 @@ export default function ConfirmationPage({ navigate, orderType }: Props) {
           </div>
         </div>
 
-        {/* Delivery progress timeline */}
-        <div className="bg-white border border-[#E5E2DA] px-6 py-5 mb-5">
-          <div className="flex items-center justify-between relative">
-            <div className="absolute left-0 right-0 top-3 h-px bg-[#E5E2DA] z-0" />
-            {["Confirmed", "Preparing", "Out for Delivery", "Delivered"].map((label, i) => (
-              <div key={label} className="flex flex-col items-center gap-1.5 z-10">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center border-2 ${i === 0 ? "bg-[#CDFF3A] border-[#CDFF3A]" : "bg-white border-[#D0CCC4]"}`}>
-                  {i === 0 && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>}
+        {/* Delivery progress timeline — detailed */}
+        <div className="bg-white border border-[#E5E2DA] p-6 mb-5 text-left">
+          <div className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">Live Order Status</div>
+          <div className="space-y-0">
+            {[
+              { label: "Order Confirmed", time: "Today · 9:04am", detail: "Payment processed · Order #FRE-20250904-7842", done: true, active: false },
+              { label: "Kitchen Preparing", time: "Today · 11:00am", detail: "Our chefs are preparing your meals fresh to order", done: false, active: true },
+              { label: "Quality Check", time: "Today · 1:00pm", detail: "Macro verification and packaging seal check", done: false, active: false },
+              { label: "Out for Delivery", time: "Today · 2:30pm", detail: "Driver assigned · ETA within your selected time window", done: false, active: false },
+              { label: "Delivered", time: "Today · 5:00pm", detail: "Meals at your door — enjoy your performance fuel!", done: false, active: false },
+            ].map((s, i) => (
+              <div key={s.label} className="flex gap-4">
+                <div className="flex flex-col items-center">
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 flex-shrink-0 ${s.done ? "bg-[#CDFF3A] border-[#CDFF3A]" : s.active ? "bg-[#111] border-[#111]" : "bg-white border-[#D0CCC4]"}`}>
+                    {s.done ? (
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
+                    ) : s.active ? (
+                      <div className="w-2 h-2 bg-[#CDFF3A] rounded-full animate-pulse" />
+                    ) : null}
+                  </div>
+                  {i < 4 && <div className={`w-px flex-1 min-h-[32px] ${s.done ? "bg-[#CDFF3A]/40" : "bg-[#E5E2DA]"}`} />}
                 </div>
-                <span className={`text-[10px] font-mono tracking-wide ${i === 0 ? "text-[#111] font-bold" : "text-[#aaa]"}`}>{label}</span>
+                <div className="pb-5 flex-1">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className={`text-[13px] font-semibold ${s.done || s.active ? "text-[#111]" : "text-[#aaa]"}`}>{s.label}</span>
+                    <span className={`font-mono text-[11px] ${s.done ? "text-[#888]" : s.active ? "text-[#CDFF3A] bg-[#111] px-2 py-0.5" : "text-[#ccc]"}`}>{s.time}</span>
+                  </div>
+                  <p className={`text-[12px] mt-0.5 ${s.done || s.active ? "text-[#666]" : "text-[#ccc]"}`}>{s.detail}</p>
+                </div>
               </div>
             ))}
           </div>

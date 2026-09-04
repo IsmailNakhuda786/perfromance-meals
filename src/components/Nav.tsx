@@ -69,6 +69,9 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
           </div>
 
           <div className="flex items-center gap-5 shrink-0">
+            <button onClick={() => navigate("gift-card")} className="text-white/50 hover:text-[#CDFF3A] transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block whitespace-nowrap">
+              Gift Cards
+            </button>
             <button onClick={() => navigate("account")} className="text-white/50 hover:text-white transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block">
               Rewards
             </button>

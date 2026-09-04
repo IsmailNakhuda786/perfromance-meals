@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { CartItem, Page, PLANS } from "@/data";
 
 interface HomePageProps {
@@ -12,22 +13,46 @@ const TESTIMONIALS = [
   { name: "Ryan K.", role: "CrossFit Athlete", text: "I run strict meal timing protocols and Fresher's USDA-standard macro labelling is the only brand I trust blindly. Consistency across every single batch.", rating: 5, plan: "Meal Plan — Maintain" },
 ];
 
+const STATS = [
+  { val: "12,400+", label: "Active Members" },
+  { val: "4.8★", label: "Average Rating" },
+  { val: "98%", label: "On-Time Delivery" },
+  { val: "2.3M+", label: "Meals Delivered" },
+];
+
 export default function HomePage({ navigate, navigateToWizard }: HomePageProps) {
+  const [hoveredPlan, setHoveredPlan] = useState<string | null>(null);
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+
   return (
     <div className="bg-[#F7F5F0]">
       {/* ── HERO — SPLIT PANEL ── */}
       <section className="h-[calc(100vh-84px)] grid grid-cols-1 md:grid-cols-2">
+        {/* Ready-to-Go panel */}
         <div className="relative overflow-hidden cursor-pointer group" onClick={() => navigate("ready-to-go")}>
-          <img src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1000&h=1100&fit=crop&auto=format" alt="Ready-to-Go meals" className="absolute inset-0 w-full h-full object-cover scale-[1.04] group-hover:scale-100 transition-transform duration-700 ease-out" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/70 to-[#111111]/25 group-hover:via-[#111111]/55 transition-all duration-500" />
+          <img
+            src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1000&h=1100&fit=crop&auto=format"
+            alt="Ready-to-Go meals"
+            className="absolute inset-0 w-full h-full object-cover scale-[1.06] group-hover:scale-100 transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/65 to-[#111111]/10 group-hover:via-[#111111]/50 transition-all duration-500" />
+          {/* Animated lime accent bar at top */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#CDFF3A] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
           <div className="relative h-full flex flex-col justify-between p-10 lg:p-14 text-white">
-            <span className="font-mono text-[10px] tracking-[0.4em] text-[#CDFF3A] uppercase">01 / READY SERIES</span>
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[10px] tracking-[0.4em] text-[#CDFF3A] uppercase">01 / READY SERIES</span>
+              <div className="h-px flex-1 bg-[#CDFF3A]/20 group-hover:bg-[#CDFF3A]/50 transition-colors duration-300 max-w-[60px]" />
+            </div>
             <div>
               <p className="text-[11px] tracking-[0.25em] uppercase text-white/40 mb-5">Fresher Performance Meals</p>
-              <h1 className="font-display text-[52px] lg:text-[68px] font-bold leading-[0.88] mb-7">
-                Heat.<br /><span className="text-[#CDFF3A]">Eat.</span><br />Perform.
+              <h1 className="font-display text-[52px] lg:text-[72px] font-bold leading-[0.88] mb-7">
+                Heat.<br />
+                <span className="text-[#CDFF3A] group-hover:drop-shadow-[0_0_24px_rgba(205,255,58,0.5)] transition-all duration-500">Eat.</span>
+                <br />Perform.
               </h1>
-              <p className="text-white/60 text-[15px] max-w-[300px] mb-9 leading-relaxed">Macro-accurate frozen meals, ready in 3 minutes. No prep. No guesswork. Pure performance fuel.</p>
+              <p className="text-white/60 text-[15px] max-w-[300px] mb-9 leading-relaxed">
+                Macro-accurate frozen meals, ready in 3 minutes. No prep. No guesswork. Pure performance fuel.
+              </p>
               <div className="flex flex-wrap items-center gap-4">
                 <button
                   onClick={(e) => { e.stopPropagation(); navigate("ready-to-go"); }}
@@ -42,24 +67,40 @@ export default function HomePage({ navigate, navigateToWizard }: HomePageProps) 
                   Build-A-Box
                 </button>
               </div>
-              <div className="flex flex-wrap gap-x-6 mt-10 text-[11px] text-white/30 tracking-wider">
-                <span>Same-day delivery</span><span>·</span><span>2-month freezer life</span><span>·</span><span>USDA standards</span>
+              {/* Social proof chips */}
+              <div className="flex flex-wrap gap-2 mt-8">
+                {["✓ Same-day delivery", "✓ 2-month freezer life", "✓ USDA standards"].map((s) => (
+                  <span key={s} className="text-[10px] text-white/35 border border-white/10 px-3 py-1.5 tracking-wider">{s}</span>
+                ))}
               </div>
             </div>
           </div>
         </div>
 
+        {/* Meal Plans panel */}
         <div className="relative overflow-hidden cursor-pointer group" onClick={() => navigateToWizard()}>
-          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&h=1100&fit=crop&auto=format" alt="Meal Plans fresh bowl" className="absolute inset-0 w-full h-full object-cover scale-[1.04] group-hover:scale-100 transition-transform duration-700 ease-out" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0D2818] via-[#0D2818]/75 to-[#0D2818]/30 group-hover:via-[#0D2818]/58 transition-all duration-500" />
+          <img
+            src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&h=1100&fit=crop&auto=format"
+            alt="Meal Plans fresh bowl"
+            className="absolute inset-0 w-full h-full object-cover scale-[1.06] group-hover:scale-100 transition-transform duration-700 ease-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0D2818] via-[#0D2818]/72 to-[#0D2818]/20 group-hover:via-[#0D2818]/55 transition-all duration-500" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-[#F2C94C] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
           <div className="relative h-full flex flex-col justify-between p-10 lg:p-14 text-white">
-            <span className="font-mono text-[10px] tracking-[0.4em] text-[#F2C94C] uppercase">02 / MEAL PLANS</span>
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[10px] tracking-[0.4em] text-[#F2C94C] uppercase">02 / MEAL PLANS</span>
+              <div className="h-px flex-1 bg-[#F2C94C]/20 group-hover:bg-[#F2C94C]/50 transition-colors duration-300 max-w-[60px]" />
+            </div>
             <div>
               <p className="text-[11px] tracking-[0.25em] uppercase text-white/40 mb-5">Fresher Performance Meals</p>
-              <h1 className="font-display text-[52px] lg:text-[68px] font-bold leading-[0.88] mb-7">
-                Your goal.<br /><span className="text-[#F2C94C]">Your</span><br />macros.
+              <h1 className="font-display text-[52px] lg:text-[72px] font-bold leading-[0.88] mb-7">
+                Your goal.<br />
+                <span className="text-[#F2C94C] group-hover:drop-shadow-[0_0_24px_rgba(242,201,76,0.5)] transition-all duration-500">Your</span>
+                <br />macros.
               </h1>
-              <p className="text-white/60 text-[15px] max-w-[300px] mb-9 leading-relaxed">Chef-prepared fresh meals delivered daily, calibrated to your caloric target. Cut, Maintain, or Build.</p>
+              <p className="text-white/60 text-[15px] max-w-[300px] mb-9 leading-relaxed">
+                Chef-prepared fresh meals delivered daily, calibrated to your caloric target. Cut, Maintain, or Build.
+              </p>
               <div className="flex flex-wrap items-center gap-4">
                 <button
                   onClick={(e) => { e.stopPropagation(); navigateToWizard(); }}
@@ -67,18 +108,38 @@ export default function HomePage({ navigate, navigateToWizard }: HomePageProps) 
                 >
                   Get My Plan →
                 </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); navigate("how-it-works"); }}
+                  className="text-white/60 text-[12px] border border-white/20 px-5 py-3.5 hover:border-[#F2C94C] hover:text-[#F2C94C] transition-colors"
+                >
+                  How It Works
+                </button>
               </div>
-              <div className="flex flex-wrap gap-x-6 mt-10 text-[11px] text-white/30 tracking-wider">
-                <span>Delivered fresh daily</span><span>·</span><span>Chef-prepared</span><span>·</span><span>Trainer-approved</span>
+              <div className="flex flex-wrap gap-2 mt-8">
+                {["✓ Delivered fresh daily", "✓ Chef-prepared", "✓ Trainer-approved"].map((s) => (
+                  <span key={s} className="text-[10px] text-white/35 border border-white/10 px-3 py-1.5 tracking-wider">{s}</span>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trust Bar */}
+      {/* ── ANIMATED STATS BAR ── */}
+      <div className="bg-[#111111] py-6 overflow-hidden">
+        <div className="max-w-[1440px] mx-auto px-6 flex flex-wrap items-center justify-between gap-6">
+          {STATS.map((s) => (
+            <div key={s.label} className="text-center flex-1 min-w-[120px]">
+              <div className="font-display text-[28px] font-bold text-[#CDFF3A]">{s.val}</div>
+              <div className="text-white/40 text-[11px] uppercase tracking-[0.15em] mt-1">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── TRUST BAR ── */}
       <div className="bg-[#0E0E0E] border-b border-white/5">
-        <div className="max-w-[1440px] mx-auto px-6 py-4 flex flex-wrap items-center justify-center gap-8 lg:gap-12">
+        <div className="max-w-[1440px] mx-auto px-6 py-3.5 flex flex-wrap items-center justify-center gap-8 lg:gap-12">
           {[
             { icon: "🏛", label: "USDA Nutritional Standards" },
             { icon: "⚡", label: "Same-Day Delivery" },
@@ -93,36 +154,69 @@ export default function HomePage({ navigate, navigateToWizard }: HomePageProps) 
         </div>
       </div>
 
-      {/* Plans preview strip */}
-      <section className="bg-[#0D2818] text-white py-20">
+      {/* ── PLANS SECTION — INTERACTIVE ── */}
+      <section className="bg-[#0D2818] text-white py-24 overflow-hidden">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="flex items-center gap-4 mb-12">
+          <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#F2C94C] uppercase">02 / Meal Plans</span>
             <div className="h-px w-16 bg-[#F2C94C]/25" />
           </div>
-          <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-12">
-            <h2 className="font-display text-[52px] font-bold leading-none">Your goal.<br />Your macros.</h2>
-            <p className="text-white/45 max-w-md text-[15px] leading-relaxed mt-2">
-              Three plans. Every calorie calculated. Fresh meals delivered to your door every morning — chef-prepared, macro-labelled.
-            </p>
+          <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-14">
+            <h2 className="font-display text-[56px] lg:text-[72px] font-bold leading-none">
+              Your goal.<br />
+              <span className="text-[#F2C94C]">Your macros.</span>
+            </h2>
+            <div className="max-w-md">
+              <p className="text-white/45 text-[15px] leading-relaxed mb-6">
+                Three plans. Every calorie calculated. Fresh meals delivered to your door every morning — chef-prepared, macro-labelled.
+              </p>
+              <button onClick={() => navigate("how-it-works")} className="text-[#F2C94C]/70 text-[12px] border border-[#F2C94C]/20 px-5 py-3 hover:border-[#F2C94C] hover:text-[#F2C94C] transition-colors uppercase tracking-[0.15em]">
+                How It Works →
+              </button>
+            </div>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            {PLANS.map((plan) => (
-              <div key={plan.name} className="border border-white/10 p-7 hover:border-white/25 transition-colors cursor-pointer" onClick={() => navigateToWizard()}>
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <span className="font-mono text-[10px] tracking-[0.3em]" style={{ color: plan.accent }}>{plan.name}</span>
-                    <div className="font-display text-[36px] font-bold mt-1">{plan.cal}<span className="text-[16px] font-normal text-white/35"> kcal/day</span></div>
+            {PLANS.map((plan) => {
+              const isHovered = hoveredPlan === plan.name;
+              return (
+                <div key={plan.name}
+                  className="border border-white/10 p-7 cursor-pointer transition-all duration-300 relative overflow-hidden group/card"
+                  style={{ borderColor: isHovered ? plan.accent : undefined, backgroundColor: isHovered ? "rgba(255,255,255,0.04)" : undefined }}
+                  onMouseEnter={() => setHoveredPlan(plan.name)}
+                  onMouseLeave={() => setHoveredPlan(null)}
+                  onClick={() => navigateToWizard(plan.name)}>
+                  {/* Accent corner */}
+                  <div className="absolute top-0 left-0 w-1 h-full transition-all duration-300"
+                    style={{ backgroundColor: isHovered ? plan.accent : "transparent" }} />
+                  <div className="flex items-start justify-between mb-5">
+                    <div>
+                      <span className="font-mono text-[10px] tracking-[0.3em] block mb-2" style={{ color: plan.accent }}>{plan.name}</span>
+                      <div className="font-display text-[42px] font-bold leading-none">
+                        {plan.cal}<span className="text-[18px] font-normal text-white/35"> kcal</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-display text-[30px] font-bold" style={{ color: plan.accent }}>${plan.priceWeek}</div>
+                      <div className="text-white/35 text-[11px]">/week</div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-display text-[28px] font-bold" style={{ color: plan.accent }}>${plan.priceWeek}</div>
-                    <div className="text-white/35 text-[11px]">/week</div>
+                  <p className="text-white/40 text-[13px] leading-relaxed mb-5">{plan.desc}</p>
+                  <div className="flex gap-3 text-[12px] mb-5">
+                    {[{ l: "Protein", v: `${plan.protein}g` }, { l: "Carbs", v: `${plan.carbs}g` }, { l: "Fat", v: `${plan.fat}g` }].map((m) => (
+                      <div key={m.l} className="flex-1 text-center border border-white/8 py-2">
+                        <div className="font-mono text-[13px] font-medium" style={{ color: plan.accent }}>{m.v}</div>
+                        <div className="text-white/25 text-[10px] uppercase tracking-wider mt-0.5">{m.l}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-white/25">{plan.meals} meals/day · Fresh daily</span>
+                    <span className="text-white/0 group-hover/card:text-white/60 transition-colors duration-200 tracking-wider uppercase text-[10px]">Select →</span>
                   </div>
                 </div>
-                <p className="text-white/40 text-[13px] leading-relaxed mb-4">{plan.desc}</p>
-                <div className="text-[11px] text-white/25">{plan.meals} meals per day · Fresh daily delivery</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <button onClick={() => navigateToWizard()} className="inline-flex items-center gap-2 bg-[#F2C94C] text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
             Start Meal Plan Wizard →
@@ -130,18 +224,58 @@ export default function HomePage({ navigate, navigateToWizard }: HomePageProps) 
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* ── GIFT CARD BANNER ── */}
+      <section className="bg-[#CDFF3A] py-14">
+        <div className="max-w-[1440px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <div className="font-mono text-[10px] tracking-[0.4em] text-[#111]/40 uppercase mb-2">Gift Cards</div>
+            <h3 className="font-display text-[36px] font-bold text-[#111] leading-tight">
+              Give the gift of<br />performance.
+            </h3>
+            <p className="text-[#111]/60 text-[14px] mt-3 max-w-xs">
+              Fresher gift cards never expire. Use on any meal, box, or subscription. From $25.
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
+            {["$25", "$50", "$100", "$150"].map((a) => (
+              <div key={a} className="bg-white/50 border-2 border-[#111]/15 px-5 py-3 text-center">
+                <div className="font-display text-[22px] font-bold text-[#111]">{a}</div>
+              </div>
+            ))}
+            <button onClick={() => navigate("gift-card")}
+              className="ml-2 bg-[#111111] text-white px-7 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#0D2818] transition-colors whitespace-nowrap">
+              Buy a Gift Card →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS — INTERACTIVE ── */}
       <section className="bg-[#F7F5F0] py-24">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="flex items-center gap-4 mb-12">
+          <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#111111]/35 uppercase">Client Results</span>
             <div className="h-px w-16 bg-[#111111]/15" />
           </div>
-          <h2 className="font-display text-[52px] font-bold mb-14 leading-none">What our<br />members say.</h2>
+          <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-14">
+            <h2 className="font-display text-[52px] font-bold leading-none">What our<br />members say.</h2>
+            <div className="flex items-center gap-2 mt-2">
+              {TESTIMONIALS.map((_, i) => (
+                <button key={i} onClick={() => setActiveTestimonial(i)}
+                  className={`transition-all duration-300 ${activeTestimonial === i ? "w-8 h-2 bg-[#111]" : "w-2 h-2 bg-[#D0CCC4] hover:bg-[#888]"} rounded-full`} />
+              ))}
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="bg-white p-8 border border-[#E5E2DA]">
-                <div className="text-[#CDFF3A] text-[16px] mb-5">{"★".repeat(t.rating)}</div>
+            {TESTIMONIALS.map((t, i) => (
+              <div key={t.name}
+                onClick={() => setActiveTestimonial(i)}
+                className={`bg-white p-8 border-2 cursor-pointer transition-all duration-300 ${activeTestimonial === i ? "border-[#111] shadow-xl scale-[1.02]" : "border-transparent hover:border-[#E5E2DA]"}`}>
+                <div className="text-[16px] mb-5">
+                  {"★".repeat(t.rating).split("").map((s, j) => (
+                    <span key={j} className="text-[#CDFF3A]">{s}</span>
+                  ))}
+                </div>
                 <p className="text-[#333] text-[15px] leading-relaxed mb-7">"{t.text}"</p>
                 <div className="border-t border-[#E5E2DA] pt-5 flex items-center justify-between gap-3">
                   <div>
@@ -158,26 +292,35 @@ export default function HomePage({ navigate, navigateToWizard }: HomePageProps) 
         </div>
       </section>
 
-      {/* Rewards */}
+      {/* ── REWARDS ── */}
       <section className="bg-[#111111] text-white py-20">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase mb-6">Rewards Program</div>
-              <h2 className="font-display text-[52px] font-bold mb-5 leading-none">Earn while<br />you <span className="text-[#CDFF3A]">perform.</span></h2>
-              <p className="text-white/45 text-[15px] leading-relaxed mb-10 max-w-md">Every dollar spent earns Fresher Points. Redeem for free meals, plan upgrades, and exclusive benefits.</p>
-              <button className="inline-flex items-center gap-2.5 bg-[#CDFF3A] text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
-                Join Rewards →
-              </button>
+              <h2 className="font-display text-[52px] font-bold mb-5 leading-none">
+                Earn while<br />you <span className="text-[#CDFF3A]">perform.</span>
+              </h2>
+              <p className="text-white/45 text-[15px] leading-relaxed mb-10 max-w-md">
+                Every dollar spent earns Fresher Points. Redeem for free meals, plan upgrades, and exclusive benefits. Also earn by referring friends.
+              </p>
+              <div className="flex gap-3 flex-wrap">
+                <button onClick={() => navigate("account")} className="inline-flex items-center gap-2.5 bg-[#CDFF3A] text-[#111111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
+                  Join Rewards →
+                </button>
+                <button onClick={() => navigate("account")} className="border border-white/20 text-white/60 px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-white hover:text-white transition-colors">
+                  Refer & Earn $10
+                </button>
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[
                 { pts: "1 pt", per: "per $1 spent", color: "#CDFF3A" },
                 { pts: "2× pts", per: "on Meal Plans", color: "#F2C94C" },
                 { pts: "$5 off", per: "every 500 points", color: "#7EE8B0" },
-                { pts: "VIP tier", per: "at 5,000+ pts / yr", color: "#A78BFA" },
+                { pts: "$10 bonus", per: "per referral", color: "#A78BFA" },
               ].map((r) => (
-                <div key={r.pts} className="bg-white/5 border border-white/8 p-7 hover:bg-white/8 transition-colors">
+                <div key={r.pts} className="bg-white/5 border border-white/8 p-7 hover:bg-white/10 hover:border-white/20 transition-all duration-200 cursor-pointer">
                   <div className="font-display text-[32px] font-bold mb-1.5" style={{ color: r.color }}>{r.pts}</div>
                   <div className="text-white/35 text-[11px] uppercase tracking-[0.15em]">{r.per}</div>
                 </div>
@@ -187,14 +330,15 @@ export default function HomePage({ navigate, navigateToWizard }: HomePageProps) 
         </div>
       </section>
 
-      {/* Newsletter */}
+      {/* ── NEWSLETTER ── */}
       <section className="bg-[#F7F5F0] py-16 border-t border-[#E5E2DA]">
         <div className="max-w-[1440px] mx-auto px-6 text-center">
           <span className="font-mono text-[10px] tracking-[0.45em] text-[#111111]/35 uppercase">Stay in the loop</span>
           <h3 className="font-display text-[36px] font-bold mt-3 mb-2">New meals. New deals. Every week.</h3>
           <p className="text-[#888] text-[14px] mb-8">Join 8,400+ members getting the weekly menu drop.</p>
           <div className="flex gap-0 max-w-md mx-auto">
-            <input type="email" placeholder="your@email.com" className="flex-1 border border-[#D0CCC4] border-r-0 px-5 py-3.5 text-[14px] bg-white text-[#111111] placeholder:text-[#bbb] outline-none focus:border-[#111111] transition-colors" />
+            <input type="email" placeholder="your@email.com"
+              className="flex-1 border border-[#D0CCC4] border-r-0 px-5 py-3.5 text-[14px] bg-white text-[#111111] placeholder:text-[#bbb] outline-none focus:border-[#111111] transition-colors" />
             <button className="bg-[#111111] text-white px-6 py-3.5 text-[11px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors whitespace-nowrap">Subscribe</button>
           </div>
         </div>
