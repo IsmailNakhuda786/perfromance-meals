@@ -162,8 +162,8 @@ export default function AccountPage({ navigate }: Props) {
             </div>
 
             {/* Active sub card */}
-            <div className={`border p-6 mb-6 ${subPaused ? "border-amber-300 bg-amber-50" : "border-[#0D2818]/20 bg-[#0D2818]"}`}>
-              <div className="flex items-start justify-between gap-4 flex-wrap">
+            <div className={`border mb-6 ${subPaused ? "border-amber-300 bg-amber-50" : "border-[#0D2818]/20 bg-[#0D2818]"}`}>
+              <div className="p-6 flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <div className={`font-mono text-[10px] tracking-[0.3em] uppercase mb-2 ${subPaused ? "text-amber-600" : "text-[#F2C94C]"}`}>
                     {subPaused ? "⏸ Subscription Paused" : "● Active Subscription"}
@@ -192,6 +192,24 @@ export default function AccountPage({ navigate }: Props) {
                   )}
                 </div>
               </div>
+              {/* Customize shortcuts */}
+              {!subPaused && (
+                <div className="border-t border-white/10 px-6 py-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { icon: "🔄", label: "Swap meals", desc: "Change upcoming meals" },
+                    { icon: "📅", label: "Delivery days", desc: "Mon, Wed, Fri, Sat" },
+                    { icon: "🕐", label: "Time slot", desc: timeSlot.split("–")[0].trim() },
+                    { icon: "⚖️", label: "Plan type", desc: `${activePlan} · ${plan.cal} kcal` },
+                  ].map((item) => (
+                    <button key={item.label} onClick={() => setTab("subscription")}
+                      className="text-left p-3 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
+                      <div className="text-[16px] mb-1">{item.icon}</div>
+                      <div className="text-white text-[12px] font-medium">{item.label}</div>
+                      <div className="text-white/35 text-[11px] mt-0.5">{item.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Recent orders */}

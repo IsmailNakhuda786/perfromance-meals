@@ -42,11 +42,28 @@ export default function ConfirmationPage({ navigate }: Props) {
         </div>
 
         {/* Track order notice */}
-        <div className="bg-[#0E0E0E] text-white p-5 mb-8 text-left flex items-center gap-4">
+        <div className="bg-[#0E0E0E] text-white p-5 mb-5 text-left flex items-center gap-4">
           <span className="text-[24px]">📦</span>
           <div>
             <div className="font-medium text-[14px]">Track your order in real time</div>
             <div className="text-white/40 text-[12px] mt-0.5">SMS updates will be sent to +65 9123 4567</div>
+          </div>
+        </div>
+
+        {/* Customize Meal Plan CTA — prominent */}
+        <div className="bg-[#0D2818] border border-[#F2C94C]/30 p-5 mb-5 text-left">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <div className="font-mono text-[10px] tracking-[0.3em] text-[#F2C94C] uppercase mb-2">Your Meal Plan is now active</div>
+              <div className="font-display text-[20px] font-bold text-white mb-1">Customize your upcoming meals</div>
+              <div className="text-white/40 text-[13px] leading-relaxed">
+                Swap meals, change delivery days & times, adjust quantity — all from your account.
+              </div>
+            </div>
+            <button onClick={() => navigate("account")}
+              className="shrink-0 bg-[#F2C94C] text-[#111111] px-5 py-3 text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors whitespace-nowrap">
+              Customize →
+            </button>
           </div>
         </div>
 
@@ -66,7 +83,7 @@ export default function ConfirmationPage({ navigate }: Props) {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button onClick={() => navigate("account")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors">
-            View My Account →
+            Go to My Account →
           </button>
           <button onClick={() => navigate("ready-to-go")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
             Continue Shopping

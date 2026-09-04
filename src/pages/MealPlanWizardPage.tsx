@@ -76,27 +76,31 @@ export default function MealPlanWizardPage({ navigate, addToCart }: Props) {
               <h1 className="font-display text-[40px] font-bold mb-10">What's your goal?</h1>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-                {PLANS.map((p) => (
-                  <button key={p.name} onClick={() => setGoal(p.name)}
-                    className={`text-left p-6 border transition-all ${goal === p.name ? "border-[#F2C94C] bg-white/5" : "border-white/10 hover:border-white/30"}`}>
-                    <div className="font-mono text-[10px] tracking-[0.35em] mb-2" style={{ color: p.accent }}>{p.name}</div>
-                    <div className="font-display text-[36px] font-bold leading-none mb-1">
-                      {p.cal}<span className="text-[16px] font-normal text-white/30"> kcal</span>
-                    </div>
-                    <div className="text-white/40 text-[12px] leading-relaxed mt-2 mb-4">{p.desc}</div>
-                    <div className="flex gap-3 text-[11px]">
-                      {[{ l: "Pro", v: `${p.protein}g` }, { l: "Carb", v: `${p.carbs}g` }, { l: "Fat", v: `${p.fat}g` }].map((m) => (
-                        <span key={m.l} style={{ color: p.accent }}>{m.v} {m.l}</span>
-                      ))}
-                    </div>
-                    {goal === p.name && (
-                      <div className="mt-4 flex items-center gap-1.5 text-[#F2C94C] text-[11px] font-bold">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
-                        Selected
+                {PLANS.map((p) => {
+                  const selected = goal === p.name;
+                  return (
+                    <div key={p.name} onClick={() => setGoal(p.name)} role="button" tabIndex={0}
+                      onKeyDown={(e) => e.key === "Enter" && setGoal(p.name)}
+                      style={{ borderColor: selected ? "#F2C94C" : "rgba(255,255,255,0.2)", backgroundColor: selected ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)" }}
+                      className="text-left p-6 border-2 cursor-pointer transition-all hover:border-white/50 select-none">
+                      <div className="flex items-start justify-between mb-3">
+                        <span className="font-mono text-[10px] tracking-[0.35em]" style={{ color: p.accent }}>{p.name}</span>
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${selected ? "border-[#F2C94C] bg-[#F2C94C]" : "border-white/25"}`}>
+                          {selected && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="3.5"><path d="M20 6 9 17l-5-5" /></svg>}
+                        </div>
                       </div>
-                    )}
-                  </button>
-                ))}
+                      <div className="font-display text-[36px] font-bold leading-none mb-1">
+                        {p.cal}<span className="text-[16px] font-normal text-white/30"> kcal</span>
+                      </div>
+                      <div className="text-white/45 text-[12px] leading-relaxed mt-2 mb-4">{p.desc}</div>
+                      <div className="flex gap-3 text-[11px]">
+                        {[{ l: "Pro", v: `${p.protein}g` }, { l: "Carb", v: `${p.carbs}g` }, { l: "Fat", v: `${p.fat}g` }].map((m) => (
+                          <span key={m.l} style={{ color: p.accent }}>{m.v} {m.l}</span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Billing toggle */}
