@@ -30,7 +30,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
   return (
     <div className="min-h-screen bg-[#0E0E0E] text-white">
       {/* Hero banner */}
-      <div className="relative h-52 overflow-hidden bg-[#111]">
+      <div className="relative h-40 sm:h-52 overflow-hidden bg-[#111]">
         <img src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1400&h=400&fit=crop&auto=format" alt="" className="absolute inset-0 w-full h-full object-cover opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0E0E0E] via-transparent to-[#0E0E0E]" />
         <div className="relative max-w-[1440px] mx-auto px-6 h-full flex flex-col justify-center">
@@ -38,7 +38,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase">01 / Ready Series</span>
             <div className="h-px w-12 bg-[#CDFF3A]/30" />
           </div>
-          <h1 className="font-display text-[48px] font-bold">Ready-to-Go Meals</h1>
+          <h1 className="font-display text-[32px] sm:text-[48px] font-bold">Ready-to-Go Meals</h1>
           <p className="text-white/40 mt-1 text-[14px]">Macro-accurate. Frozen at peak nutrition. Heat in 3 minutes.</p>
         </div>
       </div>
@@ -138,13 +138,13 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
       {/* Product Detail Modal */}
       {selectedMeal && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[90] flex items-center justify-center p-2 sm:p-4">
           <div className="absolute inset-0 bg-black/70" onClick={() => setSelectedMeal(null)} />
-          <div className="relative bg-[#1A1A1A] w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-[#1A1A1A] w-full max-w-2xl overflow-hidden max-h-[100dvh] sm:max-h-[90vh] overflow-y-auto">
             <button onClick={() => setSelectedMeal(null)} className="absolute top-4 right-4 z-10 text-white/50 hover:text-white bg-black/30 rounded-full p-2">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
             </button>
-            <div className="h-64 relative bg-[#222]">
+            <div className="h-48 sm:h-64 relative bg-[#222]">
               <img src={selectedMeal.img} alt={selectedMeal.name} className="w-full h-full object-cover" />
               {selectedMeal.badge && (
                 <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${selectedMeal.badge === "Bestseller" || selectedMeal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>

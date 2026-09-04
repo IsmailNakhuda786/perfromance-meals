@@ -132,14 +132,14 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               </div>
             </div>
           </div>
-          <div className="flex gap-6 text-center">
+          <div className="flex gap-4 sm:gap-6 text-center">
             {[
               { val: "1,234", label: "Points" },
               { val: "$12.50", label: "Wallet" },
               { val: `Week 13`, label: "Plan" },
             ].map((s) => (
               <div key={s.label}>
-                <div className="font-display text-[22px] font-bold text-[#CDFF3A]">{s.val}</div>
+                <div className="font-display text-[18px] sm:text-[22px] font-bold text-[#CDFF3A]">{s.val}</div>
                 <div className="text-white/35 text-[11px] uppercase tracking-wider mt-0.5">{s.label}</div>
               </div>
             ))}
@@ -149,10 +149,10 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
 
       {/* Tabs */}
       <div className="bg-white border-b border-[#E5E2DA] sticky top-[60px] z-30">
-        <div className="max-w-[1200px] mx-auto px-6 flex gap-0 overflow-x-auto">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex gap-0 overflow-x-auto">
           {TABS.map((t) => (
             <button key={t.key} onClick={() => setTab(t.key)}
-              className={`px-6 py-4 text-[12px] tracking-wider uppercase font-medium whitespace-nowrap border-b-2 transition-colors ${tab === t.key ? "border-[#111111] text-[#111111]" : "border-transparent text-[#999] hover:text-[#111]"}`}>
+              className={`px-4 sm:px-6 py-3 sm:py-4 text-[12px] sm:text-[13px] tracking-wider uppercase font-medium whitespace-nowrap shrink-0 border-b-2 transition-colors ${tab === t.key ? "border-[#111111] text-[#111111]" : "border-transparent text-[#999] hover:text-[#111]"}`}>
               {t.label}
             </button>
           ))}
@@ -172,7 +172,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
         {tab === "dashboard" && (
           <div>
             <h2 className="font-display text-[28px] font-bold mb-8">Welcome back, Jerome.</h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-8">
               {[
                 { label: "Active Plan", val: activePlan, sub: `${plan.cal} kcal/day`, color: "#F2C94C", bg: "#0D2818" },
                 { label: "Next Delivery", val: "Tomorrow", sub: `${timeSlot.split("–")[0].trim()}`, color: "#CDFF3A", bg: "#111111" },
@@ -830,15 +830,15 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               <div className="mb-4">
                 <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Your referral link</label>
                 <div className="flex gap-2">
-                  <div className="flex-1 border border-[#D0CCC4] px-4 py-2.5 text-[14px] text-[#666] bg-[#F7F5F0] font-mono">fresher.com.sg/ref/jerome</div>
-                  <button onClick={() => save("Referral link copied!")} className="bg-[#111] text-white px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors whitespace-nowrap">Copy</button>
+                  <div className="flex-1 min-w-0 border border-[#D0CCC4] px-4 py-2.5 text-[14px] text-[#666] bg-[#F7F5F0] font-mono truncate">fresher.com.sg/ref/jerome</div>
+                  <button onClick={() => save("Referral link copied!")} className="shrink-0 bg-[#111] text-white px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors whitespace-nowrap">Copy</button>
                 </div>
               </div>
               <div className="mb-4">
                 <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Invite by email</label>
                 <div className="flex gap-2">
-                  <input placeholder="friend@example.com" className="flex-1 border border-[#D0CCC4] px-4 py-2.5 text-[14px] outline-none focus:border-[#111] transition-colors" />
-                  <button onClick={() => save("Invite sent!")} className="border border-[#111] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap">Send Invite</button>
+                  <input placeholder="friend@example.com" className="flex-1 min-w-0 border border-[#D0CCC4] px-4 py-2.5 text-[14px] outline-none focus:border-[#111] transition-colors" />
+                  <button onClick={() => save("Invite sent!")} className="shrink-0 border border-[#111] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap">Send Invite</button>
                 </div>
               </div>
               <div>

@@ -151,7 +151,7 @@ export default function HandoffPage({ navigate, navigateToWizard }: Props) {
           <div className="mt-8 flex flex-wrap gap-2">
             {SCREENS.map((s) => (
               <button key={s.id} onClick={() => s.id === "meal-plan-wizard" ? navigateToWizard() : navigate(s.id as Page)}
-                className="px-4 py-2 text-[11px] font-bold tracking-[0.12em] uppercase border border-white/15 hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
+                className="px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-[11px] font-bold tracking-[0.12em] uppercase border border-white/15 hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
                 {s.label} →
               </button>
             ))}
@@ -267,16 +267,16 @@ export default function HandoffPage({ navigate, navigateToWizard }: Props) {
         <section>
           <SectionHeader index="05" title="Component Inventory" subtitle="All reusable UI components and their source files" />
           <div className="bg-white border border-[#E5E2DA] overflow-hidden">
-            <div className="grid grid-cols-3 gap-0 bg-[#F7F5F0] border-b border-[#E5E2DA] px-5 py-3">
+            <div className="hidden md:grid grid-cols-3 gap-0 bg-[#F7F5F0] border-b border-[#E5E2DA] px-5 py-3">
               {["Component", "Source File", "Notes"].map((h) => (
                 <div key={h} className="font-mono text-[10px] tracking-[0.2em] text-[#aaa] uppercase">{h}</div>
               ))}
             </div>
             {COMPONENTS.map((c, i) => (
-              <div key={c.name} className={`grid grid-cols-3 gap-0 px-5 py-4 ${i < COMPONENTS.length - 1 ? "border-b border-[#E5E2DA]" : ""}`}>
+              <div key={c.name} className={`flex flex-col md:grid md:grid-cols-3 gap-0 px-5 py-4 ${i < COMPONENTS.length - 1 ? "border-b border-[#E5E2DA]" : ""}`}>
                 <div className="font-semibold text-[13px] text-[#111]">{c.name}</div>
-                <div className="font-mono text-[11px] text-[#888] pr-4">{c.file}</div>
-                <div className="text-[12px] text-[#555] leading-snug">{c.notes}</div>
+                <div className="font-mono text-[11px] text-[#888] md:pr-4 mt-1 md:mt-0">{c.file}</div>
+                <div className="text-[12px] text-[#555] leading-snug mt-1 md:mt-0">{c.notes}</div>
               </div>
             ))}
           </div>

@@ -50,13 +50,13 @@ export default function GiftCardPage({ navigate }: Props) {
           </p>
 
           {/* Gift card preview */}
-          <div className="bg-[#111111] text-white p-8 mb-6 text-left relative overflow-hidden">
+          <div className="bg-[#111111] text-white p-6 sm:p-8 mb-6 text-left relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#CDFF3A]/10 rounded-full -translate-y-8 translate-x-8" />
             <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#F2C94C]/10 rounded-full translate-y-8 -translate-x-8" />
             <div className="relative">
               <div className="font-display text-[22px] font-bold mb-1">FRESHER<span className="text-[#CDFF3A]">.</span></div>
               <div className="font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase mb-6">Performance Gift Card</div>
-              <div className="font-display text-[42px] font-bold text-[#CDFF3A] mb-1">${amount}</div>
+              <div className="font-display text-[32px] sm:text-[42px] font-bold text-[#CDFF3A] mb-1">${amount}</div>
               <div className="text-white/40 text-[13px] mb-6">Gift card value · Never expires</div>
               <div className="bg-white/5 border border-white/10 px-5 py-3 inline-block">
                 <div className="font-mono text-[16px] text-[#CDFF3A] tracking-[0.3em]">{giftCode}</div>
@@ -133,7 +133,7 @@ export default function GiftCardPage({ navigate }: Props) {
         </button>
       </div>
 
-      <div className="max-w-[1080px] mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-5 gap-10">
+      <div className="max-w-[1080px] mx-auto px-4 sm:px-6 py-8 sm:py-12 grid grid-cols-1 lg:grid-cols-5 gap-10">
 
         {/* ── STEP 1: CONFIGURE ── */}
         {step === "configure" && (
@@ -144,10 +144,10 @@ export default function GiftCardPage({ navigate }: Props) {
             {/* Amount */}
             <div className="mb-8">
               <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-3">Choose Amount</p>
-              <div className="grid grid-cols-4 gap-3 mb-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                 {AMOUNTS.map((a) => (
                   <button key={a} onClick={() => setAmount(a)}
-                    className={`py-5 text-center border-2 transition-all font-display text-[22px] font-bold ${amount === a ? "border-[#F2C94C] bg-white shadow-md text-[#111]" : "border-[#D0CCC4] bg-white text-[#888] hover:border-[#999]"}`}>
+                    className={`py-4 text-center border-2 transition-all font-display text-[22px] font-bold ${amount === a ? "border-[#F2C94C] bg-white shadow-md text-[#111]" : "border-[#D0CCC4] bg-white text-[#888] hover:border-[#999]"}`}>
                     ${a}
                     {amount === a && <div className="text-[10px] font-normal font-body text-[#F2C94C] mt-0.5 tracking-widest">Selected</div>}
                   </button>

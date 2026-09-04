@@ -7,7 +7,7 @@ interface Props {
 
 export default function ConfirmationPage({ navigate, orderType }: Props) {
   return (
-    <div className="min-h-screen bg-[#F7F5F0] flex flex-col items-center justify-center px-6 py-20">
+    <div className="min-h-screen bg-[#F7F5F0] flex flex-col items-center justify-center px-6 py-12 sm:py-20">
       <div className="max-w-[600px] w-full text-center">
         {/* Hero area with decorative confetti elements */}
         <div className="relative mb-8">
@@ -25,7 +25,7 @@ export default function ConfirmationPage({ navigate, orderType }: Props) {
         </div>
 
         <div className="font-mono text-[10px] tracking-[0.45em] text-[#111]/35 uppercase mb-4">Order Confirmed</div>
-        <h1 className="font-display text-[48px] font-bold mb-2 leading-tight">
+        <h1 className="font-display text-[36px] sm:text-[48px] font-bold mb-2 leading-tight">
           Your order is confirmed!
         </h1>
         <p className="text-[#555] text-[18px] mb-4">Jerome, your meals are being prepared.</p>

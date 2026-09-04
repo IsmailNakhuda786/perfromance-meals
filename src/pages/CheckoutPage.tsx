@@ -48,10 +48,16 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
         {/* Left: form */}
         <div className="lg:col-span-3 px-6 py-10 max-w-[580px] mx-auto w-full lg:mx-0 lg:ml-auto">
 
+          {/* Mobile order total — visible only on mobile */}
+          <div className="lg:hidden mb-6 flex items-center justify-between bg-white border border-[#E5E2DA] px-4 py-3">
+            <span className="text-[13px] text-[#888]">Order total</span>
+            <span className="font-display text-[18px] font-bold">${total.toFixed(2)}</span>
+          </div>
+
           {/* ── STEP 1: DELIVERY ── */}
           {step === 1 && (
             <div>
-              <h1 className="font-display text-[32px] font-bold mb-8">Delivery</h1>
+              <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-8">Delivery</h1>
 
               {/* Address — 4 fields only */}
               <div className="grid grid-cols-2 gap-3 mb-8">
@@ -59,6 +65,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                   className="col-span-2 sm:col-span-1 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
                 <input placeholder="Phone" defaultValue={savedAddress?.phone ?? "+65 9123 4567"}
                   className="col-span-2 sm:col-span-1 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
+
                 <input placeholder="Street address + unit" defaultValue={savedAddress?.line1 ?? "123 Toa Payoh Lor 4, #08-22"}
                   className="col-span-2 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
                 <input placeholder="Postal code" defaultValue={savedAddress?.postal ?? "310123"}
@@ -105,7 +112,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
           {/* ── STEP 2: PAYMENT ── */}
           {step === 2 && (
             <div>
-              <h1 className="font-display text-[32px] font-bold mb-8">Payment</h1>
+              <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-8">Payment</h1>
 
               {/* Delivery recap — tap to edit */}
               <button onClick={() => setStep(1)}

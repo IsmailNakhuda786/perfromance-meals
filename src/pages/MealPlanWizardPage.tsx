@@ -81,17 +81,17 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
   return (
     <div className="min-h-screen bg-[#F7F5F0] text-[#111] flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-[#E5E2DA] flex items-center justify-between px-6 py-4 sticky top-0 z-20">
-        <button onClick={() => navigate("home")} className="font-bold text-[20px] tracking-tight text-[#111]">
+      <div className="bg-white border-b border-[#E5E2DA] flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-20">
+        <button onClick={() => navigate("home")} className="font-bold text-[17px] sm:text-[20px] tracking-tight text-[#111] shrink-0">
           FRESHER<span className="text-[#F2C94C]">.</span>
         </button>
 
         {/* Step indicator */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {([1, 2, 3, 4] as Step[]).map((s) => (
-            <div key={s} className="flex flex-col items-center gap-1">
+            <div key={s} className="flex flex-col items-center gap-0.5">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-all ${
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-sm font-semibold border-2 transition-all ${
                   s === step
                     ? "border-[#111] bg-[#111] text-white"
                     : s < step
@@ -101,7 +101,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
               >
                 {s < step ? "✓" : s}
               </div>
-              <span className={`text-[10px] font-medium ${s === step ? "text-[#111]" : "text-[#999]"}`}>
+              <span className={`hidden sm:block text-[10px] font-medium ${s === step ? "text-[#111]" : "text-[#999]"}`}>
                 {STEP_LABELS[s - 1]}
               </span>
             </div>
@@ -110,20 +110,20 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
 
         <button
           onClick={() => (step > 1 ? setStep((s) => (s - 1) as Step) : navigate("home"))}
-          className="text-sm text-[#666] hover:text-[#111] transition-colors font-medium"
+          className="text-[12px] sm:text-sm text-[#666] hover:text-[#111] transition-colors font-medium shrink-0"
         >
-          {step === 1 ? "Close" : "Back"}
+          {step === 1 ? "Close" : "← Back"}
         </button>
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center px-4 py-8">
+      <div className="flex-1 flex flex-col items-center px-4 py-6 sm:py-8">
         <div className={`w-full ${step === 2 ? "max-w-6xl" : "max-w-2xl"}`}>
 
           {/* ─── Step 1: Goal ─── */}
           {step === 1 && (
             <div>
-              <h1 className="text-2xl font-bold mb-1">Choose Your Goal</h1>
+              <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose Your Goal</h1>
               <p className="text-[#666] mb-6">Select the plan that matches your target.</p>
 
               {/* Billing toggle */}
@@ -189,7 +189,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
               </div>
 
               {/* 6in60 promise trust block */}
-              <div className="bg-[#111] text-white p-5 mb-6 flex items-center gap-4">
+              <div className="bg-[#111] text-white p-4 sm:p-5 mb-6 flex items-start sm:items-center gap-3 sm:gap-4">
                 <div className="relative shrink-0 w-[56px] h-[56px]">
                   <svg viewBox="0 0 56 56" className="w-full h-full" style={{ animation: "spin6wiz 18s linear infinite" }}>
                     <defs>
@@ -225,7 +225,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
           {step === 2 && (
             <div className="w-full max-w-none">
               <div className="max-w-2xl mb-6">
-                <h1 className="text-2xl font-bold mb-1">Pick Your Meals</h1>
+                <h1 className="text-xl sm:text-2xl font-bold mb-1">Pick Your Meals</h1>
                 <p className="text-[#666] mb-4">
                   Recommended for <strong>{goal}</strong> — select at least <strong>{plan.meals}</strong> meals for your weekly rotation.
                 </p>
@@ -308,7 +308,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
           {/* ─── Step 3: Delivery ─── */}
           {step === 3 && (
             <div>
-              <h1 className="text-2xl font-bold mb-1">Delivery Preferences</h1>
+              <h1 className="text-xl sm:text-2xl font-bold mb-1">Delivery Preferences</h1>
               <p className="text-[#666] mb-6">Choose your delivery days, time slot, and address.</p>
 
               <div className="mb-6">
@@ -352,7 +352,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
               <div className="mb-8">
                 <label className="block text-sm font-semibold mb-3">Delivery Address</label>
                 <div className="flex flex-col gap-3">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
                       placeholder="Full name"
@@ -411,7 +411,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
           {/* ─── Step 4: Payment ─── */}
           {step === 4 && (
             <div>
-              <h1 className="text-2xl font-bold mb-1">Payment</h1>
+              <h1 className="text-xl sm:text-2xl font-bold mb-1">Payment</h1>
               <p className="text-[#666] mb-6">Enter your card details to activate your meal plan.</p>
 
               {/* Order summary */}

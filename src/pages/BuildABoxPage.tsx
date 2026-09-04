@@ -61,13 +61,13 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
           <div className="flex items-center gap-3 mb-4">
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase">01 / Ready Series</span>
           </div>
-          <h1 className="font-display text-[42px] font-bold">Build-A-Box</h1>
+          <h1 className="font-display text-[28px] sm:text-[42px] font-bold">Build-A-Box</h1>
           <p className="text-white/40 mt-1 text-[14px]">Mix and match any meals. Best value on the site.</p>
         </div>
 
         {/* Step indicators */}
         <div className="max-w-[1440px] mx-auto px-6 pb-0">
-          <div className="flex items-center gap-0">
+          <div className="flex items-center gap-0 overflow-x-auto">
             {STEPS.map((s, i) => (
               <div key={s.key} className="flex items-center">
                 <button
@@ -75,7 +75,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                     if (s.key === "select" && step === "review") setStep("select");
                     if (s.key === "size") setStep("size");
                   }}
-                  className={`flex items-center gap-2 px-6 py-4 border-b-2 text-[12px] tracking-wider uppercase font-medium transition-colors ${step === s.key ? "border-[#CDFF3A] text-[#CDFF3A]" : "border-transparent text-white/30 hover:text-white/60"}`}
+                  className={`flex items-center gap-2 px-4 py-3 border-b-2 text-[12px] tracking-wider uppercase font-medium transition-colors whitespace-nowrap ${step === s.key ? "border-[#CDFF3A] text-[#CDFF3A]" : "border-transparent text-white/30 hover:text-white/60"}`}
                 >
                   <span className="font-mono text-[10px]">{s.num}</span>
                   {s.label}
@@ -125,15 +125,15 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
           <div className="border border-white/10 p-6 mb-10 grid grid-cols-3 gap-6 text-center">
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Price per meal</div>
-              <div className="font-display text-[28px] font-bold text-[#CDFF3A]">${selectedSize.pricePerMeal.toFixed(2)}</div>
+              <div className="font-display text-[22px] sm:text-[28px] font-bold text-[#CDFF3A]">${selectedSize.pricePerMeal.toFixed(2)}</div>
             </div>
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Meals in box</div>
-              <div className="font-display text-[28px] font-bold">{boxSize}</div>
+              <div className="font-display text-[22px] sm:text-[28px] font-bold">{boxSize}</div>
             </div>
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Box total</div>
-              <div className="font-display text-[28px] font-bold">${selectedSize.total.toFixed(2)}</div>
+              <div className="font-display text-[22px] sm:text-[28px] font-bold">${selectedSize.total.toFixed(2)}</div>
             </div>
           </div>
 
@@ -150,7 +150,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
       {step === "select" && (
         <div className="max-w-[1440px] mx-auto px-6 py-10">
           {/* Sticky progress bar */}
-          <div className="sticky top-[60px] z-30 bg-[#0E0E0E] border-b border-white/8 py-4 mb-8 -mx-6 px-6">
+          <div className="sticky top-[56px] sm:top-[60px] z-30 bg-[#0E0E0E] border-b border-white/8 py-4 mb-8 -mx-6 px-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[13px] font-medium">
                 {totalSelected === boxSize

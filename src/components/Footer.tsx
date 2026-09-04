@@ -28,7 +28,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             { label: "My Account", action: () => navigate("account") },
           ].map((l) => (
             <button key={l.label} onClick={l.action}
-              className="text-[12px] text-white/35 hover:text-white transition-colors tracking-wide whitespace-nowrap">
+              className="text-[11px] sm:text-[12px] text-white/35 hover:text-white transition-colors tracking-wide whitespace-nowrap">
               {l.label}
             </button>
           ))}

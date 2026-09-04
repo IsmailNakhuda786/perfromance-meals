@@ -28,50 +28,40 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
   return (
     <div className="bg-[#F7F5F0]">
       {/* ── HERO — SPLIT PANEL ── */}
-      <section className="h-[calc(100vh-84px)] grid grid-cols-1 md:grid-cols-2 relative">
+      <section className="grid grid-cols-1 md:grid-cols-2 relative" style={{ minHeight: "calc(100vh - 84px)" }}>
         {/* Ready-to-Go panel */}
-        <div className="relative overflow-hidden cursor-pointer group" onClick={() => navigate("ready-to-go")}>
-          <img
-            src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1000&h=1100&fit=crop&auto=format"
-            alt="Ready-to-Go meals"
-            className="absolute inset-0 w-full h-full object-cover scale-[1.06] group-hover:scale-100 transition-transform duration-700 ease-out"
-          />
+        <div className="relative overflow-hidden cursor-pointer group min-h-[50vh] md:min-h-0" onClick={() => navigate("ready-to-go")}>
+          <img src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1000&h=1100&fit=crop&auto=format" alt="Ready-to-Go meals"
+            className="absolute inset-0 w-full h-full object-cover scale-[1.06] group-hover:scale-100 transition-transform duration-700 ease-out" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/65 to-[#111111]/10 group-hover:via-[#111111]/50 transition-all duration-500" />
-          {/* Animated lime accent bar at top */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#CDFF3A] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-          <div className="relative h-full flex flex-col justify-between p-10 lg:p-14 text-white">
+          <div className="relative h-full flex flex-col justify-between p-6 sm:p-10 lg:p-14 text-white">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-[10px] tracking-[0.4em] text-[#CDFF3A] uppercase">01 / READY SERIES</span>
-              <div className="h-px flex-1 bg-[#CDFF3A]/20 group-hover:bg-[#CDFF3A]/50 transition-colors duration-300 max-w-[60px]" />
+              <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.4em] text-[#CDFF3A] uppercase">01 / READY SERIES</span>
             </div>
             <div>
-              <p className="text-[11px] tracking-[0.25em] uppercase text-white/40 mb-5">Fresher Performance Meals</p>
-              <h1 className="font-display text-[52px] lg:text-[72px] font-bold leading-[0.88] mb-7">
+              <p className="text-[10px] tracking-[0.25em] uppercase text-white/40 mb-3 sm:mb-5">Fresher Performance Meals</p>
+              <h1 className="font-display text-[40px] sm:text-[52px] lg:text-[72px] font-bold leading-[0.88] mb-5 sm:mb-7">
                 Heat.<br />
                 <span className="text-[#CDFF3A] group-hover:drop-shadow-[0_0_24px_rgba(205,255,58,0.5)] transition-all duration-500">Eat.</span>
                 <br />Perform.
               </h1>
-              <p className="text-white/60 text-[15px] max-w-[300px] mb-9 leading-relaxed">
-                Macro-accurate frozen meals, ready in 3 minutes. No prep. No guesswork. Pure performance fuel.
+              <p className="text-white/60 text-[13px] sm:text-[15px] max-w-[300px] mb-6 sm:mb-9 leading-relaxed">
+                Macro-accurate frozen meals, ready in 3 minutes. No prep. No guesswork.
               </p>
-              <div className="flex flex-wrap items-center gap-4">
-                <button
-                  onClick={(e) => { e.stopPropagation(); navigate("ready-to-go"); }}
-                  className="inline-flex items-center gap-2.5 bg-[#CDFF3A] text-[#111111] px-7 py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors"
-                >
+              <div className="flex flex-wrap items-center gap-3">
+                <button onClick={(e) => { e.stopPropagation(); navigate("ready-to-go"); }}
+                  className="inline-flex items-center gap-2 bg-[#CDFF3A] text-[#111111] px-5 sm:px-7 py-3 sm:py-3.5 text-[11px] sm:text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
                   Shop Meals →
                 </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); navigate("build-a-box"); }}
-                  className="text-white/60 text-[12px] border border-white/20 px-5 py-3.5 hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors"
-                >
+                <button onClick={(e) => { e.stopPropagation(); navigate("build-a-box"); }}
+                  className="text-white/60 text-[11px] sm:text-[12px] border border-white/20 px-4 sm:px-5 py-3 sm:py-3.5 hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
                   Build-A-Box
                 </button>
               </div>
-              {/* Social proof chips */}
-              <div className="flex flex-wrap gap-2 mt-8">
-                {["✓ Same-day delivery", "✓ 2-month freezer life", "✓ USDA standards"].map((s) => (
-                  <span key={s} className="text-[10px] text-white/35 border border-white/10 px-3 py-1.5 tracking-wider">{s}</span>
+              <div className="flex flex-wrap gap-2 mt-5 sm:mt-8">
+                {["✓ Same-day delivery", "✓ USDA standards"].map((s) => (
+                  <span key={s} className="text-[9px] sm:text-[10px] text-white/35 border border-white/10 px-2.5 py-1.5 tracking-wider">{s}</span>
                 ))}
               </div>
             </div>
@@ -79,46 +69,38 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
         </div>
 
         {/* Meal Plans panel */}
-        <div className="relative overflow-hidden cursor-pointer group" onClick={() => navigateToWizard()}>
-          <img
-            src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&h=1100&fit=crop&auto=format"
-            alt="Meal Plans fresh bowl"
-            className="absolute inset-0 w-full h-full object-cover scale-[1.06] group-hover:scale-100 transition-transform duration-700 ease-out"
-          />
+        <div className="relative overflow-hidden cursor-pointer group min-h-[50vh] md:min-h-0" onClick={() => navigateToWizard()}>
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1000&h=1100&fit=crop&auto=format" alt="Meal Plans fresh bowl"
+            className="absolute inset-0 w-full h-full object-cover scale-[1.06] group-hover:scale-100 transition-transform duration-700 ease-out" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0D2818] via-[#0D2818]/72 to-[#0D2818]/20 group-hover:via-[#0D2818]/55 transition-all duration-500" />
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#F2C94C] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-          <div className="relative h-full flex flex-col justify-between p-10 lg:p-14 text-white">
+          <div className="relative h-full flex flex-col justify-between p-6 sm:p-10 lg:p-14 text-white">
             <div className="flex items-center gap-3">
-              <span className="font-mono text-[10px] tracking-[0.4em] text-[#F2C94C] uppercase">02 / MEAL PLANS</span>
-              <div className="h-px flex-1 bg-[#F2C94C]/20 group-hover:bg-[#F2C94C]/50 transition-colors duration-300 max-w-[60px]" />
+              <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.4em] text-[#F2C94C] uppercase">02 / MEAL PLANS</span>
             </div>
             <div>
-              <p className="text-[11px] tracking-[0.25em] uppercase text-white/40 mb-5">Fresher Performance Meals</p>
-              <h1 className="font-display text-[52px] lg:text-[72px] font-bold leading-[0.88] mb-7">
+              <p className="text-[10px] tracking-[0.25em] uppercase text-white/40 mb-3 sm:mb-5">Fresher Performance Meals</p>
+              <h1 className="font-display text-[40px] sm:text-[52px] lg:text-[72px] font-bold leading-[0.88] mb-5 sm:mb-7">
                 Your goal.<br />
                 <span className="text-[#F2C94C] group-hover:drop-shadow-[0_0_24px_rgba(242,201,76,0.5)] transition-all duration-500">Your</span>
                 <br />macros.
               </h1>
-              <p className="text-white/60 text-[15px] max-w-[300px] mb-9 leading-relaxed">
-                Chef-prepared fresh meals delivered daily, calibrated to your caloric target. Cut, Maintain, or Build.
+              <p className="text-white/60 text-[13px] sm:text-[15px] max-w-[300px] mb-6 sm:mb-9 leading-relaxed">
+                Chef-prepared fresh meals delivered daily, calibrated to your caloric target.
               </p>
-              <div className="flex flex-wrap items-center gap-4">
-                <button
-                  onClick={(e) => { e.stopPropagation(); navigateToWizard(); }}
-                  className="inline-flex items-center gap-2.5 bg-[#F2C94C] text-[#111111] px-7 py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors"
-                >
+              <div className="flex flex-wrap items-center gap-3">
+                <button onClick={(e) => { e.stopPropagation(); navigateToWizard(); }}
+                  className="inline-flex items-center gap-2 bg-[#F2C94C] text-[#111111] px-5 sm:px-7 py-3 sm:py-3.5 text-[11px] sm:text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
                   Get My Plan →
                 </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); navigate("how-it-works"); }}
-                  className="text-white/60 text-[12px] border border-white/20 px-5 py-3.5 hover:border-[#F2C94C] hover:text-[#F2C94C] transition-colors"
-                >
+                <button onClick={(e) => { e.stopPropagation(); navigate("how-it-works"); }}
+                  className="text-white/60 text-[11px] sm:text-[12px] border border-white/20 px-4 sm:px-5 py-3 sm:py-3.5 hover:border-[#F2C94C] hover:text-[#F2C94C] transition-colors">
                   How It Works
                 </button>
               </div>
-              <div className="flex flex-wrap gap-2 mt-8">
-                {["✓ Delivered fresh daily", "✓ Chef-prepared", "✓ Trainer-approved"].map((s) => (
-                  <span key={s} className="text-[10px] text-white/35 border border-white/10 px-3 py-1.5 tracking-wider">{s}</span>
+              <div className="flex flex-wrap gap-2 mt-5 sm:mt-8">
+                {["✓ Delivered fresh daily", "✓ Chef-prepared"].map((s) => (
+                  <span key={s} className="text-[9px] sm:text-[10px] text-white/35 border border-white/10 px-2.5 py-1.5 tracking-wider">{s}</span>
                 ))}
               </div>
             </div>
@@ -132,13 +114,12 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
           @keyframes spin6 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
           @keyframes marquee6 { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         `}</style>
-        {/* Scrolling text ticker */}
-        <div className="overflow-hidden border-b border-[#111]/10 py-2.5">
-          <div className="flex w-max" style={{ animation: "marquee6 20s linear infinite" }}>
+        <div className="overflow-hidden border-b border-[#111]/10 py-2">
+          <div className="flex w-max" style={{ animation: "marquee6 22s linear infinite" }}>
             {[...Array(2)].map((_, i) => (
               <div key={i} className="flex shrink-0 items-center">
                 {["LOSE 6KG", "IN 60 DAYS", "CHEF-PREPARED", "MACRO-ACCURATE", "MONEY-BACK GUARANTEE", "12,400+ MEMBERS", "SINGAPORE'S #1"].map((t) => (
-                  <span key={t} className="flex items-center gap-4 px-6 text-[10px] font-black tracking-[0.35em] text-[#111]/60">
+                  <span key={t} className="flex items-center gap-3 px-5 text-[9px] font-black tracking-[0.3em] text-[#111]/60">
                     {t} <span className="text-[#111]/30">·</span>
                   </span>
                 ))}
@@ -146,66 +127,58 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
             ))}
           </div>
         </div>
-
-        {/* Main promise row */}
-        <div className="max-w-[1440px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-6">
-            {/* Rotating stamp */}
-            <div className="relative shrink-0 w-[80px] h-[80px]">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-5 sm:py-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto">
+            <div className="relative shrink-0 w-[64px] h-[64px] sm:w-[80px] sm:h-[80px]">
               <svg viewBox="0 0 80 80" className="w-full h-full" style={{ animation: "spin6 15s linear infinite" }}>
-                <defs>
-                  <path id="pr" d="M 40,40 m -32,0 a 32,32 0 1,1 64,0 a 32,32 0 1,1 -64,0" />
-                </defs>
+                <defs><path id="pr" d="M 40,40 m -32,0 a 32,32 0 1,1 64,0 a 32,32 0 1,1 -64,0" /></defs>
                 <circle cx="40" cy="40" r="36" fill="none" stroke="#111" strokeWidth="1.5" strokeDasharray="3 2.5" opacity="0.3" />
                 <text fontSize="7.2" fontFamily="monospace" fontWeight="900" fill="#111" opacity="0.5" letterSpacing="2.2">
                   <textPath href="#pr" startOffset="50%" textAnchor="middle">GUARANTEED · SINGAPORE · FRESHER ·</textPath>
                 </text>
               </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-display text-[22px] font-black text-[#111] leading-none">6in60</span>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="font-display text-[18px] sm:text-[22px] font-black text-[#111] leading-none">6in60</span>
               </div>
             </div>
-            {/* Copy */}
             <div>
-              <div className="font-display text-[28px] md:text-[34px] font-black text-[#111] leading-tight">
-                Lose 6kg. In 60 days.<br className="hidden md:block" /> <span className="underline decoration-2 underline-offset-4">Guaranteed.</span>
+              <div className="font-display text-[22px] sm:text-[28px] md:text-[34px] font-black text-[#111] leading-tight">
+                Lose 6kg. In 60 days. <span className="underline decoration-2 underline-offset-4">Guaranteed.</span>
               </div>
-              <p className="text-[#111]/55 text-[13px] mt-1.5">
-                Eat real chef-prepared food · no starving · no guesswork · or your money back.
-              </p>
+              <p className="text-[#111]/55 text-[12px] sm:text-[13px] mt-1">Eat real food · no starving · or your money back.</p>
             </div>
           </div>
           <button onClick={() => navigate("meal-plan-wizard")}
-            className="shrink-0 bg-[#111] text-[#CDFF3A] px-8 py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#0D2818] transition-colors whitespace-nowrap">
+            className="w-full sm:w-auto sm:ml-auto shrink-0 bg-[#111] text-[#CDFF3A] px-6 sm:px-8 py-3.5 text-[11px] sm:text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#0D2818] transition-colors">
             Start My 60-Day Plan →
           </button>
         </div>
       </div>
 
       {/* ── ANIMATED STATS BAR ── */}
-      <div className="bg-[#111111] py-6 overflow-hidden">
-        <div className="max-w-[1440px] mx-auto px-6 flex flex-wrap items-center justify-between gap-6">
+      <div className="bg-[#111111] py-5 sm:py-6 overflow-hidden">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
           {STATS.map((s) => (
-            <div key={s.label} className="text-center flex-1 min-w-[120px]">
-              <div className="font-display text-[28px] font-bold text-[#CDFF3A]">{s.val}</div>
-              <div className="text-white/40 text-[11px] uppercase tracking-[0.15em] mt-1">{s.label}</div>
+            <div key={s.label} className="text-center">
+              <div className="font-display text-[24px] sm:text-[28px] font-bold text-[#CDFF3A]">{s.val}</div>
+              <div className="text-white/40 text-[10px] sm:text-[11px] uppercase tracking-[0.12em] sm:tracking-[0.15em] mt-1">{s.label}</div>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── TRUST BAR ── */}
-      <div className="bg-[#0E0E0E] border-b border-white/5">
-        <div className="max-w-[1440px] mx-auto px-6 py-3.5 flex flex-wrap items-center justify-center gap-8 lg:gap-12">
+      <div className="bg-[#0E0E0E] border-b border-white/5 overflow-x-auto">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-6 sm:gap-8 lg:gap-12 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center">
           {[
-            { icon: "🏛", label: "USDA Nutritional Standards" },
+            { icon: "🏛", label: "USDA Standards" },
             { icon: "⚡", label: "Same-Day Delivery" },
-            { icon: "❄️", label: "2-Month Freezer Life" },
-            { icon: "🏋", label: "Trainer-Approved Macros" },
+            { icon: "❄️", label: "2-Month Freezer" },
+            { icon: "🏋", label: "Trainer-Approved" },
             { icon: "⭐", label: "4.8 · 2,400+ Reviews" },
           ].map((t) => (
-            <div key={t.label} className="flex items-center gap-2.5 text-[11px] text-white/40 tracking-[0.15em] uppercase">
-              <span className="text-[15px]">{t.icon}</span><span>{t.label}</span>
+            <div key={t.label} className="flex items-center gap-2 text-[10px] sm:text-[11px] text-white/40 tracking-[0.12em] uppercase whitespace-nowrap">
+              <span className="text-[13px] sm:text-[15px]">{t.icon}</span><span>{t.label}</span>
             </div>
           ))}
         </div>
@@ -261,23 +234,22 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#F2C94C] uppercase">02 / Meal Plans</span>
             <div className="h-px w-16 bg-[#F2C94C]/30" />
           </div>
-          <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-10">
-            <h2 className="font-display text-[56px] lg:text-[72px] font-bold leading-none">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-6 lg:gap-8 mb-8 lg:mb-10">
+            <h2 className="font-display text-[40px] sm:text-[52px] lg:text-[72px] font-bold leading-none">
               Your goal.<br />
               <span className="text-[#F2C94C]">Your macros.</span>
             </h2>
-            <div className="max-w-md flex flex-col justify-between h-full gap-4">
-              <p className="text-white/50 text-[15px] leading-relaxed">
+            <div className="max-w-md flex flex-col gap-4">
+              <p className="text-white/50 text-[14px] sm:text-[15px] leading-relaxed">
                 Three plans. Every calorie calculated. Fresh meals delivered to your door every morning — chef-prepared, macro-labelled.
               </p>
-              {/* 6in60 promise pill */}
-              <div className="inline-flex items-center gap-3 bg-[#CDFF3A]/10 border border-[#CDFF3A]/25 px-5 py-3 self-start">
-                <div className="w-7 h-7 bg-[#CDFF3A] rounded-full flex items-center justify-center shrink-0">
-                  <span className="text-[#111] font-black text-[9px]">6:60</span>
+              <div className="inline-flex items-center gap-3 bg-[#CDFF3A]/10 border border-[#CDFF3A]/25 px-4 py-2.5 self-start">
+                <div className="w-6 h-6 bg-[#CDFF3A] rounded-full flex items-center justify-center shrink-0">
+                  <span className="text-[#111] font-black text-[8px]">6:60</span>
                 </div>
-                <span className="text-[#CDFF3A] text-[12px] font-semibold tracking-wide">Lose 6kg in 60 days — or your money back.</span>
+                <span className="text-[#CDFF3A] text-[11px] sm:text-[12px] font-semibold">Lose 6kg in 60 days — or your money back.</span>
               </div>
-              <button onClick={() => navigate("how-it-works")} className="text-white/40 text-[12px] border border-white/15 px-5 py-3 hover:border-[#F2C94C] hover:text-[#F2C94C] transition-colors uppercase tracking-[0.15em] self-start">
+              <button onClick={() => navigate("how-it-works")} className="text-white/40 text-[11px] sm:text-[12px] border border-white/15 px-4 py-2.5 hover:border-[#F2C94C] hover:text-[#F2C94C] transition-colors uppercase tracking-[0.15em] self-start">
                 How It Works →
               </button>
             </div>
@@ -409,25 +381,25 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
       </section>
 
       {/* ── GIFT CARD BANNER ── */}
-      <section className="bg-[#CDFF3A] py-14">
-        <div className="max-w-[1440px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <section className="bg-[#CDFF3A] py-10 sm:py-14">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <div className="font-mono text-[10px] tracking-[0.4em] text-[#111]/40 uppercase mb-2">Gift Cards</div>
-            <h3 className="font-display text-[36px] font-bold text-[#111] leading-tight">
+            <h3 className="font-display text-[28px] sm:text-[36px] font-bold text-[#111] leading-tight">
               Give the gift of<br />performance.
             </h3>
-            <p className="text-[#111]/60 text-[14px] mt-3 max-w-xs">
-              Fresher gift cards never expire. Use on any meal, box, or subscription. From $25.
-            </p>
+            <p className="text-[#111]/60 text-[13px] sm:text-[14px] mt-3 max-w-xs">Fresher gift cards never expire. From $25.</p>
           </div>
-          <div className="flex items-center gap-4">
-            {["$25", "$50", "$100", "$150"].map((a) => (
-              <div key={a} className="bg-white/50 border-2 border-[#111]/15 px-5 py-3 text-center">
-                <div className="font-display text-[22px] font-bold text-[#111]">{a}</div>
-              </div>
-            ))}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+            <div className="grid grid-cols-4 gap-2 sm:flex sm:gap-3">
+              {["$25", "$50", "$100", "$150"].map((a) => (
+                <div key={a} className="bg-white/50 border-2 border-[#111]/15 px-3 sm:px-5 py-2.5 sm:py-3 text-center">
+                  <div className="font-display text-[16px] sm:text-[22px] font-bold text-[#111]">{a}</div>
+                </div>
+              ))}
+            </div>
             <button onClick={() => navigate("gift-card")}
-              className="ml-2 bg-[#111111] text-white px-7 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#0D2818] transition-colors whitespace-nowrap">
+              className="w-full sm:w-auto bg-[#111111] text-white px-6 sm:px-7 py-3.5 sm:py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#0D2818] transition-colors whitespace-nowrap">
               Buy a Gift Card →
             </button>
           </div>
@@ -435,7 +407,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
       </section>
 
       {/* ── TESTIMONIALS — INTERACTIVE ── */}
-      <section className="bg-[#F7F5F0] py-24">
+      <section className="bg-[#F7F5F0] py-14 sm:py-24">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#111111]/35 uppercase">Client Results</span>
@@ -477,12 +449,12 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
       </section>
 
       {/* ── REWARDS ── */}
-      <section className="bg-[#111111] text-white py-20">
+      <section className="bg-[#111111] text-white py-14 sm:py-20">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <div className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase mb-6">Rewards Program</div>
-              <h2 className="font-display text-[52px] font-bold mb-5 leading-none">
+              <h2 className="font-display text-[38px] sm:text-[52px] font-bold mb-5 leading-none">
                 Earn while<br />you <span className="text-[#CDFF3A]">perform.</span>
               </h2>
               <p className="text-white/45 text-[15px] leading-relaxed mb-10 max-w-md">
