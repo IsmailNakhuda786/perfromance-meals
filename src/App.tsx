@@ -86,6 +86,22 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-body">
+
+      {/* Download banner */}
+      <div className="bg-[#111] text-white flex items-center justify-between px-4 py-2 gap-3 flex-wrap">
+        <span className="text-[12px] text-white/60">Download this prototype to your computer</span>
+        <div className="flex gap-2 flex-wrap">
+          <a href="/fresher-single.zip" download
+            className="bg-[#CDFF3A] text-[#111] text-[11px] font-bold tracking-[0.15em] uppercase px-4 py-2 hover:bg-white transition-colors whitespace-nowrap">
+            Download HTML File ↓
+          </a>
+          <a href="/fresher-prototype.zip" download
+            className="border border-white/20 text-white text-[11px] font-bold tracking-[0.15em] uppercase px-4 py-2 hover:border-white transition-colors whitespace-nowrap">
+            Download Source Code ↓
+          </a>
+        </div>
+      </div>
+
       <Nav
         currentPage={page}
         navigate={navigate}
