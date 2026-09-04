@@ -78,34 +78,6 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
           </div>
         </div>
 
-        {/* ── 6in60 CENTER STAMP ── */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden md:flex flex-col items-center">
-          {/* Vertical divider line top */}
-          <div className="w-px h-12 bg-white/20" />
-          {/* Stamp */}
-          <div className="relative" style={{ filter: "drop-shadow(0 4px 24px rgba(0,0,0,0.5))" }}>
-            <svg viewBox="0 0 96 96" className="w-[96px] h-[96px]" style={{ animation: "spin6in60 18s linear infinite" }}>
-              <defs>
-                <path id="outerRing" d="M 48,48 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0" />
-              </defs>
-              <circle cx="48" cy="48" r="43" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeDasharray="3 3" />
-              <circle cx="48" cy="48" r="38" fill="#CDFF3A" />
-              <circle cx="48" cy="48" r="33" fill="none" stroke="#111" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.3" />
-              <text fontSize="8.5" fontFamily="monospace" fontWeight="800" fill="#111" letterSpacing="2.5">
-                <textPath href="#outerRing" startOffset="50%" textAnchor="middle">LOSE 6KG · IN 60 DAYS · GUARANTEED ·</textPath>
-              </text>
-            </svg>
-            {/* Static center content */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display text-[28px] font-black text-[#111] leading-none">6in60</span>
-              <span className="font-mono text-[8px] font-bold text-[#111]/50 tracking-[0.15em] uppercase mt-0.5">Promise</span>
-            </div>
-          </div>
-          {/* Vertical divider line bottom */}
-          <div className="w-px h-12 bg-white/20" />
-          <style>{`@keyframes spin6in60 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
-        </div>
-
         {/* Meal Plans panel */}
         <div className="relative overflow-hidden cursor-pointer group" onClick={() => navigateToWizard()}>
           <img
@@ -153,6 +125,62 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
           </div>
         </div>
       </section>
+
+      {/* ── 6IN60 PROMISE BAR ── */}
+      <div className="bg-[#CDFF3A] relative overflow-hidden">
+        <style>{`
+          @keyframes spin6 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+          @keyframes marquee6 { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        `}</style>
+        {/* Scrolling text ticker */}
+        <div className="overflow-hidden border-b border-[#111]/10 py-2.5">
+          <div className="flex w-max" style={{ animation: "marquee6 20s linear infinite" }}>
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex shrink-0 items-center">
+                {["LOSE 6KG", "IN 60 DAYS", "CHEF-PREPARED", "MACRO-ACCURATE", "MONEY-BACK GUARANTEE", "12,400+ MEMBERS", "SINGAPORE'S #1"].map((t) => (
+                  <span key={t} className="flex items-center gap-4 px-6 text-[10px] font-black tracking-[0.35em] text-[#111]/60">
+                    {t} <span className="text-[#111]/30">·</span>
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Main promise row */}
+        <div className="max-w-[1440px] mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            {/* Rotating stamp */}
+            <div className="relative shrink-0 w-[80px] h-[80px]">
+              <svg viewBox="0 0 80 80" className="w-full h-full" style={{ animation: "spin6 15s linear infinite" }}>
+                <defs>
+                  <path id="pr" d="M 40,40 m -32,0 a 32,32 0 1,1 64,0 a 32,32 0 1,1 -64,0" />
+                </defs>
+                <circle cx="40" cy="40" r="36" fill="none" stroke="#111" strokeWidth="1.5" strokeDasharray="3 2.5" opacity="0.3" />
+                <text fontSize="7.2" fontFamily="monospace" fontWeight="900" fill="#111" opacity="0.5" letterSpacing="2.2">
+                  <textPath href="#pr" startOffset="50%" textAnchor="middle">GUARANTEED · SINGAPORE · FRESHER ·</textPath>
+                </text>
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="font-display text-[22px] font-black text-[#111] leading-none">6in60</span>
+              </div>
+            </div>
+            {/* Copy */}
+            <div>
+              <div className="font-display text-[28px] md:text-[34px] font-black text-[#111] leading-tight">
+                Lose 6kg. In 60 days.<br className="hidden md:block" /> <span className="underline decoration-2 underline-offset-4">Guaranteed.</span>
+              </div>
+              <p className="text-[#111]/55 text-[13px] mt-1.5">
+                Eat real chef-prepared food · no starving · no guesswork · or your money back.
+              </p>
+            </div>
+          </div>
+          <button onClick={() => navigate("meal-plan-wizard")}
+            className="shrink-0 bg-[#111] text-[#CDFF3A] px-8 py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#0D2818] transition-colors whitespace-nowrap">
+            Start My 60-Day Plan →
+          </button>
+        </div>
+      </div>
 
       {/* ── ANIMATED STATS BAR ── */}
       <div className="bg-[#111111] py-6 overflow-hidden">

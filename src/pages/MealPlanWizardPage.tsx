@@ -188,6 +188,30 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                 })}
               </div>
 
+              {/* 6in60 promise trust block */}
+              <div className="bg-[#111] text-white p-5 mb-6 flex items-center gap-4">
+                <div className="relative shrink-0 w-[56px] h-[56px]">
+                  <svg viewBox="0 0 56 56" className="w-full h-full" style={{ animation: "spin6wiz 18s linear infinite" }}>
+                    <defs>
+                      <path id="wizRing" d="M 28,28 m -22,0 a 22,22 0 1,1 44,0 a 22,22 0 1,1 -44,0" />
+                    </defs>
+                    <circle cx="28" cy="28" r="25" fill="#CDFF3A" />
+                    <circle cx="28" cy="28" r="21" fill="none" stroke="#111" strokeWidth="0.7" strokeDasharray="1.8 1.8" opacity="0.3" />
+                    <text fontSize="5.2" fontFamily="monospace" fontWeight="800" fill="#111" opacity="0.55" letterSpacing="1.5">
+                      <textPath href="#wizRing" startOffset="50%" textAnchor="middle">GUARANTEED · 60 DAYS ·</textPath>
+                    </text>
+                    <style>{`@keyframes spin6wiz { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }`}</style>
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="font-display text-[13px] font-black text-[#111] leading-none">6in60</span>
+                  </div>
+                </div>
+                <div>
+                  <div className="font-bold text-[15px] mb-0.5">The 6in60 Promise</div>
+                  <p className="text-white/50 text-[12px] leading-relaxed">Lose 6kg in 60 days eating real chef-prepared food — or we refund you in full. No questions asked.</p>
+                </div>
+              </div>
+
               <button
                 onClick={handleNext}
                 className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white"
@@ -461,6 +485,25 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                 {!autoChargeConsent && (
                   <p className="text-xs text-red-500 ml-7">Authorisation required to subscribe</p>
                 )}
+              </div>
+
+              {/* 6in60 pre-CTA trust seal */}
+              <div className="flex items-center gap-3 bg-[#CDFF3A]/10 border border-[#CDFF3A]/30 px-4 py-3 mb-4">
+                <div className="relative shrink-0 w-9 h-9">
+                  <svg viewBox="0 0 36 36" className="w-full h-full" style={{ animation: "spin6wiz 18s linear infinite" }}>
+                    <defs><path id="sealRing" d="M 18,18 m -13,0 a 13,13 0 1,1 26,0 a 13,13 0 1,1 -26,0" /></defs>
+                    <circle cx="18" cy="18" r="16" fill="#CDFF3A" />
+                    <text fontSize="3.8" fontFamily="monospace" fontWeight="800" fill="#111" opacity="0.5" letterSpacing="1">
+                      <textPath href="#sealRing" startOffset="50%" textAnchor="middle">60 DAYS · GUARANTEE ·</textPath>
+                    </text>
+                  </svg>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="font-display text-[8px] font-black text-[#111]">6in60</span>
+                  </div>
+                </div>
+                <div className="text-[12px] text-[#555] leading-tight">
+                  <span className="font-bold text-[#111]">60-day money-back guarantee.</span> If you don't lose 6kg, we refund you — no questions asked.
+                </div>
               </div>
 
               <button
