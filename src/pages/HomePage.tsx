@@ -487,14 +487,14 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
       </section>
 
       {/* ── NEWSLETTER ── */}
-      <section className="bg-[#1C1C1A] py-16">
+      <section className="bg-[#1A3324] py-16">
         <div className="max-w-[1440px] mx-auto px-6 text-center">
-          <span className="font-mono text-[10px] tracking-[0.45em] text-white/30 uppercase">Stay in the loop</span>
+          <span className="font-mono text-[10px] tracking-[0.45em] text-white/35 uppercase">Stay in the loop</span>
           <h3 className="font-display text-[36px] font-bold mt-3 mb-2 text-white">New meals. New deals. Every week.</h3>
-          <p className="text-white/45 text-[14px] mb-8">Join 8,400+ members getting the weekly menu drop.</p>
+          <p className="text-white/50 text-[14px] mb-8">Join 8,400+ members getting the weekly menu drop.</p>
           <div className="flex gap-0 max-w-md mx-auto">
             <input type="email" placeholder="your@email.com"
-              className="flex-1 border border-white/15 border-r-0 px-5 py-3.5 text-[14px] bg-white/8 text-white placeholder:text-white/25 outline-none focus:border-white/40 transition-colors" />
+              className="flex-1 border border-white/20 border-r-0 px-5 py-3.5 text-[14px] bg-white/10 text-white placeholder:text-white/30 outline-none focus:border-white/50 transition-colors" />
             <button className="bg-[#CDFF3A] text-[#111] px-6 py-3.5 text-[11px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors whitespace-nowrap">Subscribe</button>
           </div>
         </div>
