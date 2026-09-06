@@ -13,8 +13,9 @@ import AccountPage from "@/pages/AccountPage";
 import HowItWorksPage from "@/pages/HowItWorksPage";
 import GiftCardPage from "@/pages/GiftCardPage";
 import HandoffPage from "@/pages/HandoffPage";
+import BlueprintPage from "@/pages/BlueprintPage";
 
-const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff"];
+const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff", "blueprint"];
 
 export interface SavedAddress {
   name: string;
@@ -139,6 +140,7 @@ export default function App() {
       {page === "how-it-works" && <HowItWorksPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "gift-card" && <GiftCardPage navigate={navigate} />}
       {page === "handoff" && <HandoffPage navigate={navigate} navigateToWizard={navigateToWizard} />}
+      {page === "blueprint" && <BlueprintPage navigate={navigate} navigateToWizard={navigateToWizard} />}
 
       {showFooter && <Footer navigate={navigate} navigateToWizard={navigateToWizard} />}
     </div>

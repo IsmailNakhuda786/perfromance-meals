@@ -49,6 +49,10 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             {["Privacy", "Terms", "Refunds"].map((l) => (
               <a key={l} href="#" className="hover:text-white/70 transition-colors">{l}</a>
             ))}
+            <button onClick={() => navigate("blueprint")}
+              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
+              Blueprint
+            </button>
             <button onClick={() => navigate("handoff")}
               className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
               Dev Handoff

@@ -8,7 +8,8 @@ export type Page =
   | "account"
   | "how-it-works"
   | "gift-card"
-  | "handoff";
+  | "handoff"
+  | "blueprint";
 
 export interface CartItem {
   id: number;
