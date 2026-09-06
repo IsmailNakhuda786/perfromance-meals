@@ -9,7 +9,8 @@ export type Page =
   | "how-it-works"
   | "gift-card"
   | "handoff"
-  | "blueprint";
+  | "blueprint"
+  | "wireframe";
 
 export interface CartItem {
   id: number;
