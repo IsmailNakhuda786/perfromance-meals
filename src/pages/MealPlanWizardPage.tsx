@@ -380,7 +380,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
               <div className="max-w-2xl">
                 <button onClick={handleNext} disabled={!canProceedStep3}
                   className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all ${canProceedStep3 ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
-                  Continue with {selectedMeals.length} meal{selectedMeals.length !== 1 ? "s" : ""} →
+                  Continue with {totalSelected} meal{totalSelected !== 1 ? "s" : ""} →
                 </button>
               </div>
             </div>
