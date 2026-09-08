@@ -164,6 +164,22 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
                 {/* Info */}
                 <div className="p-5">
+                  {/* Meal type badge */}
+                  {(() => {
+                    const typeMap: Record<string, { label: string; bg: string; text: string }> = {
+                      "high-carb":    { label: "High Carb",    bg: "#F2C94C22", text: "#F2C94C" },
+                      "low-carb":     { label: "Low Carb",     bg: "#7EE8B022", text: "#7EE8B0" },
+                      "just-protein": { label: "Just Protein", bg: "#A78BFA22", text: "#A78BFA" },
+                      "breakfast":    { label: "Breakfast",    bg: "#FB923C22", text: "#FB923C" },
+                    };
+                    const t = typeMap[meal.cat];
+                    return t ? (
+                      <span className="inline-block text-[9px] font-mono font-bold tracking-[0.25em] uppercase px-2 py-1 mb-2 border"
+                        style={{ color: t.text, backgroundColor: t.bg, borderColor: t.text + "44" }}>
+                        {t.label}
+                      </span>
+                    ) : null;
+                  })()}
                   <div className="flex items-start justify-between mb-3 gap-2">
                     <h3 className="text-[14px] font-medium leading-snug cursor-pointer hover:text-[#CDFF3A] transition-colors" onClick={() => setSelectedMeal(meal)}>{meal.name}</h3>
                     <span className="text-[#CDFF3A] font-bold text-[15px] whitespace-nowrap font-mono">${meal.price.toFixed(2)}</span>
@@ -244,6 +260,21 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
               )}
             </div>
             <div className="p-7">
+              {(() => {
+                const typeMap: Record<string, { label: string; color: string }> = {
+                  "high-carb":    { label: "High Carb",    color: "#F2C94C" },
+                  "low-carb":     { label: "Low Carb",     color: "#7EE8B0" },
+                  "just-protein": { label: "Just Protein", color: "#A78BFA" },
+                  "breakfast":    { label: "Breakfast",    color: "#FB923C" },
+                };
+                const t = typeMap[selectedMeal.cat];
+                return t ? (
+                  <span className="inline-block text-[10px] font-mono font-bold tracking-[0.25em] uppercase px-2.5 py-1 mb-3 border"
+                    style={{ color: t.color, borderColor: t.color + "55", backgroundColor: t.color + "15" }}>
+                    {t.label}
+                  </span>
+                ) : null;
+              })()}
               <div className="flex items-start justify-between mb-3 gap-3">
                 <h2 className="font-display text-[26px] font-bold">{selectedMeal.name}</h2>
                 <span className="font-mono text-[22px] text-[#CDFF3A] font-bold shrink-0">${selectedMeal.price.toFixed(2)}</span>
