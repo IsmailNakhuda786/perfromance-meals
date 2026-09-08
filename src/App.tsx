@@ -35,6 +35,7 @@ export default function App() {
   const [wizardInitialPlan, setWizardInitialPlan] = useState("MAINTAIN");
   const [savedAddress, setSavedAddress] = useState<SavedAddress | null>(null);
   const [lastOrderType, setLastOrderType] = useState<"ready" | "plan">("ready");
+  const [lastOrderGuest, setLastOrderGuest] = useState(false);
   const [accountInitialTab, setAccountInitialTab] = useState<"dashboard" | "settings">("dashboard");
   const [accountInitialSection, setAccountInitialSection] = useState<string | undefined>(undefined);
   const [showPromo, setShowPromo] = useState(false);
@@ -145,8 +146,8 @@ export default function App() {
           onCheckoutComplete={(addr) => { handlePlanCheckout(addr); navigate("confirmation"); }}
         />
       )}
-      {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} onComplete={() => { setLastOrderType("ready"); navigate("confirmation"); }} />}
-      {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} />}
+      {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} onComplete={(isGuest) => { setLastOrderType("ready"); setLastOrderGuest(isGuest); navigate("confirmation"); }} />}
+      {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} isGuest={lastOrderGuest} />}
       {page === "account" && <AccountPage navigate={navigate} initialTab={accountInitialTab} initialSection={accountInitialSection} />}
       {page === "how-it-works" && <HowItWorksPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "gift-card" && <GiftCardPage navigate={navigate} />}

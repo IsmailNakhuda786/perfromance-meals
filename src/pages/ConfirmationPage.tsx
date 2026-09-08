@@ -3,9 +3,10 @@ import { Page } from "@/data";
 interface Props {
   navigate: (page: Page) => void;
   orderType: "ready" | "plan";
+  isGuest?: boolean;
 }
 
-export default function ConfirmationPage({ navigate, orderType }: Props) {
+export default function ConfirmationPage({ navigate, orderType, isGuest = false }: Props) {
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col items-center justify-center px-6 py-12 sm:py-20">
       <div className="max-w-[600px] w-full text-center">
@@ -140,24 +141,43 @@ export default function ConfirmationPage({ navigate, orderType }: Props) {
           </div>
         </div>}
 
-        {/* Rewards earned */}
-        <div className="bg-[#111111] text-white p-5 mb-8 flex items-center justify-between">
-          <div>
-            <div className="font-mono text-[10px] tracking-[0.3em] text-[#CDFF3A] uppercase mb-1">Points Earned</div>
-            <div className="font-display text-[28px] font-bold text-[#CDFF3A]">+58 pts</div>
-            <div className="text-white/35 text-[12px]">Added to your rewards balance</div>
+        {/* Rewards earned — members only */}
+        {!isGuest ? (
+          <div className="bg-[#111111] text-white p-5 mb-8 flex items-center justify-between">
+            <div>
+              <div className="font-mono text-[10px] tracking-[0.3em] text-[#CDFF3A] uppercase mb-1">Points Earned</div>
+              <div className="font-display text-[28px] font-bold text-[#CDFF3A]">+58 pts</div>
+              <div className="text-white/35 text-[12px]">Added to your rewards balance</div>
+            </div>
+            <div className="text-right">
+              <div className="text-white/35 text-[12px] mb-1">New balance</div>
+              <div className="font-display text-[22px] font-bold">1,234 pts</div>
+              <div className="text-white/35 text-[11px]">Worth $12.34</div>
+            </div>
           </div>
-          <div className="text-right">
-            <div className="text-white/35 text-[12px] mb-1">New balance</div>
-            <div className="font-display text-[22px] font-bold">1,234 pts</div>
-            <div className="text-white/35 text-[11px]">Worth $12.34</div>
+        ) : (
+          /* Guest — nudge to sign up */
+          <div className="bg-[#111111] text-white p-5 mb-8">
+            <div className="font-mono text-[10px] tracking-[0.3em] text-[#F2C94C] uppercase mb-2">You left points on the table</div>
+            <div className="font-display text-[22px] font-bold mb-1">This order would've earned <span className="text-[#CDFF3A]">+58 pts</span></div>
+            <p className="text-white/50 text-[13px] mb-4">Create a free account to earn points, get exclusive discounts, and track all your orders.</p>
+            <button onClick={() => navigate("account")}
+              className="bg-[#CDFF3A] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
+              Sign Up — It's Free →
+            </button>
           </div>
-        </div>
+        )}
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onClick={() => navigate("account")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors">
-            Go to My Account →
-          </button>
+          {!isGuest ? (
+            <button onClick={() => navigate("account")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors">
+              Go to My Account →
+            </button>
+          ) : (
+            <button onClick={() => navigate("home")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors">
+              Back to Home
+            </button>
+          )}
           {orderType === "plan" ? (
             <button onClick={() => navigate("ready-to-go")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
               Browse Ready-to-Go Meals

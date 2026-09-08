@@ -5,13 +5,13 @@ interface Props {
   navigate: (page: Page) => void;
   cart: CartItem[];
   savedAddress: { name: string; phone: string; line1: string; unit: string; postal: string } | null;
-  onComplete: () => void;
+  onComplete: (isGuest: boolean) => void;
 }
 
 const DATES = ["Mon 4", "Tue 5", "Wed 6", "Thu 7", "Fri 8", "Sat 9"];
 const SLOTS = ["6am – 9am", "9am – 12pm", "12pm – 3pm", "3pm – 6pm"];
 
-type AuthMode = null | "guest" | "signin" | "signup";
+type AuthMode = null | "guest" | "signin" | "signup" | "signup_done" | "signin_done";
 
 export default function CheckoutPage({ navigate, cart, savedAddress, onComplete }: Props) {
   const [authMode, setAuthMode] = useState<AuthMode>(null);
@@ -25,9 +25,13 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
   const [useWallet, setUseWallet] = useState(false);
   const [saveCard, setSaveCard] = useState(false);
   const [autoCharge, setAutoCharge] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [signupConfirmed, setSignupConfirmed] = useState(false);
 
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const total = Math.max(0, subtotal - (useWallet ? 12.5 : 0));
+  const promoDiscount = promoApplied ? subtotal * 0.1 : 0;
+  const total = Math.max(0, subtotal - (useWallet ? 12.5 : 0) - promoDiscount);
 
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col">
@@ -107,9 +111,44 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
               <div className="bg-[#CDFF3A]/20 border border-[#CDFF3A]/50 px-4 py-3 mb-6 text-[12px] text-[#555]">
                 🎁 You'll earn <strong className="text-[#111]">points on this order</strong> and unlock referral rewards after signup.
               </div>
-              <button onClick={() => setAuthMode("guest")}
-                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+              <button
+                disabled={!authName || !authEmail || !authPassword}
+                onClick={() => setAuthMode("signup_done")}
+                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors disabled:opacity-40">
                 Create Account & Continue →
+              </button>
+            </div>
+          )}
+
+          {/* ── SIGNUP SUCCESS ── */}
+          {authMode === "signup_done" && !signupConfirmed && (
+            <div>
+              <div className="w-16 h-16 bg-[#CDFF3A] rounded-full flex items-center justify-center mb-5">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
+              </div>
+              <h1 className="font-display text-[28px] font-bold mb-2">Account created!</h1>
+              <p className="text-[#555] text-[14px] mb-5">Welcome to Fresher, {authName || "there"}. We've sent a confirmation to your email and WhatsApp.</p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-3 bg-[#075E54]/10 border border-[#075E54]/20 px-4 py-3 rounded-lg">
+                  <span className="text-[18px]">💬</span>
+                  <div>
+                    <p className="text-[13px] font-semibold text-[#111]">WhatsApp confirmation sent</p>
+                    <p className="text-[12px] text-[#666]">{authPhone || "+65 XXXX XXXX"}</p>
+                  </div>
+                  <span className="ml-auto text-[#25D366] text-[11px] font-bold">✓ Sent</span>
+                </div>
+                <div className="flex items-center gap-3 bg-[#0E0E0E]/5 border border-[#0E0E0E]/10 px-4 py-3 rounded-lg">
+                  <span className="text-[18px]">✉️</span>
+                  <div>
+                    <p className="text-[13px] font-semibold text-[#111]">Email confirmation sent</p>
+                    <p className="text-[12px] text-[#666]">{authEmail || "your@email.com"}</p>
+                  </div>
+                  <span className="ml-auto text-[#CDFF3A] bg-[#111] text-[10px] font-bold px-2 py-0.5">✓ Sent</span>
+                </div>
+              </div>
+              <button onClick={() => setSignupConfirmed(true)}
+                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                Continue to Delivery →
               </button>
             </div>
           )}
@@ -131,8 +170,10 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                   </div>
                 ))}
               </div>
-              <button onClick={() => setAuthMode("guest")}
-                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors mb-3">
+              <button
+                disabled={!authEmail || !authPassword}
+                onClick={() => setAuthMode("signin_done")}
+                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors mb-3 disabled:opacity-40">
                 Sign In & Continue →
               </button>
               <p className="text-center text-[12px] text-[#aaa]">Forgot password? <span className="text-[#111] font-semibold cursor-pointer hover:underline">Reset it</span></p>
@@ -140,9 +181,28 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
           )}
 
           {/* ── STEP 1: DELIVERY ── */}
-          {authMode !== null && step === 1 && (
+          {(authMode === "guest" || authMode === "signin_done" || (authMode === "signup_done" && signupConfirmed)) && step === 1 && (
             <div>
-              <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-8">Delivery</h1>
+              <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-4">Delivery</h1>
+
+              {/* Guest warning banner */}
+              {authMode === "guest" && (
+                <div className="bg-[#FFF3CD] border border-[#F2C94C] px-4 py-4 mb-6 flex gap-3 items-start">
+                  <span className="text-[22px] shrink-0">⚠️</span>
+                  <div>
+                    <p className="font-bold text-[13px] text-[#7B5900] mb-1">You're checking out as a guest — you'll miss out on:</p>
+                    <ul className="text-[12px] text-[#7B5900] space-y-0.5 list-disc list-inside">
+                      <li>Fresher reward points (worth up to $12/month)</li>
+                      <li>Exclusive member discounts and early access deals</li>
+                      <li>Order history, easy reorders, and delivery tracking</li>
+                      <li>Referral bonuses — earn $10 credit per friend</li>
+                    </ul>
+                    <button onClick={() => setAuthMode(null)} className="mt-3 text-[12px] font-bold text-[#7B5900] underline hover:no-underline">
+                      Create a free account instead →
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Address — 4 fields only */}
               <div className="grid grid-cols-2 gap-3 mb-8">
@@ -195,7 +255,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
           )}
 
           {/* ── STEP 2: PAYMENT ── */}
-          {authMode !== null && step === 2 && (
+          {(authMode === "guest" || authMode === "signin_done" || (authMode === "signup_done" && signupConfirmed)) && step === 2 && (
             <div>
               <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-8">Payment</h1>
 
@@ -248,6 +308,27 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
               </button>
               <p className="text-[#aaa] text-[11px] text-center mt-1.5 mb-8">Singapore instant bank transfer — no card needed</p>
 
+              {/* Promo code */}
+              <div className="mb-5">
+                <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Promo Code</p>
+                <div className="flex gap-2">
+                  <input
+                    value={promoCode}
+                    onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); }}
+                    placeholder="e.g. FRESHER10"
+                    className="flex-1 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] font-mono outline-none focus:border-[#111] transition-colors uppercase"
+                  />
+                  <button
+                    onClick={() => { if (promoCode.length > 3) setPromoApplied(true); }}
+                    className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                    Apply
+                  </button>
+                </div>
+                {promoApplied && (
+                  <p className="text-green-600 text-[12px] mt-1.5 font-medium">✓ Code applied — 10% off your order!</p>
+                )}
+              </div>
+
               {/* Save card + auto-charge */}
               <div className="space-y-3 mb-6">
                 <label className="flex items-start gap-2 cursor-pointer">
@@ -262,7 +343,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                 </label>
               </div>
 
-              <button onClick={() => onComplete()}
+              <button onClick={() => onComplete(authMode === "guest")}
                 className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
                 Place Order — ${total.toFixed(2)}
               </button>
@@ -296,6 +377,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
               <div className="flex justify-between"><span className="text-[#888]">Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
               <div className="flex justify-between"><span className="text-[#888]">Delivery</span><span className="text-green-600 font-medium">Free</span></div>
               {useWallet && <div className="flex justify-between text-green-600"><span>Wallet credit</span><span>–$12.50</span></div>}
+              {promoApplied && <div className="flex justify-between text-green-600"><span>Promo ({promoCode})</span><span>–${promoDiscount.toFixed(2)}</span></div>}
             </div>
             <div className="border-t border-[#E5E2DA] pt-4 mt-2 flex justify-between items-center">
               <span className="font-bold">Total</span>
