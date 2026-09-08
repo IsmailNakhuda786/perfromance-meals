@@ -112,8 +112,9 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
 
                 {/* Log out toggle (prototype only) */}
                 <button onClick={() => setIsLoggedIn(false)}
-                  className="text-white/20 hover:text-white/50 transition-colors text-[9px] tracking-widest uppercase hidden lg:block">
-                  ↩ out
+                  className="hidden lg:flex items-center gap-1 border border-white/15 text-white/50 hover:border-white/40 hover:text-white transition-colors text-[10px] tracking-widest uppercase px-2.5 py-1.5">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
+                  Out
                 </button>
               </>
             ) : (

@@ -161,13 +161,13 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
           {/* Ready Series */}
           <div className="relative overflow-hidden group cursor-pointer border-r border-white/5" onClick={() => navigate("ready-to-go")}>
             <img src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=900&h=500&fit=crop&auto=format"
-              alt="Ready Series" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-45 group-hover:scale-105 transition-all duration-700" />
+              alt="Ready Series" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-35 group-hover:scale-105 transition-all duration-700" />
             <div className="relative px-8 sm:px-12 py-12 sm:py-16">
               <span className="font-mono text-[9px] tracking-[0.5em] text-[#CDFF3A] uppercase">01 / Ready Series</span>
               <h3 className="font-display text-[36px] sm:text-[48px] font-bold text-white mt-3 mb-3 leading-tight">
                 Heat. Eat.<br /><span className="text-[#CDFF3A]">Perform.</span>
               </h3>
-              <p className="text-white/45 text-[13px] sm:text-[14px] leading-relaxed mb-7 max-w-[320px]">
+              <p className="text-white/80 text-[13px] sm:text-[15px] leading-relaxed mb-7 max-w-[320px]">
                 9 rotating meals. Macro-accurate. Ready in 3 minutes from frozen. Same-day delivery across Singapore.
               </p>
               <div className="flex flex-wrap gap-3 items-center">
@@ -187,7 +187,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
           {/* Build-A-Box */}
           <div className="relative overflow-hidden group cursor-pointer" onClick={() => navigate("build-a-box")}>
             <img src="https://images.unsplash.com/photo-1607532941433-304659e8198a?w=900&h=500&fit=crop&auto=format"
-              alt="Build A Box" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-45 group-hover:scale-105 transition-all duration-700" />
+              alt="Build A Box" className="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-35 group-hover:scale-105 transition-all duration-700" />
             <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#7EE8B0] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
             <div className="relative px-8 sm:px-12 py-12 sm:py-16">
               <div className="flex items-center gap-3 mb-3">
@@ -197,7 +197,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
               <h3 className="font-display text-[36px] sm:text-[48px] font-bold text-white mb-3 leading-tight">
                 Your pick.<br /><span className="text-[#7EE8B0]">Your box.</span>
               </h3>
-              <p className="text-white/45 text-[13px] sm:text-[14px] leading-relaxed mb-7 max-w-[320px]">
+              <p className="text-white/80 text-[13px] sm:text-[15px] leading-relaxed mb-7 max-w-[320px]">
                 Mix and match from 9 meals. Choose 5, 10, 15 or 20 — the more you order, the less you pay per meal.
               </p>
               <div className="flex flex-wrap gap-3 items-center">
