@@ -263,24 +263,24 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
             <div className="w-full max-w-none">
               <div className="max-w-2xl mb-6">
                 <h1 className="text-xl sm:text-2xl font-bold mb-1">Pick Your Meals</h1>
-                <p className="text-[#666] mb-4">
-                  Recommended for <strong>{goal}</strong> — select at least <strong>{plan.meals}</strong> meals for your weekly rotation.
+                <p className="text-white/50 mb-4">
+                  Recommended for <strong className="text-white">{goal}</strong> — select at least <strong className="text-white">{plan.meals}</strong> meals for your weekly rotation.
                 </p>
                 {/* Sticky counter */}
-                <div className="flex items-center justify-between p-3 bg-white border border-[#E5E2DA]">
+                <div className="flex items-center justify-between p-3 bg-[#1A1A1A] border border-white/10">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[13px]"
                       style={{ backgroundColor: plan.accent, color: "#111" }}>
                       {selectedMeals.length}
                     </div>
-                    <span className="text-[14px] font-medium">
+                    <span className="text-[14px] font-medium text-white">
                       of {maxMeals} meals selected
                     </span>
                     {selectedMeals.length < plan.meals && (
-                      <span className="text-red-500 text-[12px]">— need {plan.meals - selectedMeals.length} more</span>
+                      <span className="text-red-400 text-[12px]">— need {plan.meals - selectedMeals.length} more</span>
                     )}
                   </div>
-                  <span className="text-[11px] text-[#888]">Max {maxMeals} for variety</span>
+                  <span className="text-[11px] text-white/40">Max {maxMeals} for variety</span>
                 </div>
               </div>
 
@@ -292,38 +292,64 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                   const recommended = PLAN_MEAL_CATS[goal]?.includes(meal.cat);
                   return (
                     <div key={meal.id}
-                      className={`bg-white overflow-hidden border-2 transition-all ${isSelected ? "border-[#111] shadow-md" : "border-[#D0CCC4] hover:border-[#999]"} ${atMax ? "opacity-40" : ""}`}>
-                      <div className="relative h-52 overflow-hidden cursor-pointer" onClick={() => !atMax && toggleMeal(meal.id)}>
-                        {recommended && !isSelected && (
+                      className={`group bg-[#1A1A1A] overflow-hidden transition-all ${isSelected ? "ring-2 ring-[#CDFF3A]/60 shadow-lg" : "hover:ring-1 hover:ring-white/20"} ${atMax ? "opacity-40" : ""}`}>
+                      {/* Image */}
+                      <div className="relative h-52 bg-[#222] overflow-hidden cursor-pointer" onClick={() => !atMax && toggleMeal(meal.id)}>
+                        {meal.badge && !isSelected && (
+                          <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold ${meal.badge === "Bestseller" || meal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111]" : "bg-black/50 text-white backdrop-blur-sm border border-white/10"}`}>
+                            {meal.badge}
+                          </div>
+                        )}
+                        {recommended && !isSelected && !meal.badge && (
                           <div className="absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold"
                             style={{ backgroundColor: plan.accent, color: "#111" }}>
                             Recommended
                           </div>
                         )}
-                        <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
+                        <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         {isSelected && (
-                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                             <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold"
                               style={{ backgroundColor: plan.accent, color: "#111" }}>✓</div>
                           </div>
                         )}
                       </div>
-                      <div className="p-4">
-                        <h3 className="text-[14px] font-medium leading-snug mb-3">{meal.name}</h3>
+                      {/* Info */}
+                      <div className="p-5">
+                        {/* Meal type badge */}
+                        {(() => {
+                          const typeMap: Record<string, { label: string; bg: string; text: string }> = {
+                            "high-carb":    { label: "High Carb",    bg: "#F2C94C22", text: "#F2C94C" },
+                            "low-carb":     { label: "Low Carb",     bg: "#7EE8B022", text: "#7EE8B0" },
+                            "just-protein": { label: "Just Protein", bg: "#A78BFA22", text: "#A78BFA" },
+                            "breakfast":    { label: "Breakfast",    bg: "#FB923C22", text: "#FB923C" },
+                          };
+                          const t = typeMap[meal.cat];
+                          return t ? (
+                            <span className="inline-block text-[9px] font-mono font-bold tracking-[0.25em] uppercase px-2 py-1 mb-2 border"
+                              style={{ color: t.text, backgroundColor: t.bg, borderColor: t.text + "44" }}>
+                              {t.label}
+                            </span>
+                          ) : null;
+                        })()}
+                        <div className="flex items-start justify-between mb-3 gap-2">
+                          <h3 className="text-white text-[14px] font-medium leading-snug">{meal.name}</h3>
+                          <span className="text-[#CDFF3A] font-bold text-[15px] whitespace-nowrap font-mono shrink-0">${meal.price.toFixed(2)}</span>
+                        </div>
                         <div className="grid grid-cols-4 gap-1 mb-4">
                           {[{ l: "CAL", v: meal.cal }, { l: "PRO", v: `${meal.protein}g` }, { l: "CARB", v: `${meal.carbs}g` }, { l: "FAT", v: `${meal.fat}g` }].map((m) => (
-                            <div key={m.l} className="bg-[#F7F5F0] px-1.5 py-2 text-center">
-                              <div className="font-mono text-[9px] text-[#999] mb-0.5 tracking-wider">{m.l}</div>
-                              <div className="font-mono text-[11px] text-[#111] font-medium">{m.v}</div>
+                            <div key={m.l} className="bg-[#252525] px-1.5 py-2 text-center">
+                              <div className="font-mono text-[9px] text-white/25 mb-0.5 tracking-wider">{m.l}</div>
+                              <div className="font-mono text-[11px] text-white font-medium">{m.v}</div>
                             </div>
                           ))}
                         </div>
                         <div className="flex items-center justify-between">
-                          <div className="text-[11px] text-[#888]">
-                            ★{meal.rating} ({meal.reviews})
+                          <div className="text-[11px] text-white/35">
+                            <span className="text-[#CDFF3A]">★</span> {meal.rating} ({meal.reviews})
                           </div>
                           <button onClick={() => !atMax && toggleMeal(meal.id)} disabled={atMax}
-                            className={`px-4 py-2 text-[11px] font-bold tracking-[0.12em] uppercase transition-all ${isSelected ? "bg-[#111] text-white" : atMax ? "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed" : "border border-[#D0CCC4] text-[#111] hover:bg-[#111] hover:text-white hover:border-[#111]"}`}>
+                            className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${isSelected ? "bg-[#CDFF3A] text-[#111]" : atMax ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-white/10 text-white hover:bg-[#CDFF3A] hover:text-[#111]"}`}>
                             {isSelected ? "✓ Selected" : "Select"}
                           </button>
                         </div>
