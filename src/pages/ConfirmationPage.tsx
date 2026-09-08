@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Page } from "@/data";
 
 interface Props {
@@ -9,6 +10,13 @@ interface Props {
 }
 
 export default function ConfirmationPage({ navigate, orderType, isGuest = false, promoCode = "", promoDiscount = 0 }: Props) {
+  const [showSignup, setShowSignup] = useState(false);
+  const [signupDone, setSignupDone] = useState(false);
+  const [suName, setSuName] = useState("");
+  const [suEmail, setSuEmail] = useState("");
+  const [suPhone, setSuPhone] = useState("");
+  const [suPassword, setSuPassword] = useState("");
+
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col items-center justify-center px-6 py-12 sm:py-20">
       <div className="max-w-[600px] w-full text-center">
@@ -165,7 +173,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
             <div className="font-mono text-[10px] tracking-[0.3em] text-[#F2C94C] uppercase mb-2">You left points on the table</div>
             <div className="font-display text-[22px] font-bold mb-1">This order would've earned <span className="text-[#CDFF3A]">+58 pts</span></div>
             <p className="text-white/50 text-[13px] mb-4">Create a free account to earn points, get exclusive discounts, and track all your orders.</p>
-            <button onClick={() => navigate("account")}
+            <button onClick={() => setShowSignup(true)}
               className="bg-[#CDFF3A] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
               Sign Up — It's Free →
             </button>
@@ -193,6 +201,87 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
           )}
         </div>
       </div>
+
+      {/* ── Sign-Up Modal ── */}
+      {showSignup && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70" onClick={() => !signupDone && setShowSignup(false)} />
+          <div className="relative bg-white w-full max-w-[440px] p-8 shadow-2xl">
+            <button onClick={() => setShowSignup(false)} className="absolute top-4 right-4 text-[#aaa] hover:text-[#111] transition-colors">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+
+            {!signupDone ? (
+              <>
+                <div className="font-mono text-[10px] tracking-[0.4em] text-[#aaa] uppercase mb-2">Create Account</div>
+                <h2 className="font-display text-[26px] font-bold mb-1">Join Fresher</h2>
+                <p className="text-[#666] text-[13px] mb-6">Earn points on your order history, get exclusive discounts, and track every delivery.</p>
+
+                {/* Points incentive */}
+                <div className="bg-[#CDFF3A]/20 border border-[#CDFF3A]/50 px-4 py-3 mb-6 flex items-center gap-3">
+                  <span className="text-[22px]">🪙</span>
+                  <p className="text-[12px] text-[#555]">
+                    Your past order would have earned <strong className="text-[#111]">+58 pts</strong> — future orders will from now on.
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-5">
+                  {[
+                    { label: "Full Name", val: suName, set: setSuName, type: "text", placeholder: "Your name" },
+                    { label: "Email", val: suEmail, set: setSuEmail, type: "email", placeholder: "you@email.com" },
+                    { label: "Phone (WhatsApp updates)", val: suPhone, set: setSuPhone, type: "tel", placeholder: "+65 9123 4567" },
+                    { label: "Password", val: suPassword, set: setSuPassword, type: "password", placeholder: "Min. 8 characters" },
+                  ].map((f) => (
+                    <div key={f.label}>
+                      <label className="text-[10px] font-semibold tracking-[0.15em] uppercase text-[#888] block mb-1">{f.label}</label>
+                      <input type={f.type} value={f.val} onChange={(e) => f.set(e.target.value)} placeholder={f.placeholder}
+                        className="w-full border border-[#D0CCC4] px-4 py-3 text-[14px] bg-white outline-none focus:border-[#111] transition-colors" />
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  disabled={!suName || !suEmail || !suPassword}
+                  onClick={() => setSignupDone(true)}
+                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors disabled:opacity-40">
+                  Create My Account →
+                </button>
+                <p className="text-center text-[11px] text-[#aaa] mt-3">Free forever · No spam · Cancel anytime</p>
+              </>
+            ) : (
+              <>
+                <div className="w-14 h-14 bg-[#CDFF3A] rounded-full flex items-center justify-center mb-5">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
+                </div>
+                <h2 className="font-display text-[26px] font-bold mb-2">Welcome to Fresher, {suName || "there"}!</h2>
+                <p className="text-[#555] text-[14px] mb-5">Your account is ready. We've sent confirmation details to your email and WhatsApp.</p>
+                <div className="space-y-2 mb-6">
+                  <div className="flex items-center gap-3 bg-[#075E54]/10 border border-[#075E54]/20 px-4 py-3">
+                    <span className="text-[16px]">💬</span>
+                    <div className="flex-1">
+                      <p className="text-[13px] font-semibold">WhatsApp confirmation</p>
+                      <p className="text-[12px] text-[#666]">{suPhone || "+65 XXXX XXXX"}</p>
+                    </div>
+                    <span className="text-[#25D366] text-[11px] font-bold">✓ Sent</span>
+                  </div>
+                  <div className="flex items-center gap-3 bg-[#0E0E0E]/5 border border-[#0E0E0E]/10 px-4 py-3">
+                    <span className="text-[16px]">✉️</span>
+                    <div className="flex-1">
+                      <p className="text-[13px] font-semibold">Email confirmation</p>
+                      <p className="text-[12px] text-[#666]">{suEmail || "your@email.com"}</p>
+                    </div>
+                    <span className="text-[#111] bg-[#CDFF3A] text-[10px] font-bold px-2 py-0.5">✓ Sent</span>
+                  </div>
+                </div>
+                <button onClick={() => { setShowSignup(false); navigate("account"); }}
+                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                  Go to My Account →
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
