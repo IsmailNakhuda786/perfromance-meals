@@ -84,6 +84,8 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
   const [reviewOrderId, setReviewOrderId] = useState<string | null>(null);
   const [reviewStars, setReviewStars] = useState(5);
   const [reviewText, setReviewText] = useState("");
+  const [menuMode, setMenuMode] = useState<"browse" | "review">("review");
+  const [activeWeek, setActiveWeek] = useState(0);
 
   const plan = PLANS.find((p) => p.name === activePlan) || PLANS[1];
 
@@ -523,8 +525,6 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 2: [{ mealId: 5, slot: "Lunch" }],
                 3: [{ mealId: 3, slot: "Lunch" }, { mealId: 2, slot: "Dinner" }],
               };
-              const [menuMode, setMenuMode] = (useState as <T>(v: T) => [T, (v: T) => void])<"browse" | "review">("review");
-              const [activeWeek, setActiveWeek] = (useState as <T>(v: T) => [T, (v: T) => void])<number>(0);
               const currentWeek = WEEKS[activeWeek];
               const slots = MEAL_SLOTS[activeWeek] || MEAL_SLOTS[0];
               const isPastCutoff = activeWeek === 0;
