@@ -10,12 +10,14 @@ interface Props {
 type Tab = "dashboard" | "subscription" | "orders" | "wallet" | "settings";
 
 const ORDERS = [
-  { id: "FRE-20250901-7721", date: "1 Sep 2025", items: "Herb Chicken ×2, Teriyaki ×1", total: 36.70, status: "Delivered", type: "ready" },
-  { id: "FRE-20250825-7698", date: "25 Aug 2025", items: "Meal Plan — Maintain (Week 12)", total: 178.00, status: "Delivered", type: "plan" },
-  { id: "FRE-20250818-7641", date: "18 Aug 2025", items: "Build-A-Box ×10", total: 119.00, status: "Delivered", type: "box" },
-  { id: "FRE-20250811-7588", date: "11 Aug 2025", items: "Meal Plan — Maintain (Week 11)", total: 178.00, status: "Delivered", type: "plan" },
-  { id: "FRE-20250804-7522", date: "4 Aug 2025", items: "Low Carb Bundle, Salmon ×2", total: 83.60, status: "Delivered", type: "ready" },
+  { id: "FRE-20250901-7721", date: "1 Sep 2025", items: "Herb Chicken ×2, Teriyaki ×1", total: 36.70, originalTotal: 40.78, status: "Delivered", type: "ready", promo: "FRESHER10", promoSaving: 4.08 },
+  { id: "FRE-20250825-7698", date: "25 Aug 2025", items: "Meal Plan — Maintain (Week 12)", total: 178.00, originalTotal: 178.00, status: "Delivered", type: "plan", promo: null, promoSaving: 0 },
+  { id: "FRE-20250818-7641", date: "18 Aug 2025", items: "Build-A-Box ×10", total: 101.15, originalTotal: 119.00, status: "Delivered", type: "box", promo: "WELCOME15", promoSaving: 17.85 },
+  { id: "FRE-20250811-7588", date: "11 Aug 2025", items: "Meal Plan — Maintain (Week 11)", total: 178.00, originalTotal: 178.00, status: "Delivered", type: "plan", promo: null, promoSaving: 0 },
+  { id: "FRE-20250804-7522", date: "4 Aug 2025", items: "Low Carb Bundle, Salmon ×2", total: 83.60, originalTotal: 83.60, status: "Delivered", type: "ready", promo: null, promoSaving: 0 },
 ];
+
+const PROMO_HISTORY = ORDERS.filter((o) => o.promo);
 
 const WALLET_HISTORY = [
   { date: "1 Sep 2025", desc: "Purchase — #FRE-20250901-7721", pts: +36, type: "earn" },
@@ -681,7 +683,42 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
         {/* ══ ORDERS ══ */}
         {tab === "orders" && (
           <div>
-            <h2 className="font-display text-[28px] font-bold mb-8">Order History</h2>
+            <h2 className="font-display text-[28px] font-bold mb-6">Order History</h2>
+
+            {/* Promo Code Savings Summary */}
+            {PROMO_HISTORY.length > 0 && (
+              <div className="bg-[#111] text-white p-5 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <div className="font-mono text-[10px] tracking-[0.3em] text-[#CDFF3A] uppercase mb-1">Promo Codes Used</div>
+                    <div className="font-display text-[22px] font-bold">
+                      Total saved: <span className="text-[#CDFF3A]">${PROMO_HISTORY.reduce((s, o) => s + o.promoSaving, 0).toFixed(2)}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-white/40 text-[12px]">{PROMO_HISTORY.length} code{PROMO_HISTORY.length > 1 ? "s" : ""} redeemed</div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {PROMO_HISTORY.map((o) => (
+                    <div key={o.id} className="flex items-center justify-between bg-white/5 px-4 py-2.5">
+                      <div className="flex items-center gap-3">
+                        <span className="bg-[#CDFF3A] text-[#111] text-[10px] font-black tracking-widest px-2 py-0.5">{o.promo}</span>
+                        <div>
+                          <div className="text-[13px] font-medium">{o.items}</div>
+                          <div className="text-white/40 text-[11px]">{o.id} · {o.date}</div>
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0 ml-4">
+                        <div className="text-[#7EE8B0] font-bold text-[14px]">–${o.promoSaving.toFixed(2)}</div>
+                        <div className="text-white/40 text-[11px]">was ${o.originalTotal.toFixed(2)}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="space-y-3">
               {ORDERS.map((o) => (
                 <div key={o.id} className="bg-white border border-[#E5E2DA] p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -690,14 +727,20 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                       {o.type === "plan" ? "🥗" : o.type === "box" ? "📦" : "❄️"}
                     </div>
                     <div>
-                      <div className="font-medium text-[14px]">{o.items}</div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-[14px]">{o.items}</span>
+                        {o.promo && (
+                          <span className="bg-[#CDFF3A] text-[#111] text-[9px] font-black tracking-widest px-1.5 py-0.5">{o.promo}</span>
+                        )}
+                      </div>
                       <div className="text-[#999] text-[12px] mt-0.5">{o.id} · {o.date}</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-5 sm:shrink-0">
                     <div className="text-right">
                       <div className="font-bold text-[15px]">${o.total.toFixed(2)}</div>
-                      <div className="text-[12px] text-green-600 font-medium">{o.status}</div>
+                      {o.promo && <div className="text-green-600 text-[11px] font-medium">saved ${o.promoSaving.toFixed(2)}</div>}
+                      {!o.promo && <div className="text-[12px] text-green-600 font-medium">{o.status}</div>}
                     </div>
                     <div className="flex gap-2">
                       <button className="border border-[#D0CCC4] px-4 py-2 text-[12px] hover:border-[#111] transition-colors whitespace-nowrap">Reorder</button>

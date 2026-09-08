@@ -36,6 +36,8 @@ export default function App() {
   const [savedAddress, setSavedAddress] = useState<SavedAddress | null>(null);
   const [lastOrderType, setLastOrderType] = useState<"ready" | "plan">("ready");
   const [lastOrderGuest, setLastOrderGuest] = useState(false);
+  const [lastPromoCode, setLastPromoCode] = useState("");
+  const [lastPromoDiscount, setLastPromoDiscount] = useState(0);
   const [accountInitialTab, setAccountInitialTab] = useState<"dashboard" | "settings">("dashboard");
   const [accountInitialSection, setAccountInitialSection] = useState<string | undefined>(undefined);
   const [showPromo, setShowPromo] = useState(false);
@@ -146,8 +148,8 @@ export default function App() {
           onCheckoutComplete={(addr) => { handlePlanCheckout(addr); navigate("confirmation"); }}
         />
       )}
-      {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} onComplete={(isGuest) => { setLastOrderType("ready"); setLastOrderGuest(isGuest); navigate("confirmation"); }} />}
-      {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} isGuest={lastOrderGuest} />}
+      {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} onComplete={(isGuest, promoCode, promoDiscount) => { setLastOrderType("ready"); setLastOrderGuest(isGuest); setLastPromoCode(promoCode); setLastPromoDiscount(promoDiscount); navigate("confirmation"); }} />}
+      {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} isGuest={lastOrderGuest} promoCode={lastPromoCode} promoDiscount={lastPromoDiscount} />}
       {page === "account" && <AccountPage navigate={navigate} initialTab={accountInitialTab} initialSection={accountInitialSection} />}
       {page === "how-it-works" && <HowItWorksPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "gift-card" && <GiftCardPage navigate={navigate} />}

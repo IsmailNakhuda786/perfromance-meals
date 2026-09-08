@@ -4,9 +4,11 @@ interface Props {
   navigate: (page: Page) => void;
   orderType: "ready" | "plan";
   isGuest?: boolean;
+  promoCode?: string;
+  promoDiscount?: number;
 }
 
-export default function ConfirmationPage({ navigate, orderType, isGuest = false }: Props) {
+export default function ConfirmationPage({ navigate, orderType, isGuest = false, promoCode = "", promoDiscount = 0 }: Props) {
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col items-center justify-center px-6 py-12 sm:py-20">
       <div className="max-w-[600px] w-full text-center">
@@ -42,11 +44,13 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false 
               { label: "Delivery Address", value: "123 Toa Payoh Lor 4, #08-22, S310123" },
               { label: "Delivery Time", value: "Today · 6:00am – 9:00am" },
               { label: "Estimated Arrival", value: "Monday, 4 September 2025" },
-              { label: "Payment", value: "Visa ending 4242 · $58.00" },
+              { label: "Subtotal", value: "$58.00" },
+              ...(promoCode ? [{ label: `Promo (${promoCode})`, value: `–$${promoDiscount.toFixed(2)}` }] : []),
+              { label: "Payment", value: `Visa ending 4242 · $${promoCode ? (58 - promoDiscount).toFixed(2) : "58.00"}` },
             ].map((d) => (
-              <div key={d.label} className="flex items-start justify-between gap-4">
-                <span className="text-[#999] text-[13px] shrink-0">{d.label}</span>
-                <span className="text-[#111] text-[13px] font-medium text-right">{d.value}</span>
+              <div key={d.label} className={`flex items-start justify-between gap-4 ${d.label.startsWith("Promo") ? "text-green-600" : ""}`}>
+                <span className={`text-[13px] shrink-0 ${d.label.startsWith("Promo") ? "font-medium" : "text-[#999]"}`}>{d.label}</span>
+                <span className={`text-[13px] font-medium text-right ${d.label.startsWith("Promo") ? "" : "text-[#111]"}`}>{d.value}</span>
               </div>
             ))}
           </div>

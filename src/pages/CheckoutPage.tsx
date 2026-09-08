@@ -5,7 +5,7 @@ interface Props {
   navigate: (page: Page) => void;
   cart: CartItem[];
   savedAddress: { name: string; phone: string; line1: string; unit: string; postal: string } | null;
-  onComplete: (isGuest: boolean) => void;
+  onComplete: (isGuest: boolean, promoCode: string, promoDiscount: number) => void;
 }
 
 const DATES = ["Mon 4", "Tue 5", "Wed 6", "Thu 7", "Fri 8", "Sat 9"];
@@ -27,10 +27,28 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
   const [autoCharge, setAutoCharge] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
+  const [promoError, setPromoError] = useState<"invalid" | "expired" | null>(null);
+
+  const VALID_PROMOS: Record<string, { discount: number; expired?: boolean }> = {
+    "FRESHER10": { discount: 0.10 },
+    "WELCOME15": { discount: 0.15 },
+    "SUMMER20":  { discount: 0.20, expired: true },
+    "FITLIFE":   { discount: 0.12 },
+  };
+
+  const handleApplyPromo = () => {
+    const code = promoCode.trim().toUpperCase();
+    const entry = VALID_PROMOS[code];
+    if (!entry) { setPromoError("invalid"); setPromoApplied(false); return; }
+    if (entry.expired) { setPromoError("expired"); setPromoApplied(false); return; }
+    setPromoError(null);
+    setPromoApplied(true);
+  };
   const [signupConfirmed, setSignupConfirmed] = useState(false);
 
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const promoDiscount = promoApplied ? subtotal * 0.1 : 0;
+  const promoRate = promoApplied ? (VALID_PROMOS[promoCode.trim().toUpperCase()]?.discount ?? 0) : 0;
+  const promoDiscount = subtotal * promoRate;
   const total = Math.max(0, subtotal - (useWallet ? 12.5 : 0) - promoDiscount);
 
   return (
@@ -310,22 +328,34 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
 
               {/* Promo code */}
               <div className="mb-5">
-                <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Promo Code</p>
+                <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Promo / Discount Code</p>
                 <div className="flex gap-2">
                   <input
                     value={promoCode}
-                    onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); }}
+                    onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoError(null); }}
                     placeholder="e.g. FRESHER10"
-                    className="flex-1 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] font-mono outline-none focus:border-[#111] transition-colors uppercase"
+                    className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
                   />
                   <button
-                    onClick={() => { if (promoCode.length > 3) setPromoApplied(true); }}
+                    onClick={handleApplyPromo}
                     className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
                     Apply
                   </button>
                 </div>
                 {promoApplied && (
-                  <p className="text-green-600 text-[12px] mt-1.5 font-medium">✓ Code applied — 10% off your order!</p>
+                  <p className="text-green-600 text-[12px] mt-1.5 font-medium flex items-center gap-1.5">
+                    <span>✓</span> Code <strong>{promoCode}</strong> applied — {Math.round(promoRate * 100)}% off (–${promoDiscount.toFixed(2)})
+                  </p>
+                )}
+                {promoError === "invalid" && (
+                  <p className="text-red-500 text-[12px] mt-1.5 font-medium flex items-center gap-1.5">
+                    <span>✕</span> Invalid promo code. Check spelling or try another.
+                  </p>
+                )}
+                {promoError === "expired" && (
+                  <p className="text-red-500 text-[12px] mt-1.5 font-medium flex items-center gap-1.5">
+                    <span>⏰</span> This promo code has expired. Check our latest offers!
+                  </p>
                 )}
               </div>
 
@@ -343,7 +373,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                 </label>
               </div>
 
-              <button onClick={() => onComplete(authMode === "guest")}
+              <button onClick={() => onComplete(authMode === "guest", promoApplied ? promoCode.trim().toUpperCase() : "", promoDiscount)}
                 className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
                 Place Order — ${total.toFixed(2)}
               </button>
