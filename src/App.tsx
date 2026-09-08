@@ -40,14 +40,14 @@ export default function App() {
   const [showPromo, setShowPromo] = useState(false);
 
   useEffect(() => {
-    if (page !== "home") return;
     const timer = setTimeout(() => setShowPromo(true), 1800);
     return () => clearTimeout(timer);
-  }, [page]);
+  }, []);
 
   const navigate = (p: Page) => {
     setPage(p);
     window.scrollTo({ top: 0, behavior: "smooth" });
+    if (p === "home") setTimeout(() => setShowPromo(true), 1800);
   };
 
   const navigateToAccountReferral = () => {
