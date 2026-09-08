@@ -41,6 +41,12 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
   const [address, setAddress] = useState({ name: "", phone: "", line1: "", unit: "", postal: "" });
   const [saveCard, setSaveCard] = useState(false);
   const [autoChargeConsent, setAutoChargeConsent] = useState(false);
+  type WizardAuthMode = null | "guest" | "signin" | "signup" | "signin_done" | "signup_done";
+  const [wizardAuthMode, setWizardAuthMode] = useState<WizardAuthMode>(null);
+  const [waEmail, setWaEmail] = useState("");
+  const [waName, setWaName] = useState("");
+  const [waPhone, setWaPhone] = useState("");
+  const [waPassword, setWaPassword] = useState("");
 
   const plan = PLANS.find((p) => p.name === goal)!;
   const price = billing === "week" ? plan.priceWeek : plan.priceMonth;
@@ -527,6 +533,86 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
           {/* ─── Step 5: Payment ─── */}
           {step === 5 && (
             <div>
+              {/* Auth gate — must choose account mode before payment */}
+              {wizardAuthMode === null && (
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-bold mb-1">Almost there!</h1>
+                  <p className="text-[#666] mb-6">Sign in or create an account to track your plan, earn rewards points, and manage deliveries.</p>
+
+                  {/* Points incentive */}
+                  <div className="bg-[#111] text-white rounded-xl p-4 mb-6 flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#CDFF3A] rounded-full flex items-center justify-center shrink-0 text-[#111] text-lg font-bold">🪙</div>
+                    <div>
+                      <p className="font-semibold text-[14px]">Earn <span className="text-[#CDFF3A]">+{Math.round(Number(price) * 1.5)} points</span> on this plan</p>
+                      <p className="text-white/50 text-[12px]">Redeem for free meals and discounts. Only for account holders.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-3 mb-4">
+                    <button onClick={() => setWizardAuthMode("signup")}
+                      className="w-full bg-[#CDFF3A] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#b8e832] transition-colors">
+                      Create Account &amp; Subscribe
+                    </button>
+                    <button onClick={() => setWizardAuthMode("signin")}
+                      className="w-full border-2 border-[#111] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#111] hover:text-white transition-colors">
+                      Sign In to Existing Account
+                    </button>
+                    <button onClick={() => setWizardAuthMode("guest")}
+                      className="w-full border border-[#D0CCC4] text-[#666] py-4 rounded-xl font-medium text-[14px] hover:border-[#999] transition-colors">
+                      Continue as Guest
+                    </button>
+                  </div>
+                  <p className="text-center text-[12px] text-[#aaa]">Guest checkout — no points, no order history</p>
+                </div>
+              )}
+
+              {/* Sign Up form */}
+              {wizardAuthMode === "signup" && (
+                <div>
+                  <button onClick={() => setWizardAuthMode(null)} className="text-[#666] text-sm mb-4 flex items-center gap-1 hover:text-[#111]">← Back</button>
+                  <h1 className="text-xl font-bold mb-1">Create Your Account</h1>
+                  <p className="text-[#666] mb-5 text-sm">Takes 30 seconds — earn points from day one.</p>
+                  <div className="flex flex-col gap-3 mb-5">
+                    <input value={waName} onChange={(e) => setWaName(e.target.value)} type="text" placeholder="Full name"
+                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    <input value={waEmail} onChange={(e) => setWaEmail(e.target.value)} type="email" placeholder="Email address"
+                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    <input value={waPhone} onChange={(e) => setWaPhone(e.target.value)} type="tel" placeholder="Phone (WhatsApp updates)"
+                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    <input value={waPassword} onChange={(e) => setWaPassword(e.target.value)} type="password" placeholder="Create password"
+                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                  </div>
+                  <button disabled={!waName || !waEmail || !waPassword}
+                    onClick={() => setWizardAuthMode("signup_done")}
+                    className="w-full bg-[#CDFF3A] text-[#111] py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#b8e832] transition-colors">
+                    Continue to Payment →
+                  </button>
+                </div>
+              )}
+
+              {/* Sign In form */}
+              {wizardAuthMode === "signin" && (
+                <div>
+                  <button onClick={() => setWizardAuthMode(null)} className="text-[#666] text-sm mb-4 flex items-center gap-1 hover:text-[#111]">← Back</button>
+                  <h1 className="text-xl font-bold mb-1">Sign In</h1>
+                  <p className="text-[#666] mb-5 text-sm">Welcome back — let"s activate your plan.</p>
+                  <div className="flex flex-col gap-3 mb-5">
+                    <input value={waEmail} onChange={(e) => setWaEmail(e.target.value)} type="email" placeholder="Email address"
+                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    <input value={waPassword} onChange={(e) => setWaPassword(e.target.value)} type="password" placeholder="Password"
+                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                  </div>
+                  <button disabled={!waEmail || !waPassword}
+                    onClick={() => setWizardAuthMode("signin_done")}
+                    className="w-full bg-[#111] text-white py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#222] transition-colors">
+                    Sign In &amp; Continue →
+                  </button>
+                </div>
+              )}
+
+              {/* Payment form — shown after auth chosen */}
+              {wizardAuthMode !== null && wizardAuthMode !== "signup" && wizardAuthMode !== "signin" && (
+              <div>
               <h1 className="text-xl sm:text-2xl font-bold mb-1">Payment</h1>
               <p className="text-[#666] mb-6">Enter your card details to activate your meal plan.</p>
 
@@ -637,6 +723,8 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
               <p className="text-center text-xs text-[#999] mt-4">
                 Cancel anytime from your account. No lock-in.
               </p>
+              </div>
+              )}
             </div>
           )}
 
