@@ -18,6 +18,23 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [logoutToast, setLogoutToast] = useState(false);
 
+  // Login modal state
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginTab, setLoginTab] = useState<"login" | "forgot" | "forgot_sent">("login");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+
+  const openLogin = () => { setLoginTab("login"); setLoginEmail(""); setLoginPassword(""); setLoginError(false); setShowLoginModal(true); setMobileOpen(false); };
+  const handleLogin = () => {
+    if (!loginEmail || !loginPassword) { setLoginError(true); return; }
+    setIsLoggedIn(true);
+    setShowLoginModal(false);
+    go("account");
+  };
+  const handleForgotSend = () => { setLoginTab("forgot_sent"); };
+
   const handleLogout = () => {
     setIsLoggedIn(false);
     setMobileOpen(false);
@@ -126,7 +143,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
             ) : (
               <>
                 {/* Login / Sign Up */}
-                <button onClick={() => { setIsLoggedIn(true); go("account"); }}
+                <button onClick={openLogin}
                   className="text-white/60 hover:text-white transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block whitespace-nowrap">
                   Log In
                 </button>
@@ -203,7 +220,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
               ) : (
                 <>
                   <div className="flex gap-3 px-3 py-4 border-b border-white/5">
-                    <button onClick={() => { setIsLoggedIn(true); go("account"); }}
+                    <button onClick={openLogin}
                       className="flex-1 border border-white/20 text-white py-3 text-[13px] font-bold tracking-widest uppercase hover:bg-white/10 transition-colors">
                       Log In
                     </button>
@@ -223,6 +240,117 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
           </div>
         )}
       </nav>
+
+      {/* ── LOGIN MODAL ── */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowLoginModal(false)} />
+          <div className="relative bg-white w-full max-w-[420px] shadow-2xl">
+            {/* Header */}
+            <div className="bg-[#111] px-8 pt-8 pb-6">
+              <button onClick={() => setShowLoginModal(false)} className="absolute top-4 right-4 text-white/30 hover:text-white transition-colors">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+              </button>
+              <div className="font-display text-[22px] font-bold text-white mb-1">
+                {loginTab === "login" && <>Welcome back<span className="text-[#CDFF3A]">.</span></>}
+                {loginTab === "forgot" && <>Reset password<span className="text-[#CDFF3A]">.</span></>}
+                {loginTab === "forgot_sent" && <>Check your inbox<span className="text-[#CDFF3A]">.</span></>}
+              </div>
+              <p className="text-white/40 text-[12px]">
+                {loginTab === "login" && "Sign in to access your account, points and orders."}
+                {loginTab === "forgot" && "Enter your email and we'll send a reset link."}
+                {loginTab === "forgot_sent" && `A reset link has been sent to ${forgotEmail}.`}
+              </p>
+            </div>
+
+            <div className="px-8 py-7">
+              {loginTab === "login" && (
+                <>
+                  <div className="mb-4">
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Email address</label>
+                    <input
+                      type="email" value={loginEmail} onChange={(e) => { setLoginEmail(e.target.value); setLoginError(false); }}
+                      placeholder="jerome@email.com"
+                      className={`w-full border px-4 py-3 text-[14px] outline-none transition-colors ${loginError && !loginEmail ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`}
+                    />
+                  </div>
+                  <div className="mb-2">
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Password</label>
+                    <input
+                      type="password" value={loginPassword} onChange={(e) => { setLoginPassword(e.target.value); setLoginError(false); }}
+                      placeholder="••••••••"
+                      className={`w-full border px-4 py-3 text-[14px] outline-none transition-colors ${loginError && !loginPassword ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`}
+                    />
+                  </div>
+                  <div className="flex justify-end mb-5">
+                    <button onClick={() => { setForgotEmail(loginEmail); setLoginTab("forgot"); }} className="text-[11px] text-[#888] hover:text-[#111] transition-colors underline underline-offset-2">
+                      Forgot password?
+                    </button>
+                  </div>
+                  {loginError && (
+                    <div className="bg-red-50 border border-red-200 px-4 py-3 text-[12px] text-red-700 mb-4">
+                      Please enter your email and password to continue.
+                    </div>
+                  )}
+                  <button onClick={handleLogin}
+                    className="w-full bg-[#111] text-white py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors mb-4">
+                    Sign In
+                  </button>
+                  <div className="text-center text-[12px] text-[#888]">
+                    No account?{" "}
+                    <button onClick={() => { setShowLoginModal(false); setIsLoggedIn(true); go("account"); }} className="text-[#111] font-semibold hover:text-[#CDFF3A] transition-colors underline underline-offset-2">
+                      Create one free →
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {loginTab === "forgot" && (
+                <>
+                  <div className="mb-5">
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Email address</label>
+                    <input
+                      type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)}
+                      placeholder="jerome@email.com"
+                      className="w-full border border-[#D0CCC4] focus:border-[#111] px-4 py-3 text-[14px] outline-none transition-colors"
+                    />
+                  </div>
+                  <button onClick={handleForgotSend}
+                    className="w-full bg-[#111] text-white py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors mb-4">
+                    Send Reset Link
+                  </button>
+                  <button onClick={() => setLoginTab("login")} className="w-full text-center text-[12px] text-[#888] hover:text-[#111] transition-colors">
+                    ← Back to sign in
+                  </button>
+                </>
+              )}
+
+              {loginTab === "forgot_sent" && (
+                <>
+                  <div className="flex flex-col items-center text-center py-4">
+                    <div className="w-14 h-14 bg-[#CDFF3A] rounded-full flex items-center justify-center mb-5">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
+                    </div>
+                    <p className="text-[14px] text-[#444] mb-1">Reset link sent to</p>
+                    <p className="text-[14px] font-semibold text-[#111] mb-6">{forgotEmail}</p>
+                    <div className="w-full bg-[#075E54] text-white px-5 py-3 flex items-center gap-3 mb-3">
+                      <span className="text-[18px]">💬</span>
+                      <div className="text-left flex-1">
+                        <div className="text-[12px] font-semibold">WhatsApp link also sent</div>
+                        <div className="text-[11px] text-white/50">Tap the link in your chat to reset</div>
+                      </div>
+                      <span className="text-[#25D366] text-[11px] font-bold">✓ Sent</span>
+                    </div>
+                    <button onClick={() => setLoginTab("login")} className="text-[12px] text-[#888] hover:text-[#111] transition-colors underline underline-offset-2 mt-2">
+                      Back to sign in
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Logout toast */}
       {logoutToast && (

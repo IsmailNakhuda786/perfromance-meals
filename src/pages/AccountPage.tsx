@@ -960,15 +960,48 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   <button onClick={() => save("Invite sent!")} className="shrink-0 border border-[#111] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap">Send Invite</button>
                 </div>
               </div>
-              <div>
-                <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Your invites</div>
-                <div className="border border-[#E5E2DA] p-3 flex items-center justify-between gap-4">
-                  <div>
-                    <div className="text-[14px] font-medium">Sarah L.</div>
-                    <div className="text-[12px] text-[#888]">Joined 3 weeks ago</div>
+              {/* Referral stats */}
+              <div className="grid grid-cols-3 gap-3 mb-5">
+                {[
+                  { label: "Friends Referred", value: "3" },
+                  { label: "Total Earned", value: "$30.00" },
+                  { label: "Pending", value: "$10.00" },
+                ].map((s) => (
+                  <div key={s.label} className="bg-[#111] p-4 text-center">
+                    <div className="text-[#CDFF3A] font-display text-[22px] font-bold">{s.value}</div>
+                    <div className="text-white/40 text-[10px] font-mono tracking-wider uppercase mt-0.5">{s.label}</div>
                   </div>
-                  <div className="text-[#CDFF3A] bg-[#111] text-[11px] font-bold px-3 py-1">+$10 earned</div>
+                ))}
+              </div>
+
+              <div>
+                <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-3">Referral History</div>
+                <div className="space-y-2">
+                  {[
+                    { name: "Sarah L.", date: "3 weeks ago", status: "completed", earned: "+$10.00" },
+                    { name: "Marcus T.", date: "6 weeks ago", status: "completed", earned: "+$10.00" },
+                    { name: "Priya S.", date: "2 days ago", status: "pending", earned: "Pending" },
+                  ].map((r) => (
+                    <div key={r.name} className="border border-[#E5E2DA] p-4 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 bg-[#F7F5F0] rounded-full flex items-center justify-center text-[13px] font-bold text-[#666]">
+                          {r.name[0]}
+                        </div>
+                        <div>
+                          <div className="text-[14px] font-medium">{r.name}</div>
+                          <div className="text-[11px] text-[#888]">Referred {r.date}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className={`text-[10px] font-mono px-2 py-0.5 uppercase tracking-wider ${r.status === "completed" ? "bg-[#CDFF3A] text-[#111]" : "bg-[#F7F5F0] text-[#888] border border-[#D0CCC4]"}`}>
+                          {r.status === "completed" ? "Paid" : "Awaiting Order"}
+                        </span>
+                        <div className={`text-[13px] font-bold ${r.status === "completed" ? "text-[#111]" : "text-[#888]"}`}>{r.earned}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+                <p className="text-[11px] text-[#aaa] mt-3">Credit is paid when your friend completes their first order. Pending credits expire after 30 days if no order is placed.</p>
               </div>
             </div>
           </div>
