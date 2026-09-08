@@ -197,9 +197,12 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                 )}
 
                 {billing === "month" && (
-                  <div className="mt-3 flex items-center gap-2 text-[12px] bg-[#FFF9E6] border border-[#F2C94C]/40 px-3 py-2">
-                    <span className="text-[15px]">🎉</span>
-                    <span className="text-[#7A5C00]">Monthly billing active — you're saving up to <strong>$109/mo</strong> vs weekly.</span>
+                  <div className="mt-3 bg-[#F2C94C] px-4 py-3 flex items-center gap-3">
+                    <span className="text-[22px]">🎉</span>
+                    <div>
+                      <div className="font-black text-[15px] text-[#111] tracking-tight">You're saving up to $109/mo vs weekly.</div>
+                      <div className="text-[#111]/60 text-[11px] mt-0.5">Monthly billing active — best value, cancel anytime.</div>
+                    </div>
                   </div>
                 )}
               </div>
