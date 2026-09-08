@@ -1,3 +1,6 @@
+import { useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { Page } from "@/data";
 
 interface Props {
@@ -124,17 +127,56 @@ const TimelineItem = ({ label, detail, done, active }: { label: string; detail: 
 );
 
 export default function ScreensExportPage({ navigate }: Props) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [generating, setGenerating] = useState(false);
+
+  const handleDownload = async () => {
+    if (!contentRef.current) return;
+    setGenerating(true);
+    try {
+      const el = contentRef.current;
+      const canvas = await html2canvas(el, {
+        scale: 1.5,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#ffffff",
+        width: el.scrollWidth,
+        height: el.scrollHeight,
+        windowWidth: el.scrollWidth,
+      });
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.85);
+      const pdf = new jsPDF({ orientation: "portrait", unit: "px", format: "a4" });
+
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgW = canvas.width;
+      const imgH = canvas.height;
+      const ratio = pageW / imgW;
+      const scaledH = imgH * ratio;
+
+      let yPos = 0;
+      while (yPos < scaledH) {
+        if (yPos > 0) pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, -yPos, pageW, scaledH);
+        yPos += pageH;
+      }
+
+      pdf.save("Fresher-Prototype-Screens.pdf");
+    } catch (err) {
+      console.error("PDF generation failed", err);
+      alert("PDF generation failed — try a smaller window width and retry.");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", background: "#fff", maxWidth: 900, margin: "0 auto", padding: 32 }}>
-      <style>{`
-        @media print {
-          body { margin: 0; }
-          .no-print { display: none !important; }
-          .screen-frame { page-break-before: always; }
-          .screen-frame:first-of-type { page-break-before: avoid; }
-        }
-        .screen-frame { margin-bottom: 40px; }
-      `}</style>
+      <style>{`.screen-frame { margin-bottom: 40px; }`}</style>
+
+      {/* Downloadable content */}
+      <div ref={contentRef}>
 
       {/* Cover page */}
       <div style={{ background: "#111", color: "#fff", padding: 48, marginBottom: 40, textAlign: "center" }}>
@@ -1046,15 +1088,19 @@ export default function ScreensExportPage({ navigate }: Props) {
         </div>
       </ScreenFrame>
 
-      {/* Print button */}
-      <div className="no-print" style={{ position: "fixed", bottom: 24, right: 24, display: "flex", gap: 10, zIndex: 999 }}>
+      </div>{/* end contentRef */}
+
+      {/* Floating action bar */}
+      <div style={{ position: "fixed", bottom: 24, right: 24, display: "flex", gap: 10, zIndex: 999 }}>
         <button onClick={() => navigate("home")}
           style={{ background: "#F7F5F0", border: "1px solid #E5E2DA", color: "#111", padding: "10px 18px", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
           ← Back to App
         </button>
-        <button onClick={() => window.print()}
-          style={{ background: "#111", color: "#CDFF3A", padding: "10px 24px", fontSize: 13, fontWeight: 700, cursor: "pointer", letterSpacing: "0.1em" }}>
-          🖨 Save as PDF
+        <button
+          onClick={handleDownload}
+          disabled={generating}
+          style={{ background: generating ? "#555" : "#111", color: "#CDFF3A", padding: "10px 24px", fontSize: 13, fontWeight: 700, cursor: generating ? "not-allowed" : "pointer", letterSpacing: "0.1em", minWidth: 180, textAlign: "center" }}>
+          {generating ? "⏳ Generating PDF…" : "⬇ Download PDF"}
         </button>
       </div>
     </div>
