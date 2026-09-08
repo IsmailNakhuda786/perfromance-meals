@@ -13,6 +13,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
   const [boxSize, setBoxSize] = useState(10);
   const [activeCat, setActiveCat] = useState("all");
   const [selections, setSelections] = useState<Record<number, number>>({});
+  const [detailMeal, setDetailMeal] = useState<Meal | null>(null);
 
   const selectedSize = BOX_SIZES.find((b) => b.qty === boxSize) || BOX_SIZES[1];
   const totalSelected = Object.values(selections).reduce((s, q) => s + q, 0);
@@ -182,14 +183,17 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               const qty = selections[meal.id] || 0;
               const canAdd = totalSelected < boxSize;
               return (
-                <div key={meal.id} className={`bg-[#1A1A1A] overflow-hidden ${qty > 0 ? "ring-1 ring-[#CDFF3A]/40" : ""}`}>
-                  <div className="relative h-44 bg-[#222]">
-                    <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
+                <div key={meal.id} className={`group bg-[#1A1A1A] overflow-hidden ${qty > 0 ? "ring-1 ring-[#CDFF3A]/40" : ""}`}>
+                  <div className="relative h-44 bg-[#222] cursor-pointer" onClick={() => setDetailMeal(meal)}>
+                    <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     {qty > 0 && (
                       <div className="absolute top-2 right-2 bg-[#CDFF3A] text-[#111111] w-7 h-7 rounded-full flex items-center justify-center font-bold text-[12px]">
                         {qty}
                       </div>
                     )}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <span className="bg-white/10 backdrop-blur-sm text-white text-[10px] uppercase tracking-widest px-3 py-1.5 border border-white/20">View Details</span>
+                    </div>
                   </div>
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-2 gap-2">
@@ -313,6 +317,92 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                 Proceed to Checkout →
               </button>
               <p className="text-white/20 text-[11px] text-center mt-3">Free same-day delivery · Frozen fresh</p>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ── Meal Detail Modal ── */}
+      {detailMeal && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center p-2 sm:p-4">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setDetailMeal(null)} />
+          <div className="relative bg-[#1A1A1A] text-white w-full max-w-2xl overflow-hidden max-h-[100dvh] sm:max-h-[90vh] overflow-y-auto">
+            <button onClick={() => setDetailMeal(null)} className="absolute top-4 right-4 z-10 text-white/50 hover:text-white bg-black/30 rounded-full p-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+            <div className="h-56 sm:h-72 relative bg-[#222]">
+              <img src={detailMeal.img} alt={detailMeal.name} className="w-full h-full object-cover" />
+              {detailMeal.badge && (
+                <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${detailMeal.badge === "Bestseller" || detailMeal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>
+                  {detailMeal.badge}
+                </div>
+              )}
+              {(selections[detailMeal.id] || 0) > 0 && (
+                <div className="absolute top-4 right-4 bg-[#CDFF3A] text-[#111] text-[12px] font-bold px-3 py-1">
+                  {selections[detailMeal.id]}× in your box
+                </div>
+              )}
+            </div>
+            <div className="p-7">
+              {(() => {
+                const typeMap: Record<string, { label: string; color: string }> = {
+                  "high-carb":    { label: "High Carb",    color: "#F2C94C" },
+                  "low-carb":     { label: "Low Carb",     color: "#7EE8B0" },
+                  "just-protein": { label: "Just Protein", color: "#A78BFA" },
+                  "breakfast":    { label: "Breakfast",    color: "#FB923C" },
+                };
+                const t = typeMap[detailMeal.cat];
+                return t ? (
+                  <span className="inline-block text-[10px] font-mono font-bold tracking-[0.25em] uppercase px-2.5 py-1 mb-3 border"
+                    style={{ color: t.color, borderColor: t.color + "55", backgroundColor: t.color + "15" }}>
+                    {t.label}
+                  </span>
+                ) : null;
+              })()}
+              <div className="flex items-start justify-between mb-3 gap-3">
+                <h2 className="font-display text-[26px] font-bold">{detailMeal.name}</h2>
+                <span className="font-mono text-[22px] text-[#CDFF3A] font-bold shrink-0">${detailMeal.price.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[13px] text-white/40 mb-4">
+                <span className="text-[#CDFF3A]">{"★".repeat(Math.round(detailMeal.rating))}</span>
+                <span className="text-white/60 font-semibold">{detailMeal.rating}</span>
+                <span>· {detailMeal.reviews} reviews</span>
+              </div>
+              <p className="text-white/55 text-[14px] leading-relaxed mb-6">{detailMeal.desc}</p>
+              <div className="grid grid-cols-4 gap-2 mb-6">
+                {[{ label: "Calories", val: detailMeal.cal }, { label: "Protein", val: `${detailMeal.protein}g` }, { label: "Carbs", val: `${detailMeal.carbs}g` }, { label: "Fat", val: `${detailMeal.fat}g` }].map((m) => (
+                  <div key={m.label} className="bg-[#222] px-3 py-3 text-center">
+                    <div className="font-mono text-[13px] text-[#CDFF3A] font-medium">{m.val}</div>
+                    <div className="text-white/30 text-[10px] mt-1 uppercase tracking-wider">{m.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="border border-white/10 p-4 mb-6 text-[12px] text-white/40 space-y-1">
+                <div>❄️ Frozen at peak freshness · 2-month freezer life</div>
+                <div>⚡ Heat in 3 minutes in microwave or oven</div>
+                <div>✓ USDA nutritional standards · Macro-labelled</div>
+              </div>
+              <div className="flex gap-3 items-center">
+                {(selections[detailMeal.id] || 0) > 0 && (
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => adjustQty(detailMeal, -1)}
+                      className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-[18px] transition-colors">−</button>
+                    <span className="text-white font-mono font-bold text-[15px] w-8 text-center">{selections[detailMeal.id]}</span>
+                    <button onClick={() => adjustQty(detailMeal, 1)} disabled={totalSelected >= boxSize}
+                      className={`w-10 h-10 flex items-center justify-center text-[18px] transition-colors ${totalSelected >= boxSize ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-[#CDFF3A] text-[#111] hover:opacity-90"}`}>+</button>
+                  </div>
+                )}
+                <button
+                  onClick={() => { adjustQty(detailMeal, 1); setDetailMeal(null); }}
+                  disabled={totalSelected >= boxSize}
+                  className={`flex-1 py-4 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected >= boxSize ? "bg-white/10 text-white/30 cursor-not-allowed" : "bg-[#CDFF3A] text-[#111] hover:bg-white"}`}>
+                  {(selections[detailMeal.id] || 0) > 0
+                    ? `+ Add Another (${selections[detailMeal.id]}× in box)`
+                    : totalSelected >= boxSize ? "Box Full" : "Add to Box →"}
+                </button>
+              </div>
+              {totalSelected >= boxSize && (
+                <p className="text-center text-[11px] text-white/30 mt-3">Box is full · <button onClick={() => setDetailMeal(null)} className="underline">go back to review</button></p>
+              )}
             </div>
           </div>
         </div>

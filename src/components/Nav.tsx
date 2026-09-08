@@ -92,15 +92,13 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
 
             {isLoggedIn ? (
               <>
-                {/* Wallet chip */}
+                {/* Wallet — compact coin pill */}
                 <button onClick={() => go("account")}
-                  className="hidden md:flex items-center gap-1.5 bg-[#CDFF3A]/10 border border-[#CDFF3A]/25 hover:bg-[#CDFF3A]/20 transition-colors px-3 py-1.5 group">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#CDFF3A" strokeWidth="2.5" className="shrink-0">
-                    <rect x="2" y="5" width="20" height="14" rx="2" /><path d="M16 12h.01" strokeWidth="3" strokeLinecap="round" />
-                  </svg>
-                  <span className="text-[#CDFF3A] font-mono text-[11px] font-bold">${WALLET_BALANCE.toFixed(2)}</span>
-                  <span className="text-white/20 text-[9px] hidden lg:inline">·</span>
-                  <span className="text-white/35 text-[10px] hidden lg:inline">{REWARD_PTS} pts</span>
+                  className="hidden md:flex items-center gap-1.5 hover:opacity-75 transition-opacity">
+                  <span className="text-[15px] leading-none">🪙</span>
+                  <span className="text-[#CDFF3A] font-mono text-[11px] font-bold">${Math.floor(WALLET_BALANCE)}</span>
+                  <span className="text-white/25 text-[9px]">·</span>
+                  <span className="text-white/40 text-[10px]">{REWARD_PTS.toLocaleString()}pts</span>
                 </button>
 
                 {/* Avatar / profile pill */}
@@ -287,28 +285,36 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   ))}
                 </div>
 
-                {/* Build-A-Box savings nudge */}
+                {/* Add-more-to-save nudge */}
                 {(() => {
                   const readyItems = cart.filter((i) => i.type === "ready");
                   const readyQty = readyItems.reduce((s, i) => s + i.qty, 0);
-                  const readyTotal = readyItems.reduce((s, i) => s + i.price * i.qty, 0);
-                  if (readyQty < 3) return null;
-                  const BOX_PRICE_PER_MEAL = readyQty >= 10 ? 11.90 : readyQty >= 5 ? 12.40 : 12.40;
-                  const boxTotal = readyQty * BOX_PRICE_PER_MEAL;
-                  const saving = readyTotal - boxTotal;
-                  if (saving <= 0.5) return null;
+                  if (readyQty === 0) return null;
+                  const tiers = [
+                    { qty: 5,  ppm: 12.40 },
+                    { qty: 10, ppm: 11.90 },
+                    { qty: 15, ppm: 11.50 },
+                    { qty: 20, ppm: 11.00 },
+                  ];
+                  const next = tiers.find((t) => t.qty > readyQty);
+                  if (!next) return null;
+                  const toAdd = next.qty - readyQty;
+                  const avgPrice = readyItems.reduce((s, i) => s + i.price * i.qty, 0) / readyQty;
+                  const saving = (avgPrice - next.ppm) * readyQty;
                   return (
-                    <div className="mx-4 mb-3 bg-[#CDFF3A]/10 border border-[#CDFF3A]/30 p-3">
+                    <div className="mx-4 mb-3 bg-[#CDFF3A]/8 border border-[#CDFF3A]/25 p-3">
                       <div className="flex items-start gap-2">
-                        <span className="text-[16px] shrink-0">💡</span>
+                        <span className="text-[15px] shrink-0">🛒</span>
                         <div className="flex-1">
-                          <p className="text-[#CDFF3A] text-[11px] font-bold mb-0.5">Switch to Build-A-Box — save ${saving.toFixed(2)}</p>
-                          <p className="text-white/45 text-[10px] leading-relaxed">
-                            {readyQty} individual meals costs ${readyTotal.toFixed(2)}. A {readyQty}-meal box is ${boxTotal.toFixed(2)} at ${BOX_PRICE_PER_MEAL}/meal.
+                          <p className="text-[#CDFF3A] text-[11px] font-bold mb-0.5">
+                            Add {toAdd} more meal{toAdd !== 1 ? "s" : ""}{saving > 0.5 ? ` — save $${saving.toFixed(2)}` : " to unlock box pricing"}
                           </p>
-                          <button onClick={() => { setCartOpen(false); navigate("build-a-box"); }}
-                            className="mt-2 text-[10px] font-bold tracking-[0.15em] uppercase text-[#CDFF3A] hover:underline">
-                            Build a Box instead →
+                          <p className="text-white/40 text-[10px] leading-relaxed">
+                            {next.qty}-meal Build-A-Box drops to <strong className="text-white/60">${next.ppm.toFixed(2)}/meal</strong>. You currently have {readyQty}.
+                          </p>
+                          <button onClick={() => { setCartOpen(false); navigate("ready-to-go"); }}
+                            className="mt-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[#CDFF3A] hover:underline">
+                            Add more meals →
                           </button>
                         </div>
                       </div>
