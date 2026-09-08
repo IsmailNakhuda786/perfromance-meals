@@ -170,23 +170,38 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
               <p className="text-[#666] mb-6">Select the plan that matches your target.</p>
 
               {/* Billing toggle */}
-              <div className="flex items-center gap-3 mb-6">
-                <span className={`text-sm font-medium ${billing === "week" ? "text-[#111]" : "text-[#999]"}`}>Weekly</span>
-                <button
-                  onClick={() => setBilling((b) => (b === "week" ? "month" : "week"))}
-                  className={`relative w-12 h-6 rounded-full transition-colors ${
-                    billing === "month" ? "bg-[#111]" : "bg-[#D0CCC4]"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                      billing === "month" ? "translate-x-6" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-                <span className={`text-sm font-medium ${billing === "month" ? "text-[#111]" : "text-[#999]"}`}>
-                  Monthly <span className="text-[#F2C94C] font-semibold">Save ~15%</span>
-                </span>
+              <div className="mb-7">
+                <div className="flex gap-0 border border-[#D0CCC4] p-1 bg-[#F7F5F0] w-full sm:w-auto sm:inline-flex">
+                  <button
+                    onClick={() => setBilling("week")}
+                    className={`flex-1 sm:flex-none px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "week" ? "bg-white text-[#111] shadow-sm" : "text-[#999] hover:text-[#111]"}`}>
+                    Weekly
+                  </button>
+                  <button
+                    onClick={() => setBilling("month")}
+                    className={`flex-1 sm:flex-none relative px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "month" ? "bg-[#111] text-white" : "text-[#999] hover:text-[#111]"}`}>
+                    Monthly
+                    <span className={`ml-2 text-[10px] font-black tracking-widest px-1.5 py-0.5 ${billing === "month" ? "bg-[#F2C94C] text-[#111]" : "bg-[#F2C94C]/70 text-[#111]"}`}>
+                      SAVE 15%
+                    </span>
+                  </button>
+                </div>
+
+                {billing === "week" && (
+                  <div className="mt-3 flex items-center gap-2 text-[12px] text-[#888]">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F2C94C" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
+                    Switch to monthly and save up to{" "}
+                    <strong className="text-[#111]">$109/mo</strong> on the BUILD plan.{" "}
+                    <button onClick={() => setBilling("month")} className="text-[#F2C94C] font-bold hover:underline">Switch now →</button>
+                  </div>
+                )}
+
+                {billing === "month" && (
+                  <div className="mt-3 flex items-center gap-2 text-[12px] bg-[#FFF9E6] border border-[#F2C94C]/40 px-3 py-2">
+                    <span className="text-[15px]">🎉</span>
+                    <span className="text-[#7A5C00]">Monthly billing active — you're saving up to <strong>$109/mo</strong> vs weekly.</span>
+                  </div>
+                )}
               </div>
 
               {/* Plan cards */}
@@ -224,6 +239,16 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                         <div className="text-right flex-shrink-0">
                           <div className="text-xl font-bold">${px}</div>
                           <div className="text-xs text-[#999]">/{billing === "week" ? "wk" : "mo"}</div>
+                          {billing === "week" && (
+                            <div className="text-[10px] text-[#F2C94C] font-semibold mt-0.5">
+                              ${p.priceMonth}/mo monthly
+                            </div>
+                          )}
+                          {billing === "month" && (
+                            <div className="text-[10px] text-[#7EE8B0] font-semibold mt-0.5">
+                              save ${Math.round(p.priceWeek * 4.33 - p.priceMonth)}/mo
+                            </div>
+                          )}
                         </div>
                       </div>
                     </button>
