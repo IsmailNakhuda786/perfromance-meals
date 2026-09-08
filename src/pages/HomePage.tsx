@@ -486,6 +486,35 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
         </div>
       </section>
 
+      {/* ── TESTIMONIALS ── */}
+      <section className="bg-white py-16 border-t border-[#E5E2DA]">
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase">What customers say</span>
+            <h2 className="font-display text-[36px] sm:text-[48px] font-bold mt-2">Real results. Real people.</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {[
+              { name: "Marcus L.", plan: "MAINTAIN Plan · Week 18", stars: 5, text: "I've tried every meal prep service in Singapore. Fresher is the only one where I actually look forward to my meals. Macros are spot on and the food tastes like a restaurant." },
+              { name: "Priya S.", plan: "CUT Plan · Lost 7kg in 9 weeks", stars: 5, text: "Down 7kg and I never felt hungry. The chef really understands performance nutrition — this isn't diet food, it's proper eating." },
+              { name: "Wei Jian T.", plan: "BUILD Plan · 4 months in", stars: 5, text: "Gained 4kg of lean muscle while eating clean. The protein macros on the BUILD plan are dialled in perfectly. My gym coach was genuinely impressed." },
+              { name: "Sarah K.", plan: "Ready-to-Go · Regular customer", stars: 5, text: "The salmon scramble breakfast is addictive. I order 10 a week. Free delivery, arrives frozen fresh, heats in 3 mins. What else do you need?" },
+              { name: "Darren Ng", plan: "Gift Card → CUT Plan", stars: 5, text: "Got a gift card from my wife and now I'm a subscriber. The 6in60 guarantee is what got me in the door — results kept me here." },
+              { name: "Aisha B.", plan: "MAINTAIN Plan · 6 months", stars: 5, text: "As a busy mum of two I have zero time to meal prep. Fresher has genuinely changed how our household eats. The kids steal my lunches now." },
+            ].map((t) => (
+              <div key={t.name} className="bg-[#F7F5F0] p-6 flex flex-col gap-4">
+                <div className="text-[#CDFF3A] text-[16px]">{"★".repeat(t.stars)}</div>
+                <p className="text-[14px] leading-relaxed text-[#333] flex-1">"{t.text}"</p>
+                <div>
+                  <div className="font-semibold text-[14px]">{t.name}</div>
+                  <div className="text-[11px] text-[#888] mt-0.5">{t.plan}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── NEWSLETTER ── */}
       <section className="bg-[#F7F5F0] py-16 border-t border-[#E5E2DA]">
         <div className="max-w-[1440px] mx-auto px-6 text-center">

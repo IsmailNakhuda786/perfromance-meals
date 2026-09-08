@@ -23,14 +23,15 @@ const getMealsForPlan = (planName: string): Meal[] => {
   });
 };
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3 | 4 | 5;
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const SLOTS = ["6am – 9am", "9am – 12pm", "12pm – 3pm", "3pm – 6pm"];
-const STEP_LABELS = ["Goal", "Meals", "Delivery", "Pay"];
+const STEP_LABELS = ["Meals", "Goal", "Menu", "Delivery", "Pay"];
 
 export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, onCheckoutComplete }: Props) {
   const [step, setStep] = useState<Step>(1);
+  const [mealCount, setMealCount] = useState<1 | 2>(2);
   const [goal, setGoal] = useState(initialPlan || "MAINTAIN");
   const [billing, setBilling] = useState<"week" | "month">("week");
   const [selectedMeals, setSelectedMeals] = useState<number[]>([]);
@@ -62,8 +63,8 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
         : prev
     );
 
-  const canProceedStep2 = selectedMeals.length >= plan.meals;
-  const canProceedStep3 =
+  const canProceedStep3 = selectedMeals.length >= plan.meals;
+  const canProceedStep4 =
     deliveryDays.length > 0 &&
     address.name.trim() !== "" &&
     address.line1.trim() !== "" &&
@@ -71,7 +72,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
   const canSubscribe = autoChargeConsent;
 
   const handleNext = () => {
-    if (step < 4) setStep((s) => (s + 1) as Step);
+    if (step < 5) setStep((s) => (s + 1) as Step);
   };
 
   const handleSubscribe = () => {
@@ -118,10 +119,46 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
 
       {/* Content */}
       <div className="flex-1 flex flex-col items-center px-4 py-6 sm:py-8">
-        <div className={`w-full ${step === 2 ? "max-w-6xl" : "max-w-2xl"}`}>
+        <div className={`w-full ${step === 3 ? "max-w-6xl" : "max-w-2xl"}`}>
 
-          {/* ─── Step 1: Goal ─── */}
+          {/* ─── Step 1: Meal Count ─── */}
           {step === 1 && (
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold mb-1">How many meals per day?</h1>
+              <p className="text-[#666] mb-8">Choose how many chef-prepared meals you want delivered each day.</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                {([
+                  { count: 1 as const, label: "Lunch only", desc: "1 meal delivered daily — perfect for a structured midday fuel.", slots: ["Lunch"], price: "From $74/wk" },
+                  { count: 2 as const, label: "Lunch & Dinner", desc: "2 meals delivered daily — full day nutrition covered.", slots: ["Lunch", "Dinner"], price: "From $148/wk", popular: true },
+                ]).map((opt) => (
+                  <button key={opt.count} onClick={() => setMealCount(opt.count)}
+                    className={`relative text-left border-2 p-6 rounded-2xl transition-all ${mealCount === opt.count ? "border-[#111] bg-white shadow-md" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
+                    {opt.popular && (
+                      <div className="absolute top-3 right-3 bg-[#F2C94C] text-[#111] text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-0.5">Most Popular</div>
+                    )}
+                    <div className="flex items-center gap-2 mb-3">
+                      {opt.slots.map((s) => (
+                        <span key={s} className={`px-2.5 py-1 text-[10px] font-bold tracking-wider rounded-full ${s === "Lunch" ? "bg-[#FFF3CD] text-[#B8860B]" : "bg-[#E8F4FD] text-[#1565C0]"}`}>{s}</span>
+                      ))}
+                    </div>
+                    <div className="font-bold text-[18px] mb-1">{opt.label}</div>
+                    <p className="text-[#666] text-[13px] leading-relaxed mb-4">{opt.desc}</p>
+                    <div className="font-mono font-bold text-[16px] text-[#111]">{opt.price}</div>
+                    {mealCount === opt.count && <div className="mt-3 text-[#111] text-[11px] font-bold">✓ Selected</div>}
+                  </button>
+                ))}
+              </div>
+
+              <button onClick={handleNext}
+                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white">
+                Continue →
+              </button>
+            </div>
+          )}
+
+          {/* ─── Step 2: Goal ─── */}
+          {step === 2 && (
             <div>
               <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose Your Goal</h1>
               <p className="text-[#666] mb-6">Select the plan that matches your target.</p>
@@ -221,8 +258,8 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
             </div>
           )}
 
-          {/* ─── Step 2: Pick Your Meals ─── */}
-          {step === 2 && (
+          {/* ─── Step 3: Pick Your Meals ─── */}
+          {step === 3 && (
             <div className="w-full max-w-none">
               <div className="max-w-2xl mb-6">
                 <h1 className="text-xl sm:text-2xl font-bold mb-1">Pick Your Meals</h1>
@@ -297,16 +334,16 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
               </div>
 
               <div className="max-w-2xl">
-                <button onClick={handleNext} disabled={!canProceedStep2}
-                  className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all ${canProceedStep2 ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
+                <button onClick={handleNext} disabled={!canProceedStep3}
+                  className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all ${canProceedStep3 ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
                   Continue with {selectedMeals.length} meal{selectedMeals.length !== 1 ? "s" : ""} →
                 </button>
               </div>
             </div>
           )}
 
-          {/* ─── Step 3: Delivery ─── */}
-          {step === 3 && (
+          {/* ─── Step 4: Delivery ─── */}
+          {step === 4 && (
             <div>
               <h1 className="text-xl sm:text-2xl font-bold mb-1">Delivery Preferences</h1>
               <p className="text-[#666] mb-6">Choose your delivery days, time slot, and address.</p>
@@ -396,9 +433,9 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
 
               <button
                 onClick={handleNext}
-                disabled={!canProceedStep3}
+                disabled={!canProceedStep4}
                 className={`w-full py-4 rounded-xl font-semibold text-[15px] transition-all ${
-                  canProceedStep3
+                  canProceedStep4
                     ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white"
                     : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"
                 }`}
@@ -408,8 +445,8 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
             </div>
           )}
 
-          {/* ─── Step 4: Payment ─── */}
-          {step === 4 && (
+          {/* ─── Step 5: Payment ─── */}
+          {step === 5 && (
             <div>
               <h1 className="text-xl sm:text-2xl font-bold mb-1">Payment</h1>
               <p className="text-[#666] mb-6">Enter your card details to activate your meal plan.</p>

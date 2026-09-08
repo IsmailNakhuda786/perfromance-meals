@@ -10,7 +10,8 @@ export type Page =
   | "gift-card"
   | "handoff"
   | "blueprint"
-  | "wireframe";
+  | "wireframe"
+  | "about";
 
 export interface CartItem {
   id: number;
@@ -106,10 +107,23 @@ export const MEALS: Meal[] = [
 
 export const CATS = [
   { id: "all", label: "All Meals" },
+  { id: "promotion", label: "🔥 Promotion" },
+  { id: "bundles", label: "📦 Useful Bundles" },
   { id: "low-carb", label: "Low Carb" },
   { id: "high-carb", label: "High Carb" },
   { id: "breakfast", label: "Breakfast" },
   { id: "just-protein", label: "Just Protein" },
+];
+
+export const PROMOTIONS = [
+  { id: 101, name: "SG61 Deal — Herb Chicken ×3", desc: "Our #1 bestseller at a special price. Use code SG61.", original: 37.20, sale: 28.90, saving: "22% OFF", img: "https://images.unsplash.com/photo-1670398564097-0762e1b30b3a?w=600&h=500&fit=crop&auto=format", tag: "Promo" },
+  { id: 102, name: "Weekend Bundle — Mix of 4", desc: "Teriyaki, Korean BBQ, Cajun Salmon + Herb Chicken.", original: 52.60, sale: 39.90, saving: "24% OFF", img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=500&fit=crop&auto=format", tag: "Flash Sale" },
+];
+
+export const BUNDLES = [
+  { id: 201, name: "Lean Starter Pack (5 meals)", desc: "Curated low-carb selection — perfect for first-timers.", price: 59.00, perMeal: 11.80, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=500&fit=crop&auto=format", tag: "Popular" },
+  { id: 202, name: "Bulk Performance Box (10 meals)", desc: "Mix of high-protein picks, best value per meal.", price: 109.00, perMeal: 10.90, img: "https://images.unsplash.com/photo-1607532941433-304659e8198a?w=600&h=500&fit=crop&auto=format", tag: "Best Value" },
+  { id: 203, name: "Breakfast Week (7 meals)", desc: "Protein oats + salmon scramble — 7 mornings sorted.", price: 65.00, perMeal: 9.28, img: "https://images.unsplash.com/photo-1600335895229-6e75511892c8?w=600&h=500&fit=crop&auto=format", tag: "New" },
 ];
 
 export const BOX_SIZES = [

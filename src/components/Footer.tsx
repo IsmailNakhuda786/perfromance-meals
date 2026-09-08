@@ -23,6 +23,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             { label: "Cut Plan", action: () => navigateToWizard("CUT") },
             { label: "Maintain Plan", action: () => navigateToWizard("MAINTAIN") },
             { label: "Build Plan", action: () => navigateToWizard("BUILD") },
+            { label: "About Us", action: () => navigate("about") },
             { label: "How It Works", action: () => navigate("how-it-works") },
             { label: "Gift Cards", action: () => navigate("gift-card") },
             { label: "My Account", action: () => navigate("account") },

@@ -1,8 +1,9 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import HTML_EXPORT from "@/htmlExport";
 import { CartItem, Page } from "@/data";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import PromoPopup from "@/components/PromoPopup";
 import HomePage from "@/pages/HomePage";
 import ReadyToGoPage from "@/pages/ReadyToGoPage";
 import BuildABoxPage from "@/pages/BuildABoxPage";
@@ -15,6 +16,7 @@ import GiftCardPage from "@/pages/GiftCardPage";
 import HandoffPage from "@/pages/HandoffPage";
 import BlueprintPage from "@/pages/BlueprintPage";
 import WireframePage from "@/pages/WireframePage";
+import AboutPage from "@/pages/AboutPage";
 
 const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff", "blueprint", "wireframe"];
 
@@ -35,6 +37,12 @@ export default function App() {
   const [lastOrderType, setLastOrderType] = useState<"ready" | "plan">("ready");
   const [accountInitialTab, setAccountInitialTab] = useState<"dashboard" | "settings">("dashboard");
   const [accountInitialSection, setAccountInitialSection] = useState<string | undefined>(undefined);
+  const [showPromo, setShowPromo] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowPromo(true), 1800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const navigate = (p: Page) => {
     setPage(p);
@@ -99,6 +107,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-body">
+      {showPromo && <PromoPopup onClose={() => setShowPromo(false)} navigate={navigate} />}
 
       {/* Download banner */}
       <div className="bg-[#111] text-white flex items-center justify-between px-4 py-3 gap-3 flex-wrap">
@@ -143,6 +152,7 @@ export default function App() {
       {page === "handoff" && <HandoffPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "blueprint" && <BlueprintPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "wireframe" && <WireframePage navigate={navigate} navigateToWizard={navigateToWizard} />}
+      {page === "about" && <AboutPage navigate={navigate} navigateToWizard={navigateToWizard} />}
 
       {showFooter && <Footer navigate={navigate} navigateToWizard={navigateToWizard} />}
     </div>

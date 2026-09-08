@@ -130,7 +130,8 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                 { label: "CUT — Fat loss", action: () => goWizard("CUT") },
                 { label: "MAINTAIN — Performance", action: () => goWizard("MAINTAIN") },
                 { label: "BUILD — Muscle gain", action: () => goWizard("BUILD") },
-                { label: "How It Works", action: () => go("how-it-works") },
+                { label: "About Us", action: () => go("about") },
+              { label: "How It Works", action: () => go("how-it-works") },
               ].map((l) => (
                 <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
               ))}
@@ -159,6 +160,25 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
               </button>
             </div>
+
+            {/* Free delivery progress bar */}
+            {(() => {
+              const FREE_THRESHOLD = 80;
+              const pct = Math.min((cartTotal / FREE_THRESHOLD) * 100, 100);
+              const remaining = Math.max(FREE_THRESHOLD - cartTotal, 0);
+              return (
+                <div className="px-5 py-3 border-b border-white/10">
+                  {remaining > 0 ? (
+                    <p className="text-[11px] text-white/50 mb-2">Add <span className="text-[#CDFF3A] font-bold">${remaining.toFixed(2)}</span> more for free delivery</p>
+                  ) : (
+                    <p className="text-[11px] text-[#CDFF3A] font-bold mb-2">🎉 You qualify for free delivery!</p>
+                  )}
+                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#CDFF3A] rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+                  </div>
+                </div>
+              );
+            })()}
 
             {cart.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center gap-4 text-white/30 px-6">

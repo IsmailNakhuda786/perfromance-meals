@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CartItem, CATS, Meal, MEALS, Page } from "@/data";
+import { BUNDLES, CartItem, CATS, Meal, MEALS, Page, PROMOTIONS } from "@/data";
 
 interface Props {
   navigate: (page: Page) => void;
@@ -74,10 +74,70 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
           </select>
         </div>
 
-        {/* Count */}
-        <p className="text-white/30 text-[12px] mb-6 tracking-wider uppercase">{filtered.length} meals</p>
+        {/* Promotion grid */}
+        {activeCat === "promotion" && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            {PROMOTIONS.map((p) => (
+              <div key={p.id} className="bg-[#1A1A1A] overflow-hidden border border-[#CDFF3A]/20">
+                <div className="relative h-48 overflow-hidden">
+                  <img src={p.img} alt={p.name} className="w-full h-full object-cover opacity-80" />
+                  <div className="absolute top-3 left-3 bg-[#CDFF3A] text-[#111] text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{p.tag}</div>
+                  <div className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{p.saving}</div>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-bold text-[15px] mb-1">{p.name}</h3>
+                  <p className="text-white/40 text-[12px] mb-3">{p.desc}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-[20px] text-[#CDFF3A]">${p.sale}</span>
+                      <span className="font-mono text-[14px] text-white/25 line-through">${p.original}</span>
+                    </div>
+                    <button onClick={() => addToCart({ id: p.id, name: p.name, price: p.sale, qty: 1, img: p.img, type: "ready" })}
+                      className="bg-[#CDFF3A] text-[#111] px-4 py-2 text-[11px] font-bold tracking-wider uppercase hover:bg-white transition-colors">
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* Grid */}
+        {/* Bundles grid */}
+        {activeCat === "bundles" && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            {BUNDLES.map((b) => (
+              <div key={b.id} className="bg-[#1A1A1A] overflow-hidden border border-white/5">
+                <div className="relative h-44 overflow-hidden">
+                  <img src={b.img} alt={b.name} className="w-full h-full object-cover opacity-70" />
+                  <div className="absolute top-3 left-3 bg-white/10 backdrop-blur text-white text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{b.tag}</div>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-bold text-[14px] mb-1">{b.name}</h3>
+                  <p className="text-white/40 text-[12px] mb-3">{b.desc}</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-mono font-bold text-[18px] text-[#CDFF3A]">${b.price}</span>
+                      <span className="text-white/30 text-[11px] ml-1">(${b.perMeal}/meal)</span>
+                    </div>
+                    <button onClick={() => addToCart({ id: b.id, name: b.name, price: b.price, qty: 1, img: b.img, type: "box" })}
+                      className="bg-white/10 hover:bg-[#CDFF3A] hover:text-[#111] text-white px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
+                      Add
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Count — only for meal categories */}
+        {activeCat !== "promotion" && activeCat !== "bundles" && (
+          <p className="text-white/30 text-[12px] mb-6 tracking-wider uppercase">{filtered.length} meals</p>
+        )}
+
+        {/* Grid — only for meal categories */}
+        {activeCat !== "promotion" && activeCat !== "bundles" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((meal) => {
             const qtyInCart = getCartQty(meal.id);
@@ -134,7 +194,33 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
             );
           })}
         </div>
+        )}
       </div>
+
+      {/* Testimonials */}
+      {activeCat === "all" && (
+        <div className="bg-[#1A1A1A] border-t border-white/5 px-6 py-12">
+          <div className="max-w-[1440px] mx-auto">
+            <div className="text-center mb-8">
+              <span className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A]/50 uppercase">Customer Reviews</span>
+              <h3 className="font-display text-[28px] font-bold text-white mt-2">8,400+ happy customers</h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[
+                { name: "Marcus L.", text: "The macros are spot on. Teriyaki Chicken is my weekly staple.", stars: 5 },
+                { name: "Priya S.", text: "Heats in 3 minutes and tastes like a restaurant meal. Game changer.", stars: 5 },
+                { name: "Wei Jian T.", text: "Best value meal prep in SG. The Build-A-Box saves me money every week.", stars: 5 },
+              ].map((t) => (
+                <div key={t.name} className="bg-[#222] p-5">
+                  <div className="text-[#CDFF3A] text-[14px] mb-3">{"★".repeat(t.stars)}</div>
+                  <p className="text-white/60 text-[13px] leading-relaxed mb-4">"{t.text}"</p>
+                  <div className="text-white/40 text-[12px] font-medium">{t.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Product Detail Modal */}
       {selectedMeal && (
