@@ -15,8 +15,11 @@ interface NavProps {
 
 export default function Nav({ currentPage, navigate, navigateToWizard, cart, cartOpen, setCartOpen, updateCartQty, removeFromCart, onCheckout }: NavProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
   const cartTotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const WALLET_BALANCE = 12.50;
+  const REWARD_PTS = 1234;
 
   const go = (page: Page) => { navigate(page); setMobileOpen(false); };
   const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); };
@@ -84,14 +87,49 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
           </div>
 
           {/* Right icons */}
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-            <button onClick={() => go("gift-card")} className="text-white/50 hover:text-[#CDFF3A] transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block whitespace-nowrap">Gift Cards</button>
-            <button onClick={() => go("account")} className="text-white/50 hover:text-white transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block">Rewards</button>
-            <button onClick={() => go("account")} className={`text-white/50 hover:text-white transition-colors hidden md:block ${currentPage === "account" ? "text-white" : ""}`}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-              </svg>
-            </button>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <button onClick={() => go("gift-card")} className="text-white/40 hover:text-[#CDFF3A] transition-colors text-[11px] tracking-[0.2em] uppercase hidden lg:block whitespace-nowrap">Gift Cards</button>
+
+            {isLoggedIn ? (
+              <>
+                {/* Wallet chip */}
+                <button onClick={() => go("account")}
+                  className="hidden md:flex items-center gap-1.5 bg-[#CDFF3A]/10 border border-[#CDFF3A]/25 hover:bg-[#CDFF3A]/20 transition-colors px-3 py-1.5 group">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#CDFF3A" strokeWidth="2.5" className="shrink-0">
+                    <rect x="2" y="5" width="20" height="14" rx="2" /><path d="M16 12h.01" strokeWidth="3" strokeLinecap="round" />
+                  </svg>
+                  <span className="text-[#CDFF3A] font-mono text-[11px] font-bold">${WALLET_BALANCE.toFixed(2)}</span>
+                  <span className="text-white/20 text-[9px] hidden lg:inline">·</span>
+                  <span className="text-white/35 text-[10px] hidden lg:inline">{REWARD_PTS} pts</span>
+                </button>
+
+                {/* Avatar / profile pill */}
+                <button onClick={() => go("account")}
+                  className={`flex items-center gap-2 pl-1 pr-2 py-1 border transition-colors ${currentPage === "account" ? "border-white/30 bg-white/10" : "border-white/10 hover:border-white/25 bg-white/5"}`}>
+                  <div className="w-6 h-6 bg-[#CDFF3A] rounded-full flex items-center justify-center text-[#111] font-black text-[11px] shrink-0">J</div>
+                  <span className="text-white/60 text-[11px] tracking-wide hidden lg:block">Jerome</span>
+                </button>
+
+                {/* Log out toggle (prototype only) */}
+                <button onClick={() => setIsLoggedIn(false)}
+                  className="text-white/20 hover:text-white/50 transition-colors text-[9px] tracking-widest uppercase hidden lg:block">
+                  ↩ out
+                </button>
+              </>
+            ) : (
+              <>
+                {/* Login / Sign Up */}
+                <button onClick={() => { setIsLoggedIn(true); go("account"); }}
+                  className="text-white/60 hover:text-white transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block whitespace-nowrap">
+                  Log In
+                </button>
+                <button onClick={() => { setIsLoggedIn(true); go("account"); }}
+                  className="hidden md:block bg-[#CDFF3A] text-[#111] text-[10px] font-black tracking-[0.2em] uppercase px-4 py-2 hover:bg-white transition-colors whitespace-nowrap">
+                  Sign Up
+                </button>
+              </>
+            )}
+
             {/* Cart */}
             <button className="relative text-white/50 hover:text-white transition-colors" onClick={() => setCartOpen(!cartOpen)}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -137,13 +175,43 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
               ))}
 
               <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2 mt-2">Account</div>
-              {[
-                { label: "My Account", action: () => go("account") },
-                { label: "Rewards & Points", action: () => go("account") },
-                { label: "Gift Cards", action: () => go("gift-card") },
-              ].map((l) => (
-                <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
-              ))}
+              {isLoggedIn ? (
+                <>
+                  <div className="flex items-center gap-3 px-3 py-3 border-b border-white/5">
+                    <div className="w-9 h-9 bg-[#CDFF3A] rounded-full flex items-center justify-center text-[#111] font-black text-[13px]">J</div>
+                    <div>
+                      <div className="text-white text-[14px] font-semibold">Jerome</div>
+                      <div className="text-[#CDFF3A] text-[11px] font-mono">💳 ${WALLET_BALANCE.toFixed(2)} · {REWARD_PTS} pts</div>
+                    </div>
+                  </div>
+                  {[
+                    { label: "My Account", action: () => go("account") },
+                    { label: "Rewards & Points", action: () => go("account") },
+                    { label: "Gift Cards", action: () => go("gift-card") },
+                    { label: "↩ Log Out (prototype)", action: () => setIsLoggedIn(false) },
+                  ].map((l) => (
+                    <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <div className="flex gap-3 px-3 py-4 border-b border-white/5">
+                    <button onClick={() => { setIsLoggedIn(true); go("account"); }}
+                      className="flex-1 border border-white/20 text-white py-3 text-[13px] font-bold tracking-widest uppercase hover:bg-white/10 transition-colors">
+                      Log In
+                    </button>
+                    <button onClick={() => { setIsLoggedIn(true); go("account"); }}
+                      className="flex-1 bg-[#CDFF3A] text-[#111] py-3 text-[13px] font-black tracking-widest uppercase hover:bg-white transition-colors">
+                      Sign Up
+                    </button>
+                  </div>
+                  {[
+                    { label: "Gift Cards", action: () => go("gift-card") },
+                  ].map((l) => (
+                    <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
+                  ))}
+                </>
+              )}
             </div>
           </div>
         )}
