@@ -85,33 +85,34 @@ export default function ConfirmationPage({ navigate, orderType }: Props) {
           </div>
         </div>
 
-        {/* Notification channel — WhatsApp for ready orders, email for plans */}
-        {orderType === "ready" ? (
-          <div className="bg-[#075E54] text-white p-5 mb-5 text-left flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#25D366] rounded-full flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.524 5.86L.057 23.998l6.294-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.87 0-3.625-.48-5.15-1.322l-.369-.219-3.737.98.998-3.648-.24-.378A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-            </div>
-            <div className="flex-1">
-              <div className="font-semibold text-[14px]">Order updates via WhatsApp</div>
-              <div className="text-white/70 text-[12px] mt-0.5">You'll receive live status updates on WhatsApp at <strong className="text-white">+65 9123 4567</strong></div>
-            </div>
-            <a href="https://wa.me/6591234567" target="_blank" rel="noreferrer"
-              className="shrink-0 border border-[#25D366] text-[#25D366] text-[11px] font-bold tracking-wider uppercase px-4 py-2 hover:bg-[#25D366] hover:text-[#075E54] transition-colors whitespace-nowrap">
-              Open WhatsApp
-            </a>
+        {/* Notification channels */}
+        {/* WhatsApp — always shown */}
+        <div className="bg-[#075E54] text-white p-5 mb-3 text-left flex items-center gap-4">
+          <div className="w-10 h-10 bg-[#25D366] rounded-full flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+              <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.553 4.122 1.524 5.86L.057 23.998l6.294-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.87 0-3.625-.48-5.15-1.322l-.369-.219-3.737.98.998-3.648-.24-.378A9.956 9.956 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+            </svg>
           </div>
-        ) : (
-          <div className="bg-[#0E0E0E] text-white p-5 mb-5 text-left flex items-center gap-4">
-            <span className="text-[24px]">✉️</span>
-            <div>
-              <div className="font-medium text-[14px]">Plan details sent to your email</div>
-              <div className="text-white/40 text-[12px] mt-0.5">Check <strong className="text-white/70">jerome@email.com</strong> for your full meal plan schedule and delivery windows</div>
-            </div>
+          <div className="flex-1">
+            <div className="font-semibold text-[14px]">Confirmation sent via WhatsApp</div>
+            <div className="text-white/70 text-[12px] mt-0.5">Live order updates at <strong className="text-white">+65 9123 4567</strong> — reply anytime to reach us</div>
           </div>
-        )}
+          <div className="shrink-0 bg-[#25D366] text-white text-[10px] font-bold tracking-wider uppercase px-3 py-1.5">
+            ✓ Sent
+          </div>
+        </div>
+        {/* Email — always shown */}
+        <div className="bg-[#0E0E0E] text-white p-5 mb-5 text-left flex items-center gap-4">
+          <span className="text-[24px]">✉️</span>
+          <div className="flex-1">
+            <div className="font-medium text-[14px]">Confirmation also sent to your email</div>
+            <div className="text-white/40 text-[12px] mt-0.5">Check <strong className="text-white/70">jerome@email.com</strong> for your {orderType === "plan" ? "full meal plan schedule and delivery windows" : "order receipt and delivery details"}</div>
+          </div>
+          <div className="shrink-0 text-[#CDFF3A] text-[10px] font-bold tracking-wider uppercase">
+            ✓ Sent
+          </div>
+        </div>
 
         {/* Track order notice */}
         <div className="bg-[#0E0E0E] text-white p-5 mb-5 text-left flex items-center gap-4">

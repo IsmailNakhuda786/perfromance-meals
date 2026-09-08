@@ -16,6 +16,14 @@ interface NavProps {
 export default function Nav({ currentPage, navigate, navigateToWizard, cart, cartOpen, setCartOpen, updateCartQty, removeFromCart, onCheckout }: NavProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [logoutToast, setLogoutToast] = useState(false);
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setMobileOpen(false);
+    setLogoutToast(true);
+    setTimeout(() => setLogoutToast(false), 3000);
+  };
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
   const cartTotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const WALLET_BALANCE = 12.50;
@@ -109,7 +117,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                 </button>
 
                 {/* Log out toggle (prototype only) */}
-                <button onClick={() => setIsLoggedIn(false)}
+                <button onClick={handleLogout}
                   className="hidden lg:flex items-center gap-1 border border-white/15 text-white/50 hover:border-white/40 hover:text-white transition-colors text-[10px] tracking-widest uppercase px-2.5 py-1.5">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
                   Out
@@ -187,7 +195,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                     { label: "My Account", action: () => go("account") },
                     { label: "Rewards & Points", action: () => go("account") },
                     { label: "Gift Cards", action: () => go("gift-card") },
-                    { label: "↩ Log Out (prototype)", action: () => setIsLoggedIn(false) },
+                    { label: "↩ Log Out (prototype)", action: handleLogout },
                   ].map((l) => (
                     <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
                   ))}
@@ -215,6 +223,19 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
           </div>
         )}
       </nav>
+
+      {/* Logout toast */}
+      {logoutToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] bg-[#111] text-white px-6 py-4 flex items-center gap-3 shadow-2xl border border-white/10">
+          <div className="w-8 h-8 bg-[#CDFF3A] rounded-full flex items-center justify-center shrink-0">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
+          </div>
+          <div>
+            <div className="font-semibold text-[13px]">You've been logged out</div>
+            <div className="text-white/45 text-[11px]">See you next time, Jerome. Your cart has been saved.</div>
+          </div>
+        </div>
+      )}
 
       {/* Cart Drawer */}
       {cartOpen && (

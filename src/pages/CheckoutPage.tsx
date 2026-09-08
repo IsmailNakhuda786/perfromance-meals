@@ -11,7 +11,14 @@ interface Props {
 const DATES = ["Mon 4", "Tue 5", "Wed 6", "Thu 7", "Fri 8", "Sat 9"];
 const SLOTS = ["6am – 9am", "9am – 12pm", "12pm – 3pm", "3pm – 6pm"];
 
+type AuthMode = null | "guest" | "signin" | "signup";
+
 export default function CheckoutPage({ navigate, cart, savedAddress, onComplete }: Props) {
+  const [authMode, setAuthMode] = useState<AuthMode>(null);
+  const [authEmail, setAuthEmail] = useState("");
+  const [authName, setAuthName] = useState("");
+  const [authPhone, setAuthPhone] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
   const [step, setStep] = useState<1 | 2>(1);
   const [date, setDate] = useState(DATES[0]);
   const [slot, setSlot] = useState(SLOTS[0]);
@@ -54,8 +61,86 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
             <span className="font-display text-[18px] font-bold">${total.toFixed(2)}</span>
           </div>
 
+          {/* ── AUTH GATE ── */}
+          {authMode === null && (
+            <div>
+              <h1 className="font-display text-[28px] sm:text-[34px] font-bold mb-2">Almost there.</h1>
+              <p className="text-[#666] text-[14px] mb-8">Sign in to save your order history and earn rewards points — or continue as a guest.</p>
+              <div className="space-y-3 mb-6">
+                <button onClick={() => setAuthMode("signup")}
+                  className="w-full bg-[#111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors flex items-center justify-between px-6">
+                  <span>Create Account</span>
+                  <span className="text-[11px] font-normal text-current/60 normal-case tracking-normal">Earn points on this order →</span>
+                </button>
+                <button onClick={() => setAuthMode("signin")}
+                  className="w-full border-2 border-[#111] text-[#111] py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors">
+                  Sign In to Existing Account
+                </button>
+                <button onClick={() => setAuthMode("guest")}
+                  className="w-full text-[#888] text-[13px] py-3 hover:text-[#111] transition-colors border border-[#D0CCC4] hover:border-[#111]">
+                  Continue as Guest
+                </button>
+              </div>
+              <p className="text-[11px] text-[#aaa] text-center">Guest orders earn no reward points and won't appear in order history.</p>
+            </div>
+          )}
+
+          {/* ── SIGN UP FORM ── */}
+          {authMode === "signup" && (
+            <div>
+              <button onClick={() => setAuthMode(null)} className="text-[#888] text-[12px] mb-6 hover:text-[#111] transition-colors">← Back</button>
+              <h1 className="font-display text-[28px] font-bold mb-6">Create your account</h1>
+              <div className="space-y-4 mb-6">
+                {[
+                  { label: "Full Name", val: authName, set: setAuthName, type: "text", placeholder: "Jerome Tan" },
+                  { label: "Email", val: authEmail, set: setAuthEmail, type: "email", placeholder: "jerome@email.com" },
+                  { label: "Phone (WhatsApp)", val: authPhone, set: setAuthPhone, type: "tel", placeholder: "+65 9123 4567" },
+                  { label: "Password", val: authPassword, set: setAuthPassword, type: "password", placeholder: "Min. 8 characters" },
+                ].map((f) => (
+                  <div key={f.label}>
+                    <label className="text-[11px] font-semibold tracking-[0.15em] uppercase text-[#888] block mb-1.5">{f.label}</label>
+                    <input type={f.type} value={f.val} onChange={(e) => f.set(e.target.value)} placeholder={f.placeholder}
+                      className="w-full border border-[#D0CCC4] px-4 py-3 text-[14px] bg-white outline-none focus:border-[#111] transition-colors" />
+                  </div>
+                ))}
+              </div>
+              <div className="bg-[#CDFF3A]/20 border border-[#CDFF3A]/50 px-4 py-3 mb-6 text-[12px] text-[#555]">
+                🎁 You'll earn <strong className="text-[#111]">points on this order</strong> and unlock referral rewards after signup.
+              </div>
+              <button onClick={() => setAuthMode("guest")}
+                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                Create Account & Continue →
+              </button>
+            </div>
+          )}
+
+          {/* ── SIGN IN FORM ── */}
+          {authMode === "signin" && (
+            <div>
+              <button onClick={() => setAuthMode(null)} className="text-[#888] text-[12px] mb-6 hover:text-[#111] transition-colors">← Back</button>
+              <h1 className="font-display text-[28px] font-bold mb-6">Welcome back</h1>
+              <div className="space-y-4 mb-6">
+                {[
+                  { label: "Email", val: authEmail, set: setAuthEmail, type: "email", placeholder: "jerome@email.com" },
+                  { label: "Password", val: authPassword, set: setAuthPassword, type: "password", placeholder: "Your password" },
+                ].map((f) => (
+                  <div key={f.label}>
+                    <label className="text-[11px] font-semibold tracking-[0.15em] uppercase text-[#888] block mb-1.5">{f.label}</label>
+                    <input type={f.type} value={f.val} onChange={(e) => f.set(e.target.value)} placeholder={f.placeholder}
+                      className="w-full border border-[#D0CCC4] px-4 py-3 text-[14px] bg-white outline-none focus:border-[#111] transition-colors" />
+                  </div>
+                ))}
+              </div>
+              <button onClick={() => setAuthMode("guest")}
+                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors mb-3">
+                Sign In & Continue →
+              </button>
+              <p className="text-center text-[12px] text-[#aaa]">Forgot password? <span className="text-[#111] font-semibold cursor-pointer hover:underline">Reset it</span></p>
+            </div>
+          )}
+
           {/* ── STEP 1: DELIVERY ── */}
-          {step === 1 && (
+          {authMode !== null && step === 1 && (
             <div>
               <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-8">Delivery</h1>
 
@@ -110,7 +195,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
           )}
 
           {/* ── STEP 2: PAYMENT ── */}
-          {step === 2 && (
+          {authMode !== null && step === 2 && (
             <div>
               <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-8">Payment</h1>
 
