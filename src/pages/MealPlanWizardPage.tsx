@@ -41,6 +41,25 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
   const [address, setAddress] = useState({ name: "", phone: "", line1: "", unit: "", postal: "" });
   const [saveCard, setSaveCard] = useState(false);
   const [autoChargeConsent, setAutoChargeConsent] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [promoError, setPromoError] = useState<"invalid" | "expired" | null>(null);
+
+  const VALID_PROMOS: Record<string, { discount: number; expired?: boolean }> = {
+    "FRESHER10": { discount: 0.10 },
+    "WELCOME15": { discount: 0.15 },
+    "SUMMER20":  { discount: 0.20, expired: true },
+    "FITLIFE":   { discount: 0.12 },
+  };
+
+  const handleApplyPromo = () => {
+    const code = promoCode.trim().toUpperCase();
+    const entry = VALID_PROMOS[code];
+    if (!entry) { setPromoError("invalid"); setPromoApplied(false); return; }
+    if (entry.expired) { setPromoError("expired"); setPromoApplied(false); return; }
+    setPromoError(null);
+    setPromoApplied(true);
+  };
   type WizardAuthMode = null | "guest" | "signin" | "signup" | "signin_done" | "signup_done";
   const [wizardAuthMode, setWizardAuthMode] = useState<WizardAuthMode>(null);
   const [waEmail, setWaEmail] = useState("");
@@ -49,7 +68,10 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
   const [waPassword, setWaPassword] = useState("");
 
   const plan = PLANS.find((p) => p.name === goal)!;
-  const price = billing === "week" ? plan.priceWeek : plan.priceMonth;
+  const basePrice = billing === "week" ? plan.priceWeek : plan.priceMonth;
+  const promoRate = promoApplied ? (VALID_PROMOS[promoCode.trim().toUpperCase()]?.discount ?? 0) : 0;
+  const promoDiscount = Number(basePrice) * promoRate;
+  const price = promoApplied ? (Number(basePrice) - promoDiscount).toFixed(2) : basePrice;
   const maxMeals = plan.meals * 2;
 
   const toggleDay = (d: string) =>
@@ -628,11 +650,19 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                     <p className="text-sm text-[#666]">{timeSlot}</p>
                   </div>
                   <div className="text-right">
+                    {promoApplied && <p className="text-xs text-[#999] line-through">${basePrice}/{billing === "week" ? "wk" : "mo"}</p>}
                     <p className="text-xl font-bold">${price}</p>
                     <p className="text-xs text-[#999]">/{billing === "week" ? "week" : "month"}</p>
+                    {promoApplied && <p className="text-xs text-green-600 font-medium mt-0.5">{promoCode} applied ✓</p>}
                   </div>
                 </div>
-                <div className="h-1 rounded-full" style={{ backgroundColor: plan.accent }} />
+                {promoApplied && (
+                  <div className="flex justify-between text-[12px] text-green-600 font-medium border-t border-[#F0EDE8] pt-2 mt-2">
+                    <span>Promo discount ({Math.round(promoRate * 100)}% off)</span>
+                    <span>–${promoDiscount.toFixed(2)}/{billing === "week" ? "wk" : "mo"}</span>
+                  </div>
+                )}
+                <div className="h-1 rounded-full mt-3" style={{ backgroundColor: plan.accent }} />
               </div>
 
               {/* Card fields */}
@@ -686,6 +716,34 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                 </label>
                 {!autoChargeConsent && (
                   <p className="text-xs text-red-500 ml-7">Authorisation required to subscribe</p>
+                )}
+              </div>
+
+              {/* Promo code */}
+              <div className="mb-5">
+                <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Promo / Discount Code</p>
+                <div className="flex gap-2">
+                  <input
+                    value={promoCode}
+                    onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoError(null); }}
+                    placeholder="e.g. FRESHER10"
+                    className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase rounded-lg ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
+                  />
+                  <button onClick={handleApplyPromo}
+                    className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase rounded-lg hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                    Apply
+                  </button>
+                </div>
+                {promoApplied && (
+                  <p className="text-green-600 text-[12px] mt-1.5 font-medium flex items-center gap-1.5">
+                    ✓ Code <strong>{promoCode}</strong> applied — {Math.round(promoRate * 100)}% off (–${promoDiscount.toFixed(2)}/{billing === "week" ? "wk" : "mo"})
+                  </p>
+                )}
+                {promoError === "invalid" && (
+                  <p className="text-red-500 text-[12px] mt-1.5 font-medium">✕ Invalid promo code. Check spelling or try another.</p>
+                )}
+                {promoError === "expired" && (
+                  <p className="text-red-500 text-[12px] mt-1.5 font-medium">⏰ This promo code has expired. Check our latest offers!</p>
                 )}
               </div>
 
