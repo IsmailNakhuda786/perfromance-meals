@@ -62,6 +62,10 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
               className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
               Dev Handoff
             </button>
+            <button onClick={() => navigate("screens-export")}
+              className="border border-[#CDFF3A]/40 bg-[#CDFF3A]/5 text-[#CDFF3A] px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors font-bold">
+              🖨 All Screens PDF
+            </button>
           </div>
         </div>
       </div>

@@ -17,8 +17,9 @@ import HandoffPage from "@/pages/HandoffPage";
 import BlueprintPage from "@/pages/BlueprintPage";
 import WireframePage from "@/pages/WireframePage";
 import AboutPage from "@/pages/AboutPage";
+import ScreensExportPage from "@/pages/ScreensExportPage";
 
-const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff", "blueprint", "wireframe"];
+const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff", "blueprint", "wireframe", "screens-export"];
 
 export interface SavedAddress {
   name: string;
@@ -155,6 +156,7 @@ export default function App() {
       {page === "gift-card" && <GiftCardPage navigate={navigate} />}
       {page === "handoff" && <HandoffPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "blueprint" && <BlueprintPage navigate={navigate} navigateToWizard={navigateToWizard} />}
+      {page === "screens-export" && <ScreensExportPage navigate={navigate} />}
       {page === "wireframe" && <WireframePage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "about" && <AboutPage navigate={navigate} navigateToWizard={navigateToWizard} />}
 

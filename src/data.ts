@@ -11,7 +11,8 @@ export type Page =
   | "handoff"
   | "blueprint"
   | "wireframe"
-  | "about";
+  | "about"
+  | "screens-export";
 
 export interface CartItem {
   id: number;
