@@ -155,6 +155,67 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
         </div>
       </div>
 
+      {/* ── READY SERIES + BUILD-A-BOX FEATURE STRIP ── */}
+      <section className="bg-[#111] border-b border-white/5">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-2">
+          {/* Ready Series */}
+          <div className="relative overflow-hidden group cursor-pointer border-r border-white/5" onClick={() => navigate("ready-to-go")}>
+            <img src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=900&h=500&fit=crop&auto=format"
+              alt="Ready Series" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-45 group-hover:scale-105 transition-all duration-700" />
+            <div className="relative px-8 sm:px-12 py-12 sm:py-16">
+              <span className="font-mono text-[9px] tracking-[0.5em] text-[#CDFF3A] uppercase">01 / Ready Series</span>
+              <h3 className="font-display text-[36px] sm:text-[48px] font-bold text-white mt-3 mb-3 leading-tight">
+                Heat. Eat.<br /><span className="text-[#CDFF3A]">Perform.</span>
+              </h3>
+              <p className="text-white/45 text-[13px] sm:text-[14px] leading-relaxed mb-7 max-w-[320px]">
+                9 rotating meals. Macro-accurate. Ready in 3 minutes from frozen. Same-day delivery across Singapore.
+              </p>
+              <div className="flex flex-wrap gap-3 items-center">
+                <button onClick={(e) => { e.stopPropagation(); navigate("ready-to-go"); }}
+                  className="bg-[#CDFF3A] text-[#111] px-6 py-3 text-[11px] font-black tracking-[0.2em] uppercase hover:bg-white transition-colors">
+                  Shop Meals →
+                </button>
+                <div className="flex gap-2">
+                  {["From $9.90", "Free delivery $80+"].map((t) => (
+                    <span key={t} className="text-[10px] text-white/30 border border-white/10 px-3 py-2 tracking-wide">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Build-A-Box */}
+          <div className="relative overflow-hidden group cursor-pointer" onClick={() => navigate("build-a-box")}>
+            <img src="https://images.unsplash.com/photo-1607532941433-304659e8198a?w=900&h=500&fit=crop&auto=format"
+              alt="Build A Box" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-45 group-hover:scale-105 transition-all duration-700" />
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#7EE8B0] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+            <div className="relative px-8 sm:px-12 py-12 sm:py-16">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="font-mono text-[9px] tracking-[0.5em] text-[#7EE8B0] uppercase">Build-A-Box</span>
+                <span className="bg-[#7EE8B0] text-[#111] text-[8px] font-black tracking-widest uppercase px-2 py-1">Best Value</span>
+              </div>
+              <h3 className="font-display text-[36px] sm:text-[48px] font-bold text-white mb-3 leading-tight">
+                Your pick.<br /><span className="text-[#7EE8B0]">Your box.</span>
+              </h3>
+              <p className="text-white/45 text-[13px] sm:text-[14px] leading-relaxed mb-7 max-w-[320px]">
+                Mix and match from 9 meals. Choose 5, 10, 15 or 20 — the more you order, the less you pay per meal.
+              </p>
+              <div className="flex flex-wrap gap-3 items-center">
+                <button onClick={(e) => { e.stopPropagation(); navigate("build-a-box"); }}
+                  className="bg-[#7EE8B0] text-[#111] px-6 py-3 text-[11px] font-black tracking-[0.2em] uppercase hover:bg-white transition-colors">
+                  Build My Box →
+                </button>
+                <div className="flex gap-2">
+                  {["From $11/meal", "Save up to 11%"].map((t) => (
+                    <span key={t} className="text-[10px] text-white/30 border border-white/10 px-3 py-2 tracking-wide">{t}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── ANIMATED STATS BAR ── */}
       <div className="bg-[#111111] py-5 sm:py-6 overflow-hidden">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
@@ -466,6 +527,36 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
         </div>
       </section>
 
+      {/* ── REAL RESULTS ── */}
+      <section className="bg-white py-16 border-t border-[#E5E2DA]">
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase">Real Results</span>
+            <h2 className="font-display text-[36px] sm:text-[48px] font-bold mt-2">Real results. Real people.</h2>
+            <p className="text-[#888] text-[14px] mt-3">Over 12,400 members. 4.8 stars. Verified reviews.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {[
+              { name: "Marcus L.", plan: "MAINTAIN Plan · Week 18", stars: 5, text: "I've tried every meal prep service in Singapore. Fresher is the only one where I actually look forward to my meals. Macros are spot on and the food tastes like a restaurant." },
+              { name: "Priya S.", plan: "CUT Plan · Lost 7kg in 9 weeks", stars: 5, text: "Down 7kg and I never felt hungry. The chef really understands performance nutrition — this isn't diet food, it's proper eating." },
+              { name: "Wei Jian T.", plan: "BUILD Plan · 4 months in", stars: 5, text: "Gained 4kg of lean muscle while eating clean. The protein macros on the BUILD plan are dialled in perfectly. My gym coach was genuinely impressed." },
+              { name: "Sarah K.", plan: "Ready-to-Go · Regular customer", stars: 5, text: "The salmon scramble breakfast is addictive. I order 10 a week. Free delivery, arrives frozen fresh, heats in 3 mins. What else do you need?" },
+              { name: "Darren Ng", plan: "Gift Card → CUT Plan", stars: 5, text: "Got a gift card from my wife and now I'm a subscriber. The 6in60 guarantee is what got me in the door — results kept me here." },
+              { name: "Aisha B.", plan: "MAINTAIN Plan · 6 months", stars: 5, text: "As a busy mum of two I have zero time to meal prep. Fresher has genuinely changed how our household eats. The kids steal my lunches now." },
+            ].map((t) => (
+              <div key={t.name} className="bg-[#F7F5F0] p-6 flex flex-col gap-4">
+                <div className="text-[#CDFF3A] text-[16px]">{"★".repeat(t.stars)}</div>
+                <p className="text-[14px] leading-relaxed text-[#333] flex-1">"{t.text}"</p>
+                <div>
+                  <div className="font-semibold text-[14px]">{t.name}</div>
+                  <div className="text-[11px] text-[#888] mt-0.5">{t.plan}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── GIFT CARD BANNER ── */}
       <section className="bg-[#CDFF3A] py-10 sm:py-14">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -568,35 +659,6 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS ── */}
-      <section className="bg-white py-16 border-t border-[#E5E2DA]">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="text-center mb-10">
-            <span className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase">What customers say</span>
-            <h2 className="font-display text-[36px] sm:text-[48px] font-bold mt-2">Real results. Real people.</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {[
-              { name: "Marcus L.", plan: "MAINTAIN Plan · Week 18", stars: 5, text: "I've tried every meal prep service in Singapore. Fresher is the only one where I actually look forward to my meals. Macros are spot on and the food tastes like a restaurant." },
-              { name: "Priya S.", plan: "CUT Plan · Lost 7kg in 9 weeks", stars: 5, text: "Down 7kg and I never felt hungry. The chef really understands performance nutrition — this isn't diet food, it's proper eating." },
-              { name: "Wei Jian T.", plan: "BUILD Plan · 4 months in", stars: 5, text: "Gained 4kg of lean muscle while eating clean. The protein macros on the BUILD plan are dialled in perfectly. My gym coach was genuinely impressed." },
-              { name: "Sarah K.", plan: "Ready-to-Go · Regular customer", stars: 5, text: "The salmon scramble breakfast is addictive. I order 10 a week. Free delivery, arrives frozen fresh, heats in 3 mins. What else do you need?" },
-              { name: "Darren Ng", plan: "Gift Card → CUT Plan", stars: 5, text: "Got a gift card from my wife and now I'm a subscriber. The 6in60 guarantee is what got me in the door — results kept me here." },
-              { name: "Aisha B.", plan: "MAINTAIN Plan · 6 months", stars: 5, text: "As a busy mum of two I have zero time to meal prep. Fresher has genuinely changed how our household eats. The kids steal my lunches now." },
-            ].map((t) => (
-              <div key={t.name} className="bg-[#F7F5F0] p-6 flex flex-col gap-4">
-                <div className="text-[#CDFF3A] text-[16px]">{"★".repeat(t.stars)}</div>
-                <p className="text-[14px] leading-relaxed text-[#333] flex-1">"{t.text}"</p>
-                <div>
-                  <div className="font-semibold text-[14px]">{t.name}</div>
-                  <div className="text-[11px] text-[#888] mt-0.5">{t.plan}</div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
