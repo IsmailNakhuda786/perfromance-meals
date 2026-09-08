@@ -287,6 +287,35 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   ))}
                 </div>
 
+                {/* Build-A-Box savings nudge */}
+                {(() => {
+                  const readyItems = cart.filter((i) => i.type === "ready");
+                  const readyQty = readyItems.reduce((s, i) => s + i.qty, 0);
+                  const readyTotal = readyItems.reduce((s, i) => s + i.price * i.qty, 0);
+                  if (readyQty < 3) return null;
+                  const BOX_PRICE_PER_MEAL = readyQty >= 10 ? 11.90 : readyQty >= 5 ? 12.40 : 12.40;
+                  const boxTotal = readyQty * BOX_PRICE_PER_MEAL;
+                  const saving = readyTotal - boxTotal;
+                  if (saving <= 0.5) return null;
+                  return (
+                    <div className="mx-4 mb-3 bg-[#CDFF3A]/10 border border-[#CDFF3A]/30 p-3">
+                      <div className="flex items-start gap-2">
+                        <span className="text-[16px] shrink-0">💡</span>
+                        <div className="flex-1">
+                          <p className="text-[#CDFF3A] text-[11px] font-bold mb-0.5">Switch to Build-A-Box — save ${saving.toFixed(2)}</p>
+                          <p className="text-white/45 text-[10px] leading-relaxed">
+                            {readyQty} individual meals costs ${readyTotal.toFixed(2)}. A {readyQty}-meal box is ${boxTotal.toFixed(2)} at ${BOX_PRICE_PER_MEAL}/meal.
+                          </p>
+                          <button onClick={() => { setCartOpen(false); navigate("build-a-box"); }}
+                            className="mt-2 text-[10px] font-bold tracking-[0.15em] uppercase text-[#CDFF3A] hover:underline">
+                            Build a Box instead →
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 <div className="mx-4 bg-[#1A2E1A] border border-[#7EE8B0]/20 p-3 text-[12px] text-[#7EE8B0] flex items-center gap-2">
                   <span>💳</span>
                   <span>Wallet: <strong>$12.50</strong> available at checkout</span>

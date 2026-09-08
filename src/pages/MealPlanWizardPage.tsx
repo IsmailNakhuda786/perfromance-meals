@@ -34,7 +34,8 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
   const [mealCount, setMealCount] = useState<1 | 2>(2);
   const [goal, setGoal] = useState(initialPlan || "MAINTAIN");
   const [billing, setBilling] = useState<"week" | "month">("week");
-  const [selectedMeals, setSelectedMeals] = useState<number[]>([]);
+  const [mealQtys, setMealQtys] = useState<Record<number, number>>({});
+  const [detailMeal, setDetailMeal] = useState<Meal | null>(null);
   const [deliveryDays, setDeliveryDays] = useState<string[]>(["Mon", "Wed", "Fri"]);
   const [timeSlot, setTimeSlot] = useState(SLOTS[0]);
   const [address, setAddress] = useState({ name: "", phone: "", line1: "", unit: "", postal: "" });
@@ -54,16 +55,21 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
         : [...prev, d].sort((a, b) => DAYS.indexOf(a) - DAYS.indexOf(b))
     );
 
-  const toggleMeal = (id: number) =>
-    setSelectedMeals((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : prev.length < maxMeals
-        ? [...prev, id]
-        : prev
-    );
+  const totalSelected = Object.values(mealQtys).reduce((s, q) => s + q, 0);
+  const getMealQty = (id: number) => mealQtys[id] ?? 0;
+  const addMeal = (id: number) => {
+    if (totalSelected >= maxMeals) return;
+    setMealQtys((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
+  };
+  const removeMeal = (id: number) => {
+    setMealQtys((prev) => {
+      const q = (prev[id] ?? 0) - 1;
+      if (q <= 0) { const n = { ...prev }; delete n[id]; return n; }
+      return { ...prev, [id]: q };
+    });
+  };
 
-  const canProceedStep3 = selectedMeals.length >= plan.meals;
+  const canProceedStep3 = totalSelected >= plan.meals;
   const canProceedStep4 =
     deliveryDays.length > 0 &&
     address.name.trim() !== "" &&
@@ -271,67 +277,68 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[13px]"
                       style={{ backgroundColor: plan.accent, color: "#111" }}>
-                      {selectedMeals.length}
+                      {totalSelected}
                     </div>
                     <span className="text-[14px] font-medium text-white">
                       of {maxMeals} meals selected
                     </span>
-                    {selectedMeals.length < plan.meals && (
-                      <span className="text-red-400 text-[12px]">— need {plan.meals - selectedMeals.length} more</span>
+                    {totalSelected < plan.meals && (
+                      <span className="text-red-400 text-[12px]">— need {plan.meals - totalSelected} more</span>
                     )}
                   </div>
-                  <span className="text-[11px] text-white/40">Max {maxMeals} for variety</span>
+                  <span className="text-[11px] text-white/40">You can repeat meals · max {maxMeals}</span>
                 </div>
               </div>
 
               {/* Full-width meal grid matching Ready-to-Go style */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 {getMealsForPlan(goal).map((meal: Meal) => {
-                  const isSelected = selectedMeals.includes(meal.id);
-                  const atMax = selectedMeals.length >= maxMeals && !isSelected;
+                  const qty = getMealQty(meal.id);
+                  const atMax = totalSelected >= maxMeals && qty === 0;
                   const recommended = PLAN_MEAL_CATS[goal]?.includes(meal.cat);
+                  const typeMap: Record<string, { label: string; bg: string; text: string }> = {
+                    "high-carb":    { label: "High Carb",    bg: "#F2C94C22", text: "#F2C94C" },
+                    "low-carb":     { label: "Low Carb",     bg: "#7EE8B022", text: "#7EE8B0" },
+                    "just-protein": { label: "Just Protein", bg: "#A78BFA22", text: "#A78BFA" },
+                    "breakfast":    { label: "Breakfast",    bg: "#FB923C22", text: "#FB923C" },
+                  };
+                  const mealType = typeMap[meal.cat];
                   return (
                     <div key={meal.id}
-                      className={`group bg-[#1A1A1A] overflow-hidden transition-all ${isSelected ? "ring-2 ring-[#CDFF3A]/60 shadow-lg" : "hover:ring-1 hover:ring-white/20"} ${atMax ? "opacity-40" : ""}`}>
+                      className={`group bg-[#1A1A1A] overflow-hidden transition-all ${qty > 0 ? "ring-2 shadow-lg" : "hover:ring-1 hover:ring-white/20"} ${atMax ? "opacity-40" : ""}`}
+                      style={qty > 0 ? { "--tw-ring-color": plan.accent + "99" } as React.CSSProperties : {}}>
                       {/* Image */}
-                      <div className="relative h-52 bg-[#222] overflow-hidden cursor-pointer" onClick={() => !atMax && toggleMeal(meal.id)}>
-                        {meal.badge && !isSelected && (
+                      <div className="relative h-52 bg-[#222] overflow-hidden cursor-pointer" onClick={() => setDetailMeal(meal)}>
+                        {meal.badge && qty === 0 && (
                           <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold ${meal.badge === "Bestseller" || meal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111]" : "bg-black/50 text-white backdrop-blur-sm border border-white/10"}`}>
                             {meal.badge}
                           </div>
                         )}
-                        {recommended && !isSelected && !meal.badge && (
+                        {recommended && qty === 0 && !meal.badge && (
                           <div className="absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold"
                             style={{ backgroundColor: plan.accent, color: "#111" }}>
                             Recommended
                           </div>
                         )}
-                        <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        {isSelected && (
-                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                            <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl font-bold"
-                              style={{ backgroundColor: plan.accent, color: "#111" }}>✓</div>
+                        {qty > 0 && (
+                          <div className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center font-black text-[13px]"
+                            style={{ backgroundColor: plan.accent, color: "#111" }}>
+                            {qty}×
                           </div>
                         )}
+                        <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <span className="bg-white/10 backdrop-blur-sm text-white text-[11px] uppercase tracking-widest px-4 py-2 border border-white/20">View Details</span>
+                        </div>
                       </div>
                       {/* Info */}
                       <div className="p-5">
-                        {/* Meal type badge */}
-                        {(() => {
-                          const typeMap: Record<string, { label: string; bg: string; text: string }> = {
-                            "high-carb":    { label: "High Carb",    bg: "#F2C94C22", text: "#F2C94C" },
-                            "low-carb":     { label: "Low Carb",     bg: "#7EE8B022", text: "#7EE8B0" },
-                            "just-protein": { label: "Just Protein", bg: "#A78BFA22", text: "#A78BFA" },
-                            "breakfast":    { label: "Breakfast",    bg: "#FB923C22", text: "#FB923C" },
-                          };
-                          const t = typeMap[meal.cat];
-                          return t ? (
-                            <span className="inline-block text-[9px] font-mono font-bold tracking-[0.25em] uppercase px-2 py-1 mb-2 border"
-                              style={{ color: t.text, backgroundColor: t.bg, borderColor: t.text + "44" }}>
-                              {t.label}
-                            </span>
-                          ) : null;
-                        })()}
+                        {mealType && (
+                          <span className="inline-block text-[9px] font-mono font-bold tracking-[0.25em] uppercase px-2 py-1 mb-2 border"
+                            style={{ color: mealType.text, backgroundColor: mealType.bg, borderColor: mealType.text + "44" }}>
+                            {mealType.label}
+                          </span>
+                        )}
                         <div className="flex items-start justify-between mb-3 gap-2">
                           <h3 className="text-white text-[14px] font-medium leading-snug">{meal.name}</h3>
                           <span className="text-[#CDFF3A] font-bold text-[15px] whitespace-nowrap font-mono shrink-0">${meal.price.toFixed(2)}</span>
@@ -344,14 +351,25 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                             </div>
                           ))}
                         </div>
-                        <div className="flex items-center justify-between">
-                          <div className="text-[11px] text-white/35">
-                            <span className="text-[#CDFF3A]">★</span> {meal.rating} ({meal.reviews})
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="text-[11px] text-white/35 flex items-center gap-1">
+                            <span className="text-[#CDFF3A]">{"★".repeat(Math.round(meal.rating))}</span>
+                            <span>{meal.rating} ({meal.reviews})</span>
                           </div>
-                          <button onClick={() => !atMax && toggleMeal(meal.id)} disabled={atMax}
-                            className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${isSelected ? "bg-[#CDFF3A] text-[#111]" : atMax ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-white/10 text-white hover:bg-[#CDFF3A] hover:text-[#111]"}`}>
-                            {isSelected ? "✓ Selected" : "Select"}
-                          </button>
+                          {qty === 0 ? (
+                            <button onClick={() => !atMax && addMeal(meal.id)} disabled={atMax}
+                              className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${atMax ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-white/10 text-white hover:bg-[#CDFF3A] hover:text-[#111]"}`}>
+                              + Select
+                            </button>
+                          ) : (
+                            <div className="flex items-center gap-1">
+                              <button onClick={() => removeMeal(meal.id)}
+                                className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-[16px] transition-colors">−</button>
+                              <span className="text-white font-mono font-bold text-[13px] w-6 text-center">{qty}</span>
+                              <button onClick={() => addMeal(meal.id)} disabled={totalSelected >= maxMeals}
+                                className={`w-8 h-8 flex items-center justify-center text-[16px] transition-colors ${totalSelected >= maxMeals ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-[#CDFF3A] text-[#111] hover:bg-white"}`}>+</button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -589,6 +607,90 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
 
         </div>
       </div>
+
+      {/* ── Meal Detail Modal ── */}
+      {detailMeal && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center p-2 sm:p-4">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setDetailMeal(null)} />
+          <div className="relative bg-[#1A1A1A] text-white w-full max-w-2xl overflow-hidden max-h-[100dvh] sm:max-h-[90vh] overflow-y-auto">
+            <button onClick={() => setDetailMeal(null)} className="absolute top-4 right-4 z-10 text-white/50 hover:text-white bg-black/30 rounded-full p-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            </button>
+            <div className="h-56 sm:h-72 relative bg-[#222]">
+              <img src={detailMeal.img} alt={detailMeal.name} className="w-full h-full object-cover" />
+              {detailMeal.badge && (
+                <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${detailMeal.badge === "Bestseller" || detailMeal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>
+                  {detailMeal.badge}
+                </div>
+              )}
+              {getMealQty(detailMeal.id) > 0 && (
+                <div className="absolute top-4 right-4 text-[12px] font-bold px-3 py-1" style={{ backgroundColor: plan.accent, color: "#111" }}>
+                  {getMealQty(detailMeal.id)}× in your plan
+                </div>
+              )}
+            </div>
+            <div className="p-7">
+              {(() => {
+                const typeMap: Record<string, { label: string; color: string }> = {
+                  "high-carb":    { label: "High Carb",    color: "#F2C94C" },
+                  "low-carb":     { label: "Low Carb",     color: "#7EE8B0" },
+                  "just-protein": { label: "Just Protein", color: "#A78BFA" },
+                  "breakfast":    { label: "Breakfast",    color: "#FB923C" },
+                };
+                const t = typeMap[detailMeal.cat];
+                return t ? (
+                  <span className="inline-block text-[10px] font-mono font-bold tracking-[0.25em] uppercase px-2.5 py-1 mb-3 border"
+                    style={{ color: t.color, borderColor: t.color + "55", backgroundColor: t.color + "15" }}>
+                    {t.label}
+                  </span>
+                ) : null;
+              })()}
+              <div className="flex items-start justify-between mb-3 gap-3">
+                <h2 className="font-display text-[26px] font-bold">{detailMeal.name}</h2>
+                <span className="font-mono text-[22px] text-[#CDFF3A] font-bold shrink-0">${detailMeal.price.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center gap-2 text-[13px] text-white/40 mb-4">
+                <span className="text-[#CDFF3A]">{"★".repeat(Math.round(detailMeal.rating))}</span>
+                <span className="text-white/60 font-semibold">{detailMeal.rating}</span>
+                <span>· {detailMeal.reviews} reviews</span>
+              </div>
+              <p className="text-white/55 text-[14px] leading-relaxed mb-6">{detailMeal.desc}</p>
+              <div className="grid grid-cols-4 gap-2 mb-6">
+                {[{ label: "Calories", val: detailMeal.cal }, { label: "Protein", val: `${detailMeal.protein}g` }, { label: "Carbs", val: `${detailMeal.carbs}g` }, { label: "Fat", val: `${detailMeal.fat}g` }].map((m) => (
+                  <div key={m.label} className="bg-[#222] px-3 py-3 text-center">
+                    <div className="font-mono text-[13px] text-[#CDFF3A] font-medium">{m.val}</div>
+                    <div className="text-white/30 text-[10px] mt-1 uppercase tracking-wider">{m.label}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="border border-white/10 p-4 mb-6 text-[12px] text-white/40 space-y-1">
+                <div>❄️ Frozen at peak freshness · 2-month freezer life</div>
+                <div>⚡ Heat in 3 minutes in microwave or oven</div>
+                <div>✓ USDA nutritional standards · Macro-labelled</div>
+              </div>
+              <div className="flex gap-3 items-center">
+                {getMealQty(detailMeal.id) > 0 && (
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => removeMeal(detailMeal.id)}
+                      className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-[18px] transition-colors">−</button>
+                    <span className="text-white font-mono font-bold text-[15px] w-8 text-center">{getMealQty(detailMeal.id)}</span>
+                    <button onClick={() => addMeal(detailMeal.id)} disabled={totalSelected >= maxMeals}
+                      className={`w-10 h-10 flex items-center justify-center text-[18px] transition-colors ${totalSelected >= maxMeals ? "bg-white/5 text-white/20 cursor-not-allowed" : "text-[#111] hover:opacity-90"}`}
+                      style={totalSelected < maxMeals ? { backgroundColor: plan.accent } : {}}>+</button>
+                  </div>
+                )}
+                <button
+                  onClick={() => { addMeal(detailMeal.id); setDetailMeal(null); }}
+                  disabled={totalSelected >= maxMeals}
+                  className={`flex-1 py-4 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected >= maxMeals ? "bg-white/10 text-white/30 cursor-not-allowed" : "text-[#111] hover:opacity-90"}`}
+                  style={totalSelected < maxMeals ? { backgroundColor: plan.accent } : {}}>
+                  {getMealQty(detailMeal.id) > 0 ? `+ Add Another (${getMealQty(detailMeal.id)}× selected)` : "Add to Plan →"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
