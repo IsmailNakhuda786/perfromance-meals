@@ -184,6 +184,92 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
         </div>
       </div>
 
+      {/* ── TRUSTED BY ── */}
+      <section className="bg-[#F7F5F0] py-14 border-b border-[#E5E2DA]">
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase">Trusted by</span>
+            <h2 className="font-display text-[28px] sm:text-[36px] font-bold mt-2">The people who fuel on Fresher</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+            {[
+              { icon: "🏋️", title: "Athletes & Gymgoers", desc: "From recreational lifters to competitive bodybuilders — our macro precision matches training demands at every level.", count: "3,200+ athletes" },
+              { icon: "💼", title: "Busy Professionals", desc: "No time to cook doesn't mean no standards. Fresher fits into a demanding schedule without sacrificing nutrition.", count: "2,800+ professionals" },
+              { icon: "🏃", title: "Endurance Performers", desc: "Runners, cyclists, swimmers — high-carb fuelling on training days, lean protein on recovery days. All covered.", count: "1,400+ endurance athletes" },
+            ].map((g) => (
+              <div key={g.title} className="bg-white border border-[#E5E2DA] p-6">
+                <div className="text-[36px] mb-3">{g.icon}</div>
+                <div className="font-bold text-[16px] mb-2">{g.title}</div>
+                <p className="text-[#666] text-[13px] leading-relaxed mb-4">{g.desc}</p>
+                <div className="font-mono text-[11px] text-[#CDFF3A] bg-[#111] px-3 py-1.5 inline-block tracking-wider">{g.count}</div>
+              </div>
+            ))}
+          </div>
+          {/* Logo trust strip */}
+          <div className="border-t border-[#E5E2DA] pt-8">
+            <p className="text-center text-[11px] font-mono tracking-[0.3em] text-[#aaa] uppercase mb-6">Featured & recognised by</p>
+            <div className="flex flex-wrap justify-center gap-8 items-center">
+              {["Business Times", "Straits Times Life", "Men's Health SG", "Women's Health SG", "CNA Lifestyle"].map((b) => (
+                <span key={b} className="font-display text-[16px] font-bold text-[#CCC] hover:text-[#999] transition-colors">{b}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CREATED BY ── */}
+      <section className="bg-[#111] text-white py-16 border-b border-white/5">
+        <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase">Created by</span>
+            <h2 className="font-display text-[36px] sm:text-[48px] font-bold mt-3 mb-5 leading-tight">Chefs who<br />understand macros.</h2>
+            <p className="text-white/55 text-[15px] leading-relaxed mb-6">
+              Every Fresher meal is designed by <strong className="text-white">Chef Marcus Yeo</strong> and calibrated by <strong className="text-white">Dr. Aisha Lim</strong>, our in-house sports dietitian. No guesswork — every gram of protein, carb and fat is intentional.
+            </p>
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              {[
+                { val: "USDA", label: "Nutrition standard" },
+                { val: "±2g", label: "Macro accuracy" },
+                { val: "Weekly", label: "Menu rotation" },
+              ].map((s) => (
+                <div key={s.label} className="text-center border border-white/10 py-4 px-3">
+                  <div className="font-display text-[20px] font-bold text-[#CDFF3A]">{s.val}</div>
+                  <div className="text-white/35 text-[10px] uppercase tracking-wider mt-1">{s.label}</div>
+                </div>
+              ))}
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {[
+                  "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=80&h=80&fit=crop&auto=format",
+                  "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=80&h=80&fit=crop&auto=format",
+                  "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&auto=format",
+                ].map((img, i) => (
+                  <img key={i} src={img} alt="team" className="w-10 h-10 rounded-full border-2 border-[#111] object-cover grayscale" />
+                ))}
+              </div>
+              <div className="text-[13px] text-white/50">
+                Meet the team → <button onClick={() => {}} className="text-[#CDFF3A] hover:underline">About Us</button>
+              </div>
+            </div>
+          </div>
+          <div className="relative">
+            <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&h=500&fit=crop&auto=format"
+              alt="Chef at work" className="w-full object-cover grayscale opacity-80" style={{ height: 420 }} />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#111] via-transparent to-transparent" />
+            <div className="absolute bottom-5 left-5 right-5">
+              <div className="bg-white/10 backdrop-blur border border-white/10 px-4 py-3 flex items-center gap-3">
+                <span className="text-[22px]">👨‍🍳</span>
+                <div>
+                  <div className="font-semibold text-[13px]">Chef Marcus Yeo</div>
+                  <div className="text-white/50 text-[11px]">Head Chef · 10 years fine dining</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── PLANS SECTION — INTERACTIVE ── */}
       <section className="text-white py-24 overflow-hidden relative" style={{ background: "linear-gradient(160deg, #14100A 0%, #1C1508 45%, #0F1A0C 100%)" }}>
 

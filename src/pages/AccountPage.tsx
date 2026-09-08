@@ -171,7 +171,30 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
         {/* ══ DASHBOARD ══ */}
         {tab === "dashboard" && (
           <div>
-            <h2 className="font-display text-[28px] font-bold mb-8">Welcome back, Jerome.</h2>
+            <h2 className="font-display text-[28px] font-bold mb-6">Welcome back, Jerome.</h2>
+
+            {/* ── Renewal reminder banner ── */}
+            <div className="mb-6 bg-amber-50 border border-amber-300 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <span className="text-[22px] mt-0.5">🔔</span>
+                <div>
+                  <div className="font-semibold text-[14px] text-amber-900">Your plan renews in 3 days — Sunday, 7 Sep 2025</div>
+                  <div className="text-amber-700 text-[12px] mt-0.5 leading-relaxed">
+                    Lock in your menu selections by <strong>Thursday 1pm</strong> to avoid auto-filling. After renewal, your next 5-day cycle begins Mon 8 Sep.
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2 shrink-0 ml-9 sm:ml-0">
+                <button onClick={() => setTab("subscription")}
+                  className="bg-amber-400 text-[#111] text-[11px] font-bold tracking-[0.15em] uppercase px-4 py-2 hover:bg-amber-300 transition-colors whitespace-nowrap">
+                  Review Menu
+                </button>
+                <button className="border border-amber-300 text-amber-700 text-[11px] font-bold tracking-[0.15em] uppercase px-4 py-2 hover:bg-amber-100 transition-colors whitespace-nowrap">
+                  Dismiss
+                </button>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-8">
               {[
                 { label: "Active Plan", val: activePlan, sub: `${plan.cal} kcal/day`, color: "#F2C94C", bg: "#0D2818" },
