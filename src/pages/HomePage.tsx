@@ -177,7 +177,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
                 </button>
                 <div className="flex gap-2">
                   {["From $9.90", "Free delivery $80+"].map((t) => (
-                    <span key={t} className="text-[10px] text-white/30 border border-white/10 px-3 py-2 tracking-wide">{t}</span>
+                    <span key={t} className="text-[10px] text-white/70 border border-white/30 px-3 py-2 tracking-wide">{t}</span>
                   ))}
                 </div>
               </div>
@@ -207,7 +207,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
                 </button>
                 <div className="flex gap-2">
                   {["From $11/meal", "Save up to 11%"].map((t) => (
-                    <span key={t} className="text-[10px] text-white/30 border border-white/10 px-3 py-2 tracking-wide">{t}</span>
+                    <span key={t} className="text-[10px] text-white/70 border border-white/30 px-3 py-2 tracking-wide">{t}</span>
                   ))}
                 </div>
               </div>
