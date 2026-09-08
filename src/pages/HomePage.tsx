@@ -230,7 +230,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
 
       {/* ── TRUST BAR ── */}
       <div className="bg-[#0E0E0E] border-b border-white/5 overflow-x-auto">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-6 sm:gap-8 lg:gap-12 min-w-max sm:min-w-0 sm:flex-wrap sm:justify-center">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center gap-6 sm:gap-8 lg:gap-12 justify-center">
           {[
             { icon: "🏛", label: "USDA Standards" },
             { icon: "⚡", label: "Same-Day Delivery" },
@@ -287,13 +287,13 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
             <p className="text-white/55 text-[15px] leading-relaxed mb-6">
               Every Fresher meal is designed by <strong className="text-white">Chef Marcus Yeo</strong> and calibrated by <strong className="text-white">Dr. Aisha Lim</strong>, our in-house sports dietitian. No guesswork — every gram of protein, carb and fat is intentional.
             </p>
-            <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
               {[
                 { val: "USDA", label: "Nutrition standard" },
                 { val: "±2g", label: "Macro accuracy" },
                 { val: "Weekly", label: "Menu rotation" },
               ].map((s) => (
-                <div key={s.label} className="text-center border border-white/10 py-4 px-3">
+                <div key={s.label} className="text-center border border-white/10 py-2 px-1 sm:py-4 sm:px-3">
                   <div className="font-display text-[20px] font-bold text-[#CDFF3A]">{s.val}</div>
                   <div className="text-white/35 text-[10px] uppercase tracking-wider mt-1">{s.label}</div>
                 </div>
@@ -591,7 +591,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
             <div className="h-px w-16 bg-[#111111]/15" />
           </div>
           <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-14">
-            <h2 className="font-display text-[52px] font-bold leading-none">What our<br />members say.</h2>
+            <h2 className="font-display text-[36px] sm:text-[52px] font-bold leading-none">What our<br />members say.</h2>
             <div className="flex items-center gap-2 mt-2">
               {TESTIMONIALS.map((_, i) => (
                 <button key={i} onClick={() => setActiveTestimonial(i)}
@@ -599,7 +599,7 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
               ))}
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {TESTIMONIALS.map((t, i) => (
               <div key={t.name}
                 onClick={() => setActiveTestimonial(i)}
@@ -669,9 +669,9 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
           <span className="font-mono text-[10px] tracking-[0.45em] text-[#111111]/35 uppercase">Stay in the loop</span>
           <h3 className="font-display text-[36px] font-bold mt-3 mb-2">New meals. New deals. Every week.</h3>
           <p className="text-[#888] text-[14px] mb-8">Join 8,400+ members getting the weekly menu drop.</p>
-          <div className="flex gap-0 max-w-md mx-auto">
+          <div className="flex flex-col sm:flex-row gap-0 max-w-md mx-auto">
             <input type="email" placeholder="your@email.com"
-              className="flex-1 border border-[#D0CCC4] border-r-0 px-5 py-3.5 text-[14px] bg-white text-[#111111] placeholder:text-[#bbb] outline-none focus:border-[#111111] transition-colors" />
+              className="flex-1 border border-[#D0CCC4] sm:border-r-0 px-5 py-3.5 text-[14px] bg-white text-[#111111] placeholder:text-[#bbb] outline-none focus:border-[#111111] transition-colors" />
             <button className="bg-[#111111] text-white px-6 py-3.5 text-[11px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors whitespace-nowrap">Subscribe</button>
           </div>
         </div>

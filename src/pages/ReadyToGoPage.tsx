@@ -58,7 +58,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
         {/* Filters + Sort */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-8">
-          <div className="flex gap-2 overflow-x-auto pb-1">
+          <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
             {CATS.map((c) => (
               <button key={c.id} onClick={() => setActiveCat(c.id)}
                 className={`px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase font-medium whitespace-nowrap transition-all ${activeCat === c.id ? "bg-[#CDFF3A] text-[#111111]" : "border border-white/12 text-white/40 hover:border-white/35 hover:text-white"}`}>
@@ -187,7 +187,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
                   <div className="grid grid-cols-4 gap-1 mb-4">
                     {[{ label: "CAL", val: meal.cal }, { label: "PRO", val: `${meal.protein}g` }, { label: "CARB", val: `${meal.carbs}g` }, { label: "FAT", val: `${meal.fat}g` }].map((m) => (
-                      <div key={m.label} className="bg-[#252525] px-1.5 py-2 text-center">
+                      <div key={m.label} className="bg-[#252525] px-1 py-1.5 sm:px-1.5 sm:py-2 text-center">
                         <div className="font-mono text-[9px] text-white/25 mb-0.5 tracking-wider">{m.label}</div>
                         <div className="font-mono text-[11px] text-white font-medium">{m.val}</div>
                       </div>
@@ -283,7 +283,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
               <div className="grid grid-cols-4 gap-2 mb-6">
                 {[{ label: "Calories", val: selectedMeal.cal }, { label: "Protein", val: `${selectedMeal.protein}g` }, { label: "Carbs", val: `${selectedMeal.carbs}g` }, { label: "Fat", val: `${selectedMeal.fat}g` }].map((m) => (
-                  <div key={m.label} className="bg-[#222] px-3 py-3 text-center">
+                  <div key={m.label} className="bg-[#222] px-1 py-1.5 sm:px-3 sm:py-3 text-center">
                     <div className="font-mono text-[13px] text-[#CDFF3A] font-medium">{m.val}</div>
                     <div className="text-white/30 text-[10px] mt-1 uppercase tracking-wider">{m.label}</div>
                   </div>

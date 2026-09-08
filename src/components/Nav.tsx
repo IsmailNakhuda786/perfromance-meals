@@ -20,18 +20,28 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
 
   // Login modal state
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [loginTab, setLoginTab] = useState<"login" | "forgot" | "forgot_sent">("login");
+  const [loginTab, setLoginTab] = useState<"login" | "forgot" | "forgot_sent" | "signup" | "signup_done">("login");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
+  const [suName, setSuName] = useState("");
+  const [suEmail, setSuEmail] = useState("");
+  const [suPhone, setSuPhone] = useState("");
+  const [suPassword, setSuPassword] = useState("");
+  const [suError, setSuError] = useState(false);
 
   const openLogin = () => { setLoginTab("login"); setLoginEmail(""); setLoginPassword(""); setLoginError(false); setShowLoginModal(true); setMobileOpen(false); };
+  const openSignup = () => { setLoginTab("signup"); setSuName(""); setSuEmail(""); setSuPhone(""); setSuPassword(""); setSuError(false); setShowLoginModal(true); setMobileOpen(false); };
   const handleLogin = () => {
     if (!loginEmail || !loginPassword) { setLoginError(true); return; }
     setIsLoggedIn(true);
     setShowLoginModal(false);
     go("account");
+  };
+  const handleSignup = () => {
+    if (!suName || !suEmail || !suPassword) { setSuError(true); return; }
+    setLoginTab("signup_done");
   };
   const handleForgotSend = () => { setLoginTab("forgot_sent"); };
 
@@ -147,7 +157,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   className="text-white/60 hover:text-white transition-colors text-[11px] tracking-[0.2em] uppercase hidden md:block whitespace-nowrap">
                   Log In
                 </button>
-                <button onClick={() => { setIsLoggedIn(true); go("account"); }}
+                <button onClick={openSignup}
                   className="hidden md:block bg-[#CDFF3A] text-[#111] text-[10px] font-black tracking-[0.2em] uppercase px-4 py-2 hover:bg-white transition-colors whitespace-nowrap">
                   Sign Up
                 </button>
@@ -224,7 +234,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                       className="flex-1 border border-white/20 text-white py-3 text-[13px] font-bold tracking-widest uppercase hover:bg-white/10 transition-colors">
                       Log In
                     </button>
-                    <button onClick={() => { setIsLoggedIn(true); go("account"); }}
+                    <button onClick={openSignup}
                       className="flex-1 bg-[#CDFF3A] text-[#111] py-3 text-[13px] font-black tracking-widest uppercase hover:bg-white transition-colors">
                       Sign Up
                     </button>
@@ -255,11 +265,15 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                 {loginTab === "login" && <>Welcome back<span className="text-[#CDFF3A]">.</span></>}
                 {loginTab === "forgot" && <>Reset password<span className="text-[#CDFF3A]">.</span></>}
                 {loginTab === "forgot_sent" && <>Check your inbox<span className="text-[#CDFF3A]">.</span></>}
+                {loginTab === "signup" && <>Create account<span className="text-[#CDFF3A]">.</span></>}
+                {loginTab === "signup_done" && <>You're in<span className="text-[#CDFF3A]">.</span></>}
               </div>
               <p className="text-white/40 text-[12px]">
                 {loginTab === "login" && "Sign in to access your account, points and orders."}
                 {loginTab === "forgot" && "Enter your email and we'll send a reset link."}
                 {loginTab === "forgot_sent" && `A reset link has been sent to ${forgotEmail}.`}
+                {loginTab === "signup" && "Join free — earn points on every order."}
+                {loginTab === "signup_done" && "Account created. Welcome to Fresher!"}
               </p>
             </div>
 
@@ -298,7 +312,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   </button>
                   <div className="text-center text-[12px] text-[#888]">
                     No account?{" "}
-                    <button onClick={() => { setShowLoginModal(false); setIsLoggedIn(true); go("account"); }} className="text-[#111] font-semibold hover:text-[#CDFF3A] transition-colors underline underline-offset-2">
+                    <button onClick={() => setLoginTab("signup")} className="text-[#111] font-semibold hover:text-[#CDFF3A] transition-colors underline underline-offset-2">
                       Create one free →
                     </button>
                   </div>
@@ -346,6 +360,79 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                     </button>
                   </div>
                 </>
+              )}
+
+              {loginTab === "signup" && (
+                <>
+                  <div className="mb-3">
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Full name</label>
+                    <input value={suName} onChange={(e) => { setSuName(e.target.value); setSuError(false); }} placeholder="Jerome Tan"
+                      className={`w-full border px-4 py-3 text-[14px] outline-none transition-colors ${suError && !suName ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`} />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Email address</label>
+                    <input type="email" value={suEmail} onChange={(e) => { setSuEmail(e.target.value); setSuError(false); }} placeholder="jerome@email.com"
+                      className={`w-full border px-4 py-3 text-[14px] outline-none transition-colors ${suError && !suEmail ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`} />
+                  </div>
+                  <div className="mb-3">
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">WhatsApp number <span className="text-[#aaa] normal-case font-sans tracking-normal">(for order updates)</span></label>
+                    <input type="tel" value={suPhone} onChange={(e) => setSuPhone(e.target.value)} placeholder="+65 9123 4567"
+                      className="w-full border border-[#D0CCC4] focus:border-[#111] px-4 py-3 text-[14px] outline-none transition-colors" />
+                  </div>
+                  <div className="mb-5">
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Password</label>
+                    <input type="password" value={suPassword} onChange={(e) => { setSuPassword(e.target.value); setSuError(false); }} placeholder="Min 8 characters"
+                      className={`w-full border px-4 py-3 text-[14px] outline-none transition-colors ${suError && !suPassword ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`} />
+                  </div>
+                  {suError && (
+                    <div className="bg-red-50 border border-red-200 px-4 py-3 text-[12px] text-red-700 mb-4">
+                      Please fill in your name, email and password.
+                    </div>
+                  )}
+                  <div className="bg-[#F7F5F0] border border-[#E5E2DA] px-4 py-3 text-[12px] text-[#555] mb-4">
+                    🎁 You'll earn points on your very first order and unlock referral bonuses.
+                  </div>
+                  <button onClick={handleSignup}
+                    className="w-full bg-[#111] text-white py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors mb-4">
+                    Create Account
+                  </button>
+                  <div className="text-center text-[12px] text-[#888]">
+                    Already have an account?{" "}
+                    <button onClick={() => setLoginTab("login")} className="text-[#111] font-semibold hover:text-[#CDFF3A] transition-colors underline underline-offset-2">
+                      Sign in →
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {loginTab === "signup_done" && (
+                <div className="flex flex-col items-center text-center py-2">
+                  <div className="w-14 h-14 bg-[#CDFF3A] rounded-full flex items-center justify-center mb-5">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
+                  </div>
+                  <p className="text-[18px] font-display font-bold text-[#111] mb-1">Account created!</p>
+                  <p className="text-[13px] text-[#888] mb-6">Welcome, {suName || "Jerome"}. Confirmations sent below.</p>
+                  <div className="w-full bg-[#075E54] text-white px-5 py-3 flex items-center gap-3 mb-2">
+                    <span className="text-[18px]">💬</span>
+                    <div className="text-left flex-1 min-w-0">
+                      <div className="text-[12px] font-semibold">WhatsApp</div>
+                      <div className="text-[11px] text-white/50 truncate">{suPhone || "+65 9123 4567"}</div>
+                    </div>
+                    <span className="text-[#25D366] text-[11px] font-bold shrink-0">✓ Sent</span>
+                  </div>
+                  <div className="w-full bg-[#111] text-white px-5 py-3 flex items-center gap-3 mb-6">
+                    <span className="text-[18px]">✉️</span>
+                    <div className="text-left flex-1 min-w-0">
+                      <div className="text-[12px] font-semibold">Email</div>
+                      <div className="text-[11px] text-white/50 truncate">{suEmail || "jerome@email.com"}</div>
+                    </div>
+                    <span className="text-[#CDFF3A] text-[11px] font-bold shrink-0">✓ Sent</span>
+                  </div>
+                  <button onClick={() => { setIsLoggedIn(true); setShowLoginModal(false); go("account"); }}
+                    className="w-full bg-[#CDFF3A] text-[#111] py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors">
+                    Go to My Account →
+                  </button>
+                </div>
               )}
             </div>
           </div>

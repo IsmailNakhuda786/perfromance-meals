@@ -73,15 +73,9 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
         </button>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-5">
+      <div className="flex-1 flex flex-col-reverse lg:grid lg:grid-cols-5">
         {/* Left: form */}
         <div className="lg:col-span-3 px-6 py-10 max-w-[580px] mx-auto w-full lg:mx-0 lg:ml-auto">
-
-          {/* Mobile order total — visible only on mobile */}
-          <div className="lg:hidden mb-6 flex items-center justify-between bg-white border border-[#E5E2DA] px-4 py-3">
-            <span className="text-[13px] text-[#888]">Order total</span>
-            <span className="font-display text-[18px] font-bold">${total.toFixed(2)}</span>
-          </div>
 
           {/* ── AUTH GATE ── */}
           {authMode === null && (
@@ -382,8 +376,8 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
           )}
         </div>
 
-        {/* Right: order summary — sticky */}
-        <div className="hidden lg:block lg:col-span-2 bg-white border-l border-[#E5E2DA]">
+        {/* Right: order summary — sticky on desktop, stacked on mobile */}
+        <div className="lg:col-span-2 bg-white border-b lg:border-b-0 lg:border-l border-[#E5E2DA]">
           <div className="sticky top-0 p-8">
             <h3 className="font-display text-[18px] font-bold mb-6">Order Summary</h3>
 

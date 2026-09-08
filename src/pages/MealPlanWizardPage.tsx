@@ -136,7 +136,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
               >
                 {s < step ? "✓" : s}
               </div>
-              <span className={`hidden sm:block text-[10px] font-medium ${s === step ? "text-[#111]" : "text-[#999]"}`}>
+              <span className={`text-[9px] sm:text-[10px] font-medium ${s === step ? "text-[#111]" : "text-[#999]"}`}>
                 {STEP_LABELS[s - 1]}
               </span>
             </div>
@@ -216,7 +216,7 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                 </div>
 
                 {billing === "week" && (
-                  <div className="mt-3 border-2 border-[#F2C94C] bg-[#FFF9E6] px-4 py-3 flex items-center justify-between gap-4">
+                  <div className="mt-3 border-2 border-[#F2C94C] bg-[#FFF9E6] px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <span className="text-[22px]">💰</span>
                       <div>

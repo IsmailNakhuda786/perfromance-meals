@@ -136,7 +136,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               </div>
             </div>
           </div>
-          <div className="flex gap-4 sm:gap-6 text-center">
+          <div className="flex flex-wrap gap-4 sm:gap-6 text-center">
             {[
               { val: "1,234", label: "Points" },
               { val: "$12.50", label: "Wallet" },
@@ -967,9 +967,9 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   { label: "Total Earned", value: "$30.00" },
                   { label: "Pending", value: "$10.00" },
                 ].map((s) => (
-                  <div key={s.label} className="bg-[#111] p-4 text-center">
+                  <div key={s.label} className="bg-[#111] p-3 sm:p-4 text-center">
                     <div className="text-[#CDFF3A] font-display text-[22px] font-bold">{s.value}</div>
-                    <div className="text-white/40 text-[10px] font-mono tracking-wider uppercase mt-0.5">{s.label}</div>
+                    <div className="text-white/40 text-[9px] sm:text-[10px] font-mono tracking-wider uppercase mt-0.5">{s.label}</div>
                   </div>
                 ))}
               </div>

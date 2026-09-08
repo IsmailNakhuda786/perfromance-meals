@@ -123,7 +123,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             ))}
           </div>
 
-          <div className="border border-white/10 p-6 mb-10 grid grid-cols-3 gap-6 text-center">
+          <div className="border border-white/10 p-3 sm:p-6 mb-10 grid grid-cols-3 gap-6 text-center">
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Price per meal</div>
               <div className="font-display text-[22px] sm:text-[28px] font-bold text-[#CDFF3A]">${selectedSize.pricePerMeal.toFixed(2)}</div>
@@ -227,7 +227,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             })}
           </div>
 
-          <div className="flex gap-4 items-center">
+          <div className="flex flex-wrap gap-4 items-center">
             <button onClick={() => setStep("size")} className="border border-white/15 px-6 py-3.5 text-[12px] text-white/40 hover:text-white hover:border-white/40 transition-colors">
               ← Back
             </button>
