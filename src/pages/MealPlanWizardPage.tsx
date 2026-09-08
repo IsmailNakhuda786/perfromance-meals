@@ -188,11 +188,18 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                 </div>
 
                 {billing === "week" && (
-                  <div className="mt-3 flex items-center gap-2 text-[12px] text-[#888]">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F2C94C" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>
-                    Switch to monthly and save up to{" "}
-                    <strong className="text-[#111]">$109/mo</strong> on the BUILD plan.{" "}
-                    <button onClick={() => setBilling("month")} className="text-[#F2C94C] font-bold hover:underline">Switch now →</button>
+                  <div className="mt-3 border-2 border-[#F2C94C] bg-[#FFF9E6] px-4 py-3 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[22px]">💰</span>
+                      <div>
+                        <div className="font-black text-[14px] text-[#111]">Save up to $109/mo — switch to Monthly</div>
+                        <div className="text-[11px] text-[#7A5C00] mt-0.5">15% off vs weekly · cancel anytime · no lock-in</div>
+                      </div>
+                    </div>
+                    <button onClick={() => setBilling("month")}
+                      className="shrink-0 bg-[#F2C94C] text-[#111] font-black text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 hover:bg-[#111] hover:text-[#F2C94C] transition-colors whitespace-nowrap">
+                      Switch Now →
+                    </button>
                   </div>
                 )}
 
