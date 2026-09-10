@@ -20,8 +20,9 @@ import BlueprintPage from "@/pages/BlueprintPage";
 import WireframePage from "@/pages/WireframePage";
 import AboutPage from "@/pages/AboutPage";
 import ScreensExportPage from "@/pages/ScreensExportPage";
+import ReadySeriesProductPage from "@/pages/ReadySeriesProductPage";
 
-const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff", "blueprint", "wireframe", "screens-export"];
+const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff", "blueprint", "wireframe", "screens-export", "ready-series-product"];
 
 export interface SavedAddress {
   name: string;
@@ -41,6 +42,7 @@ export default function App() {
   const [lastOrderGuest, setLastOrderGuest] = useState(false);
   const [lastPromoCode, setLastPromoCode] = useState("");
   const [lastPromoDiscount, setLastPromoDiscount] = useState(0);
+  const [selectedMealId, setSelectedMealId] = useState<number>(1);
   const [accountInitialTab, setAccountInitialTab] = useState<"dashboard" | "settings">("dashboard");
   const [accountInitialSection, setAccountInitialSection] = useState<string | undefined>(undefined);
   const [showPromo, setShowPromo] = useState(false);
@@ -141,7 +143,8 @@ export default function App() {
       />
 
       {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} addToCart={addToCart} navigateToReferral={navigateToAccountReferral} />}
-      {page === "ready-series" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} />}
+      {page === "ready-series" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} onSelectMeal={(id) => { setSelectedMealId(id); navigate("ready-series-product"); }} />}
+      {page === "ready-series-product" && <ReadySeriesProductPage mealId={selectedMealId} navigate={navigate} addToCart={addToCart} />}
       {page === "ready-to-go" && <ReadyToGoPage navigate={navigate} addToCart={addToCart} cart={cart} />}
       {page === "meal-plan-landing" && <MealPlanLandingPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "build-a-box" && <BuildABoxPage navigate={navigate} addToCart={addToCart} />}

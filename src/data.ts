@@ -14,7 +14,8 @@ export type Page =
   | "blueprint"
   | "wireframe"
   | "about"
-  | "screens-export";
+  | "screens-export"
+  | "ready-series-product";
 
 export interface CartItem {
   id: number;

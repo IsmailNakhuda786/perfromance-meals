@@ -6,6 +6,7 @@ interface Props {
   navigate: (page: Page) => void;
   addToCart: (item: CartItem) => void;
   cart: CartItem[];
+  onSelectMeal: (id: number) => void;
 }
 
 const MEALS = [
@@ -82,7 +83,7 @@ const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: strin
   ],
 };
 
-export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
+export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal }: Props) {
   const [activeCat, setActiveCat] = useState("All");
   const [addedId, setAddedId] = useState<number | null>(null);
   const [reviewMealId, setReviewMealId] = useState<number | null>(null);
@@ -311,8 +312,15 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
               const reviewCount = mealReviews?.length ?? 0;
               return (
                 <div key={meal.id} className="bg-[#111] flex flex-col">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A]">
-                    <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
+                  <button
+                    onClick={() => onSelectMeal(meal.id)}
+                    className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A] block w-full group"
+                    aria-label={`View ${meal.name} details`}
+                  >
+                    <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-[#F5B300] text-[#1A1A1A] text-[10px] font-black tracking-[0.2em] uppercase px-4 py-2">VIEW DETAILS →</span>
+                    </div>
                     {meal.badge && (
                       <div className="absolute top-3 left-3 bg-[#F5B300] text-[#111] text-[8px] font-black tracking-[0.15em] px-2 py-1">
                         {meal.badge}
@@ -321,9 +329,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                     <div className="absolute top-3 right-3 bg-[#111]/80 text-white/60 text-[10px] font-mono px-2 py-1">
                       {meal.cat}
                     </div>
-                  </div>
+                  </button>
                   <div className="p-5 flex flex-col gap-3 flex-1">
-                    <div className="font-display text-[15px] font-bold text-white leading-snug">{meal.name}</div>
+                    <button onClick={() => onSelectMeal(meal.id)} className="font-display text-[15px] font-bold text-white leading-snug text-left hover:text-[#F5B300] transition-colors">{meal.name}</button>
                     <div className="flex gap-3 text-[10px] font-mono text-white/40">
                       <span>{meal.protein}g protein</span>
                       <span>·</span>
