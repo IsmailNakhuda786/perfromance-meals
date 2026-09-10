@@ -24,12 +24,35 @@ const MEALS = [
 
 const CATS = ["All", "High Protein", "Low Carb", "High Carb", "Breakfast"];
 
+// Each bundle comes with specific meal picks (for carousel display)
 const BUNDLES = [
-  { n: "Starter Pack", meals: 5, price: 62, ppm: 12.40, desc: "Perfect first order — try 5 different meals." },
-  { n: "Weekly Pack", meals: 10, price: 119, ppm: 11.90, desc: "Stock the freezer for the full week.", badge: "MOST POPULAR" },
-  { n: "Performance Pack", meals: 15, price: 172, ppm: 11.50, desc: "Serious about consistency. 15 meals sorted.", badge: "BEST VALUE" },
-  { n: "Monthly Pack", meals: 20, price: 220, ppm: 11.00, desc: "Full month of performance nutrition locked in." },
+  {
+    n: "Starter Pack", meals: 5, price: 62, ppm: 12.40,
+    desc: "Try 5 chef-picked meals — perfect first order.",
+    badge: null,
+    mealIds: [101, 104, 103, 107, 111],
+  },
+  {
+    n: "Weekly Pack", meals: 10, price: 119, ppm: 11.90,
+    desc: "Stock the freezer. A full week of performance eating.",
+    badge: "MOST POPULAR",
+    mealIds: [101, 106, 102, 104, 105, 108, 103, 109, 112, 111],
+  },
+  {
+    n: "Performance Pack", meals: 15, price: 172, ppm: 11.50,
+    desc: "High-output week sorted. 15 macro-tracked meals.",
+    badge: "BEST VALUE",
+    mealIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 101, 104, 106],
+  },
+  {
+    n: "Monthly Pack", meals: 20, price: 220, ppm: 11.00,
+    desc: "Full month of performance nutrition locked in.",
+    badge: null,
+    mealIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 101, 102, 103, 104, 105, 106, 107, 108],
+  },
 ];
+
+const FREE_DELIVERY_THRESHOLD = 80;
 
 const promos = [
   { code: "READY20", desc: "20% off your first Ready Series order", expires: "30 Sep 2026" },
@@ -37,9 +60,31 @@ const promos = [
   { code: "FREEZER5", desc: "$5 off orders of 10+ meals", expires: "15 Oct 2026" },
 ];
 
+// Per-meal reviews for the reviews section
+const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: string; date: string }[]> = {
+  101: [
+    { author: "Marcus T.", rating: 5, text: "Best meal prep chicken I have ever had. The teriyaki glaze is spot-on and the brown rice keeps me full till 5pm.", date: "12 Sep" },
+    { author: "Rena L.", rating: 5, text: "Ordered 10 of these. Zero regrets. My whole office is jealous at lunchtime.", date: "8 Sep" },
+    { author: "Kevin P.", rating: 4, text: "Really solid. Portion size is generous and macros are exactly as listed. Would add 5 stars if carbs were slightly lower.", date: "1 Sep" },
+  ],
+  104: [
+    { author: "Sophie H.", rating: 5, text: "Salmon is perfectly cooked even after freezing — huge win. The quinoa absorbs the sauce beautifully.", date: "10 Sep" },
+    { author: "Jared Ng.", rating: 5, text: "Worth every cent at $15.90. Tastes like a restaurant bowl. Easy 5/5.", date: "5 Sep" },
+  ],
+  106: [
+    { author: "Amir R.", rating: 5, text: "Premium price, premium taste. The miso glaze caramelises perfectly in the microwave. Unbelievable.", date: "11 Sep" },
+    { author: "Lin Y.", rating: 4, text: "Excellent flavour. Salmon was a tiny bit dry on the edges but still very enjoyable. Will reorder.", date: "7 Sep" },
+  ],
+  102: [
+    { author: "Brian K.", rating: 5, text: "Genuinely spicy — exactly as advertised. Low carb but still super satisfying. Great for cut phase.", date: "9 Sep" },
+    { author: "Priya S.", rating: 4, text: "Good flavour, solid protein. Spice level is a little high for me but I keep ordering it anyway.", date: "4 Sep" },
+  ],
+};
+
 export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
   const [activeCat, setActiveCat] = useState("All");
   const [addedId, setAddedId] = useState<number | null>(null);
+  const [reviewMealId, setReviewMealId] = useState<number | null>(null);
 
   const filtered = activeCat === "All" ? MEALS : MEALS.filter((m) => m.cat === activeCat);
 
@@ -56,7 +101,13 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
     setTimeout(() => setAddedId(null), 1200);
   };
 
-  const cartQty = cart.filter((i) => i.type === "ready").reduce((s, i) => s + i.qty, 0);
+  const cartItems = cart.filter((i) => i.type === "ready" || i.type === "box");
+  const cartQty = cartItems.reduce((s, i) => s + i.qty, 0);
+  const cartTotal = cart.filter((i) => i.type === "ready").reduce((s, i) => s + i.price * i.qty, 0);
+  const toFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - cartTotal);
+  const freeDeliveryPct = Math.min(100, (cartTotal / FREE_DELIVERY_THRESHOLD) * 100);
+
+  const getMealById = (id: number) => MEALS.find((m) => m.id === id);
 
   return (
     <div className="bg-[#111111] text-white min-h-screen">
@@ -99,7 +150,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                 <div className="text-white/40 text-[11px] tracking-wide mt-1">Meal options</div>
               </div>
               <div className="bg-[#0A0A0A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#CDFF3A] font-display text-[32px] font-black">$10.90</div>
+                <div className="text-[#CDFF3A] font-display text-[32px] font-black">$8.90</div>
                 <div className="text-white/40 text-[11px] tracking-wide mt-1">Starting from</div>
               </div>
             </div>
@@ -116,19 +167,39 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
               <div key={p.code} className="flex items-center gap-2">
                 <span className="bg-[#CDFF3A] text-[#111] text-[9px] font-black px-2 py-0.5 tracking-wider">{p.code}</span>
                 <span className="text-white/50 text-[11px]">{p.desc}</span>
+                <span className="text-white/20 text-[10px] font-mono">{p.expires}</span>
               </div>
             ))}
+          </div>
+          <div className="ml-auto text-[10px] text-white/25 hidden lg:block">Enter code at checkout</div>
+        </div>
+      </div>
+
+      {/* ── FREE DELIVERY PROGRESS ── */}
+      <div className="bg-[#111] border-b border-white/5 px-6 py-3">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-full bg-[#CDFF3A] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
+            </div>
+            <div className="text-[11px] shrink-0">
+              {toFreeDelivery <= 0
+                ? <span className="text-[#CDFF3A] font-bold">🎉 Free delivery unlocked!</span>
+                : <span className="text-white/40">Add <span className="text-white font-semibold">${toFreeDelivery.toFixed(2)}</span> more for free delivery</span>
+              }
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ── BUNDLES / BUILD-A-BOX ── */}
+      {/* ── BUNDLES ── */}
       <section className="py-16 px-6 sm:px-8 bg-[#0A0A0A]">
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
             <div>
               <div className="text-[#CDFF3A] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Useful Bundles</div>
               <h2 className="font-display text-[32px] sm:text-[40px] font-black">Stock up and save<span className="text-[#CDFF3A]">.</span></h2>
+              <p className="text-white/40 text-[13px] mt-2">Each bundle is curated from our bestselling meals — see what you get inside.</p>
             </div>
             <button
               onClick={() => navigate("build-a-box")}
@@ -137,30 +208,64 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
               Build-A-Box →
             </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/8">
-            {BUNDLES.map((b) => (
-              <div key={b.n} className="bg-[#0A0A0A] px-7 py-8 flex flex-col gap-3 relative">
-                {b.badge && (
-                  <div className="absolute top-4 right-4 bg-[#CDFF3A] text-[#111] text-[8px] font-black tracking-[0.15em] px-2 py-1">{b.badge}</div>
-                )}
-                <div className="text-white/30 text-[11px] font-mono">{b.meals} meals</div>
-                <div className="font-display text-[20px] font-bold text-white">{b.n}</div>
-                <div className="text-white/50 text-[12px] leading-relaxed">{b.desc}</div>
-                <div className="mt-auto pt-4 border-t border-white/8">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-display text-[28px] font-black text-[#CDFF3A]">${b.price}</span>
-                    <span className="text-white/30 text-[12px]">${b.ppm}/meal</span>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {BUNDLES.map((b) => {
+              const bundleMeals = b.mealIds.map((id) => getMealById(id)).filter(Boolean) as typeof MEALS;
+              const uniqueMeals = bundleMeals.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
+              return (
+                <div key={b.n} className="bg-[#111] border border-white/8 rounded-xl overflow-hidden hover:border-[#CDFF3A]/30 transition-colors">
+                  {/* Meal image carousel — scrollable thumbnails */}
+                  <div className="relative">
+                    <div className="flex gap-0 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+                      {uniqueMeals.map((meal) => (
+                        <div key={meal.id} className="shrink-0 relative" style={{ width: "120px", height: "90px" }}>
+                          <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#111]/60 to-transparent" />
+                        </div>
+                      ))}
+                    </div>
+                    {b.badge && (
+                      <div className="absolute top-3 right-3 bg-[#CDFF3A] text-[#111] text-[9px] font-black tracking-[0.15em] px-2.5 py-1">{b.badge}</div>
+                    )}
+                    <div className="absolute bottom-2 left-3 text-[10px] text-white/50 font-mono">{b.meals} meals · scroll to see all →</div>
                   </div>
-                  <button
-                    onClick={() => addToCart({ id: 200 + b.meals, name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: MEALS[0].img, type: "box" })}
-                    className="w-full mt-3 bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#CDFF3A] hover:text-[#111] transition-colors"
-                  >
-                    Add Bundle
-                  </button>
+
+                  {/* Bundle info */}
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div>
+                        <div className="font-display text-[18px] font-bold text-white">{b.n}</div>
+                        <div className="text-white/40 text-[12px] mt-0.5 leading-relaxed">{b.desc}</div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="font-display text-[24px] font-black text-[#CDFF3A]">${b.price}</div>
+                        <div className="text-white/30 text-[11px]">${b.ppm}/meal</div>
+                      </div>
+                    </div>
+
+                    {/* Meal name list (compact) */}
+                    <div className="flex flex-wrap gap-1.5 mt-3 mb-4">
+                      {uniqueMeals.slice(0, 5).map((meal) => (
+                        <span key={meal.id} className="bg-white/5 text-white/40 text-[10px] px-2 py-0.5 rounded">{meal.name.split("&")[0].trim()}</span>
+                      ))}
+                      {uniqueMeals.length > 5 && (
+                        <span className="bg-white/5 text-white/30 text-[10px] px-2 py-0.5 rounded">+{uniqueMeals.length - 5} more</span>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => addToCart({ id: 200 + b.meals, name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box" })}
+                      className="w-full bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#CDFF3A] hover:text-[#111] transition-colors rounded-lg"
+                    >
+                      Add Bundle — ${b.price}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+
           <div className="mt-6 text-center">
             <button
               onClick={() => navigate("build-a-box")}
@@ -182,7 +287,6 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                 {filtered.length} meals available<span className="text-[#CDFF3A]">.</span>
               </h2>
             </div>
-            {/* Category filters */}
             <div className="flex flex-wrap gap-2">
               {CATS.map((c) => (
                 <button
@@ -200,6 +304,11 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
             {filtered.map((meal) => {
               const inCart = cart.find((i) => i.id === meal.id && i.type === "ready");
               const justAdded = addedId === meal.id;
+              const mealReviews = MEAL_REVIEWS[meal.id];
+              const avgRating = mealReviews
+                ? (mealReviews.reduce((s, r) => s + r.rating, 0) / mealReviews.length).toFixed(1)
+                : "4.8";
+              const reviewCount = mealReviews?.length ?? 0;
               return (
                 <div key={meal.id} className="bg-[#111] flex flex-col">
                   <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A]">
@@ -220,6 +329,19 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                       <span>·</span>
                       <span>{meal.cal} cal</span>
                     </div>
+                    {/* Inline star rating + reviews link */}
+                    <button
+                      onClick={() => mealReviews && setReviewMealId(meal.id)}
+                      className={`flex items-center gap-1.5 text-left ${mealReviews ? "hover:opacity-80" : "cursor-default"} transition-opacity`}
+                    >
+                      <div className="flex">
+                        {[1,2,3,4,5].map((s) => (
+                          <span key={s} className={`text-[11px] ${s <= Math.round(Number(avgRating)) ? "text-[#CDFF3A]" : "text-white/20"}`}>★</span>
+                        ))}
+                      </div>
+                      <span className="text-[11px] text-white/40 font-mono">{avgRating}</span>
+                      {reviewCount > 0 && <span className="text-[10px] text-white/30">({reviewCount} reviews)</span>}
+                    </button>
                     <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-white/8">
                       <span className="font-display text-[18px] font-black text-white">${meal.price.toFixed(2)}</span>
                       <button
@@ -251,7 +373,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
               { icon: "🧊", label: "Frozen at peak", desc: "Locked in at maximum freshness and nutrition." },
               { icon: "⏱", label: "3-minute prep", desc: "Microwave from frozen. No thaw time needed." },
               { icon: "📊", label: "Macro tracked", desc: "Every gram counted. No guesswork required." },
-              { icon: "🚚", label: "Next-day delivery", desc: "Order today, delivered to your door tomorrow." },
+              { icon: "🚚", label: "Free delivery $80+", desc: "Free delivery on orders over $80. Always." },
             ].map((f) => (
               <div key={f.label} className="bg-[#0A0A0A] px-7 py-8">
                 <div className="text-[30px] mb-4">{f.icon}</div>
@@ -265,19 +387,108 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
 
       {/* ── CART STICKY BAR ── */}
       {cartQty > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#CDFF3A] text-[#111] px-6 py-4 flex items-center justify-between">
-          <div>
-            <div className="font-black text-[16px]">{cartQty} meal{cartQty !== 1 ? "s" : ""} in your box</div>
-            <div className="text-[11px] opacity-60">Continue adding or head to checkout</div>
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#CDFF3A] text-[#111]">
+          {/* Free delivery progress */}
+          {toFreeDelivery > 0 && (
+            <div className="bg-[#111] px-6 py-2 flex items-center gap-4">
+              <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full bg-[#CDFF3A] rounded-full transition-all" style={{ width: `${freeDeliveryPct}%` }} />
+              </div>
+              <span className="text-[11px] text-white/60 shrink-0">Add ${toFreeDelivery.toFixed(2)} for free delivery</span>
+            </div>
+          )}
+          <div className="px-6 py-4 flex items-center justify-between">
+            <div>
+              <div className="font-black text-[16px]">{cartQty} meal{cartQty !== 1 ? "s" : ""} in your box</div>
+              <div className="text-[11px] opacity-60">
+                {toFreeDelivery <= 0 ? "🎉 Free delivery unlocked!" : `$${cartTotal.toFixed(2)} — ${toFreeDelivery.toFixed(2)} from free delivery`}
+              </div>
+            </div>
+            <button
+              onClick={() => navigate("checkout")}
+              className="bg-[#111] text-white text-[11px] font-black tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-[#111] transition-colors"
+            >
+              Checkout →
+            </button>
           </div>
-          <button
-            onClick={() => navigate("checkout")}
-            className="bg-[#111] text-white text-[11px] font-black tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-[#111] transition-colors"
-          >
-            Checkout →
-          </button>
         </div>
       )}
+
+      {/* ── MEAL REVIEWS MODAL ── */}
+      {reviewMealId !== null && (() => {
+        const meal = MEALS.find((m) => m.id === reviewMealId)!;
+        const reviews = MEAL_REVIEWS[reviewMealId] ?? [];
+        const avgRating = reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
+        const starCounts = [5,4,3,2,1].map((s) => ({ star: s, count: reviews.filter((r) => r.rating === s).length }));
+        return (
+          <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+            <div className="absolute inset-0 bg-black/75" onClick={() => setReviewMealId(null)} />
+            <div className="relative bg-[#1A1A1A] w-full sm:max-w-lg max-h-[85vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-white/10">
+              <div className="sticky top-0 bg-[#1A1A1A] border-b border-white/8 px-6 py-4 flex items-start justify-between gap-3">
+                <div>
+                  <div className="font-bold text-[15px] text-white leading-snug">{meal.name}</div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex">
+                      {[1,2,3,4,5].map((s) => (
+                        <span key={s} className={`text-[13px] ${s <= Math.round(avgRating) ? "text-[#CDFF3A]" : "text-white/20"}`}>★</span>
+                      ))}
+                    </div>
+                    <span className="text-white/60 text-[12px] font-mono">{avgRating.toFixed(1)} · {reviews.length} reviews</span>
+                  </div>
+                </div>
+                <button onClick={() => setReviewMealId(null)} className="text-white/40 hover:text-white transition-colors mt-0.5">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                </button>
+              </div>
+
+              {/* Star breakdown */}
+              <div className="px-6 py-4 border-b border-white/8">
+                <div className="flex flex-col gap-2">
+                  {starCounts.map(({ star, count }) => (
+                    <div key={star} className="flex items-center gap-3 text-[12px]">
+                      <span className="text-white/50 w-4 text-right">{star}★</span>
+                      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#CDFF3A] rounded-full" style={{ width: reviews.length > 0 ? `${(count / reviews.length) * 100}%` : "0%" }} />
+                      </div>
+                      <span className="text-white/30 w-4">{count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Individual reviews */}
+              <div className="px-6 py-4 flex flex-col gap-5">
+                {reviews.map((r, i) => (
+                  <div key={i} className="border-b border-white/5 pb-5 last:border-b-0 last:pb-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <span className="font-semibold text-[13px] text-white">{r.author}</span>
+                        <div className="flex mt-0.5">
+                          {[1,2,3,4,5].map((s) => (
+                            <span key={s} className={`text-[11px] ${s <= r.rating ? "text-[#CDFF3A]" : "text-white/20"}`}>★</span>
+                          ))}
+                        </div>
+                      </div>
+                      <span className="text-[11px] text-white/30 font-mono">{r.date}</span>
+                    </div>
+                    <p className="text-[13px] text-white/60 leading-relaxed">{r.text}</p>
+                  </div>
+                ))}
+                {reviews.length === 0 && (
+                  <p className="text-white/40 text-[13px] text-center py-4">No reviews yet for this meal. Be the first!</p>
+                )}
+              </div>
+
+              <div className="px-6 pb-6">
+                <button onClick={() => { setReviewMealId(null); handleAdd(meal); }}
+                  className="w-full bg-[#CDFF3A] text-[#111] py-3.5 font-bold text-[13px] tracking-wider uppercase hover:bg-white transition-colors rounded-lg">
+                  Add to Cart — ${meal.price.toFixed(2)}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

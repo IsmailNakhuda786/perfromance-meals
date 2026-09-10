@@ -24,16 +24,20 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
   const [slot, setSlot] = useState(SLOTS[0]);
   const [useWallet, setUseWallet] = useState(false);
   const [saveCard, setSaveCard] = useState(false);
-  const [autoCharge, setAutoCharge] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState<"invalid" | "expired" | null>(null);
 
-  const VALID_PROMOS: Record<string, { discount: number; expired?: boolean }> = {
+  const FREE_DELIVERY_THRESHOLD = 80;
+
+  const VALID_PROMOS: Record<string, { discount: number; flat?: number; expired?: boolean }> = {
     "FRESHER10": { discount: 0.10 },
     "WELCOME15": { discount: 0.15 },
     "SUMMER20":  { discount: 0.20, expired: true },
     "FITLIFE":   { discount: 0.12 },
+    "READY20":   { discount: 0.20 },
+    "SG61":      { discount: 0, flat: 6.10 },
+    "FREEZER5":  { discount: 0, flat: 5.00 },
   };
 
   const handleApplyPromo = () => {
@@ -47,9 +51,12 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
   const [signupConfirmed, setSignupConfirmed] = useState(false);
 
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const promoRate = promoApplied ? (VALID_PROMOS[promoCode.trim().toUpperCase()]?.discount ?? 0) : 0;
-  const promoDiscount = subtotal * promoRate;
-  const total = Math.max(0, subtotal - (useWallet ? 12.5 : 0) - promoDiscount);
+  const promoEntry = promoApplied ? VALID_PROMOS[promoCode.trim().toUpperCase()] : null;
+  const promoRate = promoEntry?.discount ?? 0;
+  const promoFlat = promoEntry?.flat ?? 0;
+  const promoDiscount = promoFlat > 0 ? promoFlat : subtotal * promoRate;
+  const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 8.50;
+  const total = Math.max(0, subtotal + deliveryFee - (useWallet ? 12.5 : 0) - promoDiscount);
 
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col">
@@ -338,7 +345,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                 </div>
                 {promoApplied && (
                   <p className="text-green-600 text-[12px] mt-1.5 font-medium flex items-center gap-1.5">
-                    <span>✓</span> Code <strong>{promoCode}</strong> applied — {Math.round(promoRate * 100)}% off (–${promoDiscount.toFixed(2)})
+                    <span>✓</span> Code <strong>{promoCode}</strong> applied — {promoFlat > 0 ? `$${promoFlat.toFixed(2)} off` : `${Math.round(promoRate * 100)}% off`} (–${promoDiscount.toFixed(2)})
                   </p>
                 )}
                 {promoError === "invalid" && (
@@ -353,17 +360,12 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                 )}
               </div>
 
-              {/* Save card + auto-charge */}
-              <div className="space-y-3 mb-6">
+              {/* Save card */}
+              <div className="mb-6">
                 <label className="flex items-start gap-2 cursor-pointer">
                   <input type="checkbox" checked={saveCard} onChange={(e) => setSaveCard(e.target.checked)}
                     className="mt-0.5 accent-[#111]" />
                   <span className="text-[13px] text-[#333]">Save this card for faster checkout next time</span>
-                </label>
-                <label className="flex items-start gap-2 cursor-pointer">
-                  <input type="checkbox" checked={autoCharge} onChange={(e) => setAutoCharge(e.target.checked)}
-                    className="mt-0.5 accent-[#111]" />
-                  <span className="text-[13px] text-[#333]">I authorise Fresher to auto-charge my saved card for recurring orders</span>
                 </label>
               </div>
 
@@ -399,7 +401,21 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
 
             <div className="border-t border-[#E5E2DA] pt-4 space-y-2 text-[13px]">
               <div className="flex justify-between"><span className="text-[#888]">Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span className="text-[#888]">Delivery</span><span className="text-green-600 font-medium">Free</span></div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#888]">Delivery</span>
+                {deliveryFee === 0
+                  ? <span className="text-green-600 font-medium">Free 🎉</span>
+                  : <span>${deliveryFee.toFixed(2)}</span>
+                }
+              </div>
+              {deliveryFee > 0 && (
+                <div className="text-[11px] text-[#888]">
+                  Add ${(FREE_DELIVERY_THRESHOLD - subtotal).toFixed(2)} more for free delivery
+                  <div className="mt-1.5 h-1.5 bg-[#F0EDE8] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#CDFF3A] rounded-full transition-all" style={{ width: `${Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100)}%` }} />
+                  </div>
+                </div>
+              )}
               {useWallet && <div className="flex justify-between text-green-600"><span>Wallet credit</span><span>–$12.50</span></div>}
               {promoApplied && <div className="flex justify-between text-green-600"><span>Promo ({promoCode})</span><span>–${promoDiscount.toFixed(2)}</span></div>}
             </div>

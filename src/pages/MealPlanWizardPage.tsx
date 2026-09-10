@@ -3,15 +3,16 @@ import { Meal, MEALS, Page, PLANS } from "@/data";
 
 interface Props {
   navigate: (page: Page) => void;
-  addToCart: (item: never) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  addToCart?: (item: any) => void;
   initialPlan: string;
   onCheckoutComplete: (addr: { name: string; phone: string; line1: string; unit: string; postal: string }) => void;
 }
 
 const PLAN_MEAL_CATS: Record<string, string[]> = {
-  CUT: ["low-carb", "just-protein", "breakfast"],
+  CUT:      ["low-carb", "just-protein", "breakfast"],
   MAINTAIN: ["high-carb", "low-carb", "breakfast", "just-protein"],
-  BUILD: ["high-carb", "just-protein", "low-carb"],
+  BUILD:    ["high-carb", "just-protein", "low-carb"],
 };
 
 const getMealsForPlan = (planName: string): Meal[] => {
@@ -23,33 +24,58 @@ const getMealsForPlan = (planName: string): Meal[] => {
   });
 };
 
-type Step = 1 | 2 | 3 | 4 | 5;
+// Prefixed weekly delivery schedule — no date picker
+const DELIVERY_WEEK = [
+  { day: "Mon", date: "15", month: "Oct" },
+  { day: "Tue", date: "16", month: "Oct" },
+  { day: "Wed", date: "17", month: "Oct" },
+  { day: "Thu", date: "18", month: "Oct" },
+  { day: "Fri", date: "19", month: "Oct" },
+  { day: "Sat", date: "20", month: "Oct" },
+  { day: "Sun", date: "21", month: "Oct" },
+];
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const SLOTS = ["6am – 9am", "9am – 12pm", "12pm – 3pm", "3pm – 6pm"];
+// Each day gets a rotating set of 4 meal options from the plan
+function getDayOptions(meals: Meal[], dayIndex: number): Meal[] {
+  const start = (dayIndex * 4) % meals.length;
+  const out: Meal[] = [];
+  for (let i = 0; i < 4; i++) out.push(meals[(start + i) % meals.length]);
+  return out;
+}
+
+type Step = 1 | 2 | 3 | 4 | 5;
 const STEP_LABELS = ["Meals", "Goal", "Menu", "Delivery", "Pay"];
 
-export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, onCheckoutComplete }: Props) {
+type Schedule = Record<string, { lunch: number | null; dinner: number | null }>;
+
+export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initialPlan }: Props) {
   const [step, setStep] = useState<Step>(1);
   const [mealCount, setMealCount] = useState<1 | 2>(2);
   const [goal, setGoal] = useState(initialPlan || "MAINTAIN");
   const [billing, setBilling] = useState<"week" | "month">("week");
-  const [mealQtys, setMealQtys] = useState<Record<number, number>>({});
-  const [detailMeal, setDetailMeal] = useState<Meal | null>(null);
-  const [deliveryDays, setDeliveryDays] = useState<string[]>(["Mon", "Wed", "Fri"]);
-  const [timeSlot, setTimeSlot] = useState(SLOTS[0]);
+
+  // Day-by-day schedule: schedule["Mon"]["lunch"] = mealId
+  const [schedule, setSchedule] = useState<Schedule>({});
+  const [pickerState, setPickerState] = useState<{ day: string; slot: "lunch" | "dinner" } | null>(null);
+
   const [address, setAddress] = useState({ name: "", phone: "", line1: "", unit: "", postal: "" });
-  const [saveCard, setSaveCard] = useState(false);
-  const [autoChargeConsent, setAutoChargeConsent] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState<"invalid" | "expired" | null>(null);
 
-  const VALID_PROMOS: Record<string, { discount: number; expired?: boolean }> = {
+  type WizardAuthMode = null | "signin" | "signup" | "signin_done" | "signup_done";
+  const [wizardAuthMode, setWizardAuthMode] = useState<WizardAuthMode>(null);
+  const [waEmail, setWaEmail] = useState("");
+  const [waName, setWaName] = useState("");
+  const [waPhone, setWaPhone] = useState("");
+  const [waPassword, setWaPassword] = useState("");
+
+  const VALID_PROMOS: Record<string, { discount: number; flat?: number; expired?: boolean }> = {
     "FRESHER10": { discount: 0.10 },
     "WELCOME15": { discount: 0.15 },
     "SUMMER20":  { discount: 0.20, expired: true },
     "FITLIFE":   { discount: 0.12 },
+    "SG61":      { discount: 0, flat: 6.10 },
   };
 
   const handleApplyPromo = () => {
@@ -60,50 +86,33 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
     setPromoError(null);
     setPromoApplied(true);
   };
-  type WizardAuthMode = null | "guest" | "signin" | "signup" | "signin_done" | "signup_done";
-  const [wizardAuthMode, setWizardAuthMode] = useState<WizardAuthMode>(null);
-  const [waEmail, setWaEmail] = useState("");
-  const [waName, setWaName] = useState("");
-  const [waPhone, setWaPhone] = useState("");
-  const [waPassword, setWaPassword] = useState("");
 
   const plan = PLANS.find((p) => p.name === goal)!;
   const basePrice = billing === "week" ? plan.priceWeek : plan.priceMonth;
-  const promoRate = promoApplied ? (VALID_PROMOS[promoCode.trim().toUpperCase()]?.discount ?? 0) : 0;
-  const promoDiscount = Number(basePrice) * promoRate;
-  const price = promoApplied ? (Number(basePrice) - promoDiscount).toFixed(2) : basePrice;
-  const maxMeals = plan.meals * 2;
+  const promoEntry = promoApplied ? VALID_PROMOS[promoCode.trim().toUpperCase()] : null;
+  const promoRate = promoEntry?.discount ?? 0;
+  const promoFlat = promoEntry?.flat ?? 0;
+  const promoDiscount = promoFlat > 0 ? promoFlat : Number(basePrice) * promoRate;
+  const price = promoApplied ? Math.max(0, Number(basePrice) - promoDiscount).toFixed(2) : basePrice;
 
-  const toggleDay = (d: string) =>
-    setDeliveryDays((prev) =>
-      prev.includes(d)
-        ? prev.length > 1
-          ? prev.filter((x) => x !== d)
-          : prev
-        : [...prev, d].sort((a, b) => DAYS.indexOf(a) - DAYS.indexOf(b))
-    );
+  const planMeals = getMealsForPlan(goal);
+  const getMealById = (id: number) => MEALS.find((m) => m.id === id);
 
-  const totalSelected = Object.values(mealQtys).reduce((s, q) => s + q, 0);
-  const getMealQty = (id: number) => mealQtys[id] ?? 0;
-  const addMeal = (id: number) => {
-    if (totalSelected >= maxMeals) return;
-    setMealQtys((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
-  };
-  const removeMeal = (id: number) => {
-    setMealQtys((prev) => {
-      const q = (prev[id] ?? 0) - 1;
-      if (q <= 0) { const n = { ...prev }; delete n[id]; return n; }
-      return { ...prev, [id]: q };
-    });
-  };
+  // How many day slots are filled
+  const totalSlotsFilled = DELIVERY_WEEK.reduce((count, d) => {
+    const s = schedule[d.day];
+    if (!s) return count;
+    let c = s.lunch ? 1 : 0;
+    if (mealCount === 2) c += s.dinner ? 1 : 0;
+    return count + c;
+  }, 0);
+  const totalSlotsRequired = DELIVERY_WEEK.length * mealCount;
+  const canProceedStep3 = totalSlotsFilled === totalSlotsRequired;
 
-  const canProceedStep3 = totalSelected >= plan.meals;
   const canProceedStep4 =
-    deliveryDays.length > 0 &&
     address.name.trim() !== "" &&
     address.line1.trim() !== "" &&
     address.postal.trim() !== "";
-  const canSubscribe = autoChargeConsent;
 
   const handleNext = () => {
     if (step < 5) setStep((s) => (s + 1) as Step);
@@ -113,27 +122,30 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
     onCheckoutComplete(address);
   };
 
+  const selectMeal = (mealId: number) => {
+    if (!pickerState) return;
+    setSchedule((prev) => ({
+      ...prev,
+      [pickerState.day]: {
+        lunch: prev[pickerState.day]?.lunch ?? null,
+        dinner: prev[pickerState.day]?.dinner ?? null,
+        [pickerState.slot]: mealId,
+      },
+    }));
+    setPickerState(null);
+  };
+
   return (
     <div className="min-h-screen bg-[#F7F5F0] text-[#111] flex flex-col">
       {/* Header */}
       <div className="bg-white border-b border-[#E5E2DA] flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-20">
-        <button onClick={() => navigate("home")} className="font-bold text-[17px] sm:text-[20px] tracking-tight text-[#111] shrink-0">
+        <button onClick={() => navigate("meal-plan-landing")} className="font-bold text-[17px] sm:text-[20px] tracking-tight text-[#111] shrink-0">
           FRESHER<span className="text-[#F2C94C]">.</span>
         </button>
-
-        {/* Step indicator */}
         <div className="flex items-center gap-2 sm:gap-3">
           {([1, 2, 3, 4] as Step[]).map((s) => (
             <div key={s} className="flex flex-col items-center gap-0.5">
-              <div
-                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-sm font-semibold border-2 transition-all ${
-                  s === step
-                    ? "border-[#111] bg-[#111] text-white"
-                    : s < step
-                    ? "border-[#F2C94C] bg-[#F2C94C] text-[#111]"
-                    : "border-[#D0CCC4] bg-white text-[#999]"
-                }`}
-              >
+              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-sm font-semibold border-2 transition-all ${s === step ? "border-[#111] bg-[#111] text-white" : s < step ? "border-[#F2C94C] bg-[#F2C94C] text-[#111]" : "border-[#D0CCC4] bg-white text-[#999]"}`}>
                 {s < step ? "✓" : s}
               </div>
               <span className={`text-[9px] sm:text-[10px] font-medium ${s === step ? "text-[#111]" : "text-[#999]"}`}>
@@ -142,29 +154,24 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
             </div>
           ))}
         </div>
-
-        <button
-          onClick={() => (step > 1 ? setStep((s) => (s - 1) as Step) : navigate("home"))}
-          className="text-[12px] sm:text-sm text-[#666] hover:text-[#111] transition-colors font-medium shrink-0"
-        >
+        <button onClick={() => (step > 1 ? setStep((s) => (s - 1) as Step) : navigate("meal-plan-landing"))}
+          className="text-[12px] sm:text-sm text-[#666] hover:text-[#111] transition-colors font-medium shrink-0">
           {step === 1 ? "Close" : "← Back"}
         </button>
       </div>
 
-      {/* Content */}
       <div className="flex-1 flex flex-col items-center px-4 py-6 sm:py-8">
-        <div className={`w-full ${step === 3 ? "max-w-6xl" : "max-w-2xl"}`}>
+        <div className={`w-full ${step === 3 ? "max-w-4xl" : "max-w-2xl"}`}>
 
           {/* ─── Step 1: Meal Count ─── */}
           {step === 1 && (
             <div>
               <h1 className="text-xl sm:text-2xl font-bold mb-1">How many meals per day?</h1>
               <p className="text-[#666] mb-8">Choose how many chef-prepared meals you want delivered each day.</p>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                 {([
-                  { count: 1 as const, label: "Lunch only", desc: "1 meal delivered daily — perfect for a structured midday fuel.", slots: ["Lunch"], price: "From $74/wk" },
-                  { count: 2 as const, label: "Lunch & Dinner", desc: "2 meals delivered daily — full day nutrition covered.", slots: ["Lunch", "Dinner"], price: "From $148/wk", popular: true },
+                  { count: 1 as const, label: "Lunch only", desc: "1 fresh meal per day — perfect for a structured midday fuel.", slots: ["Lunch"], price: "From $74/wk" },
+                  { count: 2 as const, label: "Lunch & Dinner", desc: "2 fresh meals per day — full day nutrition fully covered.", slots: ["Lunch", "Dinner"], price: "From $148/wk", popular: true },
                 ]).map((opt) => (
                   <button key={opt.count} onClick={() => setMealCount(opt.count)}
                     className={`relative text-left border-2 p-6 rounded-2xl transition-all ${mealCount === opt.count ? "border-[#111] bg-white shadow-md" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
@@ -183,7 +190,6 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                   </button>
                 ))}
               </div>
-
               <button onClick={handleNext}
                 className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white">
                 Continue →
@@ -196,25 +202,18 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
             <div>
               <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose Your Goal</h1>
               <p className="text-[#666] mb-6">Select the plan that matches your target.</p>
-
-              {/* Billing toggle */}
               <div className="mb-7">
                 <div className="flex gap-0 border border-[#D0CCC4] p-1 bg-[#F7F5F0] w-full sm:w-auto sm:inline-flex">
-                  <button
-                    onClick={() => setBilling("week")}
+                  <button onClick={() => setBilling("week")}
                     className={`flex-1 sm:flex-none px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "week" ? "bg-white text-[#111] shadow-sm" : "text-[#999] hover:text-[#111]"}`}>
                     Weekly
                   </button>
-                  <button
-                    onClick={() => setBilling("month")}
+                  <button onClick={() => setBilling("month")}
                     className={`flex-1 sm:flex-none relative px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "month" ? "bg-[#111] text-white" : "text-[#999] hover:text-[#111]"}`}>
                     Monthly
-                    <span className={`ml-2 text-[10px] font-black tracking-widest px-1.5 py-0.5 ${billing === "month" ? "bg-[#F2C94C] text-[#111]" : "bg-[#F2C94C]/70 text-[#111]"}`}>
-                      SAVE 15%
-                    </span>
+                    <span className={`ml-2 text-[10px] font-black tracking-widest px-1.5 py-0.5 ${billing === "month" ? "bg-[#F2C94C] text-[#111]" : "bg-[#F2C94C]/70 text-[#111]"}`}>SAVE 15%</span>
                   </button>
                 </div>
-
                 {billing === "week" && (
                   <div className="mt-3 border-2 border-[#F2C94C] bg-[#FFF9E6] px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
@@ -230,37 +229,18 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                     </button>
                   </div>
                 )}
-
-                {billing === "month" && (
-                  <div className="mt-3 bg-[#F2C94C] px-4 py-3 flex items-center gap-3">
-                    <span className="text-[22px]">🎉</span>
-                    <div>
-                      <div className="font-black text-[15px] text-[#111] tracking-tight">You're saving up to $109/mo vs weekly.</div>
-                      <div className="text-[#111]/60 text-[11px] mt-0.5">Monthly billing active — best value, cancel anytime.</div>
-                    </div>
-                  </div>
-                )}
               </div>
 
-              {/* Plan cards */}
               <div className="flex flex-col gap-4 mb-8">
                 {PLANS.map((p) => {
                   const selected = goal === p.name;
                   const px = billing === "week" ? p.priceWeek : p.priceMonth;
                   return (
-                    <button
-                      key={p.name}
-                      onClick={() => setGoal(p.name)}
-                      className={`w-full text-left rounded-2xl border-2 p-5 transition-all ${
-                        selected ? "border-[#111] bg-white shadow-md" : "border-[#D0CCC4] bg-white hover:border-[#999]"
-                      }`}
-                    >
+                    <button key={p.name} onClick={() => setGoal(p.name)}
+                      className={`w-full text-left rounded-2xl border-2 p-5 transition-all ${selected ? "border-[#111] bg-white shadow-md" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <div
-                            className="w-3 h-3 rounded-full flex-shrink-0 mt-1"
-                            style={{ backgroundColor: p.accent }}
-                          />
+                          <div className="w-3 h-3 rounded-full flex-shrink-0 mt-1" style={{ backgroundColor: p.accent }} />
                           <div>
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-lg">{p.name}</span>
@@ -268,25 +248,13 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                             </div>
                             <p className="text-sm text-[#555] mt-0.5">{p.desc}</p>
                             <div className="flex gap-3 mt-2 text-xs text-[#666]">
-                              <span>P {p.protein}g</span>
-                              <span>C {p.carbs}g</span>
-                              <span>F {p.fat}g</span>
+                              <span>P {p.protein}g</span><span>C {p.carbs}g</span><span>F {p.fat}g</span>
                             </div>
                           </div>
                         </div>
                         <div className="text-right flex-shrink-0">
                           <div className="text-xl font-bold">${px}</div>
                           <div className="text-xs text-[#999]">/{billing === "week" ? "wk" : "mo"}</div>
-                          {billing === "week" && (
-                            <div className="text-[10px] text-[#F2C94C] font-semibold mt-0.5">
-                              ${p.priceMonth}/mo monthly
-                            </div>
-                          )}
-                          {billing === "month" && (
-                            <div className="text-[10px] text-[#7EE8B0] font-semibold mt-0.5">
-                              save ${Math.round(p.priceWeek * 4.33 - p.priceMonth)}/mo
-                            </div>
-                          )}
                         </div>
                       </div>
                     </button>
@@ -294,15 +262,11 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                 })}
               </div>
 
-              {/* 6in60 promise trust block */}
               <div className="bg-[#111] text-white p-4 sm:p-5 mb-6 flex items-start sm:items-center gap-3 sm:gap-4">
                 <div className="relative shrink-0 w-[56px] h-[56px]">
                   <svg viewBox="0 0 56 56" className="w-full h-full" style={{ animation: "spin6wiz 18s linear infinite" }}>
-                    <defs>
-                      <path id="wizRing" d="M 28,28 m -22,0 a 22,22 0 1,1 44,0 a 22,22 0 1,1 -44,0" />
-                    </defs>
+                    <defs><path id="wizRing" d="M 28,28 m -22,0 a 22,22 0 1,1 44,0 a 22,22 0 1,1 -44,0" /></defs>
                     <circle cx="28" cy="28" r="25" fill="#CDFF3A" />
-                    <circle cx="28" cy="28" r="21" fill="none" stroke="#111" strokeWidth="0.7" strokeDasharray="1.8 1.8" opacity="0.3" />
                     <text fontSize="5.2" fontFamily="monospace" fontWeight="800" fill="#111" opacity="0.55" letterSpacing="1.5">
                       <textPath href="#wizRing" startOffset="50%" textAnchor="middle">GUARANTEED · 60 DAYS ·</textPath>
                     </text>
@@ -318,470 +282,324 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
                 </div>
               </div>
 
-              <button
-                onClick={handleNext}
-                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white"
-              >
+              <button onClick={handleNext}
+                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white">
                 Continue →
               </button>
             </div>
           )}
 
-          {/* ─── Step 3: Pick Your Meals ─── */}
+          {/* ─── Step 3: Day-by-Day Menu Selection ─── */}
           {step === 3 && (
-            <div className="w-full max-w-none">
-              <div className="max-w-2xl mb-6">
-                <h1 className="text-xl sm:text-2xl font-bold mb-1">Pick Your Meals</h1>
-                <p className="text-white/50 mb-4">
-                  Recommended for <strong className="text-white">{goal}</strong> — select at least <strong className="text-white">{plan.meals}</strong> meals for your weekly rotation.
+            <div className="w-full">
+              <div className="mb-6">
+                <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose Your Weekly Menu</h1>
+                <p className="text-[#666] text-[14px]">
+                  Select your <strong>{mealCount === 1 ? "lunch" : "lunch and dinner"}</strong> for each day. Daily options are curated for your <strong>{goal}</strong> goal.
                 </p>
-                {/* Sticky counter */}
-                <div className="flex items-center justify-between p-3 bg-[#1A1A1A] border border-white/10">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-[13px]"
-                      style={{ backgroundColor: plan.accent, color: "#111" }}>
-                      {totalSelected}
-                    </div>
-                    <span className="text-[14px] font-medium text-white">
-                      of {maxMeals} meals selected
-                    </span>
-                    {totalSelected < plan.meals && (
-                      <span className="text-red-400 text-[12px]">— need {plan.meals - totalSelected} more</span>
-                    )}
-                  </div>
-                  <span className="text-[11px] text-white/40">You can repeat meals · max {maxMeals}</span>
+              </div>
+
+              {/* Progress bar */}
+              <div className="mb-6 bg-white border border-[#E5E2DA] p-4 rounded-xl">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[13px] font-semibold text-[#111]">{totalSlotsFilled} of {totalSlotsRequired} meals selected</span>
+                  {canProceedStep3 && <span className="text-green-600 text-[12px] font-bold">✓ All meals chosen</span>}
+                </div>
+                <div className="h-2 bg-[#F0EDE8] rounded-full overflow-hidden">
+                  <div className="h-full bg-[#F2C94C] rounded-full transition-all duration-500"
+                    style={{ width: `${(totalSlotsFilled / totalSlotsRequired) * 100}%` }} />
                 </div>
               </div>
 
-              {/* Full-width meal grid matching Ready-to-Go style */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                {getMealsForPlan(goal).map((meal: Meal) => {
-                  const qty = getMealQty(meal.id);
-                  const atMax = totalSelected >= maxMeals && qty === 0;
-                  const recommended = PLAN_MEAL_CATS[goal]?.includes(meal.cat);
-                  const typeMap: Record<string, { label: string; bg: string; text: string }> = {
-                    "high-carb":    { label: "High Carb",    bg: "#F2C94C22", text: "#F2C94C" },
-                    "low-carb":     { label: "Low Carb",     bg: "#7EE8B022", text: "#7EE8B0" },
-                    "just-protein": { label: "Just Protein", bg: "#A78BFA22", text: "#A78BFA" },
-                    "breakfast":    { label: "Breakfast",    bg: "#FB923C22", text: "#FB923C" },
-                  };
-                  const mealType = typeMap[meal.cat];
+              {/* Day-by-day grid */}
+              <div className="flex flex-col gap-3 mb-6">
+                {DELIVERY_WEEK.map((d, dayIndex) => {
+                  const daySchedule = schedule[d.day] || { lunch: null, dinner: null };
+                  const dayOptions = getDayOptions(planMeals, dayIndex);
                   return (
-                    <div key={meal.id}
-                      className={`group bg-[#1A1A1A] overflow-hidden transition-all ${qty > 0 ? "ring-2 shadow-lg" : "hover:ring-1 hover:ring-white/20"} ${atMax ? "opacity-40" : ""}`}
-                      style={qty > 0 ? { "--tw-ring-color": plan.accent + "99" } as React.CSSProperties : {}}>
-                      {/* Image */}
-                      <div className="relative h-52 bg-[#222] overflow-hidden cursor-pointer" onClick={() => setDetailMeal(meal)}>
-                        {meal.badge && qty === 0 && (
-                          <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold ${meal.badge === "Bestseller" || meal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111]" : "bg-black/50 text-white backdrop-blur-sm border border-white/10"}`}>
-                            {meal.badge}
+                    <div key={d.day} className="bg-white border border-[#E5E2DA] rounded-xl overflow-hidden">
+                      {/* Day header */}
+                      <div className="flex items-center justify-between px-5 py-3 bg-[#F7F5F0] border-b border-[#E5E2DA]">
+                        <div className="flex items-center gap-3">
+                          <div className="text-center">
+                            <div className="text-[10px] font-mono text-[#999] uppercase">{d.day}</div>
+                            <div className="font-bold text-[18px] leading-tight text-[#111]">{d.date}</div>
+                            <div className="text-[10px] text-[#aaa]">{d.month}</div>
                           </div>
-                        )}
-                        {recommended && qty === 0 && !meal.badge && (
-                          <div className="absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold"
-                            style={{ backgroundColor: plan.accent, color: "#111" }}>
-                            Recommended
+                          <div className="text-[12px] text-[#999]">
+                            {mealCount === 1
+                              ? (daySchedule.lunch ? "1/1 selected" : "0/1 selected")
+                              : `${(daySchedule.lunch ? 1 : 0) + (daySchedule.dinner ? 1 : 0)}/2 selected`
+                            }
                           </div>
-                        )}
-                        {qty > 0 && (
-                          <div className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center font-black text-[13px]"
-                            style={{ backgroundColor: plan.accent, color: "#111" }}>
-                            {qty}×
-                          </div>
-                        )}
-                        <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                          <span className="bg-white/10 backdrop-blur-sm text-white text-[11px] uppercase tracking-widest px-4 py-2 border border-white/20">View Details</span>
                         </div>
+                        <div className="text-[10px] text-[#ccc] font-mono">{dayOptions.length} options available</div>
                       </div>
-                      {/* Info */}
-                      <div className="p-5">
-                        {mealType && (
-                          <span className="inline-block text-[9px] font-mono font-bold tracking-[0.25em] uppercase px-2 py-1 mb-2 border"
-                            style={{ color: mealType.text, backgroundColor: mealType.bg, borderColor: mealType.text + "44" }}>
-                            {mealType.label}
-                          </span>
-                        )}
-                        <div className="flex items-start justify-between mb-3 gap-2">
-                          <h3 className="text-white text-[14px] font-medium leading-snug">{meal.name}</h3>
-                          <span className="text-[#CDFF3A] font-bold text-[15px] whitespace-nowrap font-mono shrink-0">${meal.price.toFixed(2)}</span>
-                        </div>
-                        <div className="grid grid-cols-4 gap-1 mb-4">
-                          {[{ l: "CAL", v: meal.cal }, { l: "PRO", v: `${meal.protein}g` }, { l: "CARB", v: `${meal.carbs}g` }, { l: "FAT", v: `${meal.fat}g` }].map((m) => (
-                            <div key={m.l} className="bg-[#252525] px-1.5 py-2 text-center">
-                              <div className="font-mono text-[9px] text-white/25 mb-0.5 tracking-wider">{m.l}</div>
-                              <div className="font-mono text-[11px] text-white font-medium">{m.v}</div>
+
+                      {/* Slots */}
+                      <div className={`grid ${mealCount === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} divide-y sm:divide-y-0 sm:divide-x divide-[#E5E2DA]`}>
+                        {(["lunch", ...(mealCount === 2 ? ["dinner"] : [])] as ("lunch" | "dinner")[]).map((slot) => {
+                          const selectedId = daySchedule[slot];
+                          const selectedMeal = selectedId ? getMealById(selectedId) : null;
+                          return (
+                            <div key={slot} className="p-4">
+                              <div className="flex items-center gap-1.5 mb-3">
+                                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold ${slot === "lunch" ? "bg-[#FFF3CD] text-[#B8860B]" : "bg-[#E8F4FD] text-[#1565C0]"}`}>
+                                  {slot === "lunch" ? "L" : "D"}
+                                </span>
+                                <span className="text-[11px] font-semibold text-[#666] uppercase tracking-wider">{slot}</span>
+                              </div>
+                              {selectedMeal ? (
+                                <button
+                                  onClick={() => setPickerState({ day: d.day, slot })}
+                                  className="w-full flex items-center gap-3 group"
+                                >
+                                  <img src={selectedMeal.img} alt={selectedMeal.name} className="w-12 h-12 object-cover rounded-lg shrink-0" />
+                                  <div className="flex-1 text-left min-w-0">
+                                    <div className="text-[12px] font-semibold text-[#111] leading-tight line-clamp-2">{selectedMeal.name}</div>
+                                    <div className="text-[10px] text-[#888] mt-0.5">{selectedMeal.protein}g protein · {selectedMeal.cal} cal</div>
+                                  </div>
+                                  <span className="text-[10px] text-[#aaa] group-hover:text-[#111] transition-colors shrink-0">Change</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => setPickerState({ day: d.day, slot })}
+                                  className="w-full border-2 border-dashed border-[#E5E2DA] hover:border-[#F2C94C] rounded-lg py-4 text-[13px] text-[#aaa] hover:text-[#111] transition-all flex flex-col items-center gap-1"
+                                >
+                                  <span className="text-[20px]">+</span>
+                                  <span>Choose {slot}</span>
+                                  <span className="text-[10px]">{dayOptions.length} options</span>
+                                </button>
+                              )}
                             </div>
-                          ))}
-                        </div>
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="text-[11px] text-white/35 flex items-center gap-1">
-                            <span className="text-[#CDFF3A]">{"★".repeat(Math.round(meal.rating))}</span>
-                            <span>{meal.rating} ({meal.reviews})</span>
-                          </div>
-                          {qty === 0 ? (
-                            <button onClick={() => !atMax && addMeal(meal.id)} disabled={atMax}
-                              className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${atMax ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-white/10 text-white hover:bg-[#CDFF3A] hover:text-[#111]"}`}>
-                              + Select
-                            </button>
-                          ) : (
-                            <div className="flex items-center gap-1">
-                              <button onClick={() => removeMeal(meal.id)}
-                                className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-[16px] transition-colors">−</button>
-                              <span className="text-white font-mono font-bold text-[13px] w-6 text-center">{qty}</span>
-                              <button onClick={() => addMeal(meal.id)} disabled={totalSelected >= maxMeals}
-                                className={`w-8 h-8 flex items-center justify-center text-[16px] transition-colors ${totalSelected >= maxMeals ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-[#CDFF3A] text-[#111] hover:bg-white"}`}>+</button>
-                            </div>
-                          )}
-                        </div>
+                          );
+                        })}
                       </div>
                     </div>
                   );
                 })}
               </div>
 
-              <div className="max-w-2xl">
-                <button onClick={handleNext} disabled={!canProceedStep3}
-                  className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all ${canProceedStep3 ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
-                  Continue with {totalSelected} meal{totalSelected !== 1 ? "s" : ""} →
-                </button>
-              </div>
+              <button onClick={handleNext} disabled={!canProceedStep3}
+                className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all rounded-xl ${canProceedStep3 ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
+                {canProceedStep3 ? "Confirm Menu →" : `Select ${totalSlotsRequired - totalSlotsFilled} more meal${totalSlotsRequired - totalSlotsFilled !== 1 ? "s" : ""} to continue`}
+              </button>
             </div>
           )}
 
-          {/* ─── Step 4: Delivery ─── */}
+          {/* ─── Step 4: Prefixed Delivery Schedule ─── */}
           {step === 4 && (
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold mb-1">Delivery Preferences</h1>
-              <p className="text-[#666] mb-6">Choose your delivery days, time slot, and address.</p>
+              <h1 className="text-xl sm:text-2xl font-bold mb-1">Delivery & Address</h1>
+              <p className="text-[#666] mb-6">Your meals are delivered fresh every day. Delivery windows are fixed to allow kitchen preparation.</p>
 
-              <div className="mb-6">
-                <label className="block text-sm font-semibold mb-3">Delivery Days</label>
-                <div className="flex flex-wrap gap-2">
-                  {DAYS.map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => toggleDay(d)}
-                      className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${
-                        deliveryDays.includes(d)
-                          ? "bg-[#111] text-white border-[#111]"
-                          : "border-[#D0CCC4] text-[#666] hover:border-[#999]"
-                      }`}
-                    >
-                      {d}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-semibold mb-3">Delivery Time</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {SLOTS.map((slot) => (
-                    <button
-                      key={slot}
-                      onClick={() => setTimeSlot(slot)}
-                      className={`py-3 px-4 rounded-lg border text-sm font-medium transition-all text-left ${
-                        timeSlot === slot
-                          ? "bg-[#111] text-white border-[#111]"
-                          : "border-[#D0CCC4] text-[#666] bg-white hover:border-[#999]"
-                      }`}
-                    >
-                      {slot}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
+              {/* Prefixed schedule — read-only */}
               <div className="mb-8">
-                <label className="block text-sm font-semibold mb-3">Delivery Address</label>
+                <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-3">Your Weekly Delivery Schedule</label>
+                <div className="bg-white border border-[#E5E2DA] rounded-xl overflow-hidden">
+                  {DELIVERY_WEEK.map((d, i) => (
+                    <div key={d.day} className={`flex items-center justify-between px-5 py-3.5 ${i < DELIVERY_WEEK.length - 1 ? "border-b border-[#F0EDE8]" : ""}`}>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-[#F2C94C] rounded-full flex items-center justify-center text-[#111] font-bold text-[11px]">{d.date}</div>
+                        <div>
+                          <div className="text-[13px] font-semibold text-[#111]">{d.day}, {d.date} {d.month}</div>
+                          <div className="text-[11px] text-[#888]">{mealCount === 1 ? "Lunch" : "Lunch + Dinner"}</div>
+                        </div>
+                      </div>
+                      <div className="text-[11px] text-[#aaa] font-mono">7am – 10am</div>
+                    </div>
+                  ))}
+                  <div className="px-5 py-3 bg-[#FFFBF0] border-t border-[#F2C94C]/30">
+                    <p className="text-[11px] text-[#7A5C00]">
+                      📦 Meals are prepared fresh each morning and delivered before 10am. Delivery windows are fixed — no scheduling needed.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Address */}
+              <div className="mb-8">
+                <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-3">Delivery Address</label>
                 <div className="flex flex-col gap-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Full name"
-                      value={address.name}
+                    <input type="text" placeholder="Full name" value={address.name}
                       onChange={(e) => setAddress({ ...address, name: e.target.value })}
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Phone"
-                      value={address.phone}
+                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    <input type="text" placeholder="Phone / WhatsApp" value={address.phone}
                       onChange={(e) => setAddress({ ...address, phone: e.target.value })}
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                    />
+                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Street address"
-                    value={address.line1}
+                  <input type="text" placeholder="Street address" value={address.line1}
                     onChange={(e) => setAddress({ ...address, line1: e.target.value })}
-                    className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                  />
+                    className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Unit / Level (optional)"
-                      value={address.unit}
+                    <input type="text" placeholder="Unit / Level (optional)" value={address.unit}
                       onChange={(e) => setAddress({ ...address, unit: e.target.value })}
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Postal code"
-                      value={address.postal}
+                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    <input type="text" placeholder="Postal code" value={address.postal}
                       onChange={(e) => setAddress({ ...address, postal: e.target.value })}
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                    />
+                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   </div>
                 </div>
               </div>
 
-              <button
-                onClick={handleNext}
-                disabled={!canProceedStep4}
-                className={`w-full py-4 rounded-xl font-semibold text-[15px] transition-all ${
-                  canProceedStep4
-                    ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white"
-                    : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"
-                }`}
-              >
+              <button onClick={handleNext} disabled={!canProceedStep4}
+                className={`w-full py-4 rounded-xl font-semibold text-[15px] transition-all ${canProceedStep4 ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
                 Continue →
               </button>
             </div>
           )}
 
-          {/* ─── Step 5: Payment ─── */}
+          {/* ─── Step 5: Auth + Payment ─── */}
           {step === 5 && (
             <div>
-              {/* Auth gate — must choose account mode before payment */}
+              {/* Auth gate — NO guest option for meal plan (subscription requires account) */}
               {wizardAuthMode === null && (
                 <div>
-                  <h1 className="text-xl sm:text-2xl font-bold mb-1">Almost there!</h1>
-                  <p className="text-[#666] mb-6">Sign in or create an account to track your plan, earn rewards points, and manage deliveries.</p>
+                  <h1 className="text-xl sm:text-2xl font-bold mb-1">Account required</h1>
+                  <p className="text-[#666] mb-2 text-[14px]">Meal Plans are subscription-based. An account lets you review your menu weekly, manage deliveries, and earn rewards points.</p>
 
-                  {/* Points incentive */}
                   <div className="bg-[#111] text-white rounded-xl p-4 mb-6 flex items-center gap-3">
                     <div className="w-10 h-10 bg-[#CDFF3A] rounded-full flex items-center justify-center shrink-0 text-[#111] text-lg font-bold">🪙</div>
                     <div>
                       <p className="font-semibold text-[14px]">Earn <span className="text-[#CDFF3A]">+{Math.round(Number(price) * 1.5)} points</span> on this plan</p>
-                      <p className="text-white/50 text-[12px]">Redeem for free meals and discounts. Only for account holders.</p>
+                      <p className="text-white/50 text-[12px]">Redeem for free meals, discounts and referral bonuses.</p>
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-3 mb-4">
                     <button onClick={() => setWizardAuthMode("signup")}
                       className="w-full bg-[#CDFF3A] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#b8e832] transition-colors">
-                      Create Account &amp; Subscribe
+                      Create Account & Subscribe
                     </button>
                     <button onClick={() => setWizardAuthMode("signin")}
                       className="w-full border-2 border-[#111] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#111] hover:text-white transition-colors">
                       Sign In to Existing Account
                     </button>
-                    <button onClick={() => setWizardAuthMode("guest")}
-                      className="w-full border border-[#D0CCC4] text-[#666] py-4 rounded-xl font-medium text-[14px] hover:border-[#999] transition-colors">
-                      Continue as Guest
-                    </button>
                   </div>
-                  <p className="text-center text-[12px] text-[#aaa]">Guest checkout — no points, no order history</p>
+                  <p className="text-center text-[12px] text-[#aaa]">Meal Plan subscriptions require an account to manage your weekly menu and deliveries.</p>
                 </div>
               )}
 
-              {/* Sign Up form */}
+              {/* Sign Up */}
               {wizardAuthMode === "signup" && (
                 <div>
                   <button onClick={() => setWizardAuthMode(null)} className="text-[#666] text-sm mb-4 flex items-center gap-1 hover:text-[#111]">← Back</button>
                   <h1 className="text-xl font-bold mb-1">Create Your Account</h1>
                   <p className="text-[#666] mb-5 text-sm">Takes 30 seconds — earn points from day one.</p>
                   <div className="flex flex-col gap-3 mb-5">
-                    <input value={waName} onChange={(e) => setWaName(e.target.value)} type="text" placeholder="Full name"
+                    <input value={waName} onChange={(e) => setWaName(e.target.value)} placeholder="Full name"
                       className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <input value={waEmail} onChange={(e) => setWaEmail(e.target.value)} type="email" placeholder="Email address"
                       className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <input value={waPhone} onChange={(e) => setWaPhone(e.target.value)} type="tel" placeholder="Phone (WhatsApp updates)"
+                    <input value={waPhone} onChange={(e) => setWaPhone(e.target.value)} type="tel" placeholder="Phone (WhatsApp order updates)"
                       className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <input value={waPassword} onChange={(e) => setWaPassword(e.target.value)} type="password" placeholder="Create password"
                       className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   </div>
-                  <button disabled={!waName || !waEmail || !waPassword}
-                    onClick={() => setWizardAuthMode("signup_done")}
+                  <button disabled={!waName || !waEmail || !waPassword} onClick={() => setWizardAuthMode("signup_done")}
                     className="w-full bg-[#CDFF3A] text-[#111] py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#b8e832] transition-colors">
                     Continue to Payment →
                   </button>
                 </div>
               )}
 
-              {/* Sign In form */}
+              {/* Sign In */}
               {wizardAuthMode === "signin" && (
                 <div>
                   <button onClick={() => setWizardAuthMode(null)} className="text-[#666] text-sm mb-4 flex items-center gap-1 hover:text-[#111]">← Back</button>
                   <h1 className="text-xl font-bold mb-1">Sign In</h1>
-                  <p className="text-[#666] mb-5 text-sm">Welcome back — let"s activate your plan.</p>
+                  <p className="text-[#666] mb-5 text-sm">Welcome back — let us activate your plan.</p>
                   <div className="flex flex-col gap-3 mb-5">
                     <input value={waEmail} onChange={(e) => setWaEmail(e.target.value)} type="email" placeholder="Email address"
                       className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <input value={waPassword} onChange={(e) => setWaPassword(e.target.value)} type="password" placeholder="Password"
                       className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   </div>
-                  <button disabled={!waEmail || !waPassword}
-                    onClick={() => setWizardAuthMode("signin_done")}
+                  <button disabled={!waEmail || !waPassword} onClick={() => setWizardAuthMode("signin_done")}
                     className="w-full bg-[#111] text-white py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#222] transition-colors">
-                    Sign In &amp; Continue →
+                    Sign In & Continue →
                   </button>
                 </div>
               )}
 
-              {/* Payment form — shown after auth chosen */}
-              {wizardAuthMode !== null && wizardAuthMode !== "signup" && wizardAuthMode !== "signin" && (
-              <div>
-              <h1 className="text-xl sm:text-2xl font-bold mb-1">Payment</h1>
-              <p className="text-[#666] mb-6">Enter your card details to activate your meal plan.</p>
+              {/* Payment form */}
+              {(wizardAuthMode === "signup_done" || wizardAuthMode === "signin_done") && (
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-bold mb-1">Payment</h1>
+                  <p className="text-[#666] mb-6">Enter your card details to activate your meal plan.</p>
 
-              {/* Order summary */}
-              <div className="bg-white border border-[#E5E2DA] rounded-xl p-5 mb-6">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <p className="font-semibold">{plan.name} Plan</p>
-                    <p className="text-sm text-[#666]">
-                      {plan.meals} meals/day · {billing === "week" ? "Weekly" : "Monthly"} billing
-                    </p>
-                    <p className="text-sm text-[#666]">Delivery: {deliveryDays.join(", ")}</p>
-                    <p className="text-sm text-[#666]">{timeSlot}</p>
+                  {/* Order summary */}
+                  <div className="bg-white border border-[#E5E2DA] rounded-xl p-5 mb-6">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <p className="font-semibold">{plan.name} Plan</p>
+                        <p className="text-sm text-[#666]">{mealCount} meal{mealCount > 1 ? "s" : ""}/day · {billing === "week" ? "Weekly" : "Monthly"} billing</p>
+                        <p className="text-sm text-[#666]">7 days/week · Delivered by 10am daily</p>
+                      </div>
+                      <div className="text-right">
+                        {promoApplied && <p className="text-xs text-[#999] line-through">${basePrice}/{billing === "week" ? "wk" : "mo"}</p>}
+                        <p className="text-xl font-bold">${price}</p>
+                        <p className="text-xs text-[#999]">/{billing === "week" ? "week" : "month"}</p>
+                        {promoApplied && <p className="text-xs text-green-600 font-medium mt-0.5">{promoCode} applied ✓</p>}
+                      </div>
+                    </div>
+                    {promoApplied && (
+                      <div className="flex justify-between text-[12px] text-green-600 font-medium border-t border-[#F0EDE8] pt-2 mt-2">
+                        <span>Promo discount ({promoFlat > 0 ? `$${promoFlat.toFixed(2)} off` : `${Math.round(promoRate * 100)}% off`})</span>
+                        <span>–${promoDiscount.toFixed(2)}/{billing === "week" ? "wk" : "mo"}</span>
+                      </div>
+                    )}
+                    <div className="h-1 rounded-full mt-3" style={{ backgroundColor: plan.accent }} />
                   </div>
-                  <div className="text-right">
-                    {promoApplied && <p className="text-xs text-[#999] line-through">${basePrice}/{billing === "week" ? "wk" : "mo"}</p>}
-                    <p className="text-xl font-bold">${price}</p>
-                    <p className="text-xs text-[#999]">/{billing === "week" ? "week" : "month"}</p>
-                    {promoApplied && <p className="text-xs text-green-600 font-medium mt-0.5">{promoCode} applied ✓</p>}
+
+                  {/* Card fields */}
+                  <div className="flex flex-col gap-3 mb-6">
+                    <input type="text" placeholder="Cardholder name"
+                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    <input type="text" placeholder="Card number"
+                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    <div className="grid grid-cols-2 gap-3">
+                      <input type="text" placeholder="MM / YY"
+                        className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      <input type="text" placeholder="CVV"
+                        className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                    </div>
                   </div>
-                </div>
-                {promoApplied && (
-                  <div className="flex justify-between text-[12px] text-green-600 font-medium border-t border-[#F0EDE8] pt-2 mt-2">
-                    <span>Promo discount ({Math.round(promoRate * 100)}% off)</span>
-                    <span>–${promoDiscount.toFixed(2)}/{billing === "week" ? "wk" : "mo"}</span>
+
+                  {/* Promo code */}
+                  <div className="mb-5">
+                    <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Promo / Discount Code</p>
+                    <div className="flex gap-2">
+                      <input value={promoCode}
+                        onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoError(null); }}
+                        placeholder="e.g. FRESHER10"
+                        className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase rounded-lg ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
+                      />
+                      <button onClick={handleApplyPromo}
+                        className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase rounded-lg hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                        Apply
+                      </button>
+                    </div>
+                    {promoApplied && <p className="text-green-600 text-[12px] mt-1.5 font-medium">✓ Code <strong>{promoCode}</strong> applied — saving ${promoDiscount.toFixed(2)}/{billing === "week" ? "wk" : "mo"}</p>}
+                    {promoError === "invalid" && <p className="text-red-500 text-[12px] mt-1.5 font-medium">✕ Invalid promo code. Check spelling or try another.</p>}
+                    {promoError === "expired" && <p className="text-red-500 text-[12px] mt-1.5 font-medium">⏰ This promo code has expired. Check our latest offers!</p>}
                   </div>
-                )}
-                <div className="h-1 rounded-full mt-3" style={{ backgroundColor: plan.accent }} />
-              </div>
 
-              {/* Card fields */}
-              <div className="flex flex-col gap-3 mb-6">
-                <input
-                  type="text"
-                  placeholder="Cardholder name"
-                  className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                />
-                <input
-                  type="text"
-                  placeholder="Card number"
-                  className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                />
-                <div className="grid grid-cols-2 gap-3">
-                  <input
-                    type="text"
-                    placeholder="MM / YY"
-                    className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                  />
-                  <input
-                    type="text"
-                    placeholder="CVV"
-                    className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]"
-                  />
-                </div>
-              </div>
+                  {/* Trust seal */}
+                  <div className="flex items-center gap-3 bg-[#CDFF3A]/10 border border-[#CDFF3A]/30 px-4 py-3 mb-4 rounded-xl">
+                    <span className="text-[24px] shrink-0">🔒</span>
+                    <div className="text-[12px] text-[#555] leading-tight">
+                      <span className="font-bold text-[#111]">60-day money-back guarantee.</span> Lose 6kg or get a full refund — no questions asked.
+                    </div>
+                  </div>
 
-              {/* Checkboxes */}
-              <div className="flex flex-col gap-3 mb-6">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={saveCard}
-                    onChange={(e) => setSaveCard(e.target.checked)}
-                    className="mt-0.5 w-4 h-4 accent-[#111] flex-shrink-0"
-                  />
-                  <span className="text-sm text-[#444]">Save this card for faster checkout next time</span>
-                </label>
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={autoChargeConsent}
-                    onChange={(e) => setAutoChargeConsent(e.target.checked)}
-                    className="mt-0.5 w-4 h-4 accent-[#111] flex-shrink-0"
-                  />
-                  <span className="text-sm text-[#444]">
-                    I authorise Fresher to auto-charge my card on each billing cycle{" "}
-                    <span className="text-red-500 font-medium">*</span>
-                  </span>
-                </label>
-                {!autoChargeConsent && (
-                  <p className="text-xs text-red-500 ml-7">Authorisation required to subscribe</p>
-                )}
-              </div>
-
-              {/* Promo code */}
-              <div className="mb-5">
-                <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Promo / Discount Code</p>
-                <div className="flex gap-2">
-                  <input
-                    value={promoCode}
-                    onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoError(null); }}
-                    placeholder="e.g. FRESHER10"
-                    className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase rounded-lg ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
-                  />
-                  <button onClick={handleApplyPromo}
-                    className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase rounded-lg hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
-                    Apply
+                  <button onClick={handleSubscribe}
+                    className="w-full py-4 rounded-xl font-semibold text-[15px] bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white transition-all">
+                    Subscribe — ${price}/{billing === "week" ? "wk" : "mo"}
                   </button>
+                  <p className="text-center text-xs text-[#999] mt-4">Cancel anytime from your account. No lock-in.</p>
                 </div>
-                {promoApplied && (
-                  <p className="text-green-600 text-[12px] mt-1.5 font-medium flex items-center gap-1.5">
-                    ✓ Code <strong>{promoCode}</strong> applied — {Math.round(promoRate * 100)}% off (–${promoDiscount.toFixed(2)}/{billing === "week" ? "wk" : "mo"})
-                  </p>
-                )}
-                {promoError === "invalid" && (
-                  <p className="text-red-500 text-[12px] mt-1.5 font-medium">✕ Invalid promo code. Check spelling or try another.</p>
-                )}
-                {promoError === "expired" && (
-                  <p className="text-red-500 text-[12px] mt-1.5 font-medium">⏰ This promo code has expired. Check our latest offers!</p>
-                )}
-              </div>
-
-              {/* 6in60 pre-CTA trust seal */}
-              <div className="flex items-center gap-3 bg-[#CDFF3A]/10 border border-[#CDFF3A]/30 px-4 py-3 mb-4">
-                <div className="relative shrink-0 w-9 h-9">
-                  <svg viewBox="0 0 36 36" className="w-full h-full" style={{ animation: "spin6wiz 18s linear infinite" }}>
-                    <defs><path id="sealRing" d="M 18,18 m -13,0 a 13,13 0 1,1 26,0 a 13,13 0 1,1 -26,0" /></defs>
-                    <circle cx="18" cy="18" r="16" fill="#CDFF3A" />
-                    <text fontSize="3.8" fontFamily="monospace" fontWeight="800" fill="#111" opacity="0.5" letterSpacing="1">
-                      <textPath href="#sealRing" startOffset="50%" textAnchor="middle">60 DAYS · GUARANTEE ·</textPath>
-                    </text>
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-display text-[8px] font-black text-[#111]">6in60</span>
-                  </div>
-                </div>
-                <div className="text-[12px] text-[#555] leading-tight">
-                  <span className="font-bold text-[#111]">60-day money-back guarantee.</span> If you don't lose 6kg, we refund you — no questions asked.
-                </div>
-              </div>
-
-              <button
-                onClick={handleSubscribe}
-                disabled={!canSubscribe}
-                className={`w-full py-4 rounded-xl font-semibold text-[15px] transition-all ${
-                  canSubscribe
-                    ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white"
-                    : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"
-                }`}
-              >
-                Subscribe — ${price}/{billing === "week" ? "wk" : "mo"}
-              </button>
-
-              <p className="text-center text-xs text-[#999] mt-4">
-                Cancel anytime from your account. No lock-in.
-              </p>
-              </div>
               )}
             </div>
           )}
@@ -789,85 +607,46 @@ export default function MealPlanWizardPage({ navigate, addToCart, initialPlan, o
         </div>
       </div>
 
-      {/* ── Meal Detail Modal ── */}
-      {detailMeal && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center p-2 sm:p-4">
-          <div className="absolute inset-0 bg-black/70" onClick={() => setDetailMeal(null)} />
-          <div className="relative bg-[#1A1A1A] text-white w-full max-w-2xl overflow-hidden max-h-[100dvh] sm:max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setDetailMeal(null)} className="absolute top-4 right-4 z-10 text-white/50 hover:text-white bg-black/30 rounded-full p-2">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
-            </button>
-            <div className="h-56 sm:h-72 relative bg-[#222]">
-              <img src={detailMeal.img} alt={detailMeal.name} className="w-full h-full object-cover" />
-              {detailMeal.badge && (
-                <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${detailMeal.badge === "Bestseller" || detailMeal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>
-                  {detailMeal.badge}
+      {/* ── Meal Picker Overlay ── */}
+      {pickerState && (
+        <div className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setPickerState(null)} />
+          <div className="relative bg-white w-full sm:max-w-lg max-h-[85vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl">
+            <div className="sticky top-0 bg-white border-b border-[#E5E2DA] px-6 py-4 flex items-center justify-between">
+              <div>
+                <div className="font-bold text-[16px] text-[#111]">
+                  Choose {pickerState.slot.charAt(0).toUpperCase() + pickerState.slot.slice(1)}
                 </div>
-              )}
-              {getMealQty(detailMeal.id) > 0 && (
-                <div className="absolute top-4 right-4 text-[12px] font-bold px-3 py-1" style={{ backgroundColor: plan.accent, color: "#111" }}>
-                  {getMealQty(detailMeal.id)}× in your plan
-                </div>
-              )}
+                <div className="text-[12px] text-[#888]">{pickerState.day} — curated for {goal}</div>
+              </div>
+              <button onClick={() => setPickerState(null)} className="text-[#aaa] hover:text-[#111] transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+              </button>
             </div>
-            <div className="p-7">
-              {(() => {
-                const typeMap: Record<string, { label: string; color: string }> = {
-                  "high-carb":    { label: "High Carb",    color: "#F2C94C" },
-                  "low-carb":     { label: "Low Carb",     color: "#7EE8B0" },
-                  "just-protein": { label: "Just Protein", color: "#A78BFA" },
-                  "breakfast":    { label: "Breakfast",    color: "#FB923C" },
-                };
-                const t = typeMap[detailMeal.cat];
-                return t ? (
-                  <span className="inline-block text-[10px] font-mono font-bold tracking-[0.25em] uppercase px-2.5 py-1 mb-3 border"
-                    style={{ color: t.color, borderColor: t.color + "55", backgroundColor: t.color + "15" }}>
-                    {t.label}
-                  </span>
-                ) : null;
-              })()}
-              <div className="flex items-start justify-between mb-3 gap-3">
-                <h2 className="font-display text-[26px] font-bold">{detailMeal.name}</h2>
-                <span className="font-mono text-[22px] text-[#CDFF3A] font-bold shrink-0">${detailMeal.price.toFixed(2)}</span>
-              </div>
-              <div className="flex items-center gap-2 text-[13px] text-white/40 mb-4">
-                <span className="text-[#CDFF3A]">{"★".repeat(Math.round(detailMeal.rating))}</span>
-                <span className="text-white/60 font-semibold">{detailMeal.rating}</span>
-                <span>· {detailMeal.reviews} reviews</span>
-              </div>
-              <p className="text-white/55 text-[14px] leading-relaxed mb-6">{detailMeal.desc}</p>
-              <div className="grid grid-cols-4 gap-2 mb-6">
-                {[{ label: "Calories", val: detailMeal.cal }, { label: "Protein", val: `${detailMeal.protein}g` }, { label: "Carbs", val: `${detailMeal.carbs}g` }, { label: "Fat", val: `${detailMeal.fat}g` }].map((m) => (
-                  <div key={m.label} className="bg-[#222] px-3 py-3 text-center">
-                    <div className="font-mono text-[13px] text-[#CDFF3A] font-medium">{m.val}</div>
-                    <div className="text-white/30 text-[10px] mt-1 uppercase tracking-wider">{m.label}</div>
+            <div className="p-4 flex flex-col gap-3">
+              {getDayOptions(planMeals, DELIVERY_WEEK.findIndex((d) => d.day === pickerState.day)).map((meal) => (
+                <button key={meal.id} onClick={() => selectMeal(meal.id)}
+                  className="flex items-center gap-4 p-3 border border-[#E5E2DA] hover:border-[#F2C94C] hover:bg-[#FFFBF0] rounded-xl transition-all text-left group">
+                  <img src={meal.img} alt={meal.name} className="w-16 h-16 object-cover rounded-lg shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-[14px] text-[#111] leading-snug">{meal.name}</div>
+                    <div className="flex gap-3 text-[11px] text-[#888] mt-1">
+                      <span>{meal.protein}g protein</span>
+                      <span>·</span>
+                      <span>{meal.cal} cal</span>
+                      <span>·</span>
+                      <span>${meal.price.toFixed(2)}</span>
+                    </div>
+                    <div className="flex mt-1">
+                      {[1,2,3,4,5].map((s) => <span key={s} className={`text-[10px] ${s <= Math.round(meal.rating) ? "text-[#F2C94C]" : "text-[#ddd]"}`}>★</span>)}
+                      <span className="text-[10px] text-[#aaa] ml-1">({meal.reviews})</span>
+                    </div>
                   </div>
-                ))}
-              </div>
-              <div className="border border-white/10 p-4 mb-6 text-[12px] text-white/40 space-y-1">
-                <div>❄️ Frozen at peak freshness · 2-month freezer life</div>
-                <div>⚡ Heat in 3 minutes in microwave or oven</div>
-                <div>✓ USDA nutritional standards · Macro-labelled</div>
-              </div>
-              <div className="flex gap-3 items-center">
-                {getMealQty(detailMeal.id) > 0 && (
-                  <div className="flex items-center gap-1">
-                    <button onClick={() => removeMeal(detailMeal.id)}
-                      className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-[18px] transition-colors">−</button>
-                    <span className="text-white font-mono font-bold text-[15px] w-8 text-center">{getMealQty(detailMeal.id)}</span>
-                    <button onClick={() => addMeal(detailMeal.id)} disabled={totalSelected >= maxMeals}
-                      className={`w-10 h-10 flex items-center justify-center text-[18px] transition-colors ${totalSelected >= maxMeals ? "bg-white/5 text-white/20 cursor-not-allowed" : "text-[#111] hover:opacity-90"}`}
-                      style={totalSelected < maxMeals ? { backgroundColor: plan.accent } : {}}>+</button>
+                  <div className="shrink-0 w-8 h-8 rounded-full border-2 border-[#E5E2DA] group-hover:border-[#F2C94C] group-hover:bg-[#F2C94C] flex items-center justify-center transition-all">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
                   </div>
-                )}
-                <button
-                  onClick={() => { addMeal(detailMeal.id); setDetailMeal(null); }}
-                  disabled={totalSelected >= maxMeals}
-                  className={`flex-1 py-4 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected >= maxMeals ? "bg-white/10 text-white/30 cursor-not-allowed" : "text-[#111] hover:opacity-90"}`}
-                  style={totalSelected < maxMeals ? { backgroundColor: plan.accent } : {}}>
-                  {getMealQty(detailMeal.id) > 0 ? `+ Add Another (${getMealQty(detailMeal.id)}× selected)` : "Add to Plan →"}
                 </button>
-              </div>
+              ))}
             </div>
           </div>
         </div>
