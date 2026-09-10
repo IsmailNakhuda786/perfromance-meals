@@ -141,7 +141,7 @@ export default function HowItWorksPage({ navigate, navigateToWizard }: Props) {
       {/* CTA banner */}
       <div className="bg-[#1A1A1A] py-20 px-6 text-center">
         <h2 className="font-display text-[40px] font-bold text-white mb-3">Ready to start?</h2>
-        <p className="text-white/40 text-[16px] mb-8">One trusted standard — your choice of journey.</p>
+        <p className="text-white/40 text-[16px] mb-8">One trusted standard — delivered through a personalised fresh-plan experience or a fast, flexible frozen-meal experience.</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={() => navigateToWizard()}

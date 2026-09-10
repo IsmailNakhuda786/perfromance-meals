@@ -79,6 +79,22 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
             <p className="text-[#555] text-[15px] leading-relaxed">
               Our purpose: to make exceptional meal prep accessible to every customer, with care in every experience.
             </p>
+
+            {/* Mission & Vision blocks — from brand template */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+              <div className="border-l-4 border-[#F5B300] pl-5 py-1">
+                <div className="font-mono text-[9px] tracking-[0.35em] uppercase text-[#1A1A1A]/30 mb-2">Mission</div>
+                <p className="text-[#1A1A1A] text-[14px] leading-relaxed font-medium">
+                  To deliver exceptional meals and thoughtful support that make healthy eating easier every day.
+                </p>
+              </div>
+              <div className="border-l-4 border-[#F5B300] pl-5 py-1">
+                <div className="font-mono text-[9px] tracking-[0.35em] uppercase text-[#1A1A1A]/30 mb-2">Vision</div>
+                <p className="text-[#1A1A1A] text-[14px] leading-relaxed font-medium">
+                  For Performance Meals to be the gold standard in meal prep — trusted by people to eat well, every day.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
