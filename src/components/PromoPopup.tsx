@@ -30,8 +30,8 @@ export default function PromoPopup({ onClose, navigate }: Props) {
       {/* Modal */}
       <div className="relative bg-[#111] text-white w-full max-w-[480px] overflow-hidden shadow-2xl">
 
-        {/* Top lime strip */}
-        <div className="bg-[#CDFF3A] h-1 w-full" />
+        {/* Top yellow strip */}
+        <div className="bg-[#F5B300] h-1 w-full" />
 
         {/* Close */}
         <button onClick={onClose} className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors z-10">
@@ -42,9 +42,9 @@ export default function PromoPopup({ onClose, navigate }: Props) {
 
         {/* Header */}
         <div className="px-6 pt-6 pb-4 text-center">
-          <div className="text-[10px] font-mono tracking-[0.45em] text-[#CDFF3A] uppercase mb-2">Welcome to Fresher</div>
+          <div className="text-[10px] font-mono tracking-[0.45em] text-[#F5B300] uppercase mb-2">Performance Meals</div>
           <h2 className="font-display text-[28px] font-bold leading-tight">
-            Eat clean.<br />Perform better.
+            Stock up.<br />Stay on track.
           </h2>
           <p className="text-white/50 text-[13px] mt-2">Exclusive offer — today only</p>
         </div>
@@ -52,11 +52,11 @@ export default function PromoPopup({ onClose, navigate }: Props) {
         {/* Tab toggle */}
         <div className="flex mx-6 mb-4 border border-white/10 rounded-sm overflow-hidden">
           <button onClick={() => setTab("code")}
-            className={`flex-1 py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${tab === "code" ? "bg-[#CDFF3A] text-[#111]" : "text-white/40 hover:text-white"}`}>
+            className={`flex-1 py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${tab === "code" ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white"}`}>
             Promo Code
           </button>
           <button onClick={() => setTab("bundle")}
-            className={`flex-1 py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${tab === "bundle" ? "bg-[#CDFF3A] text-[#111]" : "text-white/40 hover:text-white"}`}>
+            className={`flex-1 py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${tab === "bundle" ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white"}`}>
             Bundle Deal
           </button>
         </div>
@@ -66,11 +66,11 @@ export default function PromoPopup({ onClose, navigate }: Props) {
           <div className="px-6 pb-6">
             <div className="bg-white/5 border border-white/10 p-5 text-center mb-4">
               <div className="text-[12px] text-white/40 mb-2">Use code at checkout</div>
-              <div className="font-display text-[42px] font-bold text-[#CDFF3A] tracking-widest leading-none mb-1">SG61</div>
+              <div className="font-display text-[42px] font-bold text-[#F5B300] tracking-widest leading-none mb-1">SG61</div>
               <div className="text-[13px] text-white/50">$6.10 off your first order</div>
             </div>
             <button onClick={copyCode}
-              className={`w-full py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase transition-all mb-3 ${copied ? "bg-white text-[#111]" : "bg-[#CDFF3A] text-[#111] hover:bg-white"}`}>
+              className={`w-full py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase transition-all mb-3 ${copied ? "bg-white text-[#111]" : "bg-[#F5B300] text-[#111] hover:bg-white"}`}>
               {copied ? "✓ Copied!" : "Copy Code"}
             </button>
             <p className="text-[11px] text-white/25 text-center">Valid on first order · Min. spend $40 · Expires 30 Sep 2025</p>
@@ -85,16 +85,16 @@ export default function PromoPopup({ onClose, navigate }: Props) {
                 <div>
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="font-semibold text-[14px]">{b.name}</span>
-                    <span className="bg-[#CDFF3A] text-[#111] text-[9px] font-bold tracking-wider px-1.5 py-0.5">{b.tag}</span>
+                    <span className="bg-[#F5B300] text-[#111] text-[9px] font-bold tracking-wider px-1.5 py-0.5">{b.tag}</span>
                   </div>
                   <div className="text-[12px] text-white/40">{b.desc}</div>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="font-mono font-bold text-[16px] text-[#CDFF3A]">${b.sale}</span>
+                    <span className="font-mono font-bold text-[16px] text-[#F5B300]">${b.sale}</span>
                     <span className="font-mono text-[13px] text-white/25 line-through">${b.original}</span>
                   </div>
                 </div>
                 <button onClick={() => { navigate("ready-to-go"); onClose(); }}
-                  className="shrink-0 bg-white/10 hover:bg-[#CDFF3A] hover:text-[#111] text-white px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
+                  className="shrink-0 bg-white/10 hover:bg-[#F5B300] hover:text-[#111] text-white px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
                   Grab It
                 </button>
               </div>

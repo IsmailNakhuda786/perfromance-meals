@@ -30,11 +30,11 @@ export default function GiftCardPage({ navigate }: Props) {
         <div className="max-w-[560px] w-full text-center">
           {/* Confetti elements */}
           <div className="relative mb-8">
-            <div className="absolute -top-4 left-8 w-5 h-5 bg-[#CDFF3A] rounded-full opacity-50" />
+            <div className="absolute -top-4 left-8 w-5 h-5 bg-[#F5B300] rounded-full opacity-50" />
             <div className="absolute top-2 right-10 w-7 h-7 bg-[#F2C94C] rounded-full opacity-40" />
             <div className="absolute -top-2 right-3 w-3 h-3 bg-[#7EE8B0] opacity-50" />
             <div className="absolute top-6 left-14 w-4 h-4 bg-[#A78BFA] opacity-40" />
-            <div className="w-20 h-20 bg-[#CDFF3A] rounded-full flex items-center justify-center mx-auto">
+            <div className="w-20 h-20 bg-[#F5B300] rounded-full flex items-center justify-center mx-auto">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5">
                 <path d="M20 6 9 17l-5-5" />
               </svg>
@@ -51,15 +51,15 @@ export default function GiftCardPage({ navigate }: Props) {
 
           {/* Gift card preview */}
           <div className="bg-[#111111] text-white p-6 sm:p-8 mb-6 text-left relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-[#CDFF3A]/10 rounded-full -translate-y-8 translate-x-8" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#F5B300]/10 rounded-full -translate-y-8 translate-x-8" />
             <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#F2C94C]/10 rounded-full translate-y-8 -translate-x-8" />
             <div className="relative">
-              <div className="font-display text-[22px] font-bold mb-1">FRESHER<span className="text-[#CDFF3A]">.</span></div>
+              <div className="font-display text-[22px] font-bold mb-1">FRESHER<span className="text-[#F5B300]">.</span></div>
               <div className="font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase mb-6">Performance Gift Card</div>
-              <div className="font-display text-[32px] sm:text-[42px] font-bold text-[#CDFF3A] mb-1">${amount}</div>
+              <div className="font-display text-[32px] sm:text-[42px] font-bold text-[#F5B300] mb-1">${amount}</div>
               <div className="text-white/40 text-[13px] mb-6">Gift card value · Never expires</div>
               <div className="bg-white/5 border border-white/10 px-5 py-3 inline-block">
-                <div className="font-mono text-[16px] text-[#CDFF3A] tracking-[0.3em]">{giftCode}</div>
+                <div className="font-mono text-[16px] text-[#F5B300] tracking-[0.3em]">{giftCode}</div>
               </div>
               {recipientName && (
                 <div className="mt-4 text-white/40 text-[12px]">For: {recipientName}</div>
@@ -116,13 +116,13 @@ export default function GiftCardPage({ navigate }: Props) {
             const isActive = step === s;
             return (
               <div key={s} className="flex items-center gap-2">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold border-2 transition-all ${isDone ? "bg-[#CDFF3A] border-[#CDFF3A] text-[#111]" : isActive ? "bg-[#111] border-[#111] text-white" : "bg-white border-[#D0CCC4] text-[#aaa]"}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold border-2 transition-all ${isDone ? "bg-[#F5B300] border-[#F5B300] text-[#111]" : isActive ? "bg-[#111] border-[#111] text-white" : "bg-white border-[#D0CCC4] text-[#aaa]"}`}>
                   {isDone ? "✓" : n}
                 </div>
                 <span className={`text-[11px] uppercase tracking-wider hidden sm:block ${isActive ? "text-[#111] font-medium" : "text-[#aaa]"}`}>
                   {s === "configure" ? "Gift Details" : "Payment"}
                 </span>
-                {i < 1 && <div className={`w-8 h-px ${step === "payment" ? "bg-[#CDFF3A]" : "bg-[#E5E2DA]"}`} />}
+                {i < 1 && <div className={`w-8 h-px ${step === "payment" ? "bg-[#F5B300]" : "bg-[#E5E2DA]"}`} />}
               </div>
             );
           })}
@@ -271,11 +271,11 @@ export default function GiftCardPage({ navigate }: Props) {
 
               {/* Gift card preview */}
               <div className="bg-[#111] text-white p-5 mb-5 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-[#CDFF3A]/10 rounded-full -translate-y-6 translate-x-6" />
+                <div className="absolute top-0 right-0 w-20 h-20 bg-[#F5B300]/10 rounded-full -translate-y-6 translate-x-6" />
                 <div className="relative">
-                  <div className="font-display text-[16px] font-bold mb-1">FRESHER<span className="text-[#CDFF3A]">.</span></div>
+                  <div className="font-display text-[16px] font-bold mb-1">FRESHER<span className="text-[#F5B300]">.</span></div>
                   <div className="font-mono text-[9px] tracking-[0.3em] text-white/40 uppercase mb-3">Gift Card</div>
-                  <div className="font-display text-[36px] font-bold text-[#CDFF3A]">${amount}</div>
+                  <div className="font-display text-[36px] font-bold text-[#F5B300]">${amount}</div>
                   {recipientName && <div className="text-white/40 text-[11px] mt-2">For: {recipientName}</div>}
                   {message && <div className="text-white/30 text-[11px] mt-1 italic truncate">"{message}"</div>}
                 </div>
@@ -292,7 +292,7 @@ export default function GiftCardPage({ navigate }: Props) {
 
               <div className="mt-5 space-y-2 text-[12px] text-[#aaa]">
                 <div>✓ Delivered instantly by email</div>
-                <div>✓ Works on all Fresher products</div>
+                <div>✓ Works on all Performance Meals products</div>
                 <div>✓ Never expires</div>
               </div>
             </div>

@@ -23,12 +23,12 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         {/* Hero area with decorative confetti elements */}
         <div className="relative mb-8">
           {/* Decorative confetti circles */}
-          <div className="absolute -top-4 left-8 w-4 h-4 bg-[#CDFF3A] rounded-full opacity-40" />
-          <div className="absolute top-2 right-12 w-6 h-6 bg-[#F2C94C] rounded-full opacity-40" />
+          <div className="absolute -top-4 left-8 w-4 h-4 bg-[#F5B300] rounded-full opacity-40" />
+          <div className="absolute top-2 right-12 w-6 h-6 bg-[#F5B300] rounded-full opacity-40" />
           <div className="absolute -top-2 right-4 w-3 h-3 bg-[#7EE8B0] opacity-40" />
           <div className="absolute top-8 left-16 w-5 h-5 bg-[#7EE8B0] rounded-full opacity-40" />
           {/* Success icon */}
-          <div className="w-20 h-20 bg-[#CDFF3A] rounded-full flex items-center justify-center mx-auto">
+          <div className="w-20 h-20 bg-[#F5B300] rounded-full flex items-center justify-center mx-auto">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5">
               <path d="M20 6 9 17l-5-5" />
             </svg>
@@ -41,7 +41,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         </h1>
         <p className="text-[#555] text-[18px] mb-4">Jerome, your meals are being prepared.</p>
         <p className="text-[#666] text-[16px] leading-relaxed mb-10">
-          Your order <strong className="text-[#111] font-mono">#FRE-20250904-7842</strong> has been confirmed. You'll receive a confirmation email and SMS shortly.
+          Your order <strong className="text-[#111] font-mono">#PM-20250904-7842</strong> has been confirmed. You'll receive a confirmation email and SMS shortly.
         </p>
 
         {/* Order details */}
@@ -69,7 +69,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
           <div className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">Live Order Status</div>
           <div className="space-y-0">
             {[
-              { label: "Order Confirmed", time: "Today · 9:04am", detail: "Payment processed · Order #FRE-20250904-7842", done: true, active: false },
+              { label: "Order Confirmed", time: "Today · 9:04am", detail: "Payment processed · Order #PM-20250904-7842", done: true, active: false },
               { label: "Kitchen Preparing", time: "Today · 11:00am", detail: "Our chefs are preparing your meals fresh to order", done: false, active: true },
               { label: "Quality Check", time: "Today · 1:00pm", detail: "Macro verification and packaging seal check", done: false, active: false },
               { label: "Out for Delivery", time: "Today · 2:30pm", detail: "Driver assigned · ETA within your selected time window", done: false, active: false },
@@ -77,19 +77,19 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
             ].map((s, i) => (
               <div key={s.label} className="flex gap-4">
                 <div className="flex flex-col items-center">
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 flex-shrink-0 ${s.done ? "bg-[#CDFF3A] border-[#CDFF3A]" : s.active ? "bg-[#111] border-[#111]" : "bg-white border-[#D0CCC4]"}`}>
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 flex-shrink-0 ${s.done ? "bg-[#F5B300] border-[#F5B300]" : s.active ? "bg-[#111] border-[#111]" : "bg-white border-[#D0CCC4]"}`}>
                     {s.done ? (
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
                     ) : s.active ? (
-                      <div className="w-2 h-2 bg-[#CDFF3A] rounded-full animate-pulse" />
+                      <div className="w-2 h-2 bg-[#F5B300] rounded-full animate-pulse" />
                     ) : null}
                   </div>
-                  {i < 4 && <div className={`w-px flex-1 min-h-[32px] ${s.done ? "bg-[#CDFF3A]/40" : "bg-[#E5E2DA]"}`} />}
+                  {i < 4 && <div className={`w-px flex-1 min-h-[32px] ${s.done ? "bg-[#F5B300]/40" : "bg-[#E5E2DA]"}`} />}
                 </div>
                 <div className="pb-5 flex-1">
                   <div className="flex items-center gap-3 flex-wrap">
                     <span className={`text-[13px] font-semibold ${s.done || s.active ? "text-[#111]" : "text-[#aaa]"}`}>{s.label}</span>
-                    <span className={`font-mono text-[11px] ${s.done ? "text-[#888]" : s.active ? "text-[#CDFF3A] bg-[#111] px-2 py-0.5" : "text-[#ccc]"}`}>{s.time}</span>
+                    <span className={`font-mono text-[11px] ${s.done ? "text-[#888]" : s.active ? "text-[#F5B300] bg-[#111] px-2 py-0.5" : "text-[#ccc]"}`}>{s.time}</span>
                   </div>
                   <p className={`text-[12px] mt-0.5 ${s.done || s.active ? "text-[#666]" : "text-[#ccc]"}`}>{s.detail}</p>
                 </div>
@@ -122,7 +122,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
             <div className="font-medium text-[14px]">Confirmation also sent to your email</div>
             <div className="text-white/40 text-[12px] mt-0.5">Check <strong className="text-white/70">jerome@email.com</strong> for your {orderType === "plan" ? "full meal plan schedule and delivery windows" : "order receipt and delivery details"}</div>
           </div>
-          <div className="shrink-0 text-[#CDFF3A] text-[10px] font-bold tracking-wider uppercase">
+          <div className="shrink-0 text-[#F5B300] text-[10px] font-bold tracking-wider uppercase">
             ✓ Sent
           </div>
         </div>
@@ -137,17 +137,17 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         </div>
 
         {/* Customize Meal Plan CTA — only for plan orders */}
-        {orderType === "plan" && <div className="bg-[#0D2818] border border-[#F2C94C]/30 p-5 mb-5 text-left">
+        {orderType === "plan" && <div className="bg-[#1A1A1A] border border-[#E85D04]/30 p-5 mb-5 text-left">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="font-mono text-[10px] tracking-[0.3em] text-[#F2C94C] uppercase mb-2">Your Meal Plan is now active</div>
+              <div className="font-mono text-[10px] tracking-[0.3em] text-[#E85D04] uppercase mb-2">Your Meal Plan is now active</div>
               <div className="font-display text-[20px] font-bold text-white mb-1">Customize your upcoming meals</div>
               <div className="text-white/40 text-[13px] leading-relaxed">
                 Swap meals, change delivery days & times, adjust quantity — all from your account.
               </div>
             </div>
             <button onClick={() => navigate("account")}
-              className="shrink-0 bg-[#F2C94C] text-[#111111] px-5 py-3 text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors whitespace-nowrap">
+              className="shrink-0 bg-[#E85D04] text-white px-5 py-3 text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-white hover:text-[#1A1A1A] transition-colors whitespace-nowrap">
               Customize →
             </button>
           </div>
@@ -157,8 +157,8 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         {!isGuest ? (
           <div className="bg-[#111111] text-white p-5 mb-8 flex items-center justify-between">
             <div>
-              <div className="font-mono text-[10px] tracking-[0.3em] text-[#CDFF3A] uppercase mb-1">Points Earned</div>
-              <div className="font-display text-[28px] font-bold text-[#CDFF3A]">+58 pts</div>
+              <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-1">Points Earned</div>
+              <div className="font-display text-[28px] font-bold text-[#F5B300]">+58 pts</div>
               <div className="text-white/35 text-[12px]">Added to your rewards balance</div>
             </div>
             <div className="text-right">
@@ -170,11 +170,11 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         ) : (
           /* Guest — nudge to sign up */
           <div className="bg-[#111111] text-white p-5 mb-8">
-            <div className="font-mono text-[10px] tracking-[0.3em] text-[#F2C94C] uppercase mb-2">You left points on the table</div>
-            <div className="font-display text-[22px] font-bold mb-1">This order would've earned <span className="text-[#CDFF3A]">+58 pts</span></div>
+            <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-2">You left points on the table</div>
+            <div className="font-display text-[22px] font-bold mb-1">This order would've earned <span className="text-[#F5B300]">+58 pts</span></div>
             <p className="text-white/50 text-[13px] mb-4">Create a free account to earn points, get exclusive discounts, and track all your orders.</p>
             <button onClick={() => setShowSignup(true)}
-              className="bg-[#CDFF3A] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
+              className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
               Sign Up — It's Free →
             </button>
           </div>
@@ -182,11 +182,11 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {!isGuest ? (
-            <button onClick={() => navigate("account")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors">
+            <button onClick={() => navigate("account")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111111] transition-colors">
               Go to My Account →
             </button>
           ) : (
-            <button onClick={() => navigate("home")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111111] transition-colors">
+            <button onClick={() => navigate("home")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111111] transition-colors">
               Back to Home
             </button>
           )}
@@ -214,11 +214,11 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
             {!signupDone ? (
               <>
                 <div className="font-mono text-[10px] tracking-[0.4em] text-[#aaa] uppercase mb-2">Create Account</div>
-                <h2 className="font-display text-[26px] font-bold mb-1">Join Fresher</h2>
+                <h2 className="font-display text-[26px] font-bold mb-1">Join Performance Meals</h2>
                 <p className="text-[#666] text-[13px] mb-6">Earn points on your order history, get exclusive discounts, and track every delivery.</p>
 
                 {/* Points incentive */}
-                <div className="bg-[#CDFF3A]/20 border border-[#CDFF3A]/50 px-4 py-3 mb-6 flex items-center gap-3">
+                <div className="bg-[#F5B300]/20 border border-[#F5B300]/50 px-4 py-3 mb-6 flex items-center gap-3">
                   <span className="text-[22px]">🪙</span>
                   <p className="text-[12px] text-[#555]">
                     Your past order would have earned <strong className="text-[#111]">+58 pts</strong> — future orders will from now on.
@@ -243,17 +243,17 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
                 <button
                   disabled={!suName || !suEmail || !suPassword}
                   onClick={() => setSignupDone(true)}
-                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors disabled:opacity-40">
+                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors disabled:opacity-40">
                   Create My Account →
                 </button>
                 <p className="text-center text-[11px] text-[#aaa] mt-3">Free forever · No spam · Cancel anytime</p>
               </>
             ) : (
               <>
-                <div className="w-14 h-14 bg-[#CDFF3A] rounded-full flex items-center justify-center mb-5">
+                <div className="w-14 h-14 bg-[#F5B300] rounded-full flex items-center justify-center mb-5">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
                 </div>
-                <h2 className="font-display text-[26px] font-bold mb-2">Welcome to Fresher, {suName || "there"}!</h2>
+                <h2 className="font-display text-[26px] font-bold mb-2">Welcome to Performance Meals, {suName || "there"}!</h2>
                 <p className="text-[#555] text-[14px] mb-5">Your account is ready. We've sent confirmation details to your email and WhatsApp.</p>
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-3 bg-[#075E54]/10 border border-[#075E54]/20 px-4 py-3">
@@ -270,11 +270,11 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
                       <p className="text-[13px] font-semibold">Email confirmation</p>
                       <p className="text-[12px] text-[#666]">{suEmail || "your@email.com"}</p>
                     </div>
-                    <span className="text-[#111] bg-[#CDFF3A] text-[10px] font-bold px-2 py-0.5">✓ Sent</span>
+                    <span className="text-[#111] bg-[#F5B300] text-[10px] font-bold px-2 py-0.5">✓ Sent</span>
                   </div>
                 </div>
                 <button onClick={() => { setShowSignup(false); navigate("account"); }}
-                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                   Go to My Account →
                 </button>
               </>

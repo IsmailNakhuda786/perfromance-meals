@@ -72,7 +72,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
   const [waPassword, setWaPassword] = useState("");
 
   const VALID_PROMOS: Record<string, { discount: number; flat?: number; expired?: boolean }> = {
-    "FRESHER10": { discount: 0.10 },
+    "WELCOME10": { discount: 0.10 },
     "WELCOME15": { discount: 0.15 },
     "SUMMER20":  { discount: 0.20, expired: true },
     "FITLIFE":   { discount: 0.12 },
@@ -576,7 +576,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                     <div className="flex gap-2">
                       <input value={promoCode}
                         onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoError(null); }}
-                        placeholder="e.g. FRESHER10"
+                        placeholder="e.g. WELCOME10"
                         className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase rounded-lg ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
                       />
                       <button onClick={handleApplyPromo}

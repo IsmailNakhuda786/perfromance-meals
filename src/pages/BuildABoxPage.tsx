@@ -60,7 +60,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
       <div className="bg-[#111111] border-b border-white/8">
         <div className="max-w-[1440px] mx-auto px-6 py-8">
           <div className="flex items-center gap-3 mb-4">
-            <span className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase">01 / Ready Series</span>
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300] uppercase">01 / Ready Series</span>
           </div>
           <h1 className="font-display text-[28px] sm:text-[42px] font-bold">Build-A-Box</h1>
           <p className="text-white/40 mt-1 text-[14px]">Mix and match any meals. Best value on the site.</p>
@@ -76,7 +76,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                     if (s.key === "select" && step === "review") setStep("select");
                     if (s.key === "size") setStep("size");
                   }}
-                  className={`flex items-center gap-2 px-4 py-3 border-b-2 text-[12px] tracking-wider uppercase font-medium transition-colors whitespace-nowrap ${step === s.key ? "border-[#CDFF3A] text-[#CDFF3A]" : "border-transparent text-white/30 hover:text-white/60"}`}
+                  className={`flex items-center gap-2 px-4 py-3 border-b-2 text-[12px] tracking-wider uppercase font-medium transition-colors whitespace-nowrap ${step === s.key ? "border-[#F5B300] text-[#F5B300]" : "border-transparent text-white/30 hover:text-white/60"}`}
                 >
                   <span className="font-mono text-[10px]">{s.num}</span>
                   {s.label}
@@ -99,23 +99,23 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               <div
                 key={size.qty}
                 onClick={() => setBoxSize(size.qty)}
-                className={`relative p-7 cursor-pointer border transition-all ${boxSize === size.qty ? "border-[#CDFF3A] bg-[#CDFF3A]/8" : "border-white/10 hover:border-white/30"}`}
+                className={`relative p-7 cursor-pointer border transition-all ${boxSize === size.qty ? "border-[#F5B300] bg-[#F5B300]/8" : "border-white/10 hover:border-white/30"}`}
               >
                 {size.popular && (
                   <div className="absolute -top-3 left-6">
-                    <span className="bg-[#CDFF3A] text-[#111111] px-3 py-1 text-[9px] tracking-[0.25em] uppercase font-bold">Most Popular</span>
+                    <span className="bg-[#F5B300] text-[#111111] px-3 py-1 text-[9px] tracking-[0.25em] uppercase font-bold">Most Popular</span>
                   </div>
                 )}
                 <div className="font-mono text-[10px] tracking-[0.3em] text-white/40 mb-2 uppercase">{size.label}</div>
                 <div className="font-display text-[48px] font-bold leading-none mb-1">{size.qty}</div>
                 <div className="text-white/40 text-[13px] mb-5">meals</div>
                 <div className="border-t border-white/10 pt-4">
-                  <div className="font-display text-[28px] font-bold text-[#CDFF3A]">${size.pricePerMeal.toFixed(2)}</div>
+                  <div className="font-display text-[28px] font-bold text-[#F5B300]">${size.pricePerMeal.toFixed(2)}</div>
                   <div className="text-white/35 text-[12px]">/meal</div>
                   <div className="text-white/25 text-[11px] mt-2">Total: ${size.total.toFixed(2)}</div>
                 </div>
                 {boxSize === size.qty && (
-                  <div className="absolute top-4 right-4 w-5 h-5 bg-[#CDFF3A] rounded-full flex items-center justify-center">
+                  <div className="absolute top-4 right-4 w-5 h-5 bg-[#F5B300] rounded-full flex items-center justify-center">
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
                   </div>
                 )}
@@ -126,7 +126,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
           <div className="border border-white/10 p-3 sm:p-6 mb-10 grid grid-cols-3 gap-6 text-center">
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Price per meal</div>
-              <div className="font-display text-[22px] sm:text-[28px] font-bold text-[#CDFF3A]">${selectedSize.pricePerMeal.toFixed(2)}</div>
+              <div className="font-display text-[22px] sm:text-[28px] font-bold text-[#F5B300]">${selectedSize.pricePerMeal.toFixed(2)}</div>
             </div>
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Meals in box</div>
@@ -140,7 +140,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
 
           <button
             onClick={() => setStep("select")}
-            className="inline-flex items-center gap-3 bg-[#CDFF3A] text-[#111111] px-10 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors"
+            className="inline-flex items-center gap-3 bg-[#F5B300] text-[#111111] px-10 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors"
           >
             Pick My {boxSize} Meals →
           </button>
@@ -155,7 +155,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             <div className="flex items-center justify-between mb-2">
               <span className="text-[13px] font-medium">
                 {totalSelected === boxSize
-                  ? <span className="text-[#CDFF3A]">✓ Box complete! Ready to review.</span>
+                  ? <span className="text-[#F5B300]">✓ Box complete! Ready to review.</span>
                   : <span>{slotsLeft} slot{slotsLeft !== 1 ? "s" : ""} remaining</span>}
               </span>
               <span className="font-mono text-[13px]">{totalSelected}/{boxSize}</span>
@@ -163,7 +163,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             <div className="h-2 bg-[#222] rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-300"
-                style={{ width: `${fillPct}%`, backgroundColor: fillPct === 100 ? "#CDFF3A" : "#555" }}
+                style={{ width: `${fillPct}%`, backgroundColor: fillPct === 100 ? "#F5B300" : "#555" }}
               />
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
           <div className="flex gap-2 mb-8 overflow-x-auto pb-1">
             {[{ id: "all", label: "All Meals" }, ...CATS.filter((c) => c.id !== "all")].map((c) => (
               <button key={c.id} onClick={() => setActiveCat(c.id)}
-                className={`px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase font-medium whitespace-nowrap transition-all ${activeCat === c.id ? "bg-[#CDFF3A] text-[#111111]" : "border border-white/12 text-white/40 hover:border-white/35 hover:text-white"}`}>
+                className={`px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase font-medium whitespace-nowrap transition-all ${activeCat === c.id ? "bg-[#F5B300] text-[#111111]" : "border border-white/12 text-white/40 hover:border-white/35 hover:text-white"}`}>
                 {c.label}
               </button>
             ))}
@@ -183,11 +183,11 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               const qty = selections[meal.id] || 0;
               const canAdd = totalSelected < boxSize;
               return (
-                <div key={meal.id} className={`group bg-[#1A1A1A] overflow-hidden ${qty > 0 ? "ring-1 ring-[#CDFF3A]/40" : ""}`}>
+                <div key={meal.id} className={`group bg-[#1A1A1A] overflow-hidden ${qty > 0 ? "ring-1 ring-[#F5B300]/40" : ""}`}>
                   <div className="relative h-44 bg-[#222] cursor-pointer" onClick={() => setDetailMeal(meal)}>
                     <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     {qty > 0 && (
-                      <div className="absolute top-2 right-2 bg-[#CDFF3A] text-[#111111] w-7 h-7 rounded-full flex items-center justify-center font-bold text-[12px]">
+                      <div className="absolute top-2 right-2 bg-[#F5B300] text-[#111111] w-7 h-7 rounded-full flex items-center justify-center font-bold text-[12px]">
                         {qty}
                       </div>
                     )}
@@ -198,7 +198,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-2 gap-2">
                       <h3 className="text-[13px] font-medium leading-snug">{meal.name}</h3>
-                      <span className="font-mono text-[12px] text-[#CDFF3A] shrink-0">${meal.price.toFixed(2)}</span>
+                      <span className="font-mono text-[12px] text-[#F5B300] shrink-0">${meal.price.toFixed(2)}</span>
                     </div>
                     <div className="grid grid-cols-3 gap-1 mb-3">
                       {[{ l: "PRO", v: `${meal.protein}g` }, { l: "CARB", v: `${meal.carbs}g` }, { l: "CAL", v: meal.cal }].map((m) => (
@@ -218,7 +218,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                       <button
                         onClick={() => adjustQty(meal, 1)}
                         disabled={!canAdd}
-                        className={`w-8 h-8 border transition-colors text-lg ${canAdd ? "border-[#CDFF3A] text-[#CDFF3A] hover:bg-[#CDFF3A] hover:text-[#111111]" : "border-white/10 text-white/20"}`}
+                        className={`w-8 h-8 border transition-colors text-lg ${canAdd ? "border-[#F5B300] text-[#F5B300] hover:bg-[#F5B300] hover:text-[#111111]" : "border-white/10 text-white/20"}`}
                       >+</button>
                     </div>
                   </div>
@@ -234,7 +234,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             <button
               onClick={() => setStep("review")}
               disabled={totalSelected !== boxSize}
-              className={`inline-flex items-center gap-2 px-8 py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected === boxSize ? "bg-[#CDFF3A] text-[#111111] hover:bg-white" : "bg-white/10 text-white/30 cursor-not-allowed"}`}
+              className={`inline-flex items-center gap-2 px-8 py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected === boxSize ? "bg-[#F5B300] text-[#111111] hover:bg-white" : "bg-white/10 text-white/30 cursor-not-allowed"}`}
             >
               {totalSelected === boxSize ? "Review My Box →" : `Fill ${slotsLeft} more slot${slotsLeft !== 1 ? "s" : ""}`}
             </button>
@@ -260,13 +260,13 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                       <div className="text-[12px] text-white/35 mt-0.5">{meal.protein}g protein · {meal.carbs}g carbs · {meal.fat}g fat</div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="font-mono text-[13px] text-[#CDFF3A]">{qty}× meal{qty > 1 ? "s" : ""}</div>
+                      <div className="font-mono text-[13px] text-[#F5B300]">{qty}× meal{qty > 1 ? "s" : ""}</div>
                       <div className="text-white/30 text-[11px]">${(meal.price * qty).toFixed(2)}</div>
                     </div>
                   </div>
                 );
               })}
-              <button onClick={() => setStep("select")} className="text-white/30 text-[12px] uppercase tracking-wider hover:text-[#CDFF3A] transition-colors mt-2">
+              <button onClick={() => setStep("select")} className="text-white/30 text-[12px] uppercase tracking-wider hover:text-[#F5B300] transition-colors mt-2">
                 ← Edit selections
               </button>
             </div>
@@ -281,7 +281,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                 </div>
                 <div className="flex justify-between text-[13px]">
                   <span className="text-white/40">Price per meal</span>
-                  <span className="text-[#CDFF3A]">${selectedSize.pricePerMeal.toFixed(2)}</span>
+                  <span className="text-[#F5B300]">${selectedSize.pricePerMeal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-[13px]">
                   <span className="text-white/40">Delivery</span>
@@ -291,7 +291,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               <div className="border-t border-white/10 pt-4 mb-6">
                 <div className="flex justify-between items-center">
                   <span className="text-[14px]">Total</span>
-                  <span className="font-display text-[24px] font-bold text-[#CDFF3A]">${selectedSize.total.toFixed(2)}</span>
+                  <span className="font-display text-[24px] font-bold text-[#F5B300]">${selectedSize.total.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -306,14 +306,14 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                     { label: "Total Calories", val: `${selectedMeals.reduce((s, m) => s + m.cal * (selections[m.id] || 0), 0)}` },
                   ].map((m) => (
                     <div key={m.label}>
-                      <div className="font-mono text-[12px] text-[#CDFF3A]">{m.val}</div>
+                      <div className="font-mono text-[12px] text-[#F5B300]">{m.val}</div>
                       <div className="text-[10px] text-white/25 mt-0.5">{m.label}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <button onClick={handleAddToCart} className="w-full bg-[#CDFF3A] text-[#111111] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
+              <button onClick={handleAddToCart} className="w-full bg-[#F5B300] text-[#111111] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
                 Proceed to Checkout →
               </button>
               <p className="text-white/20 text-[11px] text-center mt-3">Free same-day delivery · Frozen fresh</p>
@@ -332,12 +332,12 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             <div className="h-56 sm:h-72 relative bg-[#222]">
               <img src={detailMeal.img} alt={detailMeal.name} className="w-full h-full object-cover" />
               {detailMeal.badge && (
-                <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${detailMeal.badge === "Bestseller" || detailMeal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>
+                <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${detailMeal.badge === "Bestseller" || detailMeal.badge === "Staff Pick" ? "bg-[#F5B300] text-[#111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>
                   {detailMeal.badge}
                 </div>
               )}
               {(selections[detailMeal.id] || 0) > 0 && (
-                <div className="absolute top-4 right-4 bg-[#CDFF3A] text-[#111] text-[12px] font-bold px-3 py-1">
+                <div className="absolute top-4 right-4 bg-[#F5B300] text-[#111] text-[12px] font-bold px-3 py-1">
                   {selections[detailMeal.id]}× in your box
                 </div>
               )}
@@ -360,10 +360,10 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               })()}
               <div className="flex items-start justify-between mb-3 gap-3">
                 <h2 className="font-display text-[26px] font-bold">{detailMeal.name}</h2>
-                <span className="font-mono text-[22px] text-[#CDFF3A] font-bold shrink-0">${detailMeal.price.toFixed(2)}</span>
+                <span className="font-mono text-[22px] text-[#F5B300] font-bold shrink-0">${detailMeal.price.toFixed(2)}</span>
               </div>
               <div className="flex items-center gap-2 text-[13px] text-white/40 mb-4">
-                <span className="text-[#CDFF3A]">{"★".repeat(Math.round(detailMeal.rating))}</span>
+                <span className="text-[#F5B300]">{"★".repeat(Math.round(detailMeal.rating))}</span>
                 <span className="text-white/60 font-semibold">{detailMeal.rating}</span>
                 <span>· {detailMeal.reviews} reviews</span>
               </div>
@@ -371,7 +371,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               <div className="grid grid-cols-4 gap-2 mb-6">
                 {[{ label: "Calories", val: detailMeal.cal }, { label: "Protein", val: `${detailMeal.protein}g` }, { label: "Carbs", val: `${detailMeal.carbs}g` }, { label: "Fat", val: `${detailMeal.fat}g` }].map((m) => (
                   <div key={m.label} className="bg-[#222] px-3 py-3 text-center">
-                    <div className="font-mono text-[13px] text-[#CDFF3A] font-medium">{m.val}</div>
+                    <div className="font-mono text-[13px] text-[#F5B300] font-medium">{m.val}</div>
                     <div className="text-white/30 text-[10px] mt-1 uppercase tracking-wider">{m.label}</div>
                   </div>
                 ))}
@@ -388,13 +388,13 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                       className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-[18px] transition-colors">−</button>
                     <span className="text-white font-mono font-bold text-[15px] w-8 text-center">{selections[detailMeal.id]}</span>
                     <button onClick={() => adjustQty(detailMeal, 1)} disabled={totalSelected >= boxSize}
-                      className={`w-10 h-10 flex items-center justify-center text-[18px] transition-colors ${totalSelected >= boxSize ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-[#CDFF3A] text-[#111] hover:opacity-90"}`}>+</button>
+                      className={`w-10 h-10 flex items-center justify-center text-[18px] transition-colors ${totalSelected >= boxSize ? "bg-white/5 text-white/20 cursor-not-allowed" : "bg-[#F5B300] text-[#111] hover:opacity-90"}`}>+</button>
                   </div>
                 )}
                 <button
                   onClick={() => { adjustQty(detailMeal, 1); setDetailMeal(null); }}
                   disabled={totalSelected >= boxSize}
-                  className={`flex-1 py-4 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected >= boxSize ? "bg-white/10 text-white/30 cursor-not-allowed" : "bg-[#CDFF3A] text-[#111] hover:bg-white"}`}>
+                  className={`flex-1 py-4 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected >= boxSize ? "bg-white/10 text-white/30 cursor-not-allowed" : "bg-[#F5B300] text-[#111] hover:bg-white"}`}>
                   {(selections[detailMeal.id] || 0) > 0
                     ? `+ Add Another (${selections[detailMeal.id]}× in box)`
                     : totalSelected >= boxSize ? "Box Full" : "Add to Box →"}

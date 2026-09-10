@@ -10,20 +10,20 @@ interface Props {
 type Tab = "dashboard" | "subscription" | "orders" | "wallet" | "settings";
 
 const ORDERS = [
-  { id: "FRE-20250901-7721", date: "1 Sep 2025", items: "Herb Chicken ×2, Teriyaki ×1", total: 36.70, originalTotal: 40.78, status: "Delivered", type: "ready", promo: "FRESHER10", promoSaving: 4.08 },
-  { id: "FRE-20250825-7698", date: "25 Aug 2025", items: "Meal Plan — Maintain (Week 12)", total: 178.00, originalTotal: 178.00, status: "Delivered", type: "plan", promo: null, promoSaving: 0 },
-  { id: "FRE-20250818-7641", date: "18 Aug 2025", items: "Build-A-Box ×10", total: 101.15, originalTotal: 119.00, status: "Delivered", type: "box", promo: "WELCOME15", promoSaving: 17.85 },
-  { id: "FRE-20250811-7588", date: "11 Aug 2025", items: "Meal Plan — Maintain (Week 11)", total: 178.00, originalTotal: 178.00, status: "Delivered", type: "plan", promo: null, promoSaving: 0 },
-  { id: "FRE-20250804-7522", date: "4 Aug 2025", items: "Low Carb Bundle, Salmon ×2", total: 83.60, originalTotal: 83.60, status: "Delivered", type: "ready", promo: null, promoSaving: 0 },
+  { id: "PM-20250901-7721", date: "1 Sep 2025", items: "Herb Chicken ×2, Teriyaki ×1", total: 36.70, originalTotal: 40.78, status: "Delivered", type: "ready", promo: "WELCOME10", promoSaving: 4.08 },
+  { id: "PM-20250825-7698", date: "25 Aug 2025", items: "Meal Plan — Maintain (Week 12)", total: 178.00, originalTotal: 178.00, status: "Delivered", type: "plan", promo: null, promoSaving: 0 },
+  { id: "PM-20250818-7641", date: "18 Aug 2025", items: "Build-A-Box ×10", total: 101.15, originalTotal: 119.00, status: "Delivered", type: "box", promo: "WELCOME15", promoSaving: 17.85 },
+  { id: "PM-20250811-7588", date: "11 Aug 2025", items: "Meal Plan — Maintain (Week 11)", total: 178.00, originalTotal: 178.00, status: "Delivered", type: "plan", promo: null, promoSaving: 0 },
+  { id: "PM-20250804-7522", date: "4 Aug 2025", items: "Low Carb Bundle, Salmon ×2", total: 83.60, originalTotal: 83.60, status: "Delivered", type: "ready", promo: null, promoSaving: 0 },
 ];
 
 const PROMO_HISTORY = ORDERS.filter((o) => o.promo);
 
 const WALLET_HISTORY = [
-  { date: "1 Sep 2025", desc: "Purchase — #FRE-20250901-7721", pts: +36, type: "earn" },
+  { date: "1 Sep 2025", desc: "Purchase — #PM-20250901-7721", pts: +36, type: "earn" },
   { date: "25 Aug 2025", desc: "Meal Plan bonus (2× pts)", pts: +356, type: "earn" },
   { date: "20 Aug 2025", desc: "Redeemed 500 pts", pts: -500, type: "redeem" },
-  { date: "18 Aug 2025", desc: "Build-A-Box — #FRE-20250818-7641", pts: +119, type: "earn" },
+  { date: "18 Aug 2025", desc: "Build-A-Box — #PM-20250818-7641", pts: +119, type: "earn" },
 ];
 
 const ALL_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -141,11 +141,11 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
       <div className="bg-[#111111] text-white py-8 px-6">
         <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-[#CDFF3A] rounded-full flex items-center justify-center text-[#111111] font-display text-[22px] font-bold shrink-0">J</div>
+            <div className="w-14 h-14 bg-[#F5B300] rounded-full flex items-center justify-center text-[#111111] font-display text-[22px] font-bold shrink-0">J</div>
             <div>
               <h1 className="font-display text-[24px] font-bold">Jerome Tan</h1>
               <div className="flex items-center gap-3 mt-1">
-                <span className="text-[#CDFF3A] text-[11px] font-mono tracking-wider">VIP Member</span>
+                <span className="text-[#F5B300] text-[11px] font-mono tracking-wider">VIP Member</span>
                 <span className="text-white/30">·</span>
                 <span className="text-white/40 text-[12px]">Member since Jun 2024</span>
               </div>
@@ -158,7 +158,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               { val: `Week 13`, label: "Plan" },
             ].map((s) => (
               <div key={s.label}>
-                <div className="font-display text-[18px] sm:text-[22px] font-bold text-[#CDFF3A]">{s.val}</div>
+                <div className="font-display text-[18px] sm:text-[22px] font-bold text-[#F5B300]">{s.val}</div>
                 <div className="text-white/35 text-[11px] uppercase tracking-wider mt-0.5">{s.label}</div>
               </div>
             ))}
@@ -180,7 +180,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
 
       {/* Save toast */}
       {savedMsg && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] bg-[#CDFF3A] text-[#111111] px-6 py-3 text-[13px] font-bold tracking-wider shadow-xl">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] bg-[#F5B300] text-[#111111] px-6 py-3 text-[13px] font-bold tracking-wider shadow-xl">
           ✓ {savedMsg}
         </div>
       )}
@@ -217,7 +217,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-8">
               {[
                 { label: "Active Plan", val: activePlan, sub: `${plan.cal} kcal/day`, color: "#F2C94C", bg: "#0D2818" },
-                { label: "Next Delivery", val: "Tomorrow", sub: `${timeSlot.split("–")[0].trim()}`, color: "#CDFF3A", bg: "#111111" },
+                { label: "Next Delivery", val: "Tomorrow", sub: `${timeSlot.split("–")[0].trim()}`, color: "#F5B300", bg: "#111111" },
                 { label: "Wallet Balance", val: "$12.50", sub: "1,234 reward pts", color: "#7EE8B0", bg: "#111111" },
                 { label: "Orders This Month", val: "3", sub: "$373.70 spent", color: "#A78BFA", bg: "#111111" },
               ].map((s) => (
@@ -386,12 +386,12 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                             <span key={m.l} style={{ color: activePlan === p.name ? p.accent : p.accent }}>{m.v} {m.l}</span>
                           ))}
                         </div>
-                        {activePlan === p.name && <div className="mt-3 text-[#CDFF3A] text-[11px] font-bold">✓ Current selection</div>}
+                        {activePlan === p.name && <div className="mt-3 text-[#F5B300] text-[11px] font-bold">✓ Current selection</div>}
                       </button>
                     ))}
                   </div>
                   <button onClick={() => { setEditingPlan(false); save("Plan updated — applies next billing cycle"); }}
-                    className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                    className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                     Confirm Plan Change
                   </button>
                 </div>
@@ -427,12 +427,12 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                           className={`px-6 py-4 border text-center transition-all ${mealsPerDay === n ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] hover:border-[#888]"}`}>
                           <div className="font-display text-[24px] font-bold">{n}</div>
                           <div className={`text-[11px] mt-1 ${mealsPerDay === n ? "text-white/60" : "text-[#888]"}`}>meals/day</div>
-                          <div className={`text-[11px] font-mono ${mealsPerDay === n ? "text-[#CDFF3A]" : "text-[#aaa]"}`}>{Math.round(plan.cal / n)} kcal ea.</div>
+                          <div className={`text-[11px] font-mono ${mealsPerDay === n ? "text-[#F5B300]" : "text-[#aaa]"}`}>{Math.round(plan.cal / n)} kcal ea.</div>
                         </button>
                       ))}
                     </div>
                     <button onClick={() => { setEditingQty(false); save("Meals per day updated"); }}
-                      className="mt-4 bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                      className="mt-4 bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                       Save
                     </button>
                   </div>
@@ -476,7 +476,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     </div>
                     <p className="text-[#888] text-[12px] mb-4">{deliveryDays.length} day{deliveryDays.length !== 1 ? "s" : ""} selected</p>
                     <button onClick={() => { setEditingDays(false); save("Delivery days updated — applies next week"); }}
-                      className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                      className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                       Save Days
                     </button>
                   </div>
@@ -512,7 +512,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                         <button key={s} onClick={() => setTimeSlot(s)}
                           className={`py-4 px-5 border text-left transition-all ${timeSlot === s ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] hover:border-[#888]"}`}>
                           <div className={`text-[14px] font-medium ${timeSlot === s ? "text-white" : "text-[#111]"}`}>{s}</div>
-                          {s === TIME_SLOTS[0] && <div className={`text-[11px] mt-1 ${timeSlot === s ? "text-[#CDFF3A]" : "text-[#888]"}`}>Most popular</div>}
+                          {s === TIME_SLOTS[0] && <div className={`text-[11px] mt-1 ${timeSlot === s ? "text-[#F5B300]" : "text-[#888]"}`}>Most popular</div>}
                         </button>
                       ))}
                     </div>
@@ -520,7 +520,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                       ⚠ Changes to time slot require at least 24 hours notice. If your next delivery is within 24 hours, the new time applies from the following delivery.
                     </div>
                     <button onClick={() => { setEditingTime(false); save("Delivery time updated"); }}
-                      className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                      className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                       Save Time Slot
                     </button>
                   </div>
@@ -705,9 +705,9 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               <div className="bg-[#111] text-white p-5 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <div className="font-mono text-[10px] tracking-[0.3em] text-[#CDFF3A] uppercase mb-1">Promo Codes Used</div>
+                    <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-1">Promo Codes Used</div>
                     <div className="font-display text-[22px] font-bold">
-                      Total saved: <span className="text-[#CDFF3A]">${PROMO_HISTORY.reduce((s, o) => s + o.promoSaving, 0).toFixed(2)}</span>
+                      Total saved: <span className="text-[#F5B300]">${PROMO_HISTORY.reduce((s, o) => s + o.promoSaving, 0).toFixed(2)}</span>
                     </div>
                   </div>
                   <div className="text-right">
@@ -718,7 +718,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   {PROMO_HISTORY.map((o) => (
                     <div key={o.id} className="flex items-center justify-between bg-white/5 px-4 py-2.5">
                       <div className="flex items-center gap-3">
-                        <span className="bg-[#CDFF3A] text-[#111] text-[10px] font-black tracking-widest px-2 py-0.5">{o.promo}</span>
+                        <span className="bg-[#F5B300] text-[#111] text-[10px] font-black tracking-widest px-2 py-0.5">{o.promo}</span>
                         <div>
                           <div className="text-[13px] font-medium">{o.items}</div>
                           <div className="text-white/40 text-[11px]">{o.id} · {o.date}</div>
@@ -745,7 +745,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-medium text-[14px]">{o.items}</span>
                         {o.promo && (
-                          <span className="bg-[#CDFF3A] text-[#111] text-[9px] font-black tracking-widest px-1.5 py-0.5">{o.promo}</span>
+                          <span className="bg-[#F5B300] text-[#111] text-[9px] font-black tracking-widest px-1.5 py-0.5">{o.promo}</span>
                         )}
                       </div>
                       <div className="text-[#999] text-[12px] mt-0.5">{o.id} · {o.date}</div>
@@ -776,7 +776,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             <h2 className="font-display text-[28px] font-bold mb-8">Wallet & Rewards</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               {[
-                { label: "Wallet Balance", val: "$12.50", sub: "Available to spend", color: "#CDFF3A", bg: "#111111" },
+                { label: "Wallet Balance", val: "$12.50", sub: "Available to spend", color: "#F5B300", bg: "#111111" },
                 { label: "Reward Points", val: "1,234", sub: "= $12.34 value", color: "#F2C94C", bg: "#0D2818" },
                 { label: "Lifetime Earned", val: "4,891 pts", sub: "Since Jun 2024", color: "#7EE8B0", bg: "#111111" },
               ].map((s) => (
@@ -795,7 +795,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   <p className="text-[#888] text-[13px] mt-0.5">Add credit via card — use it on any order at checkout.</p>
                 </div>
                 <button onClick={() => { setShowTopUp(true); setTopUpDone(false); setTopUpError(false); setTopUpCard(""); setTopUpExpiry(""); setTopUpCvc(""); setTopUpName(""); }}
-                  className="shrink-0 bg-[#111] text-white text-[11px] font-bold tracking-widest uppercase px-5 py-2.5 hover:bg-[#CDFF3A] hover:text-[#111] transition-colors whitespace-nowrap">
+                  className="shrink-0 bg-[#111] text-white text-[11px] font-bold tracking-widest uppercase px-5 py-2.5 hover:bg-[#F5B300] hover:text-[#111] transition-colors whitespace-nowrap">
                   + Add Credit
                 </button>
               </div>
@@ -803,7 +803,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 {PRESET_AMOUNTS.map((a) => (
                   <div key={a} className="border border-[#E5E2DA] px-4 py-2 text-[13px] text-[#666]">
                     <span className="font-bold text-[#111]">${a}</span>
-                    {a === 50 && <span className="ml-2 bg-[#CDFF3A] text-[#111] text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider">Popular</span>}
+                    {a === 50 && <span className="ml-2 bg-[#F5B300] text-[#111] text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider">Popular</span>}
                   </div>
                 ))}
                 <div className="border border-[#E5E2DA] px-4 py-2 text-[13px] text-[#666]">Custom amount</div>
@@ -834,7 +834,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   <div className="font-medium text-[14px] mb-1">Apply as Wallet Credit</div>
                   <div className="text-[#888] text-[12px] mb-3">Convert points directly to spend on your next order</div>
                   <button onClick={() => { save(`${redeemPts} points redeemed → $${(redeemPts / 100).toFixed(2)} added to wallet`); }}
-                    className="w-full py-2.5 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                    className="w-full py-2.5 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                     Convert {redeemPts} pts → ${(redeemPts / 100).toFixed(2)} credit
                   </button>
                 </div>
@@ -883,7 +883,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     </div>
                   ))}
                 </div>
-                <button onClick={() => save("Details saved")} className="mt-5 bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">Save Changes</button>
+                <button onClick={() => save("Details saved")} className="mt-5 bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">Save Changes</button>
               </div>
               <div className="space-y-4">
                 <div className="bg-white border border-[#E5E2DA] p-6">
@@ -926,7 +926,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     <div className="text-[14px] font-medium">Visa ending 4242</div>
                     <div className="text-[12px] text-[#888]">Expires 08/28</div>
                   </div>
-                  <span className="text-[10px] font-mono tracking-widest bg-[#CDFF3A] text-[#111] px-2 py-0.5 uppercase">Default</span>
+                  <span className="text-[10px] font-mono tracking-widest bg-[#F5B300] text-[#111] px-2 py-0.5 uppercase">Default</span>
                 </div>
                 <button className="border border-[#D0CCC4] px-3 py-1.5 text-[12px] text-[#888] hover:border-[#c00] hover:text-[#c00] transition-colors">Remove</button>
               </div>
@@ -953,7 +953,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     <span className="text-[13px] text-[#444]">Save card for one-click checkout</span>
                   </label>
                   <div className="flex gap-2">
-                    <button onClick={() => { setShowAddCard(false); save("Card saved successfully"); }} className="bg-[#111] text-white px-5 py-2 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">Save Card</button>
+                    <button onClick={() => { setShowAddCard(false); save("Card saved successfully"); }} className="bg-[#111] text-white px-5 py-2 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">Save Card</button>
                     <button onClick={() => setShowAddCard(false)} className="border border-[#D0CCC4] px-5 py-2 text-[12px] text-[#888] hover:border-[#111] transition-colors">Cancel</button>
                   </div>
                 </div>
@@ -963,7 +963,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             {/* ── SUBSCRIPTION BILLING / AUTO-CHARGE ── */}
             <div className="bg-white border border-[#E5E2DA] p-6 mt-4">
               <h3 className="font-medium text-[16px] mb-2">Subscription Billing</h3>
-              <p className="text-[#666] text-[13px] mb-4">Auto-charge authorisation: You have authorised Fresher to charge your saved card automatically on each billing cycle.</p>
+              <p className="text-[#666] text-[13px] mb-4">Auto-charge authorisation: You have authorised Performance Meals to charge your saved card automatically on each billing cycle.</p>
               <div className="border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
                 <span className="text-[18px] mt-0.5">⚠</span>
                 <div className="flex-1">
@@ -981,14 +981,14 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             <div id="referral-section" className="bg-white border border-[#E5E2DA] p-6 mt-4">
               <div className="flex items-center gap-3 mb-1">
                 <h3 className="font-medium text-[16px]">Invite & Earn</h3>
-                <span className="bg-[#CDFF3A] text-[#111] text-[10px] font-bold tracking-widest px-2 py-0.5 uppercase">$10 per referral</span>
+                <span className="bg-[#F5B300] text-[#111] text-[10px] font-bold tracking-widest px-2 py-0.5 uppercase">$10 per referral</span>
               </div>
               <p className="text-[#888] text-[13px] mb-5">Refer a friend and earn $10 wallet credit when they complete their first order.</p>
               <div className="mb-4">
                 <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Your referral link</label>
                 <div className="flex gap-2">
-                  <div className="flex-1 min-w-0 border border-[#D0CCC4] px-4 py-2.5 text-[14px] text-[#666] bg-[#F7F5F0] font-mono truncate">fresher.com.sg/ref/jerome</div>
-                  <button onClick={() => save("Referral link copied!")} className="shrink-0 bg-[#111] text-white px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors whitespace-nowrap">Copy</button>
+                  <div className="flex-1 min-w-0 border border-[#D0CCC4] px-4 py-2.5 text-[14px] text-[#666] bg-[#F7F5F0] font-mono truncate">performancemeals.com.sg/ref/jerome</div>
+                  <button onClick={() => save("Referral link copied!")} className="shrink-0 bg-[#111] text-white px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors whitespace-nowrap">Copy</button>
                 </div>
               </div>
               <div className="mb-4">
@@ -1006,7 +1006,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   { label: "Pending", value: "$10.00" },
                 ].map((s) => (
                   <div key={s.label} className="bg-[#111] p-3 sm:p-4 text-center">
-                    <div className="text-[#CDFF3A] font-display text-[22px] font-bold">{s.value}</div>
+                    <div className="text-[#F5B300] font-display text-[22px] font-bold">{s.value}</div>
                     <div className="text-white/40 text-[9px] sm:text-[10px] font-mono tracking-wider uppercase mt-0.5">{s.label}</div>
                   </div>
                 ))}
@@ -1031,7 +1031,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className={`text-[10px] font-mono px-2 py-0.5 uppercase tracking-wider ${r.status === "completed" ? "bg-[#CDFF3A] text-[#111]" : "bg-[#F7F5F0] text-[#888] border border-[#D0CCC4]"}`}>
+                        <span className={`text-[10px] font-mono px-2 py-0.5 uppercase tracking-wider ${r.status === "completed" ? "bg-[#F5B300] text-[#111]" : "bg-[#F7F5F0] text-[#888] border border-[#D0CCC4]"}`}>
                           {r.status === "completed" ? "Paid" : "Awaiting Order"}
                         </span>
                         <div className={`text-[13px] font-bold ${r.status === "completed" ? "text-[#111]" : "text-[#888]"}`}>{r.earned}</div>
@@ -1154,7 +1154,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 className="w-full border border-[#D0CCC4] px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors resize-none" />
             </div>
             <button onClick={() => { setReviewOrderId(null); save("Review submitted — thank you!"); }}
-              className="w-full bg-[#111] text-white py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+              className="w-full bg-[#111] text-white py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
               Submit Review
             </button>
           </div>
@@ -1171,7 +1171,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
               </button>
               <div className="font-display text-[22px] font-bold text-white mb-0.5">
-                {topUpDone ? <>Credit added<span className="text-[#CDFF3A]">.</span></> : <>Top up wallet<span className="text-[#CDFF3A]">.</span></>}
+                {topUpDone ? <>Credit added<span className="text-[#F5B300]">.</span></> : <>Top up wallet<span className="text-[#F5B300]">.</span></>}
               </div>
               <p className="text-white/40 text-[12px]">
                 {topUpDone ? "Your wallet has been topped up successfully." : "Funds are available instantly for your next order."}
@@ -1234,13 +1234,13 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 </div>
 
                 <button onClick={handleTopUp}
-                  className="w-full bg-[#111] text-white py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                  className="w-full bg-[#111] text-white py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                   Add ${topUpAmount} to Wallet
                 </button>
               </div>
             ) : (
               <div className="px-8 py-8 flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-[#CDFF3A] rounded-full flex items-center justify-center mb-5">
+                <div className="w-16 h-16 bg-[#F5B300] rounded-full flex items-center justify-center mb-5">
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
                 </div>
                 <p className="text-[20px] font-display font-bold text-[#111] mb-1">${topUpAmount} added!</p>
@@ -1259,10 +1259,10 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     <div className="text-[12px] font-semibold">Email receipt sent</div>
                     <div className="text-[11px] text-white/50">jerome@email.com</div>
                   </div>
-                  <span className="text-[#CDFF3A] text-[11px] font-bold">✓ Sent</span>
+                  <span className="text-[#F5B300] text-[11px] font-bold">✓ Sent</span>
                 </div>
                 <button onClick={() => { setShowTopUp(false); setTopUpDone(false); save("Wallet topped up — $" + topUpAmount + " added!"); }}
-                  className="w-full bg-[#CDFF3A] text-[#111] py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors">
+                  className="w-full bg-[#F5B300] text-[#111] py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors">
                   Done
                 </button>
               </div>
@@ -1292,7 +1292,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             <div className="flex gap-3">
               <button onClick={() => setShowPauseModal(false)} className="flex-1 border border-[#D0CCC4] py-3 text-[12px] font-bold uppercase text-[#888] hover:border-[#111] transition-colors">Cancel</button>
               <button onClick={() => { setSubPaused(true); setShowPauseModal(false); save(`Plan paused for ${pauseWeeks} week${pauseWeeks > 1 ? "s" : ""}`); }}
-                className="flex-1 bg-[#111] text-white py-3 text-[12px] font-bold uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                className="flex-1 bg-[#111] text-white py-3 text-[12px] font-bold uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                 Confirm Pause
               </button>
             </div>

@@ -1,4 +1,5 @@
 import { Page } from "@/data";
+import { PerformanceMealsLogo } from "@/components/Logos";
 
 interface Props {
   navigate: (page: Page) => void;
@@ -7,23 +8,25 @@ interface Props {
 
 export default function AboutPage({ navigate, navigateToWizard }: Props) {
   return (
-    <div className="min-h-screen bg-[#F7F5F0] text-[#111]">
+    <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A]">
 
       {/* Hero */}
-      <section className="bg-[#111] text-white">
-        <div className="max-w-[1440px] mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <section className="bg-[#1A1A1A] text-white">
+        <div className="max-w-[1200px] mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase mb-4">About Fresher</div>
+            <div className="mb-6">
+              <PerformanceMealsLogo size="lg" variant="light" />
+            </div>
             <h1 className="font-display text-[48px] sm:text-[64px] font-bold leading-none mb-6">
-              Food built for<br />performance.
+              The gold standard<br />for meal prep.
             </h1>
             <p className="text-white/60 text-[16px] leading-relaxed mb-8 max-w-lg">
-              Fresher was born in Singapore from a simple frustration — healthy food was either tasteless, inconvenient, or impossible to track. We fixed all three.
+              Performance Meals was built in Singapore on a simple belief — healthy eating should be easy, enjoyable, and sustainable. Real food for real routines.
             </p>
             <div className="flex gap-3 flex-wrap">
-              <button onClick={() => navigate("ready-to-go")}
-                className="bg-[#CDFF3A] text-[#111] px-6 py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
-                Shop Meals →
+              <button onClick={() => navigate("ready-series")}
+                className="bg-[#F5B300] text-[#1A1A1A] px-6 py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
+                Shop Ready-Series →
               </button>
               <button onClick={() => navigateToWizard()}
                 className="border border-white/20 text-white px-6 py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase hover:border-white transition-colors">
@@ -34,26 +37,26 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
           <div className="relative">
             <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=700&h=500&fit=crop&auto=format"
               alt="Chef preparing meals" className="w-full object-cover" style={{ height: 420 }} />
-            <div className="absolute bottom-4 left-4 bg-[#CDFF3A] px-4 py-3">
-              <div className="font-display text-[22px] font-bold text-[#111]">6in60™</div>
-              <div className="text-[#111] text-[11px] font-semibold tracking-wider">Guaranteed results</div>
+            <div className="absolute bottom-4 left-4 bg-[#F5B300] px-4 py-3">
+              <div className="font-display text-[18px] font-bold text-[#1A1A1A]">One Standard</div>
+              <div className="text-[#1A1A1A] text-[11px] font-semibold tracking-wider">Two clear offers</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Stats */}
-      <section className="bg-[#CDFF3A]">
-        <div className="max-w-[1440px] mx-auto px-6 py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+      <section className="bg-[#F5B300]">
+        <div className="max-w-[1200px] mx-auto px-6 py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
           {[
             { val: "8,400+", label: "Happy Customers" },
-            { val: "9", label: "Chef-Made Meals" },
-            { val: "60 Days", label: "Guaranteed Results" },
+            { val: "40+", label: "Meal Options" },
+            { val: "2 brands", label: "Fresh & Frozen" },
             { val: "3 mins", label: "Heat & Eat" },
           ].map((s) => (
             <div key={s.label}>
-              <div className="font-display text-[36px] sm:text-[44px] font-bold text-[#111]">{s.val}</div>
-              <div className="text-[#111]/60 text-[12px] tracking-wider uppercase mt-1">{s.label}</div>
+              <div className="font-display text-[36px] sm:text-[44px] font-bold text-[#1A1A1A]">{s.val}</div>
+              <div className="text-[#1A1A1A]/60 text-[12px] tracking-wider uppercase mt-1">{s.label}</div>
             </div>
           ))}
         </div>
@@ -61,20 +64,20 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
 
       {/* Our story */}
       <section className="py-20 border-b border-[#E5E2DA]">
-        <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=700&h=500&fit=crop&auto=format"
             alt="Fresh meal prep" className="w-full object-cover" style={{ height: 400 }} />
           <div>
-            <div className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase mb-4">Our Story</div>
+            <div className="font-mono text-[10px] tracking-[0.45em] text-[#1A1A1A]/30 uppercase mb-4">Our Story</div>
             <h2 className="font-display text-[36px] font-bold mb-5">We cook. You perform.</h2>
             <p className="text-[#555] text-[15px] leading-relaxed mb-4">
-              Founded in 2022 by Jerome Tan, Fresher started as a weekend meal prep project for his gym community in Toa Payoh. Within 6 months, word spread — the food was too good to stay local.
+              Founded in Singapore, Performance Meals started as a meal prep project for a local fitness community. Within months, word spread — the food was too good and too practical to stay local.
             </p>
             <p className="text-[#555] text-[15px] leading-relaxed mb-4">
-              Today our team of chefs prepares every meal fresh each week, frozen at peak nutrition and delivered to your door across Singapore. Every recipe is macro-engineered by our nutritionists and taste-tested obsessively.
+              Today our team of chefs prepares every Meal Plan dish fresh each week, and freezes Ready-Series meals at peak nutritional freshness — all delivered across Singapore. Every recipe is macro-tracked by our nutritionists and taste-tested obsessively.
             </p>
             <p className="text-[#555] text-[15px] leading-relaxed">
-              The 6in60 Promise is our guarantee: follow the plan, and you lose 6kg in 60 days — or we refund you completely, no questions asked.
+              Our purpose: to make exceptional meal prep accessible to every customer, with care in every experience.
             </p>
           </div>
         </div>
@@ -82,16 +85,16 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
 
       {/* What we believe */}
       <section className="py-20 border-b border-[#E5E2DA]">
-        <div className="max-w-[1440px] mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase mb-3">What we believe</div>
+            <div className="font-mono text-[10px] tracking-[0.45em] text-[#1A1A1A]/30 uppercase mb-3">What we believe</div>
             <h2 className="font-display text-[36px] font-bold">Our principles</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { icon: "🥩", title: "Real food, real results", desc: "No powders, no shortcuts. Every meal uses whole ingredients prepared by trained chefs. You eat food, not supplements." },
-              { icon: "📊", title: "Macros that actually work", desc: "Every gram of protein, carbs and fat is calculated to hit your specific goal — whether that's cutting fat, maintaining performance, or building muscle." },
-              { icon: "⏱️", title: "Convenience without compromise", desc: "3 minutes from freezer to table. Vacuum-sealed to lock in nutrition. Delivered on your schedule, to your door." },
+              { icon: "🥩", title: "Real food, real routines", desc: "No powders, no shortcuts. Every meal uses whole ingredients prepared by trained chefs. Healthy eating should be enjoyable, not a punishment." },
+              { icon: "📊", title: "Nutrition that works as hard as you do", desc: "Every gram of protein, carbs, and fat is calculated to hit your specific goal — whether that's cutting fat, maintaining performance, or building muscle." },
+              { icon: "⏱️", title: "Convenience without compromise", desc: "3 minutes from freezer to table. Vacuum-sealed to lock in nutrition. Delivered fresh or frozen on your schedule, to your door." },
             ].map((v) => (
               <div key={v.title} className="bg-white border border-[#E5E2DA] p-7">
                 <div className="text-[36px] mb-4">{v.icon}</div>
@@ -105,16 +108,16 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
 
       {/* Team */}
       <section className="py-20 border-b border-[#E5E2DA]">
-        <div className="max-w-[1440px] mx-auto px-6">
+        <div className="max-w-[1200px] mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase mb-3">The team</div>
-            <h2 className="font-display text-[36px] font-bold">Built by people who train</h2>
+            <div className="font-mono text-[10px] tracking-[0.45em] text-[#1A1A1A]/30 uppercase mb-3">The team</div>
+            <h2 className="font-display text-[36px] font-bold">Built by people who care about daily habits</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {[
-              { name: "Jerome Tan", role: "Founder & CEO", desc: "Former competitive swimmer. Built Fresher because clean eating shouldn't require a nutrition degree.", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&auto=format" },
-              { name: "Chef Marcus Yeo", role: "Head Chef", desc: "10 years in professional kitchens. Obsessed with making healthy food taste like you're cheating.", img: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&h=400&fit=crop&auto=format" },
-              { name: "Dr. Aisha Lim", role: "Lead Nutritionist", desc: "Sports dietitian. Designed every macro target in every plan. She doesn't compromise on the numbers.", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&auto=format" },
+              { name: "Jerome Tan", role: "Founder & CEO", desc: "Built Performance Meals because clean eating should not require a nutrition degree. Focused on consistency and progress, not perfection.", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&auto=format" },
+              { name: "Chef Marcus Yeo", role: "Head Chef", desc: "10 years in professional kitchens. Obsessed with making healthy food taste like you are genuinely enjoying it.", img: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&h=400&fit=crop&auto=format" },
+              { name: "Dr. Aisha Lim", role: "Lead Nutritionist", desc: "Sports dietitian. Designed every macro target across every programme. Practical guidance, not prescriptive perfection.", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&auto=format" },
             ].map((m) => (
               <div key={m.name} className="text-center">
                 <img src={m.img} alt={m.name} className="w-28 h-28 object-cover rounded-full mx-auto mb-4 grayscale" />
@@ -128,19 +131,22 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#111] text-white py-16">
-        <div className="max-w-[1440px] mx-auto px-6 text-center">
-          <div className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase mb-4">Ready to start?</div>
-          <h2 className="font-display text-[40px] sm:text-[52px] font-bold mb-4">Lose 6kg in 60 days.<br />Guaranteed.</h2>
-          <p className="text-white/50 text-[15px] mb-8">If you don't see results, we refund you in full. No questions asked.</p>
+      <section className="bg-[#1A1A1A] text-white py-16">
+        <div className="max-w-[1200px] mx-auto px-6 text-center">
+          <div className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300] uppercase mb-4">Ready to start?</div>
+          <h2 className="font-display text-[40px] sm:text-[52px] font-bold mb-4">
+            Nutrition that works<br />as hard as you do.
+          </h2>
+          <p className="text-white/50 text-[15px] mb-8">Choose your journey — fresh structure or frozen flexibility.</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <button onClick={() => navigateToWizard()}
-              className="bg-[#CDFF3A] text-[#111] px-8 py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
+              className="px-8 py-4 text-[13px] font-bold tracking-[0.15em] uppercase text-[#1A1A1A] hover:opacity-90 transition-colors"
+              style={{ backgroundColor: "#E85D04" }}>
               Start Meal Plan →
             </button>
-            <button onClick={() => navigate("ready-to-go")}
-              className="border border-white/20 text-white px-8 py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:border-white transition-colors">
-              Shop Ready-to-Go
+            <button onClick={() => navigate("ready-series")}
+              className="bg-[#F5B300] text-[#1A1A1A] px-8 py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
+              Shop Ready-Series →
             </button>
           </div>
         </div>

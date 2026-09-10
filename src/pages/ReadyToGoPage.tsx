@@ -35,8 +35,8 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
         <div className="absolute inset-0 bg-gradient-to-r from-[#0E0E0E] via-transparent to-[#0E0E0E]" />
         <div className="relative max-w-[1440px] mx-auto px-6 h-full flex flex-col justify-center">
           <div className="flex items-center gap-3 mb-3">
-            <span className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A] uppercase">01 / Ready Series</span>
-            <div className="h-px w-12 bg-[#CDFF3A]/30" />
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300] uppercase">01 / Ready Series</span>
+            <div className="h-px w-12 bg-[#F5B300]/30" />
           </div>
           <h1 className="font-display text-[32px] sm:text-[48px] font-bold">Ready-to-Go Meals</h1>
           <p className="text-white/40 mt-1 text-[14px]">Macro-accurate. Frozen at peak nutrition. Heat in 3 minutes.</p>
@@ -45,13 +45,13 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
       <div className="max-w-[1440px] mx-auto px-6 py-10">
         {/* Build-A-Box CTA */}
-        <div className="mb-8 border border-[#CDFF3A]/20 bg-[#CDFF3A]/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="mb-8 border border-[#F5B300]/20 bg-[#F5B300]/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <div className="font-mono text-[10px] tracking-[0.3em] text-[#CDFF3A] mb-1 uppercase">Save more</div>
+            <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] mb-1 uppercase">Save more</div>
             <h3 className="font-display text-[22px] font-bold">Build-A-Box — from $11.00/meal</h3>
             <p className="text-white/40 text-[13px] mt-1">Mix & match any 5–20 meals. Best value on the site.</p>
           </div>
-          <button onClick={() => navigate("build-a-box")} className="inline-flex items-center gap-2 bg-[#CDFF3A] text-[#111111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors whitespace-nowrap shrink-0">
+          <button onClick={() => navigate("build-a-box")} className="inline-flex items-center gap-2 bg-[#F5B300] text-[#111111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors whitespace-nowrap shrink-0">
             Start Building →
           </button>
         </div>
@@ -61,7 +61,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
           <div className="flex flex-nowrap gap-2 overflow-x-auto pb-1">
             {CATS.map((c) => (
               <button key={c.id} onClick={() => setActiveCat(c.id)}
-                className={`px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase font-medium whitespace-nowrap transition-all ${activeCat === c.id ? "bg-[#CDFF3A] text-[#111111]" : "border border-white/12 text-white/40 hover:border-white/35 hover:text-white"}`}>
+                className={`px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase font-medium whitespace-nowrap transition-all ${activeCat === c.id ? "bg-[#F5B300] text-[#111111]" : "border border-white/12 text-white/40 hover:border-white/35 hover:text-white"}`}>
                 {c.label}
               </button>
             ))}
@@ -78,10 +78,10 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
         {activeCat === "promotion" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             {PROMOTIONS.map((p) => (
-              <div key={p.id} className="bg-[#1A1A1A] overflow-hidden border border-[#CDFF3A]/20">
+              <div key={p.id} className="bg-[#1A1A1A] overflow-hidden border border-[#F5B300]/20">
                 <div className="relative h-48 overflow-hidden">
                   <img src={p.img} alt={p.name} className="w-full h-full object-cover opacity-80" />
-                  <div className="absolute top-3 left-3 bg-[#CDFF3A] text-[#111] text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{p.tag}</div>
+                  <div className="absolute top-3 left-3 bg-[#F5B300] text-[#111] text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{p.tag}</div>
                   <div className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{p.saving}</div>
                 </div>
                 <div className="p-4">
@@ -89,11 +89,11 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                   <p className="text-white/40 text-[12px] mb-3">{p.desc}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-[20px] text-[#CDFF3A]">${p.sale}</span>
+                      <span className="font-mono font-bold text-[20px] text-[#F5B300]">${p.sale}</span>
                       <span className="font-mono text-[14px] text-white/25 line-through">${p.original}</span>
                     </div>
                     <button onClick={() => addToCart({ id: p.id, name: p.name, price: p.sale, qty: 1, img: p.img, type: "ready" })}
-                      className="bg-[#CDFF3A] text-[#111] px-4 py-2 text-[11px] font-bold tracking-wider uppercase hover:bg-white transition-colors">
+                      className="bg-[#F5B300] text-[#111] px-4 py-2 text-[11px] font-bold tracking-wider uppercase hover:bg-white transition-colors">
                       Add to Cart
                     </button>
                   </div>
@@ -117,11 +117,11 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                   <p className="text-white/40 text-[12px] mb-3">{b.desc}</p>
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="font-mono font-bold text-[18px] text-[#CDFF3A]">${b.price}</span>
+                      <span className="font-mono font-bold text-[18px] text-[#F5B300]">${b.price}</span>
                       <span className="text-white/30 text-[11px] ml-1">(${b.perMeal}/meal)</span>
                     </div>
                     <button onClick={() => addToCart({ id: b.id, name: b.name, price: b.price, qty: 1, img: b.img, type: "box" })}
-                      className="bg-white/10 hover:bg-[#CDFF3A] hover:text-[#111] text-white px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
+                      className="bg-white/10 hover:bg-[#F5B300] hover:text-[#111] text-white px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
                       Add
                     </button>
                   </div>
@@ -142,17 +142,17 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
           {filtered.map((meal) => {
             const qtyInCart = getCartQty(meal.id);
             return (
-              <div key={meal.id} className={`group bg-[#1A1A1A] overflow-hidden ${qtyInCart > 0 ? "ring-1 ring-[#CDFF3A]/40" : ""}`}>
+              <div key={meal.id} className={`group bg-[#1A1A1A] overflow-hidden ${qtyInCart > 0 ? "ring-1 ring-[#F5B300]/40" : ""}`}>
                 {/* Image */}
                 <div className="relative h-52 bg-[#222] overflow-hidden cursor-pointer" onClick={() => setSelectedMeal(meal)}>
                   {meal.badge && (
-                    <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold ${meal.badge === "Bestseller" || meal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111111]" : "bg-black/50 text-white backdrop-blur-sm border border-white/10"}`}>
+                    <div className={`absolute top-3 left-3 z-10 px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase font-bold ${meal.badge === "Bestseller" || meal.badge === "Staff Pick" ? "bg-[#F5B300] text-[#111111]" : "bg-black/50 text-white backdrop-blur-sm border border-white/10"}`}>
                       {meal.badge}
                     </div>
                   )}
                   {/* Cart quantity badge */}
                   {qtyInCart > 0 && (
-                    <div className="absolute top-3 right-3 z-10 bg-[#CDFF3A] text-[#111111] font-bold text-[12px] w-7 h-7 rounded-full flex items-center justify-center shadow-lg">
+                    <div className="absolute top-3 right-3 z-10 bg-[#F5B300] text-[#111111] font-bold text-[12px] w-7 h-7 rounded-full flex items-center justify-center shadow-lg">
                       {qtyInCart}
                     </div>
                   )}
@@ -181,8 +181,8 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                     ) : null;
                   })()}
                   <div className="flex items-start justify-between mb-3 gap-2">
-                    <h3 className="text-[14px] font-medium leading-snug cursor-pointer hover:text-[#CDFF3A] transition-colors" onClick={() => setSelectedMeal(meal)}>{meal.name}</h3>
-                    <span className="text-[#CDFF3A] font-bold text-[15px] whitespace-nowrap font-mono">${meal.price.toFixed(2)}</span>
+                    <h3 className="text-[14px] font-medium leading-snug cursor-pointer hover:text-[#F5B300] transition-colors" onClick={() => setSelectedMeal(meal)}>{meal.name}</h3>
+                    <span className="text-[#F5B300] font-bold text-[15px] whitespace-nowrap font-mono">${meal.price.toFixed(2)}</span>
                   </div>
 
                   <div className="grid grid-cols-4 gap-1 mb-4">
@@ -196,11 +196,11 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
                   <div className="flex items-center justify-between">
                     <div className="text-[11px] text-white/35">
-                      <span className="text-[#CDFF3A]">{"★".repeat(Math.round(meal.rating))}</span> {meal.rating} ({meal.reviews})
+                      <span className="text-[#F5B300]">{"★".repeat(Math.round(meal.rating))}</span> {meal.rating} ({meal.reviews})
                     </div>
                     <button
                       onClick={() => handleAdd(meal)}
-                      className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${added === meal.id ? "bg-[#7EE8B0] text-[#111111]" : "bg-[#CDFF3A] text-[#111111] hover:bg-white"}`}
+                      className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${added === meal.id ? "bg-[#7EE8B0] text-[#111111]" : "bg-[#F5B300] text-[#111111] hover:bg-white"}`}
                     >
                       {added === meal.id ? "✓ Added" : qtyInCart > 0 ? `+ Add more` : "+ Add"}
                     </button>
@@ -218,7 +218,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
         <div className="bg-[#1A1A1A] border-t border-white/5 px-6 py-12">
           <div className="max-w-[1440px] mx-auto">
             <div className="text-center mb-8">
-              <span className="font-mono text-[10px] tracking-[0.45em] text-[#CDFF3A]/50 uppercase">Customer Reviews</span>
+              <span className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300]/50 uppercase">Customer Reviews</span>
               <h3 className="font-display text-[28px] font-bold text-white mt-2">8,400+ happy customers</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -228,7 +228,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                 { name: "Wei Jian T.", text: "Best value meal prep in SG. The Build-A-Box saves me money every week.", stars: 5 },
               ].map((t) => (
                 <div key={t.name} className="bg-[#222] p-5">
-                  <div className="text-[#CDFF3A] text-[14px] mb-3">{"★".repeat(t.stars)}</div>
+                  <div className="text-[#F5B300] text-[14px] mb-3">{"★".repeat(t.stars)}</div>
                   <p className="text-white/60 text-[13px] leading-relaxed mb-4">"{t.text}"</p>
                   <div className="text-white/40 text-[12px] font-medium">{t.name}</div>
                 </div>
@@ -249,12 +249,12 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
             <div className="h-48 sm:h-64 relative bg-[#222]">
               <img src={selectedMeal.img} alt={selectedMeal.name} className="w-full h-full object-cover" />
               {selectedMeal.badge && (
-                <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${selectedMeal.badge === "Bestseller" || selectedMeal.badge === "Staff Pick" ? "bg-[#CDFF3A] text-[#111111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>
+                <div className={`absolute top-4 left-4 px-3 py-1 text-[11px] tracking-[0.18em] uppercase font-bold ${selectedMeal.badge === "Bestseller" || selectedMeal.badge === "Staff Pick" ? "bg-[#F5B300] text-[#111111]" : "bg-black/60 text-white backdrop-blur-sm"}`}>
                   {selectedMeal.badge}
                 </div>
               )}
               {getCartQty(selectedMeal.id) > 0 && (
-                <div className="absolute top-4 right-4 bg-[#CDFF3A] text-[#111] text-[12px] font-bold px-3 py-1">
+                <div className="absolute top-4 right-4 bg-[#F5B300] text-[#111] text-[12px] font-bold px-3 py-1">
                   {getCartQty(selectedMeal.id)} in cart
                 </div>
               )}
@@ -277,21 +277,21 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
               })()}
               <div className="flex items-start justify-between mb-3 gap-3">
                 <h2 className="font-display text-[26px] font-bold">{selectedMeal.name}</h2>
-                <span className="font-mono text-[22px] text-[#CDFF3A] font-bold shrink-0">${selectedMeal.price.toFixed(2)}</span>
+                <span className="font-mono text-[22px] text-[#F5B300] font-bold shrink-0">${selectedMeal.price.toFixed(2)}</span>
               </div>
               <p className="text-white/50 text-[14px] leading-relaxed mb-6">{selectedMeal.desc}</p>
 
               <div className="grid grid-cols-4 gap-2 mb-6">
                 {[{ label: "Calories", val: selectedMeal.cal }, { label: "Protein", val: `${selectedMeal.protein}g` }, { label: "Carbs", val: `${selectedMeal.carbs}g` }, { label: "Fat", val: `${selectedMeal.fat}g` }].map((m) => (
                   <div key={m.label} className="bg-[#222] px-1 py-1.5 sm:px-3 sm:py-3 text-center">
-                    <div className="font-mono text-[13px] text-[#CDFF3A] font-medium">{m.val}</div>
+                    <div className="font-mono text-[13px] text-[#F5B300] font-medium">{m.val}</div>
                     <div className="text-white/30 text-[10px] mt-1 uppercase tracking-wider">{m.label}</div>
                   </div>
                 ))}
               </div>
 
               <div className="flex items-center gap-2 text-[12px] text-white/30 mb-6">
-                <span className="text-[#CDFF3A]">{"★".repeat(Math.round(selectedMeal.rating))}</span>
+                <span className="text-[#F5B300]">{"★".repeat(Math.round(selectedMeal.rating))}</span>
                 <span>{selectedMeal.rating} · {selectedMeal.reviews} reviews</span>
               </div>
 
@@ -303,11 +303,11 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
               <div className="flex gap-3">
                 <button onClick={() => { handleAdd(selectedMeal); setSelectedMeal(null); }}
-                  className="flex-1 bg-[#CDFF3A] text-[#111111] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
+                  className="flex-1 bg-[#F5B300] text-[#111111] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
                   Add to Cart — ${selectedMeal.price.toFixed(2)}
                 </button>
                 <button onClick={() => { navigate("build-a-box"); setSelectedMeal(null); }}
-                  className="border border-white/15 px-5 py-4 text-[11px] text-white/40 hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors whitespace-nowrap">
+                  className="border border-white/15 px-5 py-4 text-[11px] text-white/40 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors whitespace-nowrap">
                   Add to Box
                 </button>
               </div>
