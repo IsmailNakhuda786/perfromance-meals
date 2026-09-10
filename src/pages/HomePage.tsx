@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Page } from "@/data";
 import { PerformanceMealsLogo, ReadySeriesLogo, MealPlanLogo } from "@/components/Logos";
 
@@ -33,6 +34,8 @@ const steps = [
 ];
 
 export default function HomePage({ navigate }: Props) {
+  const [hovered, setHovered] = useState<"ready" | "plan" | null>(null);
+
   return (
     <div className="bg-[#FAF9F6] text-[#1A1A1A]">
 
@@ -45,47 +48,57 @@ export default function HomePage({ navigate }: Props) {
         </p>
       </div>
 
-      {/* Split hero panels */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 min-h-[80svh]">
+      {/* Split hero panels — hover expands the active panel */}
+      <section
+        className="flex flex-col lg:flex-row min-h-[82svh]"
+        onMouseLeave={() => setHovered(null)}
+      >
 
-        {/* LEFT — Ready Series */}
+        {/* LEFT — Ready Series: DARK charcoal per PDF brand guide */}
         <div
-          className="relative flex flex-col justify-between px-8 sm:px-12 lg:px-14 py-14 lg:py-16 overflow-hidden cursor-pointer group border-b lg:border-b-0 lg:border-r border-[#E8E4DC]"
-          style={{ backgroundColor: "#FFFBEE" }}
+          className="relative flex flex-col justify-between px-8 sm:px-12 lg:px-14 py-14 lg:py-16 overflow-hidden cursor-pointer"
+          style={{
+            backgroundColor: "#1A1A1A",
+            flex: hovered === "plan" ? "0 0 38%" : hovered === "ready" ? "0 0 62%" : "1 1 50%",
+            transition: "flex 0.4s cubic-bezier(0.4,0,0.2,1)",
+          }}
           onClick={() => navigate("ready-series")}
+          onMouseEnter={() => setHovered("ready")}
         >
           {/* Subtle dot texture */}
-          <div className="absolute inset-0 opacity-[0.04]"
+          <div className="absolute inset-0 opacity-[0.06]"
             style={{ backgroundImage: "radial-gradient(circle, #F5B300 1px, transparent 1px)", backgroundSize: "28px 28px" }}
           />
-          {/* Yellow accent top stripe */}
+          {/* Yellow top stripe */}
           <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: "#F5B300" }} />
 
           <div className="relative z-10">
             <div className="mb-8">
-              <ReadySeriesLogo size="md" variant="light" />
+              <ReadySeriesLogo size="md" variant="dark" />
             </div>
-
             <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#F5B300] mb-3">Everyday momentum</p>
-            <h2 className="font-display text-[42px] sm:text-[54px] lg:text-[52px] xl:text-[62px] font-black leading-[0.92] text-[#1A1A1A] mb-5">
-              FROZEN<br />AT PEAK.<br />READY ON<br />DEMAND.
+            <h2 className="font-display text-[42px] sm:text-[54px] lg:text-[52px] xl:text-[64px] font-black leading-[0.9] text-white mb-5">
+              READY<br />FOR<br />REAL LIFE.
             </h2>
-            <p className="text-[#555] text-[15px] leading-relaxed max-w-[320px]">
-              Good meals, ready when you need them. Fast, enjoyable, macro-tracked. A busy day does not have to knock you off track.
+            <p
+              className="text-white/60 text-[15px] leading-relaxed max-w-[300px] transition-opacity duration-300"
+              style={{ opacity: hovered === "plan" ? 0 : 1 }}
+            >
+              Fast, enjoyable frozen meals that are ready when life gets busy — so keeping on track stays easy.
             </p>
           </div>
 
           <div className="relative z-10 mt-10 lg:mt-0">
             <div className="flex flex-wrap gap-2 mb-5">
-              {["40+ meals", "From $8.90", "3-min prep", "Next-day"].map((t) => (
-                <span key={t} className="text-[10px] font-semibold tracking-wide bg-white border border-[#E8E4DC] px-3 py-1.5 text-[#555]">{t}</span>
+              {["40+ meals", "From $8.90", "3-min prep", "Next-day delivery"].map((t) => (
+                <span key={t} className="text-[10px] font-semibold tracking-wide border border-white/20 px-3 py-1.5 text-white/50">{t}</span>
               ))}
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); navigate("ready-series"); }}
-              className="inline-flex items-center gap-3 text-[#1A1A1A] text-[11px] font-black tracking-[0.2em] uppercase px-8 py-4 transition-all group-hover:text-white"
+              className="inline-flex items-center gap-3 text-[#1A1A1A] text-[11px] font-black tracking-[0.2em] uppercase px-8 py-4 transition-colors"
               style={{ backgroundColor: "#F5B300" }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#1A1A1A"; }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#fff"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#F5B300"; }}
             >
               STOCK UP NOW
@@ -94,42 +107,45 @@ export default function HomePage({ navigate }: Props) {
           </div>
         </div>
 
-        {/* RIGHT — Meal Plan */}
+        {/* RIGHT — Meal Plan: WHITE per PDF brand guide */}
         <div
-          className="relative flex flex-col justify-between px-8 sm:px-12 lg:px-14 py-14 lg:py-16 overflow-hidden cursor-pointer group"
-          style={{ backgroundColor: "#FFF8F4" }}
+          className="relative flex flex-col justify-between px-8 sm:px-12 lg:px-14 py-14 lg:py-16 overflow-hidden cursor-pointer border-t lg:border-t-0 lg:border-l border-[#E8E4DC]"
+          style={{
+            backgroundColor: "#FFFFFF",
+            flex: hovered === "ready" ? "0 0 38%" : hovered === "plan" ? "0 0 62%" : "1 1 50%",
+            transition: "flex 0.4s cubic-bezier(0.4,0,0.2,1)",
+          }}
           onClick={() => navigate("meal-plan-landing")}
+          onMouseEnter={() => setHovered("plan")}
         >
-          {/* Subtle diagonal texture */}
-          <div className="absolute inset-0 opacity-[0.03]"
-            style={{ backgroundImage: `repeating-linear-gradient(45deg,transparent,transparent 24px,#E85D04 24px,#E85D04 25px)` }}
-          />
-          {/* Orange accent top stripe */}
+          {/* Orange top stripe */}
           <div className="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: "#E85D04" }} />
 
           <div className="relative z-10">
             <div className="mb-8">
               <MealPlanLogo size="md" variant="light" />
             </div>
-
-            <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-3" style={{ color: "#E85D04" }}>Boutique progress</p>
-            <h2 className="font-display text-[42px] sm:text-[54px] lg:text-[52px] xl:text-[62px] font-semibold leading-[0.97] text-[#1A1A1A] mb-5">
+            <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-3" style={{ color: "#E85D04" }}>Boutique support</p>
+            <h2 className="font-display text-[42px] sm:text-[54px] lg:text-[52px] xl:text-[58px] font-semibold leading-[0.97] text-[#1A1A1A] mb-5">
               Fresh structure.<br />Personal<br />support.
             </h2>
-            <p className="text-[#555] text-[15px] leading-relaxed max-w-[320px]">
-              Exceptional meals and practical guidance, built around the way you live. Take the guesswork out of eating well every day.
+            <p
+              className="text-[#666] text-[15px] leading-relaxed max-w-[300px] transition-opacity duration-300"
+              style={{ opacity: hovered === "ready" ? 0 : 1 }}
+            >
+              Exceptional meals, tailored support, and practical guidance for meaningful progress — built around the way you live.
             </p>
           </div>
 
           <div className="relative z-10 mt-10 lg:mt-0">
             <div className="flex flex-wrap gap-2 mb-5">
               {["Goal-first", "CUT / MAINTAIN / BUILD", "Fresh daily", "Boutique support"].map((t) => (
-                <span key={t} className="text-[10px] font-semibold tracking-wide bg-white border border-[#E8E4DC] px-3 py-1.5 text-[#555]">{t}</span>
+                <span key={t} className="text-[10px] font-semibold tracking-wide bg-[#FAF9F6] border border-[#E8E4DC] px-3 py-1.5 text-[#555]">{t}</span>
               ))}
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); navigate("meal-plan-landing"); }}
-              className="inline-flex items-center gap-3 text-white text-[11px] font-black tracking-[0.2em] uppercase px-8 py-4 transition-all"
+              className="inline-flex items-center gap-3 text-white text-[11px] font-black tracking-[0.2em] uppercase px-8 py-4 transition-colors"
               style={{ backgroundColor: "#E85D04" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#1A1A1A"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#E85D04"; }}
@@ -192,7 +208,7 @@ export default function HomePage({ navigate }: Props) {
             <button onClick={() => navigate("ready-series")}
               className="flex items-center justify-between px-7 py-5 border-2 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white transition-all group">
               <div>
-                <div className="text-[10px] font-mono tracking-[0.25em] uppercase text-[#888] group-hover:text-white/50 mb-0.5">Fast and flexible</div>
+                <div className="text-[10px] font-mono tracking-[0.25em] uppercase text-[#888] group-hover:text-white/50 mb-0.5">Everyday momentum</div>
                 <div className="text-[16px] font-bold text-[#1A1A1A] group-hover:text-white">Explore Ready Series →</div>
               </div>
               <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#F5B300" }}>
@@ -205,7 +221,7 @@ export default function HomePage({ navigate }: Props) {
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#E85D04"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = ""; }}>
               <div>
-                <div className="text-[10px] font-mono tracking-[0.25em] uppercase mb-0.5" style={{ color: "#E85D04" }}>Structured and personal</div>
+                <div className="text-[10px] font-mono tracking-[0.25em] uppercase mb-0.5" style={{ color: "#E85D04" }}>Boutique support</div>
                 <div className="text-[16px] font-bold text-[#1A1A1A] group-hover:text-white">Explore Meal Plans →</div>
               </div>
               <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#E85D04" }}>
