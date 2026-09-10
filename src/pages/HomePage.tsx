@@ -331,6 +331,104 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
         </div>
       </section>
 
+      {/* ── REAL RESULTS ── */}
+      <section className="bg-white py-16 border-t border-[#E5E2DA]">
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase">Real Results</span>
+            <h2 className="font-display text-[36px] sm:text-[48px] font-bold mt-2">Real results. Real people.</h2>
+            <p className="text-[#888] text-[14px] mt-3">Over 12,400 members. 4.8 stars. Verified reviews.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {[
+              { name: "Marcus L.", plan: "MAINTAIN Plan · Week 18", stars: 5, text: "I've tried every meal prep service in Singapore. Fresher is the only one where I actually look forward to my meals. Macros are spot on and the food tastes like a restaurant." },
+              { name: "Priya S.", plan: "CUT Plan · Lost 7kg in 9 weeks", stars: 5, text: "Down 7kg and I never felt hungry. The chef really understands performance nutrition — this isn't diet food, it's proper eating." },
+              { name: "Wei Jian T.", plan: "BUILD Plan · 4 months in", stars: 5, text: "Gained 4kg of lean muscle while eating clean. The protein macros on the BUILD plan are dialled in perfectly. My gym coach was genuinely impressed." },
+              { name: "Sarah K.", plan: "Ready-to-Go · Regular customer", stars: 5, text: "The salmon scramble breakfast is addictive. I order 10 a week. Free delivery, arrives frozen fresh, heats in 3 mins. What else do you need?" },
+              { name: "Darren Ng", plan: "Gift Card → CUT Plan", stars: 5, text: "Got a gift card from my wife and now I'm a subscriber. The 6in60 guarantee is what got me in the door — results kept me here." },
+              { name: "Aisha B.", plan: "MAINTAIN Plan · 6 months", stars: 5, text: "As a busy mum of two I have zero time to meal prep. Fresher has genuinely changed how our household eats. The kids steal my lunches now." },
+            ].map((t) => (
+              <div key={t.name} className="bg-[#F7F5F0] p-6 flex flex-col gap-4">
+                <div className="text-[#CDFF3A] text-[16px]">{"★".repeat(t.stars)}</div>
+                <p className="text-[14px] leading-relaxed text-[#333] flex-1">"{t.text}"</p>
+                <div>
+                  <div className="font-semibold text-[14px]">{t.name}</div>
+                  <div className="text-[11px] text-[#888] mt-0.5">{t.plan}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── GIFT CARD BANNER ── */}
+      <section className="bg-[#CDFF3A] py-10 sm:py-14">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div>
+            <div className="font-mono text-[10px] tracking-[0.4em] text-[#111]/40 uppercase mb-2">Gift Cards</div>
+            <h3 className="font-display text-[28px] sm:text-[36px] font-bold text-[#111] leading-tight">
+              Give the gift of<br />performance.
+            </h3>
+            <p className="text-[#111]/60 text-[13px] sm:text-[14px] mt-3 max-w-xs">Fresher gift cards never expire. From $25.</p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+            <div className="grid grid-cols-4 gap-2 sm:flex sm:gap-3">
+              {["$25", "$50", "$100", "$150"].map((a) => (
+                <div key={a} className="bg-white/50 border-2 border-[#111]/15 px-3 sm:px-5 py-2.5 sm:py-3 text-center">
+                  <div className="font-display text-[16px] sm:text-[22px] font-bold text-[#111]">{a}</div>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => navigate("gift-card")}
+              className="w-full sm:w-auto bg-[#111111] text-white px-6 sm:px-7 py-3.5 sm:py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#0D2818] transition-colors whitespace-nowrap">
+              Buy a Gift Card →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS — INTERACTIVE ── */}
+      <section className="bg-[#F7F5F0] py-14 sm:py-24">
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="flex items-center gap-4 mb-4">
+            <span className="font-mono text-[10px] tracking-[0.45em] text-[#111111]/35 uppercase">Client Results</span>
+            <div className="h-px w-16 bg-[#111111]/15" />
+          </div>
+          <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-14">
+            <h2 className="font-display text-[36px] sm:text-[52px] font-bold leading-none">What our<br />members say.</h2>
+            <div className="flex items-center gap-2 mt-2">
+              {TESTIMONIALS.map((_, i) => (
+                <button key={i} onClick={() => setActiveTestimonial(i)}
+                  className={`transition-all duration-300 ${activeTestimonial === i ? "w-8 h-2 bg-[#111]" : "w-2 h-2 bg-[#D0CCC4] hover:bg-[#888]"} rounded-full`} />
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={t.name}
+                onClick={() => setActiveTestimonial(i)}
+                className={`bg-white p-8 border-2 cursor-pointer transition-all duration-300 ${activeTestimonial === i ? "border-[#111] shadow-xl scale-[1.02]" : "border-transparent hover:border-[#E5E2DA]"}`}>
+                <div className="text-[16px] mb-5">
+                  {"★".repeat(t.rating).split("").map((s, j) => (
+                    <span key={j} className="text-[#CDFF3A]">{s}</span>
+                  ))}
+                </div>
+                <p className="text-[#333] text-[15px] leading-relaxed mb-7">"{t.text}"</p>
+                <div className="border-t border-[#E5E2DA] pt-5 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="font-semibold text-[14px]">{t.name}</div>
+                    <div className="text-[#999] text-[12px] mt-0.5">{t.role}</div>
+                  </div>
+                  <span className={`text-[10px] tracking-[0.18em] uppercase font-semibold px-3 py-1.5 whitespace-nowrap ${t.plan.includes("Ready") ? "bg-[#111111] text-[#CDFF3A]" : "bg-[#0D2818] text-[#F2C94C]"}`}>
+                    {t.plan}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── PLANS SECTION — INTERACTIVE ── */}
       <section className="text-white py-24 overflow-hidden relative" style={{ background: "linear-gradient(160deg, #14100A 0%, #1C1508 45%, #0F1A0C 100%)" }}>
 
@@ -524,104 +622,6 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
           <button onClick={() => navigateToWizard()} className="inline-flex items-center gap-2 bg-[#F2C94C] text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] transition-colors">
             Start Meal Plan Wizard →
           </button>
-        </div>
-      </section>
-
-      {/* ── REAL RESULTS ── */}
-      <section className="bg-white py-16 border-t border-[#E5E2DA]">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="text-center mb-10">
-            <span className="font-mono text-[10px] tracking-[0.45em] text-[#111]/30 uppercase">Real Results</span>
-            <h2 className="font-display text-[36px] sm:text-[48px] font-bold mt-2">Real results. Real people.</h2>
-            <p className="text-[#888] text-[14px] mt-3">Over 12,400 members. 4.8 stars. Verified reviews.</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {[
-              { name: "Marcus L.", plan: "MAINTAIN Plan · Week 18", stars: 5, text: "I've tried every meal prep service in Singapore. Fresher is the only one where I actually look forward to my meals. Macros are spot on and the food tastes like a restaurant." },
-              { name: "Priya S.", plan: "CUT Plan · Lost 7kg in 9 weeks", stars: 5, text: "Down 7kg and I never felt hungry. The chef really understands performance nutrition — this isn't diet food, it's proper eating." },
-              { name: "Wei Jian T.", plan: "BUILD Plan · 4 months in", stars: 5, text: "Gained 4kg of lean muscle while eating clean. The protein macros on the BUILD plan are dialled in perfectly. My gym coach was genuinely impressed." },
-              { name: "Sarah K.", plan: "Ready-to-Go · Regular customer", stars: 5, text: "The salmon scramble breakfast is addictive. I order 10 a week. Free delivery, arrives frozen fresh, heats in 3 mins. What else do you need?" },
-              { name: "Darren Ng", plan: "Gift Card → CUT Plan", stars: 5, text: "Got a gift card from my wife and now I'm a subscriber. The 6in60 guarantee is what got me in the door — results kept me here." },
-              { name: "Aisha B.", plan: "MAINTAIN Plan · 6 months", stars: 5, text: "As a busy mum of two I have zero time to meal prep. Fresher has genuinely changed how our household eats. The kids steal my lunches now." },
-            ].map((t) => (
-              <div key={t.name} className="bg-[#F7F5F0] p-6 flex flex-col gap-4">
-                <div className="text-[#CDFF3A] text-[16px]">{"★".repeat(t.stars)}</div>
-                <p className="text-[14px] leading-relaxed text-[#333] flex-1">"{t.text}"</p>
-                <div>
-                  <div className="font-semibold text-[14px]">{t.name}</div>
-                  <div className="text-[11px] text-[#888] mt-0.5">{t.plan}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── GIFT CARD BANNER ── */}
-      <section className="bg-[#CDFF3A] py-10 sm:py-14">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div>
-            <div className="font-mono text-[10px] tracking-[0.4em] text-[#111]/40 uppercase mb-2">Gift Cards</div>
-            <h3 className="font-display text-[28px] sm:text-[36px] font-bold text-[#111] leading-tight">
-              Give the gift of<br />performance.
-            </h3>
-            <p className="text-[#111]/60 text-[13px] sm:text-[14px] mt-3 max-w-xs">Fresher gift cards never expire. From $25.</p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
-            <div className="grid grid-cols-4 gap-2 sm:flex sm:gap-3">
-              {["$25", "$50", "$100", "$150"].map((a) => (
-                <div key={a} className="bg-white/50 border-2 border-[#111]/15 px-3 sm:px-5 py-2.5 sm:py-3 text-center">
-                  <div className="font-display text-[16px] sm:text-[22px] font-bold text-[#111]">{a}</div>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => navigate("gift-card")}
-              className="w-full sm:w-auto bg-[#111111] text-white px-6 sm:px-7 py-3.5 sm:py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#0D2818] transition-colors whitespace-nowrap">
-              Buy a Gift Card →
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ── TESTIMONIALS — INTERACTIVE ── */}
-      <section className="bg-[#F7F5F0] py-14 sm:py-24">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="flex items-center gap-4 mb-4">
-            <span className="font-mono text-[10px] tracking-[0.45em] text-[#111111]/35 uppercase">Client Results</span>
-            <div className="h-px w-16 bg-[#111111]/15" />
-          </div>
-          <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-14">
-            <h2 className="font-display text-[36px] sm:text-[52px] font-bold leading-none">What our<br />members say.</h2>
-            <div className="flex items-center gap-2 mt-2">
-              {TESTIMONIALS.map((_, i) => (
-                <button key={i} onClick={() => setActiveTestimonial(i)}
-                  className={`transition-all duration-300 ${activeTestimonial === i ? "w-8 h-2 bg-[#111]" : "w-2 h-2 bg-[#D0CCC4] hover:bg-[#888]"} rounded-full`} />
-              ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={t.name}
-                onClick={() => setActiveTestimonial(i)}
-                className={`bg-white p-8 border-2 cursor-pointer transition-all duration-300 ${activeTestimonial === i ? "border-[#111] shadow-xl scale-[1.02]" : "border-transparent hover:border-[#E5E2DA]"}`}>
-                <div className="text-[16px] mb-5">
-                  {"★".repeat(t.rating).split("").map((s, j) => (
-                    <span key={j} className="text-[#CDFF3A]">{s}</span>
-                  ))}
-                </div>
-                <p className="text-[#333] text-[15px] leading-relaxed mb-7">"{t.text}"</p>
-                <div className="border-t border-[#E5E2DA] pt-5 flex items-center justify-between gap-3">
-                  <div>
-                    <div className="font-semibold text-[14px]">{t.name}</div>
-                    <div className="text-[#999] text-[12px] mt-0.5">{t.role}</div>
-                  </div>
-                  <span className={`text-[10px] tracking-[0.18em] uppercase font-semibold px-3 py-1.5 whitespace-nowrap ${t.plan.includes("Ready") ? "bg-[#111111] text-[#CDFF3A]" : "bg-[#0D2818] text-[#F2C94C]"}`}>
-                    {t.plan}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 

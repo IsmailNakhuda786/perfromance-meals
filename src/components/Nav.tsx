@@ -123,6 +123,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
 
           {/* Right icons */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="w-px h-5 bg-white/20 hidden lg:block" />
             <button onClick={() => go("about")} className={`text-[11px] tracking-[0.2em] uppercase transition-colors hidden lg:block whitespace-nowrap ${currentPage === "about" ? "text-[#CDFF3A]" : "text-white/40 hover:text-[#CDFF3A]"}`}>About</button>
             <button onClick={() => go("gift-card")} className="text-white/40 hover:text-[#CDFF3A] transition-colors text-[11px] tracking-[0.2em] uppercase hidden lg:block whitespace-nowrap">Gift Cards</button>
 
