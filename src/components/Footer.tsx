@@ -39,7 +39,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
 
         {/* Contact micro */}
         <div className="text-[11px] text-white/30 text-right shrink-0 hidden lg:block">
-          <div>hello@fresher.com.sg</div>
+          <div>hello@performancemeals.com.sg</div>
           <div className="mt-0.5">+65 6123 4567 · Toa Payoh, SG</div>
         </div>
       </div>
@@ -47,7 +47,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
       {/* Legal row */}
       <div className="border-t border-white/5">
         <div className="max-w-[1440px] mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/30">
-          <span>© 2025 Fresher Performance Meals Pte. Ltd. · UEN 202512345A</span>
+          <span>© 2025 Performance Meals Pte. Ltd. · UEN 202512345A</span>
           <div className="flex gap-5 items-center">
             {["Privacy", "Terms", "Refunds"].map((l) => (
               <a key={l} href="#" className="hover:text-white/70 transition-colors">{l}</a>
