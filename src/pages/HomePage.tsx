@@ -34,11 +34,11 @@ const steps = [
 
 export default function HomePage({ navigate }: Props) {
   return (
-    <div className="bg-white text-[#1A1A1A]">
+    <div className="bg-[#FAF9F6] text-[#1A1A1A]">
 
       {/* ── SECTION 1: HERO ── */}
       {/* Top brand bar */}
-      <div className="border-b border-[#E8E4DC] py-10 px-6 sm:px-10 flex flex-col items-center gap-3">
+      <div className="bg-white border-b border-[#E8E4DC] py-10 px-6 sm:px-10 flex flex-col items-center gap-3">
         <PerformanceMealsLogo size="lg" variant="dark" />
         <p className="text-[#888] text-[14px] text-center max-w-[420px] leading-relaxed mt-2">
           Nutrition that works as hard as you do. One standard. Two clear ways to eat well.
@@ -142,7 +142,7 @@ export default function HomePage({ navigate }: Props) {
       </section>
 
       {/* ── SECTION 2: TRUST PILLARS ── */}
-      <section className="py-20 px-6 sm:px-8 border-t border-[#E8E4DC] bg-[#FAF9F6]">
+      <section className="py-20 px-6 sm:px-8 border-t border-[#E8E4DC] bg-white">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-12">
             <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#F5B300] mb-3">The Performance Meals Standard</p>
@@ -152,7 +152,7 @@ export default function HomePage({ navigate }: Props) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {trustPillars.map((p) => (
-              <div key={p.label} className="bg-white border border-[#E8E4DC] px-6 py-7 flex flex-col gap-3">
+              <div key={p.label} className="bg-[#FAF9F6] border border-[#E8E4DC] px-6 py-7 flex flex-col gap-3">
                 <div className="text-[28px]">{p.icon}</div>
                 <div>
                   <div className="font-semibold text-[15px] text-[#1A1A1A] mb-1">{p.label}</div>
@@ -217,7 +217,7 @@ export default function HomePage({ navigate }: Props) {
       </section>
 
       {/* ── SECTION 4: SOCIAL PROOF ── */}
-      <section className="py-20 px-6 sm:px-8 border-t border-[#E8E4DC] bg-[#FAF9F6]">
+      <section className="py-20 px-6 sm:px-8 border-t border-[#E8E4DC]">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-12">
             <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#F5B300] mb-3">Real Results</p>
