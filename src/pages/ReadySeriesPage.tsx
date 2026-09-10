@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Page, CartItem } from "@/data";
+import { ReadySeriesLogo } from "@/components/Logos";
 
 interface Props {
   navigate: (page: Page) => void;
@@ -110,7 +111,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
   const getMealById = (id: number) => MEALS.find((m) => m.id === id);
 
   return (
-    <div className="bg-[#111111] text-white min-h-screen">
+    <div className="bg-[#1A1A1A] text-white min-h-screen">
 
       {/* ── HERO ── */}
       <div className="relative overflow-hidden">
@@ -118,39 +119,38 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
           className="absolute inset-0 opacity-[0.06]"
           style={{ backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 50px,rgba(205,255,58,0.4) 50px,rgba(205,255,58,0.4) 51px),repeating-linear-gradient(90deg,transparent,transparent 50px,rgba(205,255,58,0.4) 50px,rgba(205,255,58,0.4) 51px)" }}
         />
-        <div className="absolute right-0 top-0 w-[500px] h-[500px] bg-[#CDFF3A]/6 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute right-0 top-0 w-[500px] h-[500px] bg-[#F5B300]/6 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-8 py-16 sm:py-20">
           <button onClick={() => navigate("home")} className="inline-flex items-center gap-2 text-white/30 hover:text-white transition-colors text-[11px] font-mono tracking-widest uppercase mb-8">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-            Fresher
+            Performance Meals
           </button>
 
-          <div className="inline-flex items-center gap-2 mb-5">
-            <div className="w-2.5 h-2.5 bg-[#CDFF3A] rounded-full" />
-            <span className="text-[#CDFF3A] text-[10px] font-mono tracking-[0.35em] uppercase">Ready Series by Fresher</span>
+          <div className="mb-6">
+            <ReadySeriesLogo size="md" variant="dark" />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end">
             <div>
-              <h1 className="font-display text-[56px] sm:text-[72px] font-black leading-[0.88] mb-5">
-                GOOD MEALS.<br />READY WHEN<br />YOU NEED<br /><span className="text-[#CDFF3A]">THEM.</span>
+              <h1 className="font-display text-[52px] sm:text-[68px] font-black leading-[0.9] mb-5">
+                FROZEN<br />AT PEAK.<br /><span className="text-[#F5B300]">READY ON</span><br />DEMAND.
               </h1>
-              <p className="text-white/50 text-[16px] leading-relaxed max-w-[420px]">
-                Fast, enjoyable frozen meals that are ready when life gets busy. 40+ macro-tracked options. Keep your week moving.
+              <p className="text-white/50 text-[15px] leading-relaxed max-w-[400px]">
+                Good meals, ready when you need them. Fast, enjoyable, and macro-tracked — so a busy day does not knock you off track.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4 lg:justify-end">
               <div className="bg-[#0A0A0A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#CDFF3A] font-display text-[32px] font-black">3 min</div>
+                <div className="text-[#F5B300] font-display text-[32px] font-black">3 min</div>
                 <div className="text-white/40 text-[11px] tracking-wide mt-1">Ready to eat</div>
               </div>
               <div className="bg-[#0A0A0A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#CDFF3A] font-display text-[32px] font-black">40+</div>
+                <div className="text-[#F5B300] font-display text-[32px] font-black">40+</div>
                 <div className="text-white/40 text-[11px] tracking-wide mt-1">Meal options</div>
               </div>
               <div className="bg-[#0A0A0A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#CDFF3A] font-display text-[32px] font-black">$8.90</div>
+                <div className="text-[#F5B300] font-display text-[32px] font-black">$8.90</div>
                 <div className="text-white/40 text-[11px] tracking-wide mt-1">Starting from</div>
               </div>
             </div>
@@ -159,13 +159,13 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
       </div>
 
       {/* ── ACTIVE PROMOS BAR ── */}
-      <div className="bg-[#CDFF3A]/8 border-y border-[#CDFF3A]/15 px-6 py-4">
+      <div className="bg-[#F5B300]/8 border-y border-[#F5B300]/15 px-6 py-4">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-8">
-          <div className="text-[#CDFF3A] text-[10px] font-mono tracking-[0.3em] uppercase shrink-0">Active Promos</div>
+          <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase shrink-0">Active Promos</div>
           <div className="flex flex-wrap gap-4">
             {promos.map((p) => (
               <div key={p.code} className="flex items-center gap-2">
-                <span className="bg-[#CDFF3A] text-[#111] text-[9px] font-black px-2 py-0.5 tracking-wider">{p.code}</span>
+                <span className="bg-[#F5B300] text-[#111] text-[9px] font-black px-2 py-0.5 tracking-wider">{p.code}</span>
                 <span className="text-white/50 text-[11px]">{p.desc}</span>
                 <span className="text-white/20 text-[10px] font-mono">{p.expires}</span>
               </div>
@@ -180,11 +180,11 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
         <div className="max-w-[1200px] mx-auto">
           <div className="flex items-center gap-4">
             <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-[#CDFF3A] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
+              <div className="h-full bg-[#F5B300] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
             </div>
             <div className="text-[11px] shrink-0">
               {toFreeDelivery <= 0
-                ? <span className="text-[#CDFF3A] font-bold">🎉 Free delivery unlocked!</span>
+                ? <span className="text-[#F5B300] font-bold">🎉 Free delivery unlocked!</span>
                 : <span className="text-white/40">Add <span className="text-white font-semibold">${toFreeDelivery.toFixed(2)}</span> more for free delivery</span>
               }
             </div>
@@ -197,13 +197,13 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
             <div>
-              <div className="text-[#CDFF3A] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Useful Bundles</div>
-              <h2 className="font-display text-[32px] sm:text-[40px] font-black">Stock up and save<span className="text-[#CDFF3A]">.</span></h2>
+              <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Useful Bundles</div>
+              <h2 className="font-display text-[32px] sm:text-[40px] font-black">Stock up and save<span className="text-[#F5B300]">.</span></h2>
               <p className="text-white/40 text-[13px] mt-2">Each bundle is curated from our bestselling meals — see what you get inside.</p>
             </div>
             <button
               onClick={() => navigate("build-a-box")}
-              className="inline-flex items-center gap-2 border border-[#CDFF3A]/40 text-[#CDFF3A] text-[11px] font-bold tracking-[0.2em] uppercase px-6 py-3 hover:bg-[#CDFF3A] hover:text-[#111] transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-2 border border-[#F5B300]/40 text-[#F5B300] text-[11px] font-bold tracking-[0.2em] uppercase px-6 py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors whitespace-nowrap"
             >
               Build-A-Box →
             </button>
@@ -214,7 +214,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
               const bundleMeals = b.mealIds.map((id) => getMealById(id)).filter(Boolean) as typeof MEALS;
               const uniqueMeals = bundleMeals.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
               return (
-                <div key={b.n} className="bg-[#111] border border-white/8 rounded-xl overflow-hidden hover:border-[#CDFF3A]/30 transition-colors">
+                <div key={b.n} className="bg-[#111] border border-white/8 rounded-xl overflow-hidden hover:border-[#F5B300]/30 transition-colors">
                   {/* Meal image carousel — scrollable thumbnails */}
                   <div className="relative">
                     <div className="flex gap-0 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: "none" }}>
@@ -226,7 +226,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                       ))}
                     </div>
                     {b.badge && (
-                      <div className="absolute top-3 right-3 bg-[#CDFF3A] text-[#111] text-[9px] font-black tracking-[0.15em] px-2.5 py-1">{b.badge}</div>
+                      <div className="absolute top-3 right-3 bg-[#F5B300] text-[#111] text-[9px] font-black tracking-[0.15em] px-2.5 py-1">{b.badge}</div>
                     )}
                     <div className="absolute bottom-2 left-3 text-[10px] text-white/50 font-mono">{b.meals} meals · scroll to see all →</div>
                   </div>
@@ -239,7 +239,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                         <div className="text-white/40 text-[12px] mt-0.5 leading-relaxed">{b.desc}</div>
                       </div>
                       <div className="text-right shrink-0">
-                        <div className="font-display text-[24px] font-black text-[#CDFF3A]">${b.price}</div>
+                        <div className="font-display text-[24px] font-black text-[#F5B300]">${b.price}</div>
                         <div className="text-white/30 text-[11px]">${b.ppm}/meal</div>
                       </div>
                     </div>
@@ -256,7 +256,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
 
                     <button
                       onClick={() => addToCart({ id: 200 + b.meals, name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box" })}
-                      className="w-full bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#CDFF3A] hover:text-[#111] transition-colors rounded-lg"
+                      className="w-full bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors rounded-lg"
                     >
                       Add Bundle — ${b.price}
                     </button>
@@ -269,7 +269,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
           <div className="mt-6 text-center">
             <button
               onClick={() => navigate("build-a-box")}
-              className="inline-flex items-center gap-3 text-white/40 hover:text-[#CDFF3A] text-[12px] font-mono tracking-widest uppercase transition-colors"
+              className="inline-flex items-center gap-3 text-white/40 hover:text-[#F5B300] text-[12px] font-mono tracking-widest uppercase transition-colors"
             >
               Or build your own custom box →
             </button>
@@ -282,9 +282,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
             <div>
-              <div className="text-[#CDFF3A] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">All Meals</div>
+              <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">All Meals</div>
               <h2 className="font-display text-[32px] sm:text-[40px] font-black">
-                {filtered.length} meals available<span className="text-[#CDFF3A]">.</span>
+                {filtered.length} meals available<span className="text-[#F5B300]">.</span>
               </h2>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -292,7 +292,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                 <button
                   key={c}
                   onClick={() => setActiveCat(c)}
-                  className={`px-4 py-2 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${activeCat === c ? "bg-[#CDFF3A] text-[#111]" : "border border-white/15 text-white/50 hover:border-[#CDFF3A]/50 hover:text-[#CDFF3A]"}`}
+                  className={`px-4 py-2 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${activeCat === c ? "bg-[#F5B300] text-[#111]" : "border border-white/15 text-white/50 hover:border-[#F5B300]/50 hover:text-[#F5B300]"}`}
                 >
                   {c}
                 </button>
@@ -314,7 +314,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                   <div className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A]">
                     <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
                     {meal.badge && (
-                      <div className="absolute top-3 left-3 bg-[#CDFF3A] text-[#111] text-[8px] font-black tracking-[0.15em] px-2 py-1">
+                      <div className="absolute top-3 left-3 bg-[#F5B300] text-[#111] text-[8px] font-black tracking-[0.15em] px-2 py-1">
                         {meal.badge}
                       </div>
                     )}
@@ -336,7 +336,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                     >
                       <div className="flex">
                         {[1,2,3,4,5].map((s) => (
-                          <span key={s} className={`text-[11px] ${s <= Math.round(Number(avgRating)) ? "text-[#CDFF3A]" : "text-white/20"}`}>★</span>
+                          <span key={s} className={`text-[11px] ${s <= Math.round(Number(avgRating)) ? "text-[#F5B300]" : "text-white/20"}`}>★</span>
                         ))}
                       </div>
                       <span className="text-[11px] text-white/40 font-mono">{avgRating}</span>
@@ -346,7 +346,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                       <span className="font-display text-[18px] font-black text-white">${meal.price.toFixed(2)}</span>
                       <button
                         onClick={() => handleAdd(meal)}
-                        className={`px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase transition-colors ${justAdded ? "bg-[#7EE8B0] text-[#111]" : inCart ? "bg-[#CDFF3A]/20 text-[#CDFF3A] border border-[#CDFF3A]/30 hover:bg-[#CDFF3A] hover:text-[#111]" : "bg-[#CDFF3A] text-[#111] hover:bg-white"}`}
+                        className={`px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase transition-colors ${justAdded ? "bg-[#7EE8B0] text-[#111]" : inCart ? "bg-[#F5B300]/20 text-[#F5B300] border border-[#F5B300]/30 hover:bg-[#F5B300] hover:text-[#111]" : "bg-[#F5B300] text-[#111] hover:bg-white"}`}
                       >
                         {justAdded ? "✓ Added" : inCart ? `In Cart (${inCart.qty})` : "+ Add"}
                       </button>
@@ -363,9 +363,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
       <section className="py-16 bg-[#0A0A0A] px-6 sm:px-8">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-12">
-            <div className="text-[#CDFF3A] text-[10px] font-mono tracking-[0.3em] uppercase mb-3">Why Ready Series</div>
+            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-3">Why Ready Series</div>
             <h2 className="font-display text-[36px] sm:text-[48px] font-black">
-              A busy day does not have<br />to knock you off track<span className="text-[#CDFF3A]">.</span>
+              A busy day does not have<br />to knock you off track<span className="text-[#F5B300]">.</span>
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/8">
@@ -387,12 +387,12 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
 
       {/* ── CART STICKY BAR ── */}
       {cartQty > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#CDFF3A] text-[#111]">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#F5B300] text-[#111]">
           {/* Free delivery progress */}
           {toFreeDelivery > 0 && (
             <div className="bg-[#111] px-6 py-2 flex items-center gap-4">
               <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-[#CDFF3A] rounded-full transition-all" style={{ width: `${freeDeliveryPct}%` }} />
+                <div className="h-full bg-[#F5B300] rounded-full transition-all" style={{ width: `${freeDeliveryPct}%` }} />
               </div>
               <span className="text-[11px] text-white/60 shrink-0">Add ${toFreeDelivery.toFixed(2)} for free delivery</span>
             </div>
@@ -430,7 +430,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                   <div className="flex items-center gap-2 mt-1">
                     <div className="flex">
                       {[1,2,3,4,5].map((s) => (
-                        <span key={s} className={`text-[13px] ${s <= Math.round(avgRating) ? "text-[#CDFF3A]" : "text-white/20"}`}>★</span>
+                        <span key={s} className={`text-[13px] ${s <= Math.round(avgRating) ? "text-[#F5B300]" : "text-white/20"}`}>★</span>
                       ))}
                     </div>
                     <span className="text-white/60 text-[12px] font-mono">{avgRating.toFixed(1)} · {reviews.length} reviews</span>
@@ -448,7 +448,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                     <div key={star} className="flex items-center gap-3 text-[12px]">
                       <span className="text-white/50 w-4 text-right">{star}★</span>
                       <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                        <div className="h-full bg-[#CDFF3A] rounded-full" style={{ width: reviews.length > 0 ? `${(count / reviews.length) * 100}%` : "0%" }} />
+                        <div className="h-full bg-[#F5B300] rounded-full" style={{ width: reviews.length > 0 ? `${(count / reviews.length) * 100}%` : "0%" }} />
                       </div>
                       <span className="text-white/30 w-4">{count}</span>
                     </div>
@@ -465,7 +465,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
                         <span className="font-semibold text-[13px] text-white">{r.author}</span>
                         <div className="flex mt-0.5">
                           {[1,2,3,4,5].map((s) => (
-                            <span key={s} className={`text-[11px] ${s <= r.rating ? "text-[#CDFF3A]" : "text-white/20"}`}>★</span>
+                            <span key={s} className={`text-[11px] ${s <= r.rating ? "text-[#F5B300]" : "text-white/20"}`}>★</span>
                           ))}
                         </div>
                       </div>
@@ -481,7 +481,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
 
               <div className="px-6 pb-6">
                 <button onClick={() => { setReviewMealId(null); handleAdd(meal); }}
-                  className="w-full bg-[#CDFF3A] text-[#111] py-3.5 font-bold text-[13px] tracking-wider uppercase hover:bg-white transition-colors rounded-lg">
+                  className="w-full bg-[#F5B300] text-[#111] py-3.5 font-bold text-[13px] tracking-wider uppercase hover:bg-white transition-colors rounded-lg">
                   Add to Cart — ${meal.price.toFixed(2)}
                 </button>
               </div>

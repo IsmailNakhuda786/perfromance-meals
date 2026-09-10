@@ -1,4 +1,5 @@
 import { Page } from "@/data";
+import { PerformanceMealsLogo } from "@/components/Logos";
 
 interface FooterProps {
   navigate: (page: Page) => void;
@@ -7,12 +8,12 @@ interface FooterProps {
 
 export default function Footer({ navigate, navigateToWizard }: FooterProps) {
   return (
-    <footer className="bg-[#0A0A0A] border-t border-white/5">
+    <footer className="bg-[#1A1A1A] border-t border-white/5">
       {/* Main row */}
-      <div className="max-w-[1440px] mx-auto px-6 py-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="max-w-[1440px] mx-auto px-6 py-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
         {/* Brand */}
-        <button onClick={() => navigate("home")} className="font-display text-[20px] font-bold text-white shrink-0">
-          FRESHER<span className="text-[#CDFF3A]">.</span>
+        <button onClick={() => navigate("home")} className="shrink-0">
+          <PerformanceMealsLogo size="sm" variant="light" />
         </button>
 
         {/* Nav links */}
@@ -30,7 +31,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             { label: "My Account", action: () => navigate("account") },
           ].map((l) => (
             <button key={l.label} onClick={l.action}
-              className="text-[11px] sm:text-[12px] text-white/60 hover:text-[#CDFF3A] transition-colors tracking-wide whitespace-nowrap">
+              className="text-[11px] sm:text-[12px] text-white/60 hover:text-[#F5B300] transition-colors tracking-wide whitespace-nowrap">
               {l.label}
             </button>
           ))}
@@ -52,19 +53,19 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
               <a key={l} href="#" className="hover:text-white/70 transition-colors">{l}</a>
             ))}
             <button onClick={() => navigate("wireframe")}
-              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
+              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
               Wireframes
             </button>
             <button onClick={() => navigate("blueprint")}
-              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
+              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
               Blueprint
             </button>
             <button onClick={() => navigate("handoff")}
-              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#CDFF3A] hover:text-[#CDFF3A] transition-colors">
+              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
               Dev Handoff
             </button>
             <button onClick={() => navigate("screens-export")}
-              className="border border-[#CDFF3A]/40 bg-[#CDFF3A]/5 text-[#CDFF3A] px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors font-bold">
+              className="border border-[#F5B300]/40 bg-[#F5B300]/5 text-[#F5B300] px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors font-bold">
               🖨 All Screens PDF
             </button>
           </div>

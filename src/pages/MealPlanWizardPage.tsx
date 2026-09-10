@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Meal, MEALS, Page, PLANS } from "@/data";
+import { MealPlanLogo } from "@/components/Logos";
 
 interface Props {
   navigate: (page: Page) => void;
@@ -136,16 +137,16 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F5F0] text-[#111] flex flex-col">
+    <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-[#E5E2DA] flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-20">
-        <button onClick={() => navigate("meal-plan-landing")} className="font-bold text-[17px] sm:text-[20px] tracking-tight text-[#111] shrink-0">
-          FRESHER<span className="text-[#F2C94C]">.</span>
+      <div className="bg-white border-b border-[#E8E4DC] flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-20">
+        <button onClick={() => navigate("meal-plan-landing")} className="shrink-0">
+          <MealPlanLogo size="sm" variant="light" />
         </button>
         <div className="flex items-center gap-2 sm:gap-3">
           {([1, 2, 3, 4] as Step[]).map((s) => (
             <div key={s} className="flex flex-col items-center gap-0.5">
-              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-sm font-semibold border-2 transition-all ${s === step ? "border-[#111] bg-[#111] text-white" : s < step ? "border-[#F2C94C] bg-[#F2C94C] text-[#111]" : "border-[#D0CCC4] bg-white text-[#999]"}`}>
+              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-sm font-semibold border-2 transition-all ${s === step ? "border-[#111] bg-[#111] text-white" : s < step ? "border-[#E85D04] bg-[#E85D04] text-[#111]" : "border-[#D0CCC4] bg-white text-[#999]"}`}>
                 {s < step ? "✓" : s}
               </div>
               <span className={`text-[9px] sm:text-[10px] font-medium ${s === step ? "text-[#111]" : "text-[#999]"}`}>
@@ -176,7 +177,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   <button key={opt.count} onClick={() => setMealCount(opt.count)}
                     className={`relative text-left border-2 p-6 rounded-2xl transition-all ${mealCount === opt.count ? "border-[#111] bg-white shadow-md" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
                     {opt.popular && (
-                      <div className="absolute top-3 right-3 bg-[#F2C94C] text-[#111] text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-0.5">Most Popular</div>
+                      <div className="absolute top-3 right-3 bg-[#E85D04] text-[#111] text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-0.5">Most Popular</div>
                     )}
                     <div className="flex items-center gap-2 mb-3">
                       {opt.slots.map((s) => (
@@ -191,7 +192,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                 ))}
               </div>
               <button onClick={handleNext}
-                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white">
+                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white">
                 Continue →
               </button>
             </div>
@@ -211,11 +212,11 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   <button onClick={() => setBilling("month")}
                     className={`flex-1 sm:flex-none relative px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "month" ? "bg-[#111] text-white" : "text-[#999] hover:text-[#111]"}`}>
                     Monthly
-                    <span className={`ml-2 text-[10px] font-black tracking-widest px-1.5 py-0.5 ${billing === "month" ? "bg-[#F2C94C] text-[#111]" : "bg-[#F2C94C]/70 text-[#111]"}`}>SAVE 15%</span>
+                    <span className={`ml-2 text-[10px] font-black tracking-widest px-1.5 py-0.5 ${billing === "month" ? "bg-[#E85D04] text-[#111]" : "bg-[#E85D04]/70 text-[#111]"}`}>SAVE 15%</span>
                   </button>
                 </div>
                 {billing === "week" && (
-                  <div className="mt-3 border-2 border-[#F2C94C] bg-[#FFF9E6] px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="mt-3 border-2 border-[#E85D04] bg-[#FFF9E6] px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
                       <span className="text-[22px]">💰</span>
                       <div>
@@ -224,7 +225,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                       </div>
                     </div>
                     <button onClick={() => setBilling("month")}
-                      className="shrink-0 bg-[#F2C94C] text-[#111] font-black text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 hover:bg-[#111] hover:text-[#F2C94C] transition-colors whitespace-nowrap">
+                      className="shrink-0 bg-[#E85D04] text-[#111] font-black text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 hover:bg-[#111] hover:text-[#E85D04] transition-colors whitespace-nowrap">
                       Switch Now →
                     </button>
                   </div>
@@ -266,7 +267,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                 <div className="relative shrink-0 w-[56px] h-[56px]">
                   <svg viewBox="0 0 56 56" className="w-full h-full" style={{ animation: "spin6wiz 18s linear infinite" }}>
                     <defs><path id="wizRing" d="M 28,28 m -22,0 a 22,22 0 1,1 44,0 a 22,22 0 1,1 -44,0" /></defs>
-                    <circle cx="28" cy="28" r="25" fill="#CDFF3A" />
+                    <circle cx="28" cy="28" r="25" fill="#F5B300" />
                     <text fontSize="5.2" fontFamily="monospace" fontWeight="800" fill="#111" opacity="0.55" letterSpacing="1.5">
                       <textPath href="#wizRing" startOffset="50%" textAnchor="middle">GUARANTEED · 60 DAYS ·</textPath>
                     </text>
@@ -283,7 +284,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
               </div>
 
               <button onClick={handleNext}
-                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white">
+                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white">
                 Continue →
               </button>
             </div>
@@ -306,7 +307,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   {canProceedStep3 && <span className="text-green-600 text-[12px] font-bold">✓ All meals chosen</span>}
                 </div>
                 <div className="h-2 bg-[#F0EDE8] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#F2C94C] rounded-full transition-all duration-500"
+                  <div className="h-full bg-[#E85D04] rounded-full transition-all duration-500"
                     style={{ width: `${(totalSlotsFilled / totalSlotsRequired) * 100}%` }} />
                 </div>
               </div>
@@ -364,7 +365,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                               ) : (
                                 <button
                                   onClick={() => setPickerState({ day: d.day, slot })}
-                                  className="w-full border-2 border-dashed border-[#E5E2DA] hover:border-[#F2C94C] rounded-lg py-4 text-[13px] text-[#aaa] hover:text-[#111] transition-all flex flex-col items-center gap-1"
+                                  className="w-full border-2 border-dashed border-[#E5E2DA] hover:border-[#E85D04] rounded-lg py-4 text-[13px] text-[#aaa] hover:text-[#111] transition-all flex flex-col items-center gap-1"
                                 >
                                   <span className="text-[20px]">+</span>
                                   <span>Choose {slot}</span>
@@ -381,7 +382,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
               </div>
 
               <button onClick={handleNext} disabled={!canProceedStep3}
-                className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all rounded-xl ${canProceedStep3 ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
+                className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all rounded-xl ${canProceedStep3 ? "bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
                 {canProceedStep3 ? "Confirm Menu →" : `Select ${totalSlotsRequired - totalSlotsFilled} more meal${totalSlotsRequired - totalSlotsFilled !== 1 ? "s" : ""} to continue`}
               </button>
             </div>
@@ -400,7 +401,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   {DELIVERY_WEEK.map((d, i) => (
                     <div key={d.day} className={`flex items-center justify-between px-5 py-3.5 ${i < DELIVERY_WEEK.length - 1 ? "border-b border-[#F0EDE8]" : ""}`}>
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-[#F2C94C] rounded-full flex items-center justify-center text-[#111] font-bold text-[11px]">{d.date}</div>
+                        <div className="w-8 h-8 bg-[#E85D04] rounded-full flex items-center justify-center text-[#111] font-bold text-[11px]">{d.date}</div>
                         <div>
                           <div className="text-[13px] font-semibold text-[#111]">{d.day}, {d.date} {d.month}</div>
                           <div className="text-[11px] text-[#888]">{mealCount === 1 ? "Lunch" : "Lunch + Dinner"}</div>
@@ -409,7 +410,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                       <div className="text-[11px] text-[#aaa] font-mono">7am – 10am</div>
                     </div>
                   ))}
-                  <div className="px-5 py-3 bg-[#FFFBF0] border-t border-[#F2C94C]/30">
+                  <div className="px-5 py-3 bg-[#FFFBF0] border-t border-[#E85D04]/30">
                     <p className="text-[11px] text-[#7A5C00]">
                       📦 Meals are prepared fresh each morning and delivered before 10am. Delivery windows are fixed — no scheduling needed.
                     </p>
@@ -444,7 +445,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
               </div>
 
               <button onClick={handleNext} disabled={!canProceedStep4}
-                className={`w-full py-4 rounded-xl font-semibold text-[15px] transition-all ${canProceedStep4 ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
+                className={`w-full py-4 rounded-xl font-semibold text-[15px] transition-all ${canProceedStep4 ? "bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
                 Continue →
               </button>
             </div>
@@ -460,16 +461,16 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   <p className="text-[#666] mb-2 text-[14px]">Meal Plans are subscription-based. An account lets you review your menu weekly, manage deliveries, and earn rewards points.</p>
 
                   <div className="bg-[#111] text-white rounded-xl p-4 mb-6 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#CDFF3A] rounded-full flex items-center justify-center shrink-0 text-[#111] text-lg font-bold">🪙</div>
+                    <div className="w-10 h-10 bg-[#F5B300] rounded-full flex items-center justify-center shrink-0 text-[#111] text-lg font-bold">🪙</div>
                     <div>
-                      <p className="font-semibold text-[14px]">Earn <span className="text-[#CDFF3A]">+{Math.round(Number(price) * 1.5)} points</span> on this plan</p>
+                      <p className="font-semibold text-[14px]">Earn <span className="text-[#F5B300]">+{Math.round(Number(price) * 1.5)} points</span> on this plan</p>
                       <p className="text-white/50 text-[12px]">Redeem for free meals, discounts and referral bonuses.</p>
                     </div>
                   </div>
 
                   <div className="flex flex-col gap-3 mb-4">
                     <button onClick={() => setWizardAuthMode("signup")}
-                      className="w-full bg-[#CDFF3A] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#b8e832] transition-colors">
+                      className="w-full bg-[#F5B300] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#b8e832] transition-colors">
                       Create Account & Subscribe
                     </button>
                     <button onClick={() => setWizardAuthMode("signin")}
@@ -498,7 +499,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                       className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   </div>
                   <button disabled={!waName || !waEmail || !waPassword} onClick={() => setWizardAuthMode("signup_done")}
-                    className="w-full bg-[#CDFF3A] text-[#111] py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#b8e832] transition-colors">
+                    className="w-full bg-[#F5B300] text-[#111] py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#b8e832] transition-colors">
                     Continue to Payment →
                   </button>
                 </div>
@@ -577,7 +578,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                         className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase rounded-lg ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
                       />
                       <button onClick={handleApplyPromo}
-                        className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase rounded-lg hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                        className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase rounded-lg hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                         Apply
                       </button>
                     </div>
@@ -587,7 +588,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   </div>
 
                   {/* Trust seal */}
-                  <div className="flex items-center gap-3 bg-[#CDFF3A]/10 border border-[#CDFF3A]/30 px-4 py-3 mb-4 rounded-xl">
+                  <div className="flex items-center gap-3 bg-[#F5B300]/10 border border-[#F5B300]/30 px-4 py-3 mb-4 rounded-xl">
                     <span className="text-[24px] shrink-0">🔒</span>
                     <div className="text-[12px] text-[#555] leading-tight">
                       <span className="font-bold text-[#111]">60-day money-back guarantee.</span> Lose 6kg or get a full refund — no questions asked.
@@ -595,7 +596,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   </div>
 
                   <button onClick={handleSubscribe}
-                    className="w-full py-4 rounded-xl font-semibold text-[15px] bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white transition-all">
+                    className="w-full py-4 rounded-xl font-semibold text-[15px] bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white transition-all">
                     Subscribe — ${price}/{billing === "week" ? "wk" : "mo"}
                   </button>
                   <p className="text-center text-xs text-[#999] mt-4">Cancel anytime from your account. No lock-in.</p>
@@ -626,7 +627,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
             <div className="p-4 flex flex-col gap-3">
               {getDayOptions(planMeals, DELIVERY_WEEK.findIndex((d) => d.day === pickerState.day)).map((meal) => (
                 <button key={meal.id} onClick={() => selectMeal(meal.id)}
-                  className="flex items-center gap-4 p-3 border border-[#E5E2DA] hover:border-[#F2C94C] hover:bg-[#FFFBF0] rounded-xl transition-all text-left group">
+                  className="flex items-center gap-4 p-3 border border-[#E5E2DA] hover:border-[#E85D04] hover:bg-[#FFFBF0] rounded-xl transition-all text-left group">
                   <img src={meal.img} alt={meal.name} className="w-16 h-16 object-cover rounded-lg shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-[14px] text-[#111] leading-snug">{meal.name}</div>
@@ -638,11 +639,11 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                       <span>${meal.price.toFixed(2)}</span>
                     </div>
                     <div className="flex mt-1">
-                      {[1,2,3,4,5].map((s) => <span key={s} className={`text-[10px] ${s <= Math.round(meal.rating) ? "text-[#F2C94C]" : "text-[#ddd]"}`}>★</span>)}
+                      {[1,2,3,4,5].map((s) => <span key={s} className={`text-[10px] ${s <= Math.round(meal.rating) ? "text-[#E85D04]" : "text-[#ddd]"}`}>★</span>)}
                       <span className="text-[10px] text-[#aaa] ml-1">({meal.reviews})</span>
                     </div>
                   </div>
-                  <div className="shrink-0 w-8 h-8 rounded-full border-2 border-[#E5E2DA] group-hover:border-[#F2C94C] group-hover:bg-[#F2C94C] flex items-center justify-center transition-all">
+                  <div className="shrink-0 w-8 h-8 rounded-full border-2 border-[#E5E2DA] group-hover:border-[#E85D04] group-hover:bg-[#E85D04] flex items-center justify-center transition-all">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
                   </div>
                 </button>

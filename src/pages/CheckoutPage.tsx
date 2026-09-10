@@ -62,16 +62,16 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col">
       {/* Minimal nav */}
       <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-[#E5E2DA]">
-        <button onClick={() => navigate("home")} className="font-display text-[20px] font-bold text-[#111]">
-          FRESHER<span className="text-[#CDFF3A]">.</span>
+        <button onClick={() => navigate("home")} className="text-[16px] font-bold tracking-[0.1em] text-[#1A1A1A]" style={{ fontFamily: "'Outfit', sans-serif" }}>
+          PERFORMANCE <span className="text-[#F5B300]">MEALS</span>
         </button>
         <div className="flex items-center gap-2">
           {[1, 2].map((n) => (
             <div key={n} className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${step === n ? "bg-[#111] text-white" : step > n ? "bg-[#CDFF3A] text-[#111]" : "bg-[#E5E2DA] text-[#aaa]"}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold transition-all ${step === n ? "bg-[#111] text-white" : step > n ? "bg-[#F5B300] text-[#111]" : "bg-[#E5E2DA] text-[#aaa]"}`}>
                 {step > n ? "✓" : n}
               </div>
-              {n < 2 && <div className={`w-8 h-px ${step > n ? "bg-[#CDFF3A]" : "bg-[#E5E2DA]"}`} />}
+              {n < 2 && <div className={`w-8 h-px ${step > n ? "bg-[#F5B300]" : "bg-[#E5E2DA]"}`} />}
             </div>
           ))}
         </div>
@@ -91,7 +91,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
               <p className="text-[#666] text-[14px] mb-8">Sign in to save your order history and earn rewards points — or continue as a guest.</p>
               <div className="space-y-3 mb-6">
                 <button onClick={() => setAuthMode("signup")}
-                  className="w-full bg-[#111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors flex items-center justify-between px-6">
+                  className="w-full bg-[#111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors flex items-center justify-between px-6">
                   <span>Create Account</span>
                   <span className="text-[11px] font-normal text-current/60 normal-case tracking-normal">Earn points on this order →</span>
                 </button>
@@ -127,13 +127,13 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                   </div>
                 ))}
               </div>
-              <div className="bg-[#CDFF3A]/20 border border-[#CDFF3A]/50 px-4 py-3 mb-6 text-[12px] text-[#555]">
+              <div className="bg-[#F5B300]/20 border border-[#F5B300]/50 px-4 py-3 mb-6 text-[12px] text-[#555]">
                 🎁 You'll earn <strong className="text-[#111]">points on this order</strong> and unlock referral rewards after signup.
               </div>
               <button
                 disabled={!authName || !authEmail || !authPassword}
                 onClick={() => setAuthMode("signup_done")}
-                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors disabled:opacity-40">
+                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors disabled:opacity-40">
                 Create Account & Continue →
               </button>
             </div>
@@ -142,7 +142,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
           {/* ── SIGNUP SUCCESS ── */}
           {authMode === "signup_done" && !signupConfirmed && (
             <div>
-              <div className="w-16 h-16 bg-[#CDFF3A] rounded-full flex items-center justify-center mb-5">
+              <div className="w-16 h-16 bg-[#F5B300] rounded-full flex items-center justify-center mb-5">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
               </div>
               <h1 className="font-display text-[28px] font-bold mb-2">Account created!</h1>
@@ -162,11 +162,11 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                     <p className="text-[13px] font-semibold text-[#111]">Email confirmation sent</p>
                     <p className="text-[12px] text-[#666]">{authEmail || "your@email.com"}</p>
                   </div>
-                  <span className="ml-auto text-[#CDFF3A] bg-[#111] text-[10px] font-bold px-2 py-0.5">✓ Sent</span>
+                  <span className="ml-auto text-[#F5B300] bg-[#111] text-[10px] font-bold px-2 py-0.5">✓ Sent</span>
                 </div>
               </div>
               <button onClick={() => setSignupConfirmed(true)}
-                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                 Continue to Delivery →
               </button>
             </div>
@@ -192,7 +192,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
               <button
                 disabled={!authEmail || !authPassword}
                 onClick={() => setAuthMode("signin_done")}
-                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors mb-3 disabled:opacity-40">
+                className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors mb-3 disabled:opacity-40">
                 Sign In & Continue →
               </button>
               <p className="text-center text-[12px] text-[#aaa]">Forgot password? <span className="text-[#111] font-semibold cursor-pointer hover:underline">Reset it</span></p>
@@ -247,7 +247,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                       className={`shrink-0 px-5 py-3 border text-center transition-all ${date === d ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] bg-white hover:border-[#111]"}`}>
                       <div className={`text-[11px] ${date === d ? "text-white/50" : "text-[#aaa]"}`}>{d.split(" ")[0]}</div>
                       <div className="font-bold text-[18px] leading-tight">{d.split(" ")[1]}</div>
-                      <div className={`text-[10px] mt-0.5 ${date === d ? "text-[#CDFF3A]" : "text-[#ccc]"}`}>Sep</div>
+                      <div className={`text-[10px] mt-0.5 ${date === d ? "text-[#F5B300]" : "text-[#ccc]"}`}>Sep</div>
                     </button>
                   ))}
                 </div>
@@ -267,7 +267,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
               </div>
 
               <button onClick={() => setStep(2)}
-                className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                 Continue to Payment →
               </button>
             </div>
@@ -293,12 +293,12 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                 <button onClick={() => setUseWallet((v) => !v)}
                   className={`w-full flex items-center justify-between px-4 py-3.5 border mb-5 transition-all ${useWallet ? "bg-[#111] text-white border-[#111]" : "bg-white border-[#E5E2DA] hover:border-[#111]"}`}>
                   <div className="flex items-center gap-2.5 text-left">
-                    <div className={`w-4 h-4 border-2 rounded-sm flex items-center justify-center shrink-0 ${useWallet ? "bg-[#CDFF3A] border-[#CDFF3A]" : "border-[#ccc]"}`}>
+                    <div className={`w-4 h-4 border-2 rounded-sm flex items-center justify-center shrink-0 ${useWallet ? "bg-[#F5B300] border-[#F5B300]" : "border-[#ccc]"}`}>
                       {useWallet && <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>}
                     </div>
                     <span className={`text-[13px] ${useWallet ? "text-white" : "text-[#333]"}`}>Apply wallet credit</span>
                   </div>
-                  <span className={`font-mono text-[13px] font-bold ${useWallet ? "text-[#CDFF3A]" : "text-[#888]"}`}>
+                  <span className={`font-mono text-[13px] font-bold ${useWallet ? "text-[#F5B300]" : "text-[#888]"}`}>
                     {useWallet ? "–$12.50" : "$12.50 available"}
                   </span>
                 </button>
@@ -339,7 +339,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                   />
                   <button
                     onClick={handleApplyPromo}
-                    className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                    className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                     Apply
                   </button>
                 </div>
@@ -370,7 +370,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
               </div>
 
               <button onClick={() => onComplete(authMode === "guest", promoApplied ? promoCode.trim().toUpperCase() : "", promoDiscount)}
-                className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                 Place Order — ${total.toFixed(2)}
               </button>
               <p className="text-[#ccc] text-[11px] text-center mt-3">🔒 Stripe · Free returns within 7 days</p>
@@ -412,7 +412,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                 <div className="text-[11px] text-[#888]">
                   Add ${(FREE_DELIVERY_THRESHOLD - subtotal).toFixed(2)} more for free delivery
                   <div className="mt-1.5 h-1.5 bg-[#F0EDE8] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#CDFF3A] rounded-full transition-all" style={{ width: `${Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100)}%` }} />
+                    <div className="h-full bg-[#F5B300] rounded-full transition-all" style={{ width: `${Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100)}%` }} />
                   </div>
                 </div>
               )}
