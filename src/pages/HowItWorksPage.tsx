@@ -42,7 +42,7 @@ export default function HowItWorksPage({ navigate, navigateToWizard }: Props) {
           One standard.<br />Two clear journeys.
         </h1>
         <p className="text-[#666] text-[17px] leading-relaxed max-w-[520px] mx-auto">
-          Performance Meals sets the quality standard. Meal Plan and Ready-Series then serve two different customer needs — structured progress or frozen flexibility.
+          One trusted standard — delivered through a personalised fresh-plan experience or a fast, flexible frozen-meal experience.
         </p>
       </div>
 

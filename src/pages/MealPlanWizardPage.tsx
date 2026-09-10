@@ -177,7 +177,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   { count: 2 as const, label: "Lunch & Dinner", desc: "2 fresh meals per day — full day nutrition fully covered.", slots: ["Lunch", "Dinner"], price: "From $148/wk", popular: true },
                 ]).map((opt) => (
                   <button key={opt.count} onClick={() => setMealCount(opt.count)}
-                    className={`relative text-left border-2 p-6 rounded-2xl transition-all ${mealCount === opt.count ? "border-[#111] bg-white shadow-md" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
+                    className={`relative text-left border-2 p-6 [0] transition-all ${mealCount === opt.count ? "border-[#111] bg-white" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
                     {opt.popular && (
                       <div className="absolute top-3 right-3 bg-[#E85D04] text-[#111] text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-0.5">Most Popular</div>
                     )}
@@ -194,7 +194,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                 ))}
               </div>
               <button onClick={handleNext}
-                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white">
+                className="w-full py-4 [0] font-semibold text-[15px] transition-all bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white">
                 Continue →
               </button>
             </div>
@@ -203,12 +203,12 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
           {/* ─── Step 2: Goal ─── */}
           {step === 2 && (
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose Your Goal</h1>
+              <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose your goal</h1>
               <p className="text-[#666] mb-6">Select the plan that matches your target.</p>
               <div className="mb-7">
                 <div className="flex gap-0 border border-[#D0CCC4] p-1 bg-[#F7F5F0] w-full sm:w-auto sm:inline-flex">
                   <button onClick={() => setBilling("week")}
-                    className={`flex-1 sm:flex-none px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "week" ? "bg-white text-[#111] shadow-sm" : "text-[#999] hover:text-[#111]"}`}>
+                    className={`flex-1 sm:flex-none px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "week" ? "bg-white text-[#111]" : "text-[#999] hover:text-[#111]"}`}>
                     Weekly
                   </button>
                   <button onClick={() => setBilling("month")}
@@ -240,7 +240,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   const px = billing === "week" ? p.priceWeek : p.priceMonth;
                   return (
                     <button key={p.name} onClick={() => setGoal(p.name)}
-                      className={`w-full text-left rounded-2xl border-2 p-5 transition-all ${selected ? "border-[#111] bg-white shadow-md" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
+                      className={`w-full text-left [0] border-2 p-5 transition-all ${selected ? "border-[#111] bg-white" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <div className="w-3 h-3 rounded-full flex-shrink-0 mt-1" style={{ backgroundColor: p.accent }} />
@@ -280,13 +280,13 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   </div>
                 </div>
                 <div>
-                  <div className="font-bold text-[15px] mb-0.5">The 6in60 Promise</div>
-                  <p className="text-white/50 text-[12px] leading-relaxed">Lose 6kg in 60 days eating real chef-prepared food — or we refund you in full. No questions asked.</p>
+                  <div className="font-bold text-[15px] mb-0.5">The Performance Promise</div>
+                  <p className="text-white/50 text-[12px] leading-relaxed">Exceptional meals, exceptional support — or your money back. No questions asked.</p>
                 </div>
               </div>
 
               <button onClick={handleNext}
-                className="w-full py-4 rounded-xl font-semibold text-[15px] transition-all bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white">
+                className="w-full py-4 [0] font-semibold text-[15px] transition-all bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white">
                 Continue →
               </button>
             </div>
@@ -296,14 +296,14 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
           {step === 3 && (
             <div className="w-full">
               <div className="mb-6">
-                <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose Your Weekly Menu</h1>
+                <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose your weekly menu</h1>
                 <p className="text-[#666] text-[14px]">
                   Select your <strong>{mealCount === 1 ? "lunch" : "lunch and dinner"}</strong> for each day. Daily options are curated for your <strong>{goal}</strong> goal.
                 </p>
               </div>
 
               {/* Progress bar */}
-              <div className="mb-6 bg-white border border-[#E5E2DA] p-4 rounded-xl">
+              <div className="mb-6 bg-white border border-[#E5E2DA] p-4 [0]">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[13px] font-semibold text-[#111]">{totalSlotsFilled} of {totalSlotsRequired} meals selected</span>
                   {canProceedStep3 && <span className="text-green-600 text-[12px] font-bold">✓ All meals chosen</span>}
@@ -320,7 +320,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   const daySchedule = schedule[d.day] || { lunch: null, dinner: null };
                   const dayOptions = getDayOptions(planMeals, dayIndex);
                   return (
-                    <div key={d.day} className="bg-white border border-[#E5E2DA] rounded-xl overflow-hidden">
+                    <div key={d.day} className="bg-white border border-[#E5E2DA] [0] overflow-hidden">
                       {/* Day header */}
                       <div className="flex items-center justify-between px-5 py-3 bg-[#F7F5F0] border-b border-[#E5E2DA]">
                         <div className="flex items-center gap-3">
@@ -357,7 +357,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                                   onClick={() => setPickerState({ day: d.day, slot })}
                                   className="w-full flex items-center gap-3 group"
                                 >
-                                  <img src={selectedMeal.img} alt={selectedMeal.name} className="w-12 h-12 object-cover rounded-lg shrink-0" />
+                                  <img src={selectedMeal.img} alt={selectedMeal.name} className="w-12 h-12 object-cover [0] shrink-0" />
                                   <div className="flex-1 text-left min-w-0">
                                     <div className="text-[12px] font-semibold text-[#111] leading-tight line-clamp-2">{selectedMeal.name}</div>
                                     <div className="text-[10px] text-[#888] mt-0.5">{selectedMeal.protein}g protein · {selectedMeal.cal} cal</div>
@@ -367,7 +367,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                               ) : (
                                 <button
                                   onClick={() => setPickerState({ day: d.day, slot })}
-                                  className="w-full border-2 border-dashed border-[#E5E2DA] hover:border-[#E85D04] rounded-lg py-4 text-[13px] text-[#aaa] hover:text-[#111] transition-all flex flex-col items-center gap-1"
+                                  className="w-full border-2 border-dashed border-[#E5E2DA] hover:border-[#E85D04] [0] py-4 text-[13px] text-[#aaa] hover:text-[#111] transition-all flex flex-col items-center gap-1"
                                 >
                                   <span className="text-[20px]">+</span>
                                   <span>Choose {slot}</span>
@@ -384,7 +384,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
               </div>
 
               <button onClick={handleNext} disabled={!canProceedStep3}
-                className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all rounded-xl ${canProceedStep3 ? "bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
+                className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all [0] ${canProceedStep3 ? "bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
                 {canProceedStep3 ? "Confirm Menu →" : `Select ${totalSlotsRequired - totalSlotsFilled} more meal${totalSlotsRequired - totalSlotsFilled !== 1 ? "s" : ""} to continue`}
               </button>
             </div>
@@ -399,7 +399,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
               {/* Prefixed schedule — read-only */}
               <div className="mb-8">
                 <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-3">Your Weekly Delivery Schedule</label>
-                <div className="bg-white border border-[#E5E2DA] rounded-xl overflow-hidden">
+                <div className="bg-white border border-[#E5E2DA] [0] overflow-hidden">
                   {DELIVERY_WEEK.map((d, i) => (
                     <div key={d.day} className={`flex items-center justify-between px-5 py-3.5 ${i < DELIVERY_WEEK.length - 1 ? "border-b border-[#F0EDE8]" : ""}`}>
                       <div className="flex items-center gap-3">
@@ -447,7 +447,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
               </div>
 
               <button onClick={handleNext} disabled={!canProceedStep4}
-                className={`w-full py-4 rounded-xl font-semibold text-[15px] transition-all ${canProceedStep4 ? "bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
+                className={`w-full py-4 [0] font-semibold text-[15px] transition-all ${canProceedStep4 ? "bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
                 Continue →
               </button>
             </div>
@@ -462,7 +462,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   <h1 className="text-xl sm:text-2xl font-bold mb-1">Account required</h1>
                   <p className="text-[#666] mb-2 text-[14px]">Meal Plans are subscription-based. An account lets you review your menu weekly, manage deliveries, and earn rewards points.</p>
 
-                  <div className="bg-[#111] text-white rounded-xl p-4 mb-6 flex items-center gap-3">
+                  <div className="bg-[#111] text-white [0] p-4 mb-6 flex items-center gap-3">
                     <div className="w-10 h-10 bg-[#F5B300] rounded-full flex items-center justify-center shrink-0 text-[#111] text-lg font-bold">🪙</div>
                     <div>
                       <p className="font-semibold text-[14px]">Earn <span className="text-[#F5B300]">+{Math.round(Number(price) * 1.5)} points</span> on this plan</p>
@@ -472,11 +472,11 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
 
                   <div className="flex flex-col gap-3 mb-4">
                     <button onClick={() => setWizardAuthMode("signup")}
-                      className="w-full bg-[#F5B300] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#1A1A1A] hover:text-white transition-colors">
+                      className="w-full bg-[#F5B300] text-[#111] py-4 [0] font-bold text-[15px] hover:bg-[#1A1A1A] hover:text-white transition-colors">
                       Create Account & Subscribe
                     </button>
                     <button onClick={() => setWizardAuthMode("signin")}
-                      className="w-full border-2 border-[#111] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#111] hover:text-white transition-colors">
+                      className="w-full border-2 border-[#111] text-[#111] py-4 [0] font-bold text-[15px] hover:bg-[#111] hover:text-white transition-colors">
                       Sign In to Existing Account
                     </button>
                   </div>
@@ -492,16 +492,16 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   <p className="text-[#666] mb-5 text-sm">Takes 30 seconds — earn points from day one.</p>
                   <div className="flex flex-col gap-3 mb-5">
                     <input value={waName} onChange={(e) => setWaName(e.target.value)} placeholder="Full name"
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <input value={waEmail} onChange={(e) => setWaEmail(e.target.value)} type="email" placeholder="Email address"
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <input value={waPhone} onChange={(e) => setWaPhone(e.target.value)} type="tel" placeholder="Phone (WhatsApp order updates)"
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <input value={waPassword} onChange={(e) => setWaPassword(e.target.value)} type="password" placeholder="Create password"
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   </div>
                   <button disabled={!waName || !waEmail || !waPassword} onClick={() => setWizardAuthMode("signup_done")}
-                    className="w-full bg-[#F5B300] text-[#111] py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#1A1A1A] hover:text-white transition-colors">
+                    className="w-full bg-[#F5B300] text-[#111] py-4 [0] font-bold text-[15px] disabled:opacity-40 hover:bg-[#1A1A1A] hover:text-white transition-colors">
                     Continue to Payment →
                   </button>
                 </div>
@@ -515,12 +515,12 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   <p className="text-[#666] mb-5 text-sm">Welcome back — let us activate your plan.</p>
                   <div className="flex flex-col gap-3 mb-5">
                     <input value={waEmail} onChange={(e) => setWaEmail(e.target.value)} type="email" placeholder="Email address"
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <input value={waPassword} onChange={(e) => setWaPassword(e.target.value)} type="password" placeholder="Password"
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   </div>
                   <button disabled={!waEmail || !waPassword} onClick={() => setWizardAuthMode("signin_done")}
-                    className="w-full bg-[#111] text-white py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#222] transition-colors">
+                    className="w-full bg-[#111] text-white py-4 [0] font-bold text-[15px] disabled:opacity-40 hover:bg-[#222] transition-colors">
                     Sign In & Continue →
                   </button>
                 </div>
@@ -533,7 +533,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   <p className="text-[#666] mb-6">Enter your card details to activate your meal plan.</p>
 
                   {/* Order summary */}
-                  <div className="bg-white border border-[#E5E2DA] rounded-xl p-5 mb-6">
+                  <div className="bg-white border border-[#E5E2DA] [0] p-5 mb-6">
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <p className="font-semibold">{plan.name} Plan</p>
@@ -559,14 +559,14 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   {/* Card fields */}
                   <div className="flex flex-col gap-3 mb-6">
                     <input type="text" placeholder="Cardholder name"
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <input type="text" placeholder="Card number"
-                      className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                      className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     <div className="grid grid-cols-2 gap-3">
                       <input type="text" placeholder="MM / YY"
-                        className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                        className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                       <input type="text" placeholder="CVV"
-                        className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                        className="border border-[#D0CCC4] bg-white text-[#111] [0] px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                     </div>
                   </div>
 
@@ -577,10 +577,10 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                       <input value={promoCode}
                         onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoError(null); }}
                         placeholder="e.g. WELCOME10"
-                        className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase rounded-lg ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
+                        className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase [0] ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
                       />
                       <button onClick={handleApplyPromo}
-                        className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase rounded-lg hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                        className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase [0] hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                         Apply
                       </button>
                     </div>
@@ -590,15 +590,15 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   </div>
 
                   {/* Trust seal */}
-                  <div className="flex items-center gap-3 bg-[#F5B300]/10 border border-[#F5B300]/30 px-4 py-3 mb-4 rounded-xl">
+                  <div className="flex items-center gap-3 bg-[#F5B300]/10 border border-[#F5B300]/30 px-4 py-3 mb-4 [0]">
                     <span className="text-[24px] shrink-0">🔒</span>
                     <div className="text-[12px] text-[#555] leading-tight">
-                      <span className="font-bold text-[#111]">60-day money-back guarantee.</span> Lose 6kg or get a full refund — no questions asked.
+                      <span className="font-bold text-[#111]">Satisfaction guarantee.</span> Exceptional meals and support — or your money back. No questions asked.
                     </div>
                   </div>
 
                   <button onClick={handleSubscribe}
-                    className="w-full py-4 rounded-xl font-semibold text-[15px] bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white transition-all">
+                    className="w-full py-4 [0] font-semibold text-[15px] bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white transition-all">
                     Subscribe — ${price}/{billing === "week" ? "wk" : "mo"}
                   </button>
                   <p className="text-center text-xs text-[#999] mt-4">Cancel anytime from your account. No lock-in.</p>
@@ -614,7 +614,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
       {pickerState && (
         <div className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="absolute inset-0 bg-black/60" onClick={() => setPickerState(null)} />
-          <div className="relative bg-white w-full sm:max-w-lg max-h-[85vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl">
+          <div className="relative bg-white w-full sm:max-w-lg max-h-[85vh] overflow-y-auto rounded-t-2xl sm:[0]">
             <div className="sticky top-0 bg-white border-b border-[#E5E2DA] px-6 py-4 flex items-center justify-between">
               <div>
                 <div className="font-bold text-[16px] text-[#111]">
@@ -629,8 +629,8 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
             <div className="p-4 flex flex-col gap-3">
               {getDayOptions(planMeals, DELIVERY_WEEK.findIndex((d) => d.day === pickerState.day)).map((meal) => (
                 <button key={meal.id} onClick={() => selectMeal(meal.id)}
-                  className="flex items-center gap-4 p-3 border border-[#E5E2DA] hover:border-[#E85D04] hover:bg-[#FFFBF0] rounded-xl transition-all text-left group">
-                  <img src={meal.img} alt={meal.name} className="w-16 h-16 object-cover rounded-lg shrink-0" />
+                  className="flex items-center gap-4 p-3 border border-[#E5E2DA] hover:border-[#E85D04] hover:bg-[#FFFBF0] [0] transition-all text-left group">
+                  <img src={meal.img} alt={meal.name} className="w-16 h-16 object-cover [0] shrink-0" />
                   <div className="flex-1 min-w-0">
                     <div className="font-semibold text-[14px] text-[#111] leading-snug">{meal.name}</div>
                     <div className="flex gap-3 text-[11px] text-[#888] mt-1">

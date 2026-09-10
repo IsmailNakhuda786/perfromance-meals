@@ -133,11 +133,11 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end">
             <div>
-              <h1 className="font-display text-[52px] sm:text-[68px] font-black leading-[0.9] mb-5">
+              <h1 className="font-display text-[52px] sm:text-[68px] font-extrabold leading-[0.9] mb-5">
                 FROZEN<br />AT PEAK.<br /><span className="text-[#F5B300]">READY ON</span><br />DEMAND.
               </h1>
               <p className="text-white/50 text-[15px] leading-relaxed max-w-[400px]">
-                Good meals, ready when you need them. Fast, enjoyable, and macro-tracked — so a busy day does not knock you off track.
+                Fast, enjoyable frozen meals that are ready when life gets busy. Keep your week moving.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4 lg:justify-end">
@@ -214,7 +214,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
               const bundleMeals = b.mealIds.map((id) => getMealById(id)).filter(Boolean) as typeof MEALS;
               const uniqueMeals = bundleMeals.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
               return (
-                <div key={b.n} className="bg-[#111] border border-white/8 rounded-xl overflow-hidden hover:border-[#F5B300]/30 transition-colors">
+                <div key={b.n} className="bg-[#111] border border-white/8 overflow-hidden hover:border-[#F5B300]/30 transition-colors">
                   {/* Meal image carousel — scrollable thumbnails */}
                   <div className="relative">
                     <div className="flex gap-0 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: "none" }}>
@@ -423,7 +423,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
         return (
           <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
             <div className="absolute inset-0 bg-black/75" onClick={() => setReviewMealId(null)} />
-            <div className="relative bg-[#1A1A1A] w-full sm:max-w-lg max-h-[85vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-white/10">
+            <div className="relative bg-[#1A1A1A] w-full sm:max-w-lg max-h-[85vh] overflow-y-auto border border-white/10">
               <div className="sticky top-0 bg-[#1A1A1A] border-b border-white/8 px-6 py-4 flex items-start justify-between gap-3">
                 <div>
                   <div className="font-bold text-[15px] text-white leading-snug">{meal.name}</div>

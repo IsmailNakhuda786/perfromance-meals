@@ -86,7 +86,7 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
                 Fresh structure.<br />Personal support.
               </h1>
               <p className="text-[#555] text-[16px] leading-relaxed max-w-[440px] mb-8">
-                Exceptional meals and practical guidance, built around the way you live. Take the guesswork out of eating well every day.
+                Exceptional meals, tailored support, and practical guidance for meaningful progress — built around the way you live.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <button onClick={() => navigateToWizard(selectedGoal)}
@@ -130,7 +130,7 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
               const selected = selectedGoal === g.id;
               return (
                 <button key={g.id} onClick={() => setSelectedGoal(g.id)}
-                  className={`text-left p-6 border-2 transition-all ${selected ? "border-[#1A1A1A] bg-white shadow-sm" : "border-[#E8E4DC] bg-white hover:border-[#1A1A1A]/30"}`}>
+                  className={`text-left p-6 border-2 transition-all ${selected ? "border-[#1A1A1A] bg-white" : "border-[#E8E4DC] bg-white hover:border-[#1A1A1A]/30"}`}>
                   {g.featured && (
                     <div className="text-[9px] font-bold tracking-[0.2em] uppercase mb-3 px-2 py-1 inline-block" style={{ backgroundColor: ORANGE, color: "white" }}>
                       Most Common
@@ -237,7 +237,7 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
         <div className="max-w-[900px] mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-8">
           <div className="flex-1">
             <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-2" style={{ color: ORANGE }}>The Meal Plan promise</p>
-            <h2 className="font-display text-[28px] sm:text-[36px] font-semibold leading-tight mb-3">We understand your routine is personal. Let us find the best next step.</h2>
+            <h2 className="font-display text-[28px] sm:text-[36px] font-semibold leading-tight mb-3">Your goals deserve consistent support. Start your plan today.</h2>
             <p className="text-white/50 text-[14px] leading-relaxed">Personalised guidance. Goal-led meal selection. Real support from real people.</p>
           </div>
           <div className="shrink-0">

@@ -77,7 +77,7 @@ export default function HomePage({ navigate }: Props) {
               <ReadySeriesLogo size="md" variant="dark" />
             </div>
             <p className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#F5B300] mb-3">Everyday momentum</p>
-            <h2 className="font-display text-[42px] sm:text-[54px] lg:text-[52px] xl:text-[64px] font-black leading-[0.9] text-white mb-5">
+            <h2 className="font-display text-[42px] sm:text-[54px] lg:text-[52px] xl:text-[64px] font-extrabold leading-[0.9] text-white mb-5">
               READY<br />FOR<br />REAL LIFE.
             </h2>
             <p

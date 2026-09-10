@@ -38,8 +38,8 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300] uppercase">01 / Ready Series</span>
             <div className="h-px w-12 bg-[#F5B300]/30" />
           </div>
-          <h1 className="font-display text-[32px] sm:text-[48px] font-bold">Ready-to-Go Meals</h1>
-          <p className="text-white/40 mt-1 text-[14px]">Macro-accurate. Frozen at peak nutrition. Heat in 3 minutes.</p>
+          <h1 className="font-display text-[32px] sm:text-[48px] font-extrabold uppercase">FROZEN AT PEAK.<br />READY ON DEMAND.</h1>
+          <p className="text-white/40 mt-1 text-[14px]">Fast, enjoyable frozen meals that are ready when life gets busy. Keep your week moving.</p>
         </div>
       </div>
 
@@ -82,7 +82,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                 <div className="relative h-48 overflow-hidden">
                   <img src={p.img} alt={p.name} className="w-full h-full object-cover opacity-80" />
                   <div className="absolute top-3 left-3 bg-[#F5B300] text-[#111] text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{p.tag}</div>
-                  <div className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{p.saving}</div>
+                  <div className="absolute top-3 right-3 bg-[#F5B300] text-[#1A1A1A] text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{p.saving}</div>
                 </div>
                 <div className="p-4">
                   <h3 className="font-bold text-[15px] mb-1">{p.name}</h3>
@@ -170,7 +170,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                       "high-carb":    { label: "High Carb",    bg: "#F2C94C22", text: "#F2C94C" },
                       "low-carb":     { label: "Low Carb",     bg: "#7EE8B022", text: "#7EE8B0" },
                       "just-protein": { label: "Just Protein", bg: "#A78BFA22", text: "#A78BFA" },
-                      "breakfast":    { label: "Breakfast",    bg: "#FB923C22", text: "#FB923C" },
+                      "breakfast":    { label: "Breakfast",    bg: "#F5B30022", text: "#F5B300" },
                     };
                     const t = typeMap[meal.cat];
                     return t ? (
@@ -265,7 +265,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                   "high-carb":    { label: "High Carb",    color: "#F2C94C" },
                   "low-carb":     { label: "Low Carb",     color: "#7EE8B0" },
                   "just-protein": { label: "Just Protein", color: "#A78BFA" },
-                  "breakfast":    { label: "Breakfast",    color: "#FB923C" },
+                  "breakfast":    { label: "Breakfast",    color: "#F5B300" },
                 };
                 const t = typeMap[selectedMeal.cat];
                 return t ? (

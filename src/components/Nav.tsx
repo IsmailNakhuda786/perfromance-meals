@@ -67,7 +67,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
         Use <strong>SG61</strong> for $6.10 off &nbsp;·&nbsp; Free delivery above $80
       </div>
 
-      <nav className="sticky top-0 z-50 bg-[#1A1A1A] text-white shadow-xl">
+      <nav className="sticky top-0 z-50 bg-[#1A1A1A] text-white border-b border-white/10">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-[56px] sm:h-[60px] flex items-center justify-between gap-4">
 
           {/* Logo */}
@@ -228,7 +228,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
       {showLoginModal && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowLoginModal(false)} />
-          <div className="relative bg-white w-full max-w-[420px] shadow-2xl">
+          <div className="relative bg-white w-full max-w-[420px] border border-[#E8E4DC]">
             {/* Header */}
             <div className="bg-[#111] px-8 pt-8 pb-6">
               <button onClick={() => setShowLoginModal(false)} className="absolute top-4 right-4 text-white/30 hover:text-white transition-colors">
