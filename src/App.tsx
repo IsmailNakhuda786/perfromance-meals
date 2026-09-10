@@ -5,8 +5,10 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import PromoPopup from "@/components/PromoPopup";
 import HomePage from "@/pages/HomePage";
+import ReadySeriesPage from "@/pages/ReadySeriesPage";
 import ReadyToGoPage from "@/pages/ReadyToGoPage";
 import BuildABoxPage from "@/pages/BuildABoxPage";
+import MealPlanLandingPage from "@/pages/MealPlanLandingPage";
 import MealPlanWizardPage from "@/pages/MealPlanWizardPage";
 import CheckoutPage from "@/pages/CheckoutPage";
 import ConfirmationPage from "@/pages/ConfirmationPage";
@@ -139,7 +141,9 @@ export default function App() {
       />
 
       {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} addToCart={addToCart} navigateToReferral={navigateToAccountReferral} />}
+      {page === "ready-series" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} />}
       {page === "ready-to-go" && <ReadyToGoPage navigate={navigate} addToCart={addToCart} cart={cart} />}
+      {page === "meal-plan-landing" && <MealPlanLandingPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "build-a-box" && <BuildABoxPage navigate={navigate} addToCart={addToCart} />}
       {page === "meal-plan-wizard" && (
         <MealPlanWizardPage

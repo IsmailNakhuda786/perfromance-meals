@@ -94,38 +94,33 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
           </div>
 
           {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
-            <div className="flex items-center gap-5">
-              <button onClick={() => go("ready-to-go")}
-                className={`flex items-center gap-1.5 text-[11px] tracking-[0.3em] uppercase font-semibold transition-colors ${currentPage === "ready-to-go" || currentPage === "build-a-box" ? "text-[#CDFF3A]" : "text-[#CDFF3A]/70 hover:text-[#CDFF3A]"}`}>
-                <span className="opacity-50 text-[9px]">01</span> Ready-to-Go
-              </button>
-              <div className="flex items-center gap-5 text-white/40 text-[11px] tracking-wider uppercase">
-                {["Low Carb", "High Carb", "Breakfast"].map((l) => (
-                  <button key={l} onClick={() => go("ready-to-go")} className="hover:text-white transition-colors">{l}</button>
-                ))}
-                <button onClick={() => go("build-a-box")} className={`hover:text-white transition-colors ${currentPage === "build-a-box" ? "text-[#CDFF3A]" : ""}`}>Build-A-Box</button>
-              </div>
-            </div>
-            <div className="w-px h-6 bg-white/15" />
-            <div className="flex items-center gap-5">
-              <button onClick={() => goWizard()}
-                className={`flex items-center gap-1.5 text-[11px] tracking-[0.3em] uppercase font-semibold transition-colors ${currentPage === "meal-plan-wizard" ? "text-[#F2C94C]" : "text-[#F2C94C]/70 hover:text-[#F2C94C]"}`}>
-                <span className="opacity-50 text-[9px]">02</span> Meal Plans
-              </button>
-              <div className="flex items-center gap-5 text-white/40 text-[11px] tracking-wider uppercase">
-                {["CUT", "MAINTAIN", "BUILD"].map((l) => (
-                  <button key={l} onClick={() => goWizard(l)} className="hover:text-white transition-colors">{l}</button>
-                ))}
-              </div>
-            </div>
+          <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
+            <button onClick={() => go("ready-series")}
+              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "ready-series" || currentPage === "ready-to-go" || currentPage === "build-a-box" ? "text-[#CDFF3A]" : "text-white/50 hover:text-[#CDFF3A]"}`}>
+              Ready Series
+            </button>
+            <div className="w-px h-4 bg-white/15" />
+            <button onClick={() => go("meal-plan-landing")}
+              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "text-[#F2C94C]" : "text-white/50 hover:text-[#F2C94C]"}`}>
+              Meal Plans
+            </button>
+            <div className="w-px h-4 bg-white/15" />
+            <button onClick={() => go("account")}
+              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "account" ? "text-[#CDFF3A]" : "text-white/50 hover:text-white"}`}>
+              Rewards
+            </button>
+            <button onClick={() => go("gift-card")}
+              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "gift-card" ? "text-[#CDFF3A]" : "text-white/50 hover:text-white"}`}>
+              Gift Cards
+            </button>
+            <button onClick={() => go("about")}
+              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "about" ? "text-[#CDFF3A]" : "text-white/50 hover:text-white"}`}>
+              About
+            </button>
           </div>
 
           {/* Right icons */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className="w-px h-5 bg-white/20 hidden lg:block" />
-            <button onClick={() => go("about")} className={`text-[11px] tracking-[0.2em] uppercase transition-colors hidden lg:block whitespace-nowrap ${currentPage === "about" ? "text-[#CDFF3A]" : "text-white/40 hover:text-[#CDFF3A]"}`}>About</button>
-            <button onClick={() => go("gift-card")} className="text-white/40 hover:text-[#CDFF3A] transition-colors text-[11px] tracking-[0.2em] uppercase hidden lg:block whitespace-nowrap">Gift Cards</button>
 
             {isLoggedIn ? (
               <>
@@ -190,22 +185,14 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
         {mobileOpen && (
           <div className="lg:hidden bg-[#0E0E0E] border-t border-white/10 overflow-y-auto max-h-[80vh]">
             <div className="px-5 py-4 space-y-1">
-              <div className="text-[9px] font-mono tracking-[0.4em] text-[#CDFF3A] uppercase py-2">01 / Ready Series</div>
+              <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2">Navigation</div>
               {[
-                { label: "All Meals", action: () => go("ready-to-go") },
-                { label: "Build-A-Box", action: () => go("build-a-box") },
-              ].map((l) => (
-                <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
-              ))}
-
-              <div className="text-[9px] font-mono tracking-[0.4em] text-[#F2C94C] uppercase py-2 mt-2">02 / Meal Plans</div>
-              {[
-                { label: "All Plans", action: () => goWizard() },
-                { label: "CUT — Fat loss", action: () => goWizard("CUT") },
-                { label: "MAINTAIN — Performance", action: () => goWizard("MAINTAIN") },
-                { label: "BUILD — Muscle gain", action: () => goWizard("BUILD") },
-                { label: "About Us", action: () => go("about") },
-              { label: "How It Works", action: () => go("how-it-works") },
+                { label: "Ready Series", action: () => go("ready-series"), accent: "#CDFF3A" },
+                { label: "Meal Plans", action: () => go("meal-plan-landing"), accent: "#F2C94C" },
+                { label: "Rewards", action: () => go("account"), accent: null },
+                { label: "Gift Cards", action: () => go("gift-card"), accent: null },
+                { label: "About", action: () => go("about"), accent: null },
+                { label: "How It Works", action: () => go("how-it-works"), accent: null },
               ].map((l) => (
                 <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
               ))}
@@ -492,7 +479,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   <line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
                 <p className="text-[14px]">Your cart is empty</p>
-                <button onClick={() => { setCartOpen(false); navigate("ready-to-go"); }} className="text-[#CDFF3A] text-[12px] tracking-widest uppercase font-semibold">Shop Meals →</button>
+                <button onClick={() => { setCartOpen(false); navigate("ready-series"); }} className="text-[#CDFF3A] text-[12px] tracking-widest uppercase font-semibold">Shop Meals →</button>
               </div>
             ) : (
               <>
@@ -550,7 +537,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                           <p className="text-white/40 text-[10px] leading-relaxed">
                             {next.qty}-meal Build-A-Box drops to <strong className="text-white/60">${next.ppm.toFixed(2)}/meal</strong>. You currently have {readyQty}.
                           </p>
-                          <button onClick={() => { setCartOpen(false); navigate("ready-to-go"); }}
+                          <button onClick={() => { setCartOpen(false); navigate("ready-series"); }}
                             className="mt-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[#CDFF3A] hover:underline">
                             Add more meals →
                           </button>
