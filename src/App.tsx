@@ -107,7 +107,7 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "fresher-prototype.html";
+    a.download = "performance-meals-prototype.html";
     a.click();
     URL.revokeObjectURL(url);
   }, []);

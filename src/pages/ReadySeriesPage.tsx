@@ -117,7 +117,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart }: Props) {
       <div className="relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-[0.06]"
-          style={{ backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 50px,rgba(205,255,58,0.4) 50px,rgba(205,255,58,0.4) 51px),repeating-linear-gradient(90deg,transparent,transparent 50px,rgba(205,255,58,0.4) 50px,rgba(205,255,58,0.4) 51px)" }}
+          style={{ backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 50px,rgba(245,179,0,0.35) 50px,rgba(245,179,0,0.35) 51px),repeating-linear-gradient(90deg,transparent,transparent 50px,rgba(245,179,0,0.35) 50px,rgba(245,179,0,0.35) 51px)" }}
         />
         <div className="absolute right-0 top-0 w-[500px] h-[500px] bg-[#F5B300]/6 rounded-full blur-[100px] pointer-events-none" />
 

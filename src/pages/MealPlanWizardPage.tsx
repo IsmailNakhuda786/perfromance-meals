@@ -76,7 +76,9 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
     "WELCOME15": { discount: 0.15 },
     "SUMMER20":  { discount: 0.20, expired: true },
     "FITLIFE":   { discount: 0.12 },
+    "READY20":   { discount: 0.20 },
     "SG61":      { discount: 0, flat: 6.10 },
+    "FREEZER5":  { discount: 0, flat: 5.00 },
   };
 
   const handleApplyPromo = () => {
@@ -470,7 +472,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
 
                   <div className="flex flex-col gap-3 mb-4">
                     <button onClick={() => setWizardAuthMode("signup")}
-                      className="w-full bg-[#F5B300] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#b8e832] transition-colors">
+                      className="w-full bg-[#F5B300] text-[#111] py-4 rounded-xl font-bold text-[15px] hover:bg-[#1A1A1A] hover:text-white transition-colors">
                       Create Account & Subscribe
                     </button>
                     <button onClick={() => setWizardAuthMode("signin")}
@@ -499,7 +501,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                       className="border border-[#D0CCC4] bg-white text-[#111] rounded-lg px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
                   </div>
                   <button disabled={!waName || !waEmail || !waPassword} onClick={() => setWizardAuthMode("signup_done")}
-                    className="w-full bg-[#F5B300] text-[#111] py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#b8e832] transition-colors">
+                    className="w-full bg-[#F5B300] text-[#111] py-4 rounded-xl font-bold text-[15px] disabled:opacity-40 hover:bg-[#1A1A1A] hover:text-white transition-colors">
                     Continue to Payment →
                   </button>
                 </div>

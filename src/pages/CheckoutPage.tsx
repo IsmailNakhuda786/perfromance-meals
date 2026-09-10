@@ -146,7 +146,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
               </div>
               <h1 className="font-display text-[28px] font-bold mb-2">Account created!</h1>
-              <p className="text-[#555] text-[14px] mb-5">Welcome to Fresher, {authName || "there"}. We've sent a confirmation to your email and WhatsApp.</p>
+              <p className="text-[#555] text-[14px] mb-5">Welcome to Performance Meals, {authName || "there"}. We've sent a confirmation to your email and WhatsApp.</p>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center gap-3 bg-[#075E54]/10 border border-[#075E54]/20 px-4 py-3 rounded-lg">
                   <span className="text-[18px]">💬</span>
@@ -206,12 +206,12 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
 
               {/* Guest warning banner */}
               {authMode === "guest" && (
-                <div className="bg-[#FFF3CD] border border-[#F2C94C] px-4 py-4 mb-6 flex gap-3 items-start">
+                <div className="bg-[#FFF8E6] border border-[#F5B300]/50 px-4 py-4 mb-6 flex gap-3 items-start">
                   <span className="text-[22px] shrink-0">⚠️</span>
                   <div>
                     <p className="font-bold text-[13px] text-[#7B5900] mb-1">You're checking out as a guest — you'll miss out on:</p>
                     <ul className="text-[12px] text-[#7B5900] space-y-0.5 list-disc list-inside">
-                      <li>Fresher reward points (worth up to $12/month)</li>
+                      <li>Performance Meals reward points (worth up to $12/month)</li>
                       <li>Exclusive member discounts and early access deals</li>
                       <li>Order history, easy reorders, and delivery tracking</li>
                       <li>Referral bonuses — earn $10 credit per friend</li>
