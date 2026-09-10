@@ -187,7 +187,7 @@ function FloatingChat() {
           {/* Panel header */}
           <div className="bg-[#1A1A1A] px-5 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#F5B300] flex items-center justify-center text-[14px] font-black text-[#1A1A1A]">PM</div>
+              <div className="w-8 h-8 rounded-full bg-[#F5B300] flex items-center justify-center text-[14px] font-extrabold text-[#1A1A1A]">PM</div>
               <div>
                 <div className="text-white text-[13px] font-semibold">Performance Meals</div>
                 <div className="flex items-center gap-1.5 mt-0.5">

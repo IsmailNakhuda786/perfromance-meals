@@ -214,7 +214,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   <button onClick={() => setBilling("month")}
                     className={`flex-1 sm:flex-none relative px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "month" ? "bg-[#111] text-white" : "text-[#999] hover:text-[#111]"}`}>
                     Monthly
-                    <span className={`ml-2 text-[10px] font-black tracking-widest px-1.5 py-0.5 ${billing === "month" ? "bg-[#E85D04] text-[#111]" : "bg-[#E85D04]/70 text-[#111]"}`}>SAVE 15%</span>
+                    <span className={`ml-2 text-[10px] font-extrabold tracking-widest px-1.5 py-0.5 ${billing === "month" ? "bg-[#E85D04] text-[#111]" : "bg-[#E85D04]/70 text-[#111]"}`}>SAVE 15%</span>
                   </button>
                 </div>
                 {billing === "week" && (
@@ -222,12 +222,12 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                     <div className="flex items-center gap-3">
                       <span className="text-[22px]">💰</span>
                       <div>
-                        <div className="font-black text-[14px] text-[#111]">Save up to $109/mo — switch to Monthly</div>
+                        <div className="font-extrabold text-[14px] text-[#111]">Save up to $109/mo — switch to Monthly</div>
                         <div className="text-[11px] text-[#7A5C00] mt-0.5">15% off vs weekly · cancel anytime · no lock-in</div>
                       </div>
                     </div>
                     <button onClick={() => setBilling("month")}
-                      className="shrink-0 bg-[#E85D04] text-[#111] font-black text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 hover:bg-[#111] hover:text-[#E85D04] transition-colors whitespace-nowrap">
+                      className="shrink-0 bg-[#E85D04] text-[#111] font-extrabold text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 hover:bg-[#111] hover:text-[#E85D04] transition-colors whitespace-nowrap">
                       Switch Now →
                     </button>
                   </div>
@@ -238,6 +238,12 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                 {PLANS.map((p) => {
                   const selected = goal === p.name;
                   const px = billing === "week" ? p.priceWeek : p.priceMonth;
+                  const PROG_NAMES: Record<string, { name: string; tag: string; duration: string }> = {
+                    CUT:      { name: "6by60",      tag: "CUT",      duration: "60-day programme" },
+                    MAINTAIN: { name: "Buddy Plan",  tag: "MAINTAIN", duration: "20-day programme" },
+                    BUILD:    { name: "HYROX",       tag: "BUILD",    duration: "Performance programme" },
+                  };
+                  const prog = PROG_NAMES[p.name] ?? { name: p.name, tag: p.name, duration: "" };
                   return (
                     <button key={p.name} onClick={() => setGoal(p.name)}
                       className={`w-full text-left [0] border-2 p-5 transition-all ${selected ? "border-[#111] bg-white" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
@@ -245,10 +251,12 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                         <div className="flex items-center gap-3">
                           <div className="w-3 h-3 rounded-full flex-shrink-0 mt-1" style={{ backgroundColor: p.accent }} />
                           <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-lg">{p.name}</span>
-                              <span className="text-xs text-[#666]">{p.meals} meals/day · {p.cal} kcal</span>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-lg">{prog.name}</span>
+                              <span className="text-[10px] font-mono tracking-widest uppercase border border-[#D0CCC4] px-1.5 py-0.5 text-[#888]">{prog.tag}</span>
+                              <span className="text-xs text-[#aaa]">{prog.duration}</span>
                             </div>
+                            <div className="text-xs text-[#aaa] mt-0.5">{p.meals} meals/day · {p.cal} kcal</div>
                             <p className="text-sm text-[#555] mt-0.5">{p.desc}</p>
                             <div className="flex gap-3 mt-2 text-xs text-[#666]">
                               <span>P {p.protein}g</span><span>C {p.carbs}g</span><span>F {p.fat}g</span>
@@ -276,7 +284,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                     <style>{`@keyframes spin6wiz { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }`}</style>
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-display text-[13px] font-black text-[#111] leading-none">6in60</span>
+                    <span className="font-display text-[13px] font-extrabold text-[#111] leading-none">6in60</span>
                   </div>
                 </div>
                 <div>
@@ -614,7 +622,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
       {pickerState && (
         <div className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="absolute inset-0 bg-black/60" onClick={() => setPickerState(null)} />
-          <div className="relative bg-white w-full sm:max-w-lg max-h-[85vh] overflow-y-auto rounded-t-2xl sm:[0]">
+          <div className="relative bg-white w-full sm:max-w-lg max-h-[85vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-[#E5E2DA] px-6 py-4 flex items-center justify-between">
               <div>
                 <div className="font-bold text-[16px] text-[#111]">

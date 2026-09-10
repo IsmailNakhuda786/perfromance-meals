@@ -28,7 +28,7 @@ export default function PromoPopup({ onClose, navigate }: Props) {
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative bg-[#111] text-white w-full max-w-[480px] overflow-hidden shadow-2xl">
+      <div className="relative bg-[#1A1A1A] text-white w-full max-w-[480px] overflow-hidden border border-white/10">
 
         {/* Top yellow strip */}
         <div className="bg-[#F5B300] h-1 w-full" />

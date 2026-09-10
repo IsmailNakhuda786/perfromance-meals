@@ -180,7 +180,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
 
       {/* Save toast */}
       {savedMsg && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] bg-[#F5B300] text-[#111111] px-6 py-3 text-[13px] font-bold tracking-wider shadow-xl">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] bg-[#F5B300] text-[#1A1A1A] px-6 py-3 text-[13px] font-bold tracking-wider border border-[#E8E4DC]">
           ✓ {savedMsg}
         </div>
       )}
@@ -216,10 +216,10 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
 
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-8">
               {[
-                { label: "Active Plan", val: activePlan, sub: `${plan.cal} kcal/day`, color: "#F2C94C", bg: "#0D2818" },
-                { label: "Next Delivery", val: "Tomorrow", sub: `${timeSlot.split("–")[0].trim()}`, color: "#F5B300", bg: "#111111" },
-                { label: "Wallet Balance", val: "$12.50", sub: "1,234 reward pts", color: "#7EE8B0", bg: "#111111" },
-                { label: "Orders This Month", val: "3", sub: "$373.70 spent", color: "#A78BFA", bg: "#111111" },
+                { label: "Active Plan", val: activePlan, sub: `${plan.cal} kcal/day`, color: "#F5B300", bg: "#1A1A1A" },
+                { label: "Next Delivery", val: "Tomorrow", sub: `${timeSlot.split("–")[0].trim()}`, color: "#F5B300", bg: "#1A1A1A" },
+                { label: "Wallet Balance", val: "$12.50", sub: "1,234 reward pts", color: "#F5B300", bg: "#1A1A1A" },
+                { label: "Orders This Month", val: "3", sub: "$373.70 spent", color: "#F5B300", bg: "#1A1A1A" },
               ].map((s) => (
                 <div key={s.label} className="p-5 cursor-pointer hover:opacity-90 transition-opacity" style={{ backgroundColor: s.bg }}
                   onClick={() => { if (s.label === "Active Plan") setTab("subscription"); if (s.label === "Wallet Balance") setTab("wallet"); if (s.label === "Orders This Month") setTab("orders"); }}>
@@ -231,10 +231,10 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             </div>
 
             {/* Active sub card */}
-            <div className={`border mb-6 ${subPaused ? "border-amber-300 bg-amber-50" : "border-[#0D2818]/20 bg-[#0D2818]"}`}>
+            <div className={`border mb-6 ${subPaused ? "border-amber-300 bg-amber-50" : "border-white/10 bg-[#1A1A1A]"}`}>
               <div className="p-6 flex items-start justify-between gap-4 flex-wrap">
                 <div>
-                  <div className={`font-mono text-[10px] tracking-[0.3em] uppercase mb-2 ${subPaused ? "text-amber-600" : "text-[#F2C94C]"}`}>
+                  <div className={`font-mono text-[10px] tracking-[0.3em] uppercase mb-2 ${subPaused ? "text-amber-600" : "text-[#F5B300]"}`}>
                     {subPaused ? "⏸ Subscription Paused" : "● Active Subscription"}
                   </div>
                   <h3 className={`font-display text-[24px] font-bold ${subPaused ? "text-[#333]" : "text-white"}`}>
@@ -246,15 +246,15 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 </div>
                 <div className="flex gap-3">
                   {subPaused ? (
-                    <button onClick={() => setSubPaused(false)} className="bg-[#F2C94C] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-[#F2C94C] transition-colors">
+                    <button onClick={() => setSubPaused(false)} className="bg-[#F5B300] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-[#F5B300] transition-colors">
                       Resume Plan
                     </button>
                   ) : (
                     <>
-                      <button onClick={() => setShowPauseModal(true)} className="border border-white/20 text-white/60 px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:border-[#F2C94C] hover:text-[#F2C94C] transition-colors">
+                      <button onClick={() => setShowPauseModal(true)} className="border border-white/20 text-white/60 px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
                         Pause
                       </button>
-                      <button onClick={() => setTab("subscription")} className="bg-[#F2C94C] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-white transition-colors">
+                      <button onClick={() => setTab("subscription")} className="bg-[#F5B300] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-white transition-colors">
                         Manage Plan →
                       </button>
                     </>
@@ -311,7 +311,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             <div className="flex items-center justify-between">
               <h2 className="font-display text-[28px] font-bold">My Plan</h2>
               {subPaused ? (
-                <button onClick={() => setSubPaused(false)} className="bg-[#F2C94C] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-[#F2C94C] transition-colors">
+                <button onClick={() => setSubPaused(false)} className="bg-[#F5B300] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-[#F5B300] transition-colors">
                   Resume Subscription
                 </button>
               ) : (
@@ -569,7 +569,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   <div className="flex overflow-x-auto border-b border-[#E5E2DA]">
                     {WEEKS.map((w, i) => (
                       <button key={i} onClick={() => setActiveWeek(i)}
-                        className={`px-5 py-3.5 shrink-0 text-left border-b-2 transition-colors ${activeWeek === i ? "border-[#F2C94C] text-[#111]" : "border-transparent text-[#999] hover:text-[#111]"}`}>
+                        className={`px-5 py-3.5 shrink-0 text-left border-b-2 transition-colors ${activeWeek === i ? "border-[#F5B300] text-[#111]" : "border-transparent text-[#999] hover:text-[#111]"}`}>
                         <div className={`text-[12px] font-semibold ${activeWeek === i ? "text-[#111]" : ""}`}>{w.label}</div>
                         <div className="text-[10px] text-[#aaa] mt-0.5">{w.dates}</div>
                       </button>
@@ -670,7 +670,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 )}
                 <button
                   onClick={() => { setSubPaused((v) => !v); save(subPaused ? "Plan resumed" : `Plan paused for ${pauseWeeks} week${pauseWeeks > 1 ? "s" : ""}`); }}
-                  className={`w-full py-3 text-[12px] font-bold tracking-widest uppercase transition-colors ${subPaused ? "bg-[#0D2818] text-white hover:bg-[#111]" : "border border-[#111] text-[#111] hover:bg-[#111] hover:text-white"}`}
+                  className={`w-full py-3 text-[12px] font-bold tracking-widest uppercase transition-colors ${subPaused ? "bg-[#1A1A1A] text-white hover:bg-[#111]" : "border border-[#111] text-[#111] hover:bg-[#111] hover:text-white"}`}
                 >
                   {subPaused ? "Resume My Plan" : `Pause ${pauseWeeks} Week${pauseWeeks > 1 ? "s" : ""}`}
                 </button>
@@ -718,14 +718,14 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   {PROMO_HISTORY.map((o) => (
                     <div key={o.id} className="flex items-center justify-between bg-white/5 px-4 py-2.5">
                       <div className="flex items-center gap-3">
-                        <span className="bg-[#F5B300] text-[#111] text-[10px] font-black tracking-widest px-2 py-0.5">{o.promo}</span>
+                        <span className="bg-[#F5B300] text-[#111] text-[10px] font-extrabold tracking-widest px-2 py-0.5">{o.promo}</span>
                         <div>
                           <div className="text-[13px] font-medium">{o.items}</div>
                           <div className="text-white/40 text-[11px]">{o.id} · {o.date}</div>
                         </div>
                       </div>
                       <div className="text-right shrink-0 ml-4">
-                        <div className="text-[#7EE8B0] font-bold text-[14px]">–${o.promoSaving.toFixed(2)}</div>
+                        <div className="text-[#F5B300] font-bold text-[14px]">–${o.promoSaving.toFixed(2)}</div>
                         <div className="text-white/40 text-[11px]">was ${o.originalTotal.toFixed(2)}</div>
                       </div>
                     </div>
@@ -738,14 +738,14 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               {ORDERS.map((o) => (
                 <div key={o.id} className="bg-white border border-[#E5E2DA] p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 flex items-center justify-center text-[18px] shrink-0 ${o.type === "plan" ? "bg-[#0D2818]" : "bg-[#111111]"}`}>
+                    <div className={`w-10 h-10 flex items-center justify-center text-[18px] shrink-0 ${o.type === "plan" ? "bg-[#1A1A1A]" : "bg-[#111111]"}`}>
                       {o.type === "plan" ? "🥗" : o.type === "box" ? "📦" : "❄️"}
                     </div>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-medium text-[14px]">{o.items}</span>
                         {o.promo && (
-                          <span className="bg-[#F5B300] text-[#111] text-[9px] font-black tracking-widest px-1.5 py-0.5">{o.promo}</span>
+                          <span className="bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-widest px-1.5 py-0.5">{o.promo}</span>
                         )}
                       </div>
                       <div className="text-[#999] text-[12px] mt-0.5">{o.id} · {o.date}</div>
@@ -760,7 +760,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     <div className="flex gap-2">
                       <button className="border border-[#D0CCC4] px-4 py-2 text-[12px] hover:border-[#111] transition-colors whitespace-nowrap">Reorder</button>
                       {o.status === "Delivered" && (
-                        <button onClick={() => { setReviewOrderId(o.id); setReviewStars(5); setReviewText(""); }} className="border border-[#F2C94C] text-[#a07800] px-4 py-2 text-[12px] hover:bg-[#F2C94C] hover:text-[#111] transition-colors whitespace-nowrap">Review</button>
+                        <button onClick={() => { setReviewOrderId(o.id); setReviewStars(5); setReviewText(""); }} className="border border-[#F5B300] text-[#a07800] px-4 py-2 text-[12px] hover:bg-[#F5B300] hover:text-[#111] transition-colors whitespace-nowrap">Review</button>
                       )}
                     </div>
                   </div>
@@ -776,9 +776,9 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             <h2 className="font-display text-[28px] font-bold mb-8">Wallet & Rewards</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               {[
-                { label: "Wallet Balance", val: "$12.50", sub: "Available to spend", color: "#F5B300", bg: "#111111" },
-                { label: "Reward Points", val: "1,234", sub: "= $12.34 value", color: "#F2C94C", bg: "#0D2818" },
-                { label: "Lifetime Earned", val: "4,891 pts", sub: "Since Jun 2024", color: "#7EE8B0", bg: "#111111" },
+                { label: "Wallet Balance", val: "$12.50", sub: "Available to spend", color: "#F5B300", bg: "#1A1A1A" },
+                { label: "Reward Points", val: "1,234", sub: "= $12.34 value", color: "#F5B300", bg: "#1A1A1A" },
+                { label: "Lifetime Earned", val: "4,891 pts", sub: "Since Jun 2024", color: "#F5B300", bg: "#1A1A1A" },
               ].map((s) => (
                 <div key={s.label} className="p-6" style={{ backgroundColor: s.bg }}>
                   <div className="font-mono text-[10px] tracking-[0.3em] uppercase mb-3 text-white/30">{s.label}</div>
@@ -842,7 +842,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   <div className="font-medium text-[14px] mb-1">Redeem for Free Meal</div>
                   <div className="text-[#888] text-[12px] mb-3">1,000 pts = 1 free meal added to your next delivery</div>
                   <button onClick={() => { if (redeemPts >= 1000) { save("1,000 points redeemed → 1 Free Meal added to next delivery"); } }}
-                    className={`w-full py-2.5 text-[12px] font-bold tracking-widest uppercase transition-colors ${redeemPts >= 1000 ? "bg-[#0D2818] text-[#F2C94C] hover:bg-[#F2C94C] hover:text-[#111]" : "bg-[#F0EDE8] text-[#aaa] cursor-not-allowed"}`}>
+                    className={`w-full py-2.5 text-[12px] font-bold tracking-widest uppercase transition-colors ${redeemPts >= 1000 ? "bg-[#1A1A1A] text-[#F5B300] hover:bg-[#F5B300] hover:text-[#111]" : "bg-[#F0EDE8] text-[#aaa] cursor-not-allowed"}`}>
                     Redeem 1,000 pts → 1 Free Meal
                   </button>
                   {redeemPts < 1000 && <p className="text-[#aaa] text-[11px] mt-1">Need {1000 - redeemPts} more pts</p>}
@@ -1144,7 +1144,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Your rating</div>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} onClick={() => setReviewStars(star)} className={`text-[32px] transition-colors ${star <= reviewStars ? "text-[#F2C94C]" : "text-[#D0CCC4]"}`}>★</button>
+                  <button key={star} onClick={() => setReviewStars(star)} className={`text-[32px] transition-colors ${star <= reviewStars ? "text-[#F5B300]" : "text-[#D0CCC4]"}`}>★</button>
                 ))}
               </div>
             </div>
@@ -1165,7 +1165,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
       {showTopUp && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => { setShowTopUp(false); setTopUpDone(false); }} />
-          <div className="relative bg-white w-full max-w-[440px] shadow-2xl">
+          <div className="relative bg-white w-full max-w-[440px] border border-[#E8E4DC]">
             <div className="bg-[#111] px-8 pt-7 pb-6">
               <button onClick={() => { setShowTopUp(false); setTopUpDone(false); }} className="absolute top-4 right-4 text-white/30 hover:text-white transition-colors">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>

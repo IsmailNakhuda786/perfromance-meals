@@ -57,12 +57,12 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
   return (
     <div className="min-h-screen bg-[#0E0E0E] text-white">
       {/* Header */}
-      <div className="bg-[#111111] border-b border-white/8">
+      <div className="bg-[#1A1A1A] border-b border-white/8">
         <div className="max-w-[1440px] mx-auto px-6 py-8">
           <div className="flex items-center gap-3 mb-4">
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300] uppercase">01 / Ready Series</span>
           </div>
-          <h1 className="font-display text-[28px] sm:text-[42px] font-bold">Build-A-Box</h1>
+          <h1 className="font-display text-[28px] sm:text-[42px] font-extrabold uppercase">BUILD-A-BOX</h1>
           <p className="text-white/40 mt-1 text-[14px]">Mix and match any meals. Best value on the site.</p>
         </div>
 
@@ -103,7 +103,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               >
                 {size.popular && (
                   <div className="absolute -top-3 left-6">
-                    <span className="bg-[#F5B300] text-[#111111] px-3 py-1 text-[9px] tracking-[0.25em] uppercase font-bold">Most Popular</span>
+                    <span className="bg-[#F5B300] text-[#1A1A1A] px-3 py-1 text-[9px] tracking-[0.25em] uppercase font-bold">Most Popular</span>
                   </div>
                 )}
                 <div className="font-mono text-[10px] tracking-[0.3em] text-white/40 mb-2 uppercase">{size.label}</div>
@@ -140,7 +140,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
 
           <button
             onClick={() => setStep("select")}
-            className="inline-flex items-center gap-3 bg-[#F5B300] text-[#111111] px-10 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors"
+            className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] px-10 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors"
           >
             Pick My {boxSize} Meals →
           </button>
@@ -172,7 +172,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
           <div className="flex gap-2 mb-8 overflow-x-auto pb-1">
             {[{ id: "all", label: "All Meals" }, ...CATS.filter((c) => c.id !== "all")].map((c) => (
               <button key={c.id} onClick={() => setActiveCat(c.id)}
-                className={`px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase font-medium whitespace-nowrap transition-all ${activeCat === c.id ? "bg-[#F5B300] text-[#111111]" : "border border-white/12 text-white/40 hover:border-white/35 hover:text-white"}`}>
+                className={`px-4 py-2.5 text-[11px] tracking-[0.18em] uppercase font-medium whitespace-nowrap transition-all ${activeCat === c.id ? "bg-[#F5B300] text-[#1A1A1A]" : "border border-white/12 text-white/40 hover:border-white/35 hover:text-white"}`}>
                 {c.label}
               </button>
             ))}
@@ -187,7 +187,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                   <div className="relative h-44 bg-[#222] cursor-pointer" onClick={() => setDetailMeal(meal)}>
                     <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     {qty > 0 && (
-                      <div className="absolute top-2 right-2 bg-[#F5B300] text-[#111111] w-7 h-7 rounded-full flex items-center justify-center font-bold text-[12px]">
+                      <div className="absolute top-2 right-2 bg-[#F5B300] text-[#1A1A1A] w-7 h-7 rounded-full flex items-center justify-center font-bold text-[12px]">
                         {qty}
                       </div>
                     )}
@@ -218,7 +218,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                       <button
                         onClick={() => adjustQty(meal, 1)}
                         disabled={!canAdd}
-                        className={`w-8 h-8 border transition-colors text-lg ${canAdd ? "border-[#F5B300] text-[#F5B300] hover:bg-[#F5B300] hover:text-[#111111]" : "border-white/10 text-white/20"}`}
+                        className={`w-8 h-8 border transition-colors text-lg ${canAdd ? "border-[#F5B300] text-[#F5B300] hover:bg-[#F5B300] hover:text-[#1A1A1A]" : "border-white/10 text-white/20"}`}
                       >+</button>
                     </div>
                   </div>
@@ -234,7 +234,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             <button
               onClick={() => setStep("review")}
               disabled={totalSelected !== boxSize}
-              className={`inline-flex items-center gap-2 px-8 py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected === boxSize ? "bg-[#F5B300] text-[#111111] hover:bg-white" : "bg-white/10 text-white/30 cursor-not-allowed"}`}
+              className={`inline-flex items-center gap-2 px-8 py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase transition-colors ${totalSelected === boxSize ? "bg-[#F5B300] text-[#1A1A1A] hover:bg-white" : "bg-white/10 text-white/30 cursor-not-allowed"}`}
             >
               {totalSelected === boxSize ? "Review My Box →" : `Fill ${slotsLeft} more slot${slotsLeft !== 1 ? "s" : ""}`}
             </button>
@@ -285,7 +285,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                 </div>
                 <div className="flex justify-between text-[13px]">
                   <span className="text-white/40">Delivery</span>
-                  <span className="text-[#7EE8B0]">Free</span>
+                  <span className="text-[#F5B300]">Free</span>
                 </div>
               </div>
               <div className="border-t border-white/10 pt-4 mb-6">
@@ -313,7 +313,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                 </div>
               </div>
 
-              <button onClick={handleAddToCart} className="w-full bg-[#F5B300] text-[#111111] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
+              <button onClick={handleAddToCart} className="w-full bg-[#F5B300] text-[#1A1A1A] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
                 Proceed to Checkout →
               </button>
               <p className="text-white/20 text-[11px] text-center mt-3">Free same-day delivery · Frozen fresh</p>
@@ -345,10 +345,10 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             <div className="p-7">
               {(() => {
                 const typeMap: Record<string, { label: string; color: string }> = {
-                  "high-carb":    { label: "High Carb",    color: "#F2C94C" },
-                  "low-carb":     { label: "Low Carb",     color: "#7EE8B0" },
-                  "just-protein": { label: "Just Protein", color: "#A78BFA" },
-                  "breakfast":    { label: "Breakfast",    color: "#FB923C" },
+                  "high-carb":    { label: "High Carb",    color: "#F5B300" },
+                  "low-carb":     { label: "Low Carb",     color: "#ffffff80" },
+                  "just-protein": { label: "Just Protein", color: "#ffffff80" },
+                  "breakfast":    { label: "Breakfast",    color: "#F5B300" },
                 };
                 const t = typeMap[detailMeal.cat];
                 return t ? (

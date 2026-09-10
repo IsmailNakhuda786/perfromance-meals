@@ -31,7 +31,7 @@ export default function GiftCardPage({ navigate }: Props) {
           {/* Confetti elements */}
           <div className="relative mb-8">
             <div className="absolute -top-4 left-8 w-5 h-5 bg-[#F5B300] rounded-full opacity-50" />
-            <div className="absolute top-2 right-10 w-7 h-7 bg-[#F2C94C] rounded-full opacity-40" />
+            <div className="absolute top-2 right-10 w-7 h-7 bg-[#F5B300] rounded-full opacity-40" />
             <div className="absolute -top-2 right-3 w-3 h-3 bg-[#7EE8B0] opacity-50" />
             <div className="absolute top-6 left-14 w-4 h-4 bg-[#A78BFA] opacity-40" />
             <div className="w-20 h-20 bg-[#F5B300] rounded-full flex items-center justify-center mx-auto">
@@ -52,7 +52,7 @@ export default function GiftCardPage({ navigate }: Props) {
           {/* Gift card preview */}
           <div className="bg-[#111111] text-white p-6 sm:p-8 mb-6 text-left relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#F5B300]/10 rounded-full -translate-y-8 translate-x-8" />
-            <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#F2C94C]/10 rounded-full translate-y-8 -translate-x-8" />
+            <div className="absolute bottom-0 left-0 w-20 h-20 bg-[#F5B300]/10 rounded-full translate-y-8 -translate-x-8" />
             <div className="relative">
               <div className="font-display text-[22px] font-bold mb-1">FRESHER<span className="text-[#F5B300]">.</span></div>
               <div className="font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase mb-6">Performance Gift Card</div>
@@ -89,7 +89,7 @@ export default function GiftCardPage({ navigate }: Props) {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <button onClick={() => { setStep("configure"); setRecipientEmail(""); setSenderName(""); setMessage(""); }}
-              className="flex-1 bg-[#F2C94C] text-[#111] py-4 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors">
+              className="flex-1 bg-[#F5B300] text-[#111] py-4 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors">
               Send Another →
             </button>
             <button onClick={() => navigate("home")}
@@ -107,7 +107,7 @@ export default function GiftCardPage({ navigate }: Props) {
       {/* Minimal header with step indicator */}
       <div className="bg-white border-b border-[#E5E2DA] px-6 py-4 flex items-center justify-between">
         <button onClick={() => navigate("home")} className="font-display text-[20px] font-bold text-[#111]">
-          FRESHER<span className="text-[#F2C94C]">.</span>
+          FRESHER<span className="text-[#F5B300]">.</span>
         </button>
         <div className="flex items-center gap-3">
           {(["configure", "payment"] as Step[]).map((s, i) => {
@@ -147,9 +147,9 @@ export default function GiftCardPage({ navigate }: Props) {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
                 {AMOUNTS.map((a) => (
                   <button key={a} onClick={() => setAmount(a)}
-                    className={`py-4 text-center border-2 transition-all font-display text-[22px] font-bold ${amount === a ? "border-[#F2C94C] bg-white shadow-md text-[#111]" : "border-[#D0CCC4] bg-white text-[#888] hover:border-[#999]"}`}>
+                    className={`py-4 text-center border-2 transition-all font-display text-[22px] font-bold ${amount === a ? "border-[#F5B300] bg-white text-[#111]" : "border-[#D0CCC4] bg-white text-[#888] hover:border-[#999]"}`}>
                     ${a}
-                    {amount === a && <div className="text-[10px] font-normal font-body text-[#F2C94C] mt-0.5 tracking-widest">Selected</div>}
+                    {amount === a && <div className="text-[10px] font-normal font-body text-[#F5B300] mt-0.5 tracking-widest">Selected</div>}
                   </button>
                 ))}
               </div>
@@ -199,7 +199,7 @@ export default function GiftCardPage({ navigate }: Props) {
             </div>
 
             <button onClick={() => setStep("payment")} disabled={!canProceed}
-              className={`w-full py-4 text-[13px] font-bold tracking-[0.15em] uppercase transition-colors ${canProceed ? "bg-[#F2C94C] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
+              className={`w-full py-4 text-[13px] font-bold tracking-[0.15em] uppercase transition-colors ${canProceed ? "bg-[#F5B300] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
               {canProceed ? "Continue to Payment →" : "Fill in required fields to continue"}
             </button>
           </div>
@@ -256,7 +256,7 @@ export default function GiftCardPage({ navigate }: Props) {
             </button>
 
             <button onClick={() => setStep("confirmed")}
-              className="w-full bg-[#F2C94C] text-[#111] py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors">
+              className="w-full bg-[#F5B300] text-[#111] py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors">
               Pay ${finalAmount.toFixed(2)} & Send Gift Card →
             </button>
             <p className="text-[#aaa] text-[11px] text-center mt-3">🔒 Stripe · Gift cards are non-refundable</p>

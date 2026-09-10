@@ -216,7 +216,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
             <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
           </div>
           {meal.badge && (
-            <div className="absolute top-4 left-4 bg-[#F5B300] text-[#1A1A1A] text-[9px] font-black tracking-[0.2em] uppercase px-3 py-1.5">
+            <div className="absolute top-4 left-4 bg-[#F5B300] text-[#1A1A1A] text-[9px] font-extrabold tracking-[0.2em] uppercase px-3 py-1.5">
               {meal.badge}
             </div>
           )}
@@ -305,7 +305,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={handleAddToCart}
-                className={`flex-1 py-4 font-black text-[12px] tracking-[0.2em] uppercase transition-colors ${added ? "bg-[#7EE8B0] text-[#1A1A1A]" : "bg-[#F5B300] text-[#1A1A1A] hover:bg-white"}`}
+                className={`flex-1 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase transition-colors ${added ? "bg-white text-[#1A1A1A]" : "bg-[#F5B300] text-[#1A1A1A] hover:bg-white"}`}
               >
                 {added ? "✓ ADDED TO CART" : "ADD TO CART"}
               </button>
@@ -451,7 +451,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
                     <div className="flex items-start justify-between gap-4 mb-3">
                       <div>
                         <div className="flex items-center gap-3 mb-1">
-                          <div className="w-8 h-8 bg-[#F5B300] flex items-center justify-center font-black text-[11px] text-[#1A1A1A] shrink-0">
+                          <div className="w-8 h-8 bg-[#F5B300] flex items-center justify-center font-extrabold text-[11px] text-[#1A1A1A] shrink-0">
                             {r.author.charAt(0)}
                           </div>
                           <div>
@@ -525,7 +525,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
             <div className="mt-8 text-center">
               <button
                 onClick={() => navigate("ready-series")}
-                className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] px-10 py-4 font-black text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors"
+                className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] px-10 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors"
               >
                 SHOP ALL READY-SERIES →
               </button>

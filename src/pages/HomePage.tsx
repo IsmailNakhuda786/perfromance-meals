@@ -96,7 +96,7 @@ export default function HomePage({ navigate }: Props) {
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); navigate("ready-series"); }}
-              className="inline-flex items-center gap-3 text-[#1A1A1A] text-[11px] font-black tracking-[0.2em] uppercase px-8 py-4 transition-colors"
+              className="inline-flex items-center gap-3 text-[#1A1A1A] text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-4 transition-colors"
               style={{ backgroundColor: "#F5B300" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#fff"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#F5B300"; }}
@@ -145,7 +145,7 @@ export default function HomePage({ navigate }: Props) {
             </div>
             <button
               onClick={(e) => { e.stopPropagation(); navigate("meal-plan-landing"); }}
-              className="inline-flex items-center gap-3 text-white text-[11px] font-black tracking-[0.2em] uppercase px-8 py-4 transition-colors"
+              className="inline-flex items-center gap-3 text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-4 transition-colors"
               style={{ backgroundColor: "#E85D04" }}
               onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#1A1A1A"; }}
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#E85D04"; }}
@@ -333,7 +333,7 @@ export default function HomePage({ navigate }: Props) {
               onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#F5B300"; }}>
               <span className="text-[36px]">⚡</span>
               <div>
-                <div className="font-black text-[18px]">Ready Series</div>
+                <div className="font-extrabold text-[18px]">Ready Series</div>
                 <div className="text-[12px] mt-1 opacity-70">Frozen at peak. Ready on demand.</div>
               </div>
             </button>

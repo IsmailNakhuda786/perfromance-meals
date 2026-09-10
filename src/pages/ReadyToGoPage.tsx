@@ -28,7 +28,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E0E0E] text-white">
+    <div className="min-h-screen bg-[#1A1A1A] text-white">
       {/* Hero banner */}
       <div className="relative h-40 sm:h-52 overflow-hidden bg-[#111]">
         <img src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1400&h=400&fit=crop&auto=format" alt="" className="absolute inset-0 w-full h-full object-cover opacity-40" />
@@ -152,7 +152,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                   )}
                   {/* Cart quantity badge */}
                   {qtyInCart > 0 && (
-                    <div className="absolute top-3 right-3 z-10 bg-[#F5B300] text-[#111111] font-bold text-[12px] w-7 h-7 rounded-full flex items-center justify-center shadow-lg">
+                    <div className="absolute top-3 right-3 z-10 bg-[#F5B300] text-[#1A1A1A] font-bold text-[12px] w-7 h-7 flex items-center justify-center border border-[#1A1A1A]/20">
                       {qtyInCart}
                     </div>
                   )}
@@ -167,9 +167,9 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                   {/* Meal type badge */}
                   {(() => {
                     const typeMap: Record<string, { label: string; bg: string; text: string }> = {
-                      "high-carb":    { label: "High Carb",    bg: "#F2C94C22", text: "#F2C94C" },
-                      "low-carb":     { label: "Low Carb",     bg: "#7EE8B022", text: "#7EE8B0" },
-                      "just-protein": { label: "Just Protein", bg: "#A78BFA22", text: "#A78BFA" },
+                      "high-carb":    { label: "High Carb",    bg: "#F5B30022", text: "#F5B300" },
+                      "low-carb":     { label: "Low Carb",     bg: "#ffffff15", text: "#ffffff80" },
+                      "just-protein": { label: "Just Protein", bg: "#ffffff15", text: "#ffffff80" },
                       "breakfast":    { label: "Breakfast",    bg: "#F5B30022", text: "#F5B300" },
                     };
                     const t = typeMap[meal.cat];
@@ -200,7 +200,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                     </div>
                     <button
                       onClick={() => handleAdd(meal)}
-                      className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${added === meal.id ? "bg-[#7EE8B0] text-[#111111]" : "bg-[#F5B300] text-[#111111] hover:bg-white"}`}
+                      className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-all ${added === meal.id ? "bg-white text-[#1A1A1A]" : "bg-[#F5B300] text-[#1A1A1A] hover:bg-white"}`}
                     >
                       {added === meal.id ? "✓ Added" : qtyInCart > 0 ? `+ Add more` : "+ Add"}
                     </button>
@@ -262,9 +262,9 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
             <div className="p-7">
               {(() => {
                 const typeMap: Record<string, { label: string; color: string }> = {
-                  "high-carb":    { label: "High Carb",    color: "#F2C94C" },
-                  "low-carb":     { label: "Low Carb",     color: "#7EE8B0" },
-                  "just-protein": { label: "Just Protein", color: "#A78BFA" },
+                  "high-carb":    { label: "High Carb",    color: "#F5B300" },
+                  "low-carb":     { label: "Low Carb",     color: "#ffffff80" },
+                  "just-protein": { label: "Just Protein", color: "#ffffff80" },
                   "breakfast":    { label: "Breakfast",    color: "#F5B300" },
                 };
                 const t = typeMap[selectedMeal.cat];

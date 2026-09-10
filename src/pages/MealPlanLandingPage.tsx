@@ -242,8 +242,8 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
           </div>
           <div className="shrink-0">
             <button onClick={() => navigateToWizard(selectedGoal)}
-              className="px-10 py-4 font-bold text-[13px] tracking-[0.15em] uppercase text-[#1A1A1A] transition-colors hover:opacity-90"
-              style={{ backgroundColor: "#F5B300" }}>
+              className="px-10 py-4 font-bold text-[13px] tracking-[0.15em] uppercase text-white transition-colors hover:opacity-90"
+              style={{ backgroundColor: "#E85D04" }}>
               Start Your Plan →
             </button>
           </div>

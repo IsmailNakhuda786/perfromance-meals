@@ -142,16 +142,16 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               </p>
             </div>
             <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4 lg:justify-end">
-              <div className="bg-[#0A0A0A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#F5B300] font-display text-[32px] font-black">3 min</div>
+              <div className="bg-[#1A1A1A] border border-white/10 px-6 py-5 flex-1">
+                <div className="text-[#F5B300] font-display text-[32px] font-extrabold">3 min</div>
                 <div className="text-white/40 text-[11px] tracking-wide mt-1">Ready to eat</div>
               </div>
-              <div className="bg-[#0A0A0A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#F5B300] font-display text-[32px] font-black">40+</div>
+              <div className="bg-[#1A1A1A] border border-white/10 px-6 py-5 flex-1">
+                <div className="text-[#F5B300] font-display text-[32px] font-extrabold">40+</div>
                 <div className="text-white/40 text-[11px] tracking-wide mt-1">Meal options</div>
               </div>
-              <div className="bg-[#0A0A0A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#F5B300] font-display text-[32px] font-black">$8.90</div>
+              <div className="bg-[#1A1A1A] border border-white/10 px-6 py-5 flex-1">
+                <div className="text-[#F5B300] font-display text-[32px] font-extrabold">$8.90</div>
                 <div className="text-white/40 text-[11px] tracking-wide mt-1">Starting from</div>
               </div>
             </div>
@@ -166,7 +166,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
           <div className="flex flex-wrap gap-4">
             {promos.map((p) => (
               <div key={p.code} className="flex items-center gap-2">
-                <span className="bg-[#F5B300] text-[#111] text-[9px] font-black px-2 py-0.5 tracking-wider">{p.code}</span>
+                <span className="bg-[#F5B300] text-[#111] text-[9px] font-extrabold px-2 py-0.5 tracking-wider">{p.code}</span>
                 <span className="text-white/50 text-[11px]">{p.desc}</span>
                 <span className="text-white/20 text-[10px] font-mono">{p.expires}</span>
               </div>
@@ -194,12 +194,12 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       </div>
 
       {/* ── BUNDLES ── */}
-      <section className="py-16 px-6 sm:px-8 bg-[#0A0A0A]">
+      <section className="py-16 px-6 sm:px-8 bg-[#1A1A1A]">
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
             <div>
               <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Useful Bundles</div>
-              <h2 className="font-display text-[32px] sm:text-[40px] font-black">Stock up and save<span className="text-[#F5B300]">.</span></h2>
+              <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Stock up and save<span className="text-[#F5B300]">.</span></h2>
               <p className="text-white/40 text-[13px] mt-2">Each bundle is curated from our bestselling meals — see what you get inside.</p>
             </div>
             <button
@@ -227,7 +227,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       ))}
                     </div>
                     {b.badge && (
-                      <div className="absolute top-3 right-3 bg-[#F5B300] text-[#111] text-[9px] font-black tracking-[0.15em] px-2.5 py-1">{b.badge}</div>
+                      <div className="absolute top-3 right-3 bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-[0.15em] px-2.5 py-1">{b.badge}</div>
                     )}
                     <div className="absolute bottom-2 left-3 text-[10px] text-white/50 font-mono">{b.meals} meals · scroll to see all →</div>
                   </div>
@@ -240,7 +240,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                         <div className="text-white/40 text-[12px] mt-0.5 leading-relaxed">{b.desc}</div>
                       </div>
                       <div className="text-right shrink-0">
-                        <div className="font-display text-[24px] font-black text-[#F5B300]">${b.price}</div>
+                        <div className="font-display text-[24px] font-extrabold text-[#F5B300]">${b.price}</div>
                         <div className="text-white/30 text-[11px]">${b.ppm}/meal</div>
                       </div>
                     </div>
@@ -284,7 +284,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
             <div>
               <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">All Meals</div>
-              <h2 className="font-display text-[32px] sm:text-[40px] font-black">
+              <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">
                 {filtered.length} meals available<span className="text-[#F5B300]">.</span>
               </h2>
             </div>
@@ -319,10 +319,10 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                   >
                     <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-[#F5B300] text-[#1A1A1A] text-[10px] font-black tracking-[0.2em] uppercase px-4 py-2">VIEW DETAILS →</span>
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-[#F5B300] text-[#1A1A1A] text-[10px] font-extrabold tracking-[0.2em] uppercase px-4 py-2">VIEW DETAILS →</span>
                     </div>
                     {meal.badge && (
-                      <div className="absolute top-3 left-3 bg-[#F5B300] text-[#111] text-[8px] font-black tracking-[0.15em] px-2 py-1">
+                      <div className="absolute top-3 left-3 bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.15em] px-2 py-1">
                         {meal.badge}
                       </div>
                     )}
@@ -351,10 +351,10 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       {reviewCount > 0 && <span className="text-[10px] text-white/30">({reviewCount} reviews)</span>}
                     </button>
                     <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-white/8">
-                      <span className="font-display text-[18px] font-black text-white">${meal.price.toFixed(2)}</span>
+                      <span className="font-display text-[18px] font-extrabold text-white">${meal.price.toFixed(2)}</span>
                       <button
                         onClick={() => handleAdd(meal)}
-                        className={`px-4 py-2 text-[10px] font-black tracking-[0.15em] uppercase transition-colors ${justAdded ? "bg-[#7EE8B0] text-[#111]" : inCart ? "bg-[#F5B300]/20 text-[#F5B300] border border-[#F5B300]/30 hover:bg-[#F5B300] hover:text-[#111]" : "bg-[#F5B300] text-[#111] hover:bg-white"}`}
+                        className={`px-4 py-2 text-[10px] font-extrabold tracking-[0.15em] uppercase transition-colors ${justAdded ? "bg-white text-[#1A1A1A]" : inCart ? "bg-[#F5B300]/20 text-[#F5B300] border border-[#F5B300]/30 hover:bg-[#F5B300] hover:text-[#111]" : "bg-[#F5B300] text-[#111] hover:bg-white"}`}
                       >
                         {justAdded ? "✓ Added" : inCart ? `In Cart (${inCart.qty})` : "+ Add"}
                       </button>
@@ -368,11 +368,11 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       </section>
 
       {/* ── WHY READY SERIES ── */}
-      <section className="py-16 bg-[#0A0A0A] px-6 sm:px-8">
+      <section className="py-16 bg-[#1A1A1A] px-6 sm:px-8">
         <div className="max-w-[1200px] mx-auto">
           <div className="text-center mb-12">
             <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-3">Why Ready Series</div>
-            <h2 className="font-display text-[36px] sm:text-[48px] font-black">
+            <h2 className="font-display text-[36px] sm:text-[48px] font-extrabold">
               A busy day does not have<br />to knock you off track<span className="text-[#F5B300]">.</span>
             </h2>
           </div>
@@ -383,7 +383,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               { icon: "📊", label: "Macro tracked", desc: "Every gram counted. No guesswork required." },
               { icon: "🚚", label: "Free delivery $80+", desc: "Free delivery on orders over $80. Always." },
             ].map((f) => (
-              <div key={f.label} className="bg-[#0A0A0A] px-7 py-8">
+              <div key={f.label} className="bg-[#1A1A1A] px-7 py-8">
                 <div className="text-[30px] mb-4">{f.icon}</div>
                 <div className="font-display text-[18px] font-bold text-white mb-2">{f.label}</div>
                 <div className="text-white/40 text-[12px] leading-relaxed">{f.desc}</div>
@@ -407,14 +407,14 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
           )}
           <div className="px-6 py-4 flex items-center justify-between">
             <div>
-              <div className="font-black text-[16px]">{cartQty} meal{cartQty !== 1 ? "s" : ""} in your box</div>
+              <div className="font-extrabold text-[16px]">{cartQty} meal{cartQty !== 1 ? "s" : ""} in your box</div>
               <div className="text-[11px] opacity-60">
                 {toFreeDelivery <= 0 ? "🎉 Free delivery unlocked!" : `$${cartTotal.toFixed(2)} — ${toFreeDelivery.toFixed(2)} from free delivery`}
               </div>
             </div>
             <button
               onClick={() => navigate("checkout")}
-              className="bg-[#111] text-white text-[11px] font-black tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-[#111] transition-colors"
+              className="bg-[#111] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-[#111] transition-colors"
             >
               Checkout →
             </button>

@@ -120,7 +120,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                 {/* Avatar / profile pill */}
                 <button onClick={() => go("account")}
                   className={`flex items-center gap-2 pl-1 pr-2 py-1 border transition-colors ${currentPage === "account" ? "border-white/30 bg-white/10" : "border-white/10 hover:border-white/25 bg-white/5"}`}>
-                  <div className="w-6 h-6 bg-[#F5B300] rounded-full flex items-center justify-center text-[#111] font-black text-[11px] shrink-0">J</div>
+                  <div className="w-6 h-6 bg-[#F5B300] rounded-full flex items-center justify-center text-[#111] font-extrabold text-[11px] shrink-0">J</div>
                   <span className="text-white/60 text-[11px] tracking-wide hidden lg:block">Jerome</span>
                 </button>
 
@@ -139,7 +139,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   Log In
                 </button>
                 <button onClick={openSignup}
-                  className="hidden md:block bg-[#F5B300] text-[#111] text-[10px] font-black tracking-[0.2em] uppercase px-4 py-2 hover:bg-white transition-colors whitespace-nowrap">
+                  className="hidden md:block bg-[#F5B300] text-[#111] text-[10px] font-extrabold tracking-[0.2em] uppercase px-4 py-2 hover:bg-white transition-colors whitespace-nowrap">
                   Sign Up
                 </button>
               </>
@@ -185,7 +185,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
               {isLoggedIn ? (
                 <>
                   <div className="flex items-center gap-3 px-3 py-3 border-b border-white/5">
-                    <div className="w-9 h-9 bg-[#F5B300] rounded-full flex items-center justify-center text-[#111] font-black text-[13px]">J</div>
+                    <div className="w-9 h-9 bg-[#F5B300] rounded-full flex items-center justify-center text-[#111] font-extrabold text-[13px]">J</div>
                     <div>
                       <div className="text-white text-[14px] font-semibold">Jerome</div>
                       <div className="text-[#F5B300] text-[11px] font-mono">💳 ${WALLET_BALANCE.toFixed(2)} · {REWARD_PTS} pts</div>
@@ -208,7 +208,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                       Log In
                     </button>
                     <button onClick={openSignup}
-                      className="flex-1 bg-[#F5B300] text-[#111] py-3 text-[13px] font-black tracking-widest uppercase hover:bg-white transition-colors">
+                      className="flex-1 bg-[#F5B300] text-[#111] py-3 text-[13px] font-extrabold tracking-widest uppercase hover:bg-white transition-colors">
                       Sign Up
                     </button>
                   </div>
@@ -414,7 +414,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
 
       {/* Logout toast */}
       {logoutToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] bg-[#111] text-white px-6 py-4 flex items-center gap-3 shadow-2xl border border-white/10">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] bg-[#1A1A1A] text-white px-6 py-4 flex items-center gap-3 border border-white/10">
           <div className="w-8 h-8 bg-[#F5B300] rounded-full flex items-center justify-center shrink-0">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
           </div>
@@ -531,7 +531,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   );
                 })()}
 
-                <div className="mx-4 bg-[#1A2E1A] border border-[#7EE8B0]/20 p-3 text-[12px] text-[#7EE8B0] flex items-center gap-2">
+                <div className="mx-4 bg-[#F5B300]/10 border border-[#F5B300]/25 p-3 text-[12px] text-[#F5B300] flex items-center gap-2">
                   <span>💳</span>
                   <span>Wallet: <strong>$12.50</strong> available at checkout</span>
                 </div>

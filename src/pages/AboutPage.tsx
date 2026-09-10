@@ -157,7 +157,7 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
           <div className="flex gap-3 justify-center flex-wrap">
             <button onClick={() => navigateToWizard()}
               className="px-8 py-4 text-[13px] font-bold tracking-[0.15em] uppercase text-[#1A1A1A] hover:opacity-90 transition-colors"
-              style={{ backgroundColor: "#E85D04" }}>
+              style={{ backgroundColor: "#F5B300" }}>
               Start Meal Plan →
             </button>
             <button onClick={() => navigate("ready-series")}
