@@ -663,6 +663,91 @@ export default function HomePage({ navigate, navigateToWizard, navigateToReferra
         </div>
       </section>
 
+      {/* ── ABOUT US ── */}
+      <section id="about" className="bg-[#F7F5F0] py-16 sm:py-24 border-t border-[#E5E2DA]">
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            {/* Left — text */}
+            <div>
+              <span className="font-mono text-[10px] tracking-[0.45em] text-[#111]/35 uppercase">About Fresher</span>
+              <h2 className="font-display text-[36px] sm:text-[52px] font-bold mt-3 mb-6 leading-tight">
+                Built for people who<br /><span className="text-[#CDFF3A] bg-[#111] px-2">take performance seriously.</span>
+              </h2>
+              <p className="text-[#555] text-[15px] leading-relaxed mb-5">
+                Fresher started in 2022 when a competitive swimmer and a Michelin-trained chef got tired of choosing between eating well and eating right. Every meal we make is designed around one principle: food should perform as hard as you do.
+              </p>
+              <p className="text-[#555] text-[15px] leading-relaxed mb-8">
+                Based out of Toa Payoh, Singapore, our kitchen produces hundreds of macro-accurate meals daily — all fresh, all chef-prepared, all delivered by 9am.
+              </p>
+
+              {/* Stats row */}
+              <div className="grid grid-cols-3 gap-4 mb-8">
+                {[
+                  { n: "2022", label: "Founded" },
+                  { n: "8,400+", label: "Happy customers" },
+                  { n: "60-day", label: "Money-back guarantee" },
+                ].map((s) => (
+                  <div key={s.label} className="border-l-2 border-[#CDFF3A] pl-4">
+                    <div className="font-display text-[22px] sm:text-[26px] font-bold text-[#111]">{s.n}</div>
+                    <div className="text-[#888] text-[11px] uppercase tracking-wider mt-0.5">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <button onClick={() => navigate("about")}
+                className="inline-flex items-center gap-2 bg-[#111] text-white px-7 py-3.5 text-[11px] font-bold tracking-[0.18em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                Our Full Story →
+              </button>
+            </div>
+
+            {/* Right — team cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                {
+                  name: "Chef Marcus Yeo",
+                  role: "Co-founder & Head Chef",
+                  bio: "10 years fine dining at Marina Bay Sands and Odette before leaving to solve performance nutrition.",
+                  img: "https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=400&h=500&fit=crop&auto=format",
+                  tag: "Michelin kitchen background",
+                },
+                {
+                  name: "Dr. Aisha Lim",
+                  role: "Sports Dietitian",
+                  bio: "PhD in Sports Nutrition, NUS. Has worked with national swimmers, cyclists and football clubs.",
+                  img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=500&fit=crop&auto=format",
+                  tag: "PhD · NUS",
+                },
+                {
+                  name: "Ryan Teo",
+                  role: "Co-founder & CEO",
+                  bio: "Former competitive swimmer. Founded Fresher after struggling to find performance food that actually tasted good.",
+                  img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&auto=format",
+                  tag: "National swimmer",
+                },
+                {
+                  name: "Our Kitchen",
+                  role: "Toa Payoh, Singapore",
+                  bio: "SFA-certified. Operates 6am–2pm daily. Every meal labelled with exact macros, batch number, and prep date.",
+                  img: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=500&fit=crop&auto=format",
+                  tag: "SFA certified",
+                },
+              ].map((p) => (
+                <div key={p.name} className="group relative overflow-hidden bg-[#111]">
+                  <img src={p.img} alt={p.name} className="w-full h-48 object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-500" />
+                  <div className="p-5">
+                    <div className="inline-block bg-[#CDFF3A] text-[#111] text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 mb-3">{p.tag}</div>
+                    <div className="text-white font-semibold text-[14px] mb-0.5">{p.name}</div>
+                    <div className="text-[#CDFF3A] text-[10px] font-mono tracking-wider uppercase mb-2">{p.role}</div>
+                    <p className="text-white/40 text-[12px] leading-relaxed">{p.bio}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── NEWSLETTER ── */}
       <section className="bg-[#F7F5F0] py-16 border-t border-[#E5E2DA]">
         <div className="max-w-[1440px] mx-auto px-6 text-center">

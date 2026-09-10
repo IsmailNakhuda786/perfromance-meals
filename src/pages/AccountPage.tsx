@@ -79,6 +79,21 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
   // Points redemption
   const [redeemPts, setRedeemPts] = useState(500);
 
+  // Wallet top-up
+  const [showTopUp, setShowTopUp] = useState(false);
+  const [topUpAmount, setTopUpAmount] = useState(50);
+  const [topUpCard, setTopUpCard] = useState("");
+  const [topUpExpiry, setTopUpExpiry] = useState("");
+  const [topUpCvc, setTopUpCvc] = useState("");
+  const [topUpName, setTopUpName] = useState("");
+  const [topUpDone, setTopUpDone] = useState(false);
+  const [topUpError, setTopUpError] = useState(false);
+  const PRESET_AMOUNTS = [20, 50, 100, 200];
+  const handleTopUp = () => {
+    if (!topUpCard || !topUpExpiry || !topUpCvc || !topUpName) { setTopUpError(true); return; }
+    setTopUpDone(true);
+  };
+
   // Card management
   const [showAddCard, setShowAddCard] = useState(false);
 
@@ -772,6 +787,29 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 </div>
               ))}
             </div>
+            {/* ── TOP UP WALLET ── */}
+            <div className="bg-white border border-[#E5E2DA] p-6 mb-5">
+              <div className="flex items-center justify-between gap-4 mb-1">
+                <div>
+                  <h3 className="font-medium text-[16px]">Top Up Wallet</h3>
+                  <p className="text-[#888] text-[13px] mt-0.5">Add credit via card — use it on any order at checkout.</p>
+                </div>
+                <button onClick={() => { setShowTopUp(true); setTopUpDone(false); setTopUpError(false); setTopUpCard(""); setTopUpExpiry(""); setTopUpCvc(""); setTopUpName(""); }}
+                  className="shrink-0 bg-[#111] text-white text-[11px] font-bold tracking-widest uppercase px-5 py-2.5 hover:bg-[#CDFF3A] hover:text-[#111] transition-colors whitespace-nowrap">
+                  + Add Credit
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {PRESET_AMOUNTS.map((a) => (
+                  <div key={a} className="border border-[#E5E2DA] px-4 py-2 text-[13px] text-[#666]">
+                    <span className="font-bold text-[#111]">${a}</span>
+                    {a === 50 && <span className="ml-2 bg-[#CDFF3A] text-[#111] text-[9px] font-bold px-1.5 py-0.5 uppercase tracking-wider">Popular</span>}
+                  </div>
+                ))}
+                <div className="border border-[#E5E2DA] px-4 py-2 text-[13px] text-[#666]">Custom amount</div>
+              </div>
+            </div>
+
             <div className="bg-white border border-[#E5E2DA] p-6 mb-5">
               <h3 className="font-medium text-[16px] mb-1">Redeem Your Points</h3>
               <p className="text-[#888] text-[13px] mb-5">You have <strong className="text-[#111]">1,234 points</strong> = <strong className="text-[#111]">$12.34 value</strong></p>
@@ -1119,6 +1157,116 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               className="w-full bg-[#111] text-white py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
               Submit Review
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── WALLET TOP-UP MODAL ── */}
+      {showTopUp && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => { setShowTopUp(false); setTopUpDone(false); }} />
+          <div className="relative bg-white w-full max-w-[440px] shadow-2xl">
+            <div className="bg-[#111] px-8 pt-7 pb-6">
+              <button onClick={() => { setShowTopUp(false); setTopUpDone(false); }} className="absolute top-4 right-4 text-white/30 hover:text-white transition-colors">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+              </button>
+              <div className="font-display text-[22px] font-bold text-white mb-0.5">
+                {topUpDone ? <>Credit added<span className="text-[#CDFF3A]">.</span></> : <>Top up wallet<span className="text-[#CDFF3A]">.</span></>}
+              </div>
+              <p className="text-white/40 text-[12px]">
+                {topUpDone ? "Your wallet has been topped up successfully." : "Funds are available instantly for your next order."}
+              </p>
+            </div>
+
+            {!topUpDone ? (
+              <div className="px-8 py-7">
+                {/* Amount selector */}
+                <div className="mb-5">
+                  <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Select amount</label>
+                  <div className="grid grid-cols-4 gap-2 mb-3">
+                    {PRESET_AMOUNTS.map((a) => (
+                      <button key={a} onClick={() => setTopUpAmount(a)}
+                        className={`py-2.5 border text-[13px] font-bold transition-colors ${topUpAmount === a ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#111] hover:border-[#111]"}`}>
+                        ${a}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2 border border-[#D0CCC4] focus-within:border-[#111] transition-colors">
+                    <span className="pl-4 text-[#888] text-[14px]">$</span>
+                    <input type="number" min={5} max={500} value={topUpAmount} onChange={(e) => setTopUpAmount(Number(e.target.value))}
+                      className="flex-1 py-3 pr-4 text-[14px] outline-none bg-transparent" placeholder="Other amount" />
+                  </div>
+                </div>
+
+                {/* Card fields */}
+                <div className="mb-3">
+                  <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Cardholder name</label>
+                  <input value={topUpName} onChange={(e) => { setTopUpName(e.target.value); setTopUpError(false); }} placeholder="Jerome Tan"
+                    className={`w-full border px-4 py-3 text-[14px] outline-none transition-colors ${topUpError && !topUpName ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`} />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Card number</label>
+                  <input value={topUpCard} onChange={(e) => { setTopUpCard(e.target.value); setTopUpError(false); }} placeholder="1234 5678 9012 3456"
+                    className={`w-full border px-4 py-3 text-[14px] outline-none font-mono transition-colors ${topUpError && !topUpCard ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`} />
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-5">
+                  <div>
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Expiry</label>
+                    <input value={topUpExpiry} onChange={(e) => { setTopUpExpiry(e.target.value); setTopUpError(false); }} placeholder="MM / YY"
+                      className={`w-full border px-4 py-3 text-[14px] outline-none font-mono transition-colors ${topUpError && !topUpExpiry ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`} />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">CVC</label>
+                    <input value={topUpCvc} onChange={(e) => { setTopUpCvc(e.target.value); setTopUpError(false); }} placeholder="•••"
+                      className={`w-full border px-4 py-3 text-[14px] outline-none font-mono transition-colors ${topUpError && !topUpCvc ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`} />
+                  </div>
+                </div>
+
+                {topUpError && (
+                  <div className="bg-red-50 border border-red-200 px-4 py-3 text-[12px] text-red-700 mb-4">
+                    Please fill in all card details to continue.
+                  </div>
+                )}
+
+                <div className="bg-[#F7F5F0] border border-[#E5E2DA] px-4 py-3 text-[12px] text-[#666] mb-5 flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                  Secured by 256-bit SSL. Card details are not stored.
+                </div>
+
+                <button onClick={handleTopUp}
+                  className="w-full bg-[#111] text-white py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
+                  Add ${topUpAmount} to Wallet
+                </button>
+              </div>
+            ) : (
+              <div className="px-8 py-8 flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-[#CDFF3A] rounded-full flex items-center justify-center mb-5">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
+                </div>
+                <p className="text-[20px] font-display font-bold text-[#111] mb-1">${topUpAmount} added!</p>
+                <p className="text-[13px] text-[#888] mb-6">Your new wallet balance is <strong className="text-[#111]">${(12.50 + topUpAmount).toFixed(2)}</strong></p>
+                <div className="w-full bg-[#075E54] text-white px-5 py-3 flex items-center gap-3 mb-2">
+                  <span className="text-[18px]">💬</span>
+                  <div className="text-left flex-1">
+                    <div className="text-[12px] font-semibold">WhatsApp receipt sent</div>
+                    <div className="text-[11px] text-white/50">+65 9123 4567</div>
+                  </div>
+                  <span className="text-[#25D366] text-[11px] font-bold">✓ Sent</span>
+                </div>
+                <div className="w-full bg-[#111] text-white px-5 py-3 flex items-center gap-3 mb-6">
+                  <span className="text-[18px]">✉️</span>
+                  <div className="text-left flex-1">
+                    <div className="text-[12px] font-semibold">Email receipt sent</div>
+                    <div className="text-[11px] text-white/50">jerome@email.com</div>
+                  </div>
+                  <span className="text-[#CDFF3A] text-[11px] font-bold">✓ Sent</span>
+                </div>
+                <button onClick={() => { setShowTopUp(false); setTopUpDone(false); save("Wallet topped up — $" + topUpAmount + " added!"); }}
+                  className="w-full bg-[#CDFF3A] text-[#111] py-3.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-white transition-colors">
+                  Done
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
