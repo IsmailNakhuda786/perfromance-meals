@@ -125,9 +125,9 @@ export const PROMOTIONS = [
 ];
 
 export const BUNDLES = [
-  { id: 201, name: "Lean Starter Pack (5 meals)", desc: "Curated low-carb selection — perfect for first-timers.", price: 59.00, perMeal: 11.80, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=500&fit=crop&auto=format", tag: "Popular", mealIds: [103, 102, 110, 104, 108] },
-  { id: 202, name: "Bulk Performance Box (10 meals)", desc: "Mix of high-protein picks, best value per meal.", price: 109.00, perMeal: 10.90, img: "https://images.unsplash.com/photo-1607532941433-304659e8198a?w=600&h=500&fit=crop&auto=format", tag: "Best Value", mealIds: [101, 102, 103, 104, 106, 108, 110, 112, 111, 105] },
-  { id: 203, name: "Breakfast Week (7 meals)", desc: "Protein oats + salmon scramble — 7 mornings sorted.", price: 65.00, perMeal: 9.28, img: "https://images.unsplash.com/photo-1600335895229-6e75511892c8?w=600&h=500&fit=crop&auto=format", tag: "New", mealIds: [107, 109, 107, 109, 107, 109, 107] },
+  { id: 201, name: "Lean Starter Pack (5 meals)", desc: "Curated low-carb selection — perfect for first-timers.", price: 59.00, perMeal: 11.80, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=500&fit=crop&auto=format", tag: "Popular", mealIds: [2, 7, 6, 3, 9] },
+  { id: 202, name: "Bulk Performance Box (10 meals)", desc: "Mix of high-protein picks, best value per meal.", price: 109.00, perMeal: 10.90, img: "https://images.unsplash.com/photo-1607532941433-304659e8198a?w=600&h=500&fit=crop&auto=format", tag: "Best Value", mealIds: [1, 2, 4, 5, 6, 7, 9, 3, 8, 1] },
+  { id: 203, name: "Breakfast Week (7 meals)", desc: "Protein oats + salmon scramble — 7 mornings sorted.", price: 65.00, perMeal: 9.28, img: "https://images.unsplash.com/photo-1600335895229-6e75511892c8?w=600&h=500&fit=crop&auto=format", tag: "New", mealIds: [3, 8, 3, 8, 3, 8, 3] },
 ];
 
 export type MealReview = { author: string; role: string; rating: number; text: string; date: string; verified: boolean };
