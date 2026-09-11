@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Meal, MEALS, Page, PLANS } from "@/data";
+import { MEALS, Page } from "@/data";
 import { MealPlanLogo } from "@/components/Logos";
 
 interface Props {
@@ -10,658 +10,684 @@ interface Props {
   onCheckoutComplete: (addr: { name: string; phone: string; line1: string; unit: string; postal: string }) => void;
 }
 
-const PLAN_MEAL_CATS: Record<string, string[]> = {
-  CUT:      ["low-carb", "just-protein", "breakfast"],
-  MAINTAIN: ["high-carb", "low-carb", "breakfast", "just-protein"],
-  BUILD:    ["high-carb", "just-protein", "low-carb"],
+type ProgrammeType = "bi-weekly" | "monthly" | "6by60" | "buddy-plan" | "hyrox";
+type MealPlanType = "Low Carb Regular" | "Low Carb Petite" | "Balance Regular";
+type MealCount = "lunch-only" | "lunch-dinner";
+type Step = 1 | 2 | 3 | 4 | 5;
+
+const STEP_LABELS = ["Type", "Plan & Meals", "Menu", "Your Details", "Review"];
+
+const PROGRAMME_DETAILS: Record<ProgrammeType, {
+  label: string; description: string; kind: "recurring" | "fixed"; days?: number; menuWeeks: number;
+}> = {
+  "bi-weekly":  { label: "Bi-weekly",  description: "Delivery every 2 weeks",                              kind: "recurring", menuWeeks: 2 },
+  "monthly":    { label: "Monthly",    description: "One delivery per month",                               kind: "recurring", menuWeeks: 4 },
+  "6by60":      { label: "6by60",      description: "60-day programme · Fresh structure for your goal",     kind: "fixed", days: 60, menuWeeks: 4 },
+  "buddy-plan": { label: "Buddy Plan", description: "20-day programme · Consistent meals for your week",   kind: "fixed", days: 20, menuWeeks: 4 },
+  "hyrox":      { label: "HYROX",      description: "20-day programme · Structured fuel around your sessions", kind: "fixed", days: 20, menuWeeks: 4 },
 };
 
-const getMealsForPlan = (planName: string): Meal[] => {
-  const order = PLAN_MEAL_CATS[planName] || PLAN_MEAL_CATS.MAINTAIN;
-  return [...MEALS].sort((a, b) => {
-    const ai = order.indexOf(a.cat);
-    const bi = order.indexOf(b.cat);
-    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-  });
-};
-
-// Prefixed weekly delivery schedule — no date picker
-const DELIVERY_WEEK = [
-  { day: "Mon", date: "15", month: "Oct" },
-  { day: "Tue", date: "16", month: "Oct" },
-  { day: "Wed", date: "17", month: "Oct" },
-  { day: "Thu", date: "18", month: "Oct" },
-  { day: "Fri", date: "19", month: "Oct" },
-  { day: "Sat", date: "20", month: "Oct" },
-  { day: "Sun", date: "21", month: "Oct" },
+const MEAL_PLANS: { id: MealPlanType; kcal: string }[] = [
+  { id: "Low Carb Regular", kcal: "~400–450 kcal per meal" },
+  { id: "Low Carb Petite",  kcal: "~300–350 kcal per meal" },
+  { id: "Balance Regular",  kcal: "~500–550 kcal per meal" },
 ];
 
-// Each day gets a rotating set of 4 meal options from the plan
-function getDayOptions(meals: Meal[], dayIndex: number): Meal[] {
-  const start = (dayIndex * 4) % meals.length;
-  const out: Meal[] = [];
-  for (let i = 0; i < 4; i++) out.push(meals[(start + i) % meals.length]);
-  return out;
+const BASE_PRICES: Record<MealPlanType, Record<MealCount, number>> = {
+  "Low Carb Regular": { "lunch-only": 140, "lunch-dinner": 200 },
+  "Low Carb Petite":  { "lunch-only": 120, "lunch-dinner": 180 },
+  "Balance Regular":  { "lunch-only": 150, "lunch-dinner": 220 },
+};
+
+const WEEKS = [
+  { label: "Week 1", dates: "23–27 Jun" },
+  { label: "Week 2", dates: "30 Jun–4 Jul" },
+  { label: "Week 3", dates: "7–11 Jul" },
+  { label: "Week 4", dates: "14–18 Jul" },
+];
+
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+function getDayMealOptions(dayIndex: number, slot: "lunch" | "dinner") {
+  const offset = slot === "dinner" ? 5 : 0;
+  return [
+    MEALS[(dayIndex * 2 + offset) % MEALS.length],
+    MEALS[(dayIndex * 2 + 1 + offset) % MEALS.length],
+  ];
 }
 
-type Step = 1 | 2 | 3 | 4 | 5;
-const STEP_LABELS = ["Meals", "Goal", "Menu", "Delivery", "Pay"];
+type MenuSelections = Record<number, Record<string, { lunch: number | null; dinner: number | null }>>;
 
-type Schedule = Record<string, { lunch: number | null; dinner: number | null }>;
+function RadioCircle({ selected }: { selected: boolean }) {
+  return (
+    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${selected ? "border-[#E85D04] bg-[#E85D04]" : "border-[#D0CCC4]"}`}>
+      {selected && (
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      )}
+    </div>
+  );
+}
 
-export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initialPlan }: Props) {
+export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Props) {
   const [step, setStep] = useState<Step>(1);
-  const [mealCount, setMealCount] = useState<1 | 2>(2);
-  const [goal, setGoal] = useState(initialPlan || "MAINTAIN");
-  const [billing, setBilling] = useState<"week" | "month">("week");
+  const [programme, setProgramme] = useState<ProgrammeType>("bi-weekly");
+  const [mealPlan, setMealPlan] = useState<MealPlanType>("Low Carb Regular");
+  const [mealCount, setMealCount] = useState<MealCount>("lunch-dinner");
+  const [selectedWeek, setSelectedWeek] = useState(0);
+  const [openDay, setOpenDay] = useState<string | null>("Monday");
+  const [menuSelections, setMenuSelections] = useState<MenuSelections>({});
+  const [details, setDetails] = useState({ name: "", phone: "", email: "", street: "", city: "", postcode: "", notes: "" });
 
-  // Day-by-day schedule: schedule["Mon"]["lunch"] = mealId
-  const [schedule, setSchedule] = useState<Schedule>({});
-  const [pickerState, setPickerState] = useState<{ day: string; slot: "lunch" | "dinner" } | null>(null);
+  const progInfo = PROGRAMME_DETAILS[programme];
+  const basePrice = BASE_PRICES[mealPlan][mealCount];
+  const gst = basePrice * 0.06;
+  const total = basePrice + gst;
 
-  const [address, setAddress] = useState({ name: "", phone: "", line1: "", unit: "", postal: "" });
-  const [promoCode, setPromoCode] = useState("");
-  const [promoApplied, setPromoApplied] = useState(false);
-  const [promoError, setPromoError] = useState<"invalid" | "expired" | null>(null);
-
-  type WizardAuthMode = null | "signin" | "signup" | "signin_done" | "signup_done";
-  const [wizardAuthMode, setWizardAuthMode] = useState<WizardAuthMode>(null);
-  const [waEmail, setWaEmail] = useState("");
-  const [waName, setWaName] = useState("");
-  const [waPhone, setWaPhone] = useState("");
-  const [waPassword, setWaPassword] = useState("");
-
-  const VALID_PROMOS: Record<string, { discount: number; flat?: number; expired?: boolean }> = {
-    "WELCOME10": { discount: 0.10 },
-    "WELCOME15": { discount: 0.15 },
-    "SUMMER20":  { discount: 0.20, expired: true },
-    "FITLIFE":   { discount: 0.12 },
-    "READY20":   { discount: 0.20 },
-    "SG61":      { discount: 0, flat: 6.10 },
-    "FREEZER5":  { discount: 0, flat: 5.00 },
-  };
-
-  const handleApplyPromo = () => {
-    const code = promoCode.trim().toUpperCase();
-    const entry = VALID_PROMOS[code];
-    if (!entry) { setPromoError("invalid"); setPromoApplied(false); return; }
-    if (entry.expired) { setPromoError("expired"); setPromoApplied(false); return; }
-    setPromoError(null);
-    setPromoApplied(true);
-  };
-
-  const plan = PLANS.find((p) => p.name === goal)!;
-  const basePrice = billing === "week" ? plan.priceWeek : plan.priceMonth;
-  const promoEntry = promoApplied ? VALID_PROMOS[promoCode.trim().toUpperCase()] : null;
-  const promoRate = promoEntry?.discount ?? 0;
-  const promoFlat = promoEntry?.flat ?? 0;
-  const promoDiscount = promoFlat > 0 ? promoFlat : Number(basePrice) * promoRate;
-  const price = promoApplied ? Math.max(0, Number(basePrice) - promoDiscount).toFixed(2) : basePrice;
-
-  const planMeals = getMealsForPlan(goal);
-  const getMealById = (id: number) => MEALS.find((m) => m.id === id);
-
-  // How many day slots are filled
-  const totalSlotsFilled = DELIVERY_WEEK.reduce((count, d) => {
-    const s = schedule[d.day];
-    if (!s) return count;
-    let c = s.lunch ? 1 : 0;
-    if (mealCount === 2) c += s.dinner ? 1 : 0;
-    return count + c;
+  const slotsPerDay = mealCount === "lunch-dinner" ? 2 : 1;
+  const totalSlots = WEEKDAYS.length * slotsPerDay;
+  const weekSels = menuSelections[selectedWeek] || {};
+  const filledSlots = WEEKDAYS.reduce((acc, day) => {
+    const d = weekSels[day];
+    if (!d) return acc;
+    let c = d.lunch ? 1 : 0;
+    if (mealCount === "lunch-dinner") c += d.dinner ? 1 : 0;
+    return acc + c;
   }, 0);
-  const totalSlotsRequired = DELIVERY_WEEK.length * mealCount;
-  const canProceedStep3 = totalSlotsFilled === totalSlotsRequired;
 
-  const canProceedStep4 =
-    address.name.trim() !== "" &&
-    address.line1.trim() !== "" &&
-    address.postal.trim() !== "";
-
-  const handleNext = () => {
-    if (step < 5) setStep((s) => (s + 1) as Step);
-  };
-
-  const handleSubscribe = () => {
-    onCheckoutComplete(address);
-  };
-
-  const selectMeal = (mealId: number) => {
-    if (!pickerState) return;
-    setSchedule((prev) => ({
+  const selectMeal = (day: string, slot: "lunch" | "dinner", mealId: number) => {
+    setMenuSelections((prev) => ({
       ...prev,
-      [pickerState.day]: {
-        lunch: prev[pickerState.day]?.lunch ?? null,
-        dinner: prev[pickerState.day]?.dinner ?? null,
-        [pickerState.slot]: mealId,
+      [selectedWeek]: {
+        ...(prev[selectedWeek] || {}),
+        [day]: {
+          lunch: prev[selectedWeek]?.[day]?.lunch ?? null,
+          dinner: prev[selectedWeek]?.[day]?.dinner ?? null,
+          [slot]: mealId,
+        },
       },
     }));
-    setPickerState(null);
+  };
+
+  const getMealById = (id: number | null) => id ? MEALS.find((m) => m.id === id) : null;
+
+  const startDate = new Date(2025, 5, 25);
+  const endDate = progInfo.days ? new Date(startDate.getTime() + (progInfo.days - 1) * 86400000) : null;
+  const fmtDate = (d: Date) => d.toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" });
+
+  const canProceedStep4 = !!(details.name && details.phone && details.email && details.street);
+
+  const progLabel = (progInfo.kind === "fixed" && progInfo.days)
+    ? `${progInfo.label} · ${progInfo.days} days`
+    : progInfo.label;
+  const mealCountLabel = mealCount === "lunch-only" ? "Lunch Only · 1/day" : "Lunch & Dinner · 2/day";
+
+  const goBack = () => {
+    if (step === 1) navigate("meal-plan-landing");
+    else setStep((s) => (s - 1) as Step);
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A] flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-[#E8E4DC] flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-20">
-        <button onClick={() => navigate("meal-plan-landing")} className="shrink-0">
-          <MealPlanLogo size="sm" variant="light" />
-        </button>
-        <div className="flex items-center gap-2 sm:gap-3">
-          {([1, 2, 3, 4] as Step[]).map((s) => (
-            <div key={s} className="flex flex-col items-center gap-0.5">
-              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-sm font-semibold border-2 transition-all ${s === step ? "border-[#111] bg-[#111] text-white" : s < step ? "border-[#E85D04] bg-[#E85D04] text-[#111]" : "border-[#D0CCC4] bg-white text-[#999]"}`}>
-                {s < step ? "✓" : s}
-              </div>
-              <span className={`text-[9px] sm:text-[10px] font-medium ${s === step ? "text-[#111]" : "text-[#999]"}`}>
-                {STEP_LABELS[s - 1]}
-              </span>
-            </div>
-          ))}
+    <div className="min-h-screen bg-white text-[#1A1A1A]">
+
+      {/* ── Header with step progress ── */}
+      <div className="bg-white border-b border-[#E8E4DC] sticky top-0 z-20">
+        <div className="px-4 sm:px-8 flex items-stretch">
+          <button onClick={() => navigate("meal-plan-landing")} className="shrink-0 flex items-center pr-6 border-r border-[#E8E4DC] my-3">
+            <MealPlanLogo size="sm" variant="light" />
+          </button>
+          <div className="flex-1 hidden sm:grid" style={{ gridTemplateColumns: "repeat(5, 1fr)" }}>
+            {STEP_LABELS.map((label, i) => {
+              const s = (i + 1) as Step;
+              const done = s < step;
+              const active = s === step;
+              return (
+                <div key={label}
+                  className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-all ${active ? "border-[#E85D04] bg-[#FFF9F5]" : done ? "border-[#E85D04]" : "border-transparent"}`}>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 ${active || done ? "bg-[#E85D04] text-white" : "border border-[#D0CCC4] text-[#999]"}`}>
+                    {done ? "✓" : s}
+                  </div>
+                  <span className={`text-[12px] font-medium ${active ? "text-[#E85D04]" : done ? "text-[#555]" : "text-[#999]"}`}>{label}</span>
+                </div>
+              );
+            })}
+          </div>
+          {/* Mobile step indicator */}
+          <div className="sm:hidden flex items-center ml-4 text-[13px] font-semibold">
+            {step}/{STEP_LABELS.length} · {STEP_LABELS[step - 1]}
+          </div>
         </div>
-        <button onClick={() => (step > 1 ? setStep((s) => (s - 1) as Step) : navigate("meal-plan-landing"))}
-          className="text-[12px] sm:text-sm text-[#666] hover:text-[#111] transition-colors font-medium shrink-0">
-          {step === 1 ? "Close" : "← Back"}
-        </button>
       </div>
 
-      <div className="flex-1 flex flex-col items-center px-4 py-6 sm:py-8">
-        <div className={`w-full ${step === 3 ? "max-w-4xl" : "max-w-2xl"}`}>
+      {/* ── Page title ── */}
+      <div className="border-b border-[#E8E4DC] px-4 sm:px-8 py-6 sm:py-8">
+        <h1 className="text-3xl sm:text-4xl font-extrabold">Build your Meal Plan.</h1>
+        <p className="text-[#888] mt-1 text-[14px]">Choose your order preferences, then confirm delivery details and payment.</p>
+      </div>
 
-          {/* ─── Step 1: Meal Count ─── */}
+      {/* ── Two-column layout ── */}
+      <div className="max-w-[1160px] mx-auto px-4 sm:px-8 py-8 flex flex-col lg:flex-row gap-8 lg:gap-10 items-start">
+
+        {/* ── MAIN CONTENT ── */}
+        <div className="flex-1 min-w-0">
+
+          {/* ════ Step 1: Type ════ */}
           {step === 1 && (
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold mb-1">How many meals per day?</h1>
-              <p className="text-[#666] mb-8">Choose how many chef-prepared meals you want delivered each day.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#E85D04] text-white flex items-center justify-center font-bold text-sm shrink-0">01</div>
+                <h2 className="text-2xl font-bold">Choose your order</h2>
+              </div>
+              <p className="text-[#666] text-[14px] mb-8 ml-11">Select a recurring subscription or a fixed-period programme.</p>
+
+              <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Recurring Subscription</p>
+              <div className="flex flex-col gap-3 mb-6">
+                {(["bi-weekly", "monthly"] as ProgrammeType[]).map((type) => {
+                  const info = PROGRAMME_DETAILS[type];
+                  const selected = programme === type;
+                  return (
+                    <button key={type} onClick={() => setProgramme(type)}
+                      className={`w-full text-left border px-5 py-4 flex items-center justify-between transition-all ${selected ? "border-[#E85D04] bg-[#FFF9F5]" : "border-[#E8E4DC] hover:border-[#aaa]"}`}>
+                      <div>
+                        <div className="flex items-center gap-2 font-semibold text-[15px]">
+                          {info.label}
+                          {type === "bi-weekly" && (
+                            <span className="bg-[#E85D04] text-white text-[9px] font-bold tracking-wider uppercase px-2 py-0.5">POPULAR</span>
+                          )}
+                        </div>
+                        <div className="text-[13px] text-[#888] mt-0.5">{info.description}</div>
+                      </div>
+                      <RadioCircle selected={selected} />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex items-center gap-4 mb-6">
+                <div className="flex-1 h-px bg-[#E8E4DC]" />
+                <span className="text-[12px] text-[#888] font-medium">OR</span>
+                <div className="flex-1 h-px bg-[#E8E4DC]" />
+              </div>
+
+              <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Fixed-Period Programme</p>
+              <div className="flex flex-col gap-3 mb-8">
+                {(["6by60", "buddy-plan", "hyrox"] as ProgrammeType[]).map((type) => {
+                  const info = PROGRAMME_DETAILS[type];
+                  const selected = programme === type;
+                  return (
+                    <button key={type} onClick={() => setProgramme(type)}
+                      className={`w-full text-left border px-5 py-4 flex items-center justify-between transition-all ${selected ? "border-[#E85D04] bg-[#FFF9F5]" : "border-[#E8E4DC] hover:border-[#aaa]"}`}>
+                      <div>
+                        <div className="font-semibold text-[15px]">{info.label}</div>
+                        <div className="text-[13px] text-[#888] mt-0.5">{info.description}</div>
+                      </div>
+                      <RadioCircle selected={selected} />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex gap-3">
+                <button onClick={goBack} className="border border-[#D0CCC4] px-6 py-3.5 text-[14px] font-semibold text-[#666] hover:border-[#111] hover:text-[#111] transition-colors flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                  Back
+                </button>
+                <button onClick={() => setStep(2)}
+                  className="flex-1 bg-[#E85D04] text-white py-3.5 font-semibold text-[15px] hover:bg-[#1A1A1A] transition-colors flex items-center justify-center gap-2">
+                  Continue
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ════ Step 2: Plan & Meals ════ */}
+          {step === 2 && (
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#E85D04] text-white flex items-center justify-center font-bold text-sm shrink-0">02</div>
+                <h2 className="text-2xl font-bold">Meal Type & Size</h2>
+              </div>
+              <p className="text-[#666] text-[14px] mb-8 ml-11">Select a meal type and the number of meals you would like per day.</p>
+
+              <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Meal Type & Size</p>
+              <div className="flex flex-col gap-3 mb-8">
+                {MEAL_PLANS.map((plan) => {
+                  const selected = mealPlan === plan.id;
+                  return (
+                    <button key={plan.id} onClick={() => setMealPlan(plan.id)}
+                      className={`w-full text-left border px-5 py-4 flex items-center justify-between transition-all ${selected ? "border-[#E85D04] bg-[#FFF9F5]" : "border-[#E8E4DC] hover:border-[#aaa]"}`}>
+                      <div>
+                        <div className="font-semibold text-[15px]">{plan.id}</div>
+                        <div className="text-[13px] text-[#888] mt-0.5">{plan.kcal}</div>
+                      </div>
+                      <RadioCircle selected={selected} />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Number of Meals</p>
+              <div className="flex flex-col gap-3 mb-8">
                 {([
-                  { count: 1 as const, label: "Lunch only", desc: "1 fresh meal per day — perfect for a structured midday fuel.", slots: ["Lunch"], price: "From $74/wk" },
-                  { count: 2 as const, label: "Lunch & Dinner", desc: "2 fresh meals per day — full day nutrition fully covered.", slots: ["Lunch", "Dinner"], price: "From $148/wk", popular: true },
-                ]).map((opt) => (
-                  <button key={opt.count} onClick={() => setMealCount(opt.count)}
-                    className={`relative text-left border-2 p-6 transition-all ${mealCount === opt.count ? "border-[#111] bg-white" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
-                    {opt.popular && (
-                      <div className="absolute top-3 right-3 bg-[#E85D04] text-[#111] text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-0.5">Most Popular</div>
-                    )}
-                    <div className="flex items-center gap-2 mb-3">
-                      {opt.slots.map((s) => (
-                        <span key={s} className={`px-2.5 py-1 text-[10px] font-bold tracking-wider ${s === "Lunch" ? "bg-[#F5B300]/20 text-[#7A5C00]" : "bg-[#E85D04]/15 text-[#E85D04]"}`}>{s}</span>
-                      ))}
-                    </div>
-                    <div className="font-bold text-[18px] mb-1">{opt.label}</div>
-                    <p className="text-[#666] text-[13px] leading-relaxed mb-4">{opt.desc}</p>
-                    <div className="font-mono font-bold text-[16px] text-[#111]">{opt.price}</div>
-                    {mealCount === opt.count && <div className="mt-3 text-[#111] text-[11px] font-bold">✓ Selected</div>}
+                  { id: "lunch-only" as MealCount,   label: "Lunch Only",      desc: "1 meal per day" },
+                  { id: "lunch-dinner" as MealCount, label: "Lunch & Dinner",  desc: "2 meals per day" },
+                ]).map((opt) => {
+                  const selected = mealCount === opt.id;
+                  return (
+                    <button key={opt.id} onClick={() => setMealCount(opt.id)}
+                      className={`w-full text-left border px-5 py-4 flex items-center justify-between transition-all ${selected ? "border-[#E85D04] bg-[#FFF9F5]" : "border-[#E8E4DC] hover:border-[#aaa]"}`}>
+                      <div>
+                        <div className="font-semibold text-[15px]">{opt.label}</div>
+                        <div className="text-[13px] text-[#888] mt-0.5">{opt.desc}</div>
+                      </div>
+                      <RadioCircle selected={selected} />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex gap-3">
+                <button onClick={goBack} className="border border-[#D0CCC4] px-6 py-3.5 text-[14px] font-semibold text-[#666] hover:border-[#111] hover:text-[#111] transition-colors flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                  Back
+                </button>
+                <button onClick={() => setStep(3)}
+                  className="flex-1 bg-[#E85D04] text-white py-3.5 font-semibold text-[15px] hover:bg-[#1A1A1A] transition-colors flex items-center justify-center gap-2">
+                  Continue
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ════ Step 3: Menu ════ */}
+          {step === 3 && (
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#E85D04] text-white flex items-center justify-center font-bold text-sm shrink-0">03</div>
+                <h2 className="text-2xl font-bold">Menu Selection</h2>
+              </div>
+              <p className="text-[#666] text-[14px] mb-5 ml-11">
+                {WEEKS[selectedWeek].label} · {WEEKS[selectedWeek].dates} · Meals selected:{" "}
+                <strong>{filledSlots} / {totalSlots}</strong>
+              </p>
+
+              {/* Week tabs */}
+              <div className="flex border-b border-[#E8E4DC] mb-1 overflow-x-auto">
+                {WEEKS.map((w, i) => (
+                  <button key={i} onClick={() => { setSelectedWeek(i); setOpenDay("Monday"); }}
+                    className={`flex flex-col items-start px-4 py-3 border-b-2 -mb-px shrink-0 transition-all ${selectedWeek === i ? "border-[#E85D04] text-[#E85D04]" : "border-transparent text-[#888] hover:text-[#111]"}`}>
+                    <span className="text-[13px] font-semibold">{w.label}</span>
+                    <span className="text-[11px] font-normal">{w.dates}</span>
                   </button>
                 ))}
               </div>
-              <button onClick={handleNext}
-                className="w-full py-4 font-semibold text-[15px] transition-all bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white">
-                Continue →
-              </button>
-            </div>
-          )}
 
-          {/* ─── Step 2: Goal ─── */}
-          {step === 2 && (
-            <div>
-              <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose your goal</h1>
-              <p className="text-[#666] mb-6">Select the plan that matches your target.</p>
-              <div className="mb-7">
-                <div className="flex gap-0 border border-[#D0CCC4] p-1 bg-[#F7F5F0] w-full sm:w-auto sm:inline-flex">
-                  <button onClick={() => setBilling("week")}
-                    className={`flex-1 sm:flex-none px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "week" ? "bg-white text-[#111]" : "text-[#999] hover:text-[#111]"}`}>
-                    Weekly
-                  </button>
-                  <button onClick={() => setBilling("month")}
-                    className={`flex-1 sm:flex-none relative px-5 py-2.5 text-[13px] font-semibold tracking-wide transition-all ${billing === "month" ? "bg-[#111] text-white" : "text-[#999] hover:text-[#111]"}`}>
-                    Monthly
-                    <span className={`ml-2 text-[10px] font-extrabold tracking-widest px-1.5 py-0.5 ${billing === "month" ? "bg-[#E85D04] text-[#111]" : "bg-[#E85D04]/70 text-[#111]"}`}>SAVE 15%</span>
-                  </button>
-                </div>
-                {billing === "week" && (
-                  <div className="mt-3 border-2 border-[#E85D04] bg-[#FFF9E6] px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[22px]">💰</span>
-                      <div>
-                        <div className="font-extrabold text-[14px] text-[#111]">Save up to $109/mo — switch to Monthly</div>
-                        <div className="text-[11px] text-[#7A5C00] mt-0.5">15% off vs weekly · cancel anytime · no lock-in</div>
-                      </div>
-                    </div>
-                    <button onClick={() => setBilling("month")}
-                      className="shrink-0 bg-[#E85D04] text-[#111] font-extrabold text-[11px] tracking-[0.15em] uppercase px-4 py-2.5 hover:bg-[#111] hover:text-[#E85D04] transition-colors whitespace-nowrap">
-                      Switch Now →
-                    </button>
-                  </div>
-                )}
-              </div>
+              <p className="text-[12px] text-[#888] mb-5 pt-3">Choose from the weekday menu for each available week. Up to four weeks are shown for any programme.</p>
 
-              <div className="flex flex-col gap-4 mb-8">
-                {PLANS.map((p) => {
-                  const selected = goal === p.name;
-                  const px = billing === "week" ? p.priceWeek : p.priceMonth;
-                  const PROG_NAMES: Record<string, { name: string; tag: string; duration: string }> = {
-                    CUT:      { name: "6by60",      tag: "CUT",      duration: "60-day programme" },
-                    MAINTAIN: { name: "Buddy Plan",  tag: "MAINTAIN", duration: "20-day programme" },
-                    BUILD:    { name: "HYROX",       tag: "BUILD",    duration: "Performance programme" },
-                  };
-                  const prog = PROG_NAMES[p.name] ?? { name: p.name, tag: p.name, duration: "" };
+              {/* Day accordion */}
+              <div className="border border-[#E8E4DC] mb-8 divide-y divide-[#E8E4DC]">
+                {WEEKDAYS.map((day, dayIndex) => {
+                  const isOpen = openDay === day;
+                  const dayData = (menuSelections[selectedWeek] || {})[day] || { lunch: null, dinner: null };
+                  const lunchMeal = getMealById(dayData.lunch);
+                  const dinnerMeal = getMealById(dayData.dinner);
+                  const dayFilled = (lunchMeal ? 1 : 0) + (mealCount === "lunch-dinner" && dinnerMeal ? 1 : 0);
+                  const dayDone = dayFilled === slotsPerDay;
+
                   return (
-                    <button key={p.name} onClick={() => setGoal(p.name)}
-                      className={`w-full text-leftborder-2 p-5 transition-all ${selected ? "border-[#111] bg-white" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
-                      <div className="flex items-start justify-between gap-3">
+                    <div key={day}>
+                      <button
+                        onClick={() => setOpenDay(isOpen ? null : day)}
+                        className="w-full flex items-center justify-between px-5 py-4 hover:bg-[#FAFAF8] transition-colors text-left">
                         <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 rounded-full flex-shrink-0 mt-1" style={{ backgroundColor: p.accent }} />
-                          <div>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-bold text-lg">{prog.name}</span>
-                              <span className="text-[10px] font-mono tracking-widest uppercase border border-[#D0CCC4] px-1.5 py-0.5 text-[#888]">{prog.tag}</span>
-                              <span className="text-xs text-[#aaa]">{prog.duration}</span>
-                            </div>
-                            <div className="text-xs text-[#aaa] mt-0.5">{p.meals} meals/day · {p.cal} kcal</div>
-                            <p className="text-sm text-[#555] mt-0.5">{p.desc}</p>
-                            <div className="flex gap-3 mt-2 text-xs text-[#666]">
-                              <span>P {p.protein}g</span><span>C {p.carbs}g</span><span>F {p.fat}g</span>
-                            </div>
-                          </div>
+                          <span className="font-semibold text-[16px]">{day}</span>
+                          {isOpen && <span className="text-[12px] text-[#888] italic">Editing</span>}
+                          {!isOpen && dayDone && <span className="text-[12px] text-[#E85D04] font-medium">✓ Done</span>}
+                          {!isOpen && !dayDone && <span className="text-[12px] text-[#888]">Tap to edit</span>}
                         </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className="text-xl font-bold">${px}</div>
-                          <div className="text-xs text-[#999]">/{billing === "week" ? "wk" : "mo"}</div>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                          className={`transition-transform shrink-0 ${isOpen ? "rotate-180" : ""}`}>
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
+                      </button>
 
-              <div className="bg-[#111] text-white p-4 sm:p-5 mb-6 flex items-start sm:items-center gap-3 sm:gap-4">
-                <div className="relative shrink-0 w-[56px] h-[56px]">
-                  <svg viewBox="0 0 56 56" className="w-full h-full" style={{ animation: "spin6wiz 18s linear infinite" }}>
-                    <defs><path id="wizRing" d="M 28,28 m -22,0 a 22,22 0 1,1 44,0 a 22,22 0 1,1 -44,0" /></defs>
-                    <circle cx="28" cy="28" r="25" fill="#F5B300" />
-                    <text fontSize="5.2" fontFamily="monospace" fontWeight="800" fill="#111" opacity="0.55" letterSpacing="1.5">
-                      <textPath href="#wizRing" startOffset="50%" textAnchor="middle">GUARANTEED · 60 DAYS ·</textPath>
-                    </text>
-                    <style>{`@keyframes spin6wiz { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }`}</style>
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="font-display text-[13px] font-extrabold text-[#111] leading-none">6in60</span>
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold text-[15px] mb-0.5">The Performance Promise</div>
-                  <p className="text-white/50 text-[12px] leading-relaxed">Exceptional meals, exceptional support — or your money back. No questions asked.</p>
-                </div>
-              </div>
-
-              <button onClick={handleNext}
-                className="w-full py-4 font-semibold text-[15px] transition-all bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white">
-                Continue →
-              </button>
-            </div>
-          )}
-
-          {/* ─── Step 3: Day-by-Day Menu Selection ─── */}
-          {step === 3 && (
-            <div className="w-full">
-              <div className="mb-6">
-                <h1 className="text-xl sm:text-2xl font-bold mb-1">Choose your weekly menu</h1>
-                <p className="text-[#666] text-[14px]">
-                  Select your <strong>{mealCount === 1 ? "lunch" : "lunch and dinner"}</strong> for each day. Daily options are curated for your <strong>{goal}</strong> goal.
-                </p>
-              </div>
-
-              {/* Progress bar */}
-              <div className="mb-6 bg-white border border-[#E5E2DA] p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[13px] font-semibold text-[#111]">{totalSlotsFilled} of {totalSlotsRequired} meals selected</span>
-                  {canProceedStep3 && <span className="text-green-600 text-[12px] font-bold">✓ All meals chosen</span>}
-                </div>
-                <div className="h-2 bg-[#F0EDE8] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#E85D04] rounded-full transition-all duration-500"
-                    style={{ width: `${(totalSlotsFilled / totalSlotsRequired) * 100}%` }} />
-                </div>
-              </div>
-
-              {/* Day-by-day grid */}
-              <div className="flex flex-col gap-3 mb-6">
-                {DELIVERY_WEEK.map((d, dayIndex) => {
-                  const daySchedule = schedule[d.day] || { lunch: null, dinner: null };
-                  const dayOptions = getDayOptions(planMeals, dayIndex);
-                  return (
-                    <div key={d.day} className="bg-white border border-[#E5E2DA]overflow-hidden">
-                      {/* Day header */}
-                      <div className="flex items-center justify-between px-5 py-3 bg-[#F7F5F0] border-b border-[#E5E2DA]">
-                        <div className="flex items-center gap-3">
-                          <div className="text-center">
-                            <div className="text-[10px] font-mono text-[#999] uppercase">{d.day}</div>
-                            <div className="font-bold text-[18px] leading-tight text-[#111]">{d.date}</div>
-                            <div className="text-[10px] text-[#aaa]">{d.month}</div>
-                          </div>
-                          <div className="text-[12px] text-[#999]">
-                            {mealCount === 1
-                              ? (daySchedule.lunch ? "1/1 selected" : "0/1 selected")
-                              : `${(daySchedule.lunch ? 1 : 0) + (daySchedule.dinner ? 1 : 0)}/2 selected`
-                            }
-                          </div>
-                        </div>
-                        <div className="text-[10px] text-[#ccc] font-mono">{dayOptions.length} options available</div>
-                      </div>
-
-                      {/* Slots */}
-                      <div className={`grid ${mealCount === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"} divide-y sm:divide-y-0 sm:divide-x divide-[#E5E2DA]`}>
-                        {(["lunch", ...(mealCount === 2 ? ["dinner"] : [])] as ("lunch" | "dinner")[]).map((slot) => {
-                          const selectedId = daySchedule[slot];
-                          const selectedMeal = selectedId ? getMealById(selectedId) : null;
-                          return (
-                            <div key={slot} className="p-4">
-                              <div className="flex items-center gap-1.5 mb-3">
-                                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold ${slot === "lunch" ? "bg-[#F5B300]/20 text-[#7A5C00]" : "bg-[#E85D04]/15 text-[#E85D04]"}`}>
-                                  {slot === "lunch" ? "L" : "D"}
-                                </span>
-                                <span className="text-[11px] font-semibold text-[#666] uppercase tracking-wider">{slot}</span>
-                              </div>
-                              {selectedMeal ? (
-                                <button
-                                  onClick={() => setPickerState({ day: d.day, slot })}
-                                  className="w-full flex items-center gap-3 group"
-                                >
-                                  <img src={selectedMeal.img} alt={selectedMeal.name} className="w-12 h-12 object-covershrink-0" />
-                                  <div className="flex-1 text-left min-w-0">
-                                    <div className="text-[12px] font-semibold text-[#111] leading-tight line-clamp-2">{selectedMeal.name}</div>
-                                    <div className="text-[10px] text-[#888] mt-0.5">{selectedMeal.protein}g protein · {selectedMeal.cal} cal</div>
+                      {isOpen && (
+                        <div className="px-5 pb-5 pt-3 bg-[#FAFAF8]">
+                          {/* Lunch slot */}
+                          <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Lunch</p>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+                            {getDayMealOptions(dayIndex, "lunch").map((meal) => {
+                              const selected = dayData.lunch === meal.id;
+                              return (
+                                <button key={meal.id} onClick={() => selectMeal(day, "lunch", meal.id)}
+                                  className={`flex items-center gap-3 p-3 border text-left transition-all ${selected ? "border-[#E85D04] bg-white" : "border-[#E8E4DC] bg-white hover:border-[#bbb]"}`}>
+                                  <img src={meal.img} alt={meal.name} className="w-14 h-14 object-cover shrink-0" />
+                                  <div className="flex-1 min-w-0">
+                                    <div className="font-semibold text-[13px] leading-tight">{meal.name}</div>
+                                    <div className="text-[11px] text-[#888] mt-1">{meal.cal} kcal</div>
+                                    <div className="text-[11px] text-[#888]">P {meal.protein}g &nbsp;C {meal.carbs}g</div>
                                   </div>
-                                  <span className="text-[10px] text-[#aaa] group-hover:text-[#111] transition-colors shrink-0">Change</span>
+                                  <RadioCircle selected={selected} />
                                 </button>
-                              ) : (
-                                <button
-                                  onClick={() => setPickerState({ day: d.day, slot })}
-                                  className="w-full border-2 border-dashed border-[#E5E2DA] hover:border-[#E85D04]py-4 text-[13px] text-[#aaa] hover:text-[#111] transition-all flex flex-col items-center gap-1"
-                                >
-                                  <span className="text-[20px]">+</span>
-                                  <span>Choose {slot}</span>
-                                  <span className="text-[10px]">{dayOptions.length} options</span>
-                                </button>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Dinner slot */}
+                          {mealCount === "lunch-dinner" && (
+                            <>
+                              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Dinner</p>
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                {getDayMealOptions(dayIndex, "dinner").map((meal) => {
+                                  const selected = dayData.dinner === meal.id;
+                                  return (
+                                    <button key={meal.id} onClick={() => selectMeal(day, "dinner", meal.id)}
+                                      className={`flex items-center gap-3 p-3 border text-left transition-all ${selected ? "border-[#E85D04] bg-white" : "border-[#E8E4DC] bg-white hover:border-[#bbb]"}`}>
+                                      <img src={meal.img} alt={meal.name} className="w-14 h-14 object-cover shrink-0" />
+                                      <div className="flex-1 min-w-0">
+                                        <div className="font-semibold text-[13px] leading-tight">{meal.name}</div>
+                                        <div className="text-[11px] text-[#888] mt-1">{meal.cal} kcal</div>
+                                        <div className="text-[11px] text-[#888]">P {meal.protein}g &nbsp;C {meal.carbs}g</div>
+                                      </div>
+                                      <RadioCircle selected={selected} />
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
 
-              <button onClick={handleNext} disabled={!canProceedStep3}
-                className={`w-full py-4 font-semibold text-[15px] tracking-wide transition-all${canProceedStep3 ? "bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
-                {canProceedStep3 ? "Confirm Menu →" : `Select ${totalSlotsRequired - totalSlotsFilled} more meal${totalSlotsRequired - totalSlotsFilled !== 1 ? "s" : ""} to continue`}
-              </button>
+              <div className="flex gap-3">
+                <button onClick={goBack} className="border border-[#D0CCC4] px-6 py-3.5 text-[14px] font-semibold text-[#666] hover:border-[#111] hover:text-[#111] transition-colors flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                  Back
+                </button>
+                <button onClick={() => setStep(4)}
+                  className="flex-1 bg-[#E85D04] text-white py-3.5 font-semibold text-[15px] hover:bg-[#1A1A1A] transition-colors flex items-center justify-center gap-2">
+                  Continue
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
             </div>
           )}
 
-          {/* ─── Step 4: Prefixed Delivery Schedule ─── */}
+          {/* ════ Step 4: Your Details ════ */}
           {step === 4 && (
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold mb-1">Delivery & Address</h1>
-              <p className="text-[#666] mb-6">Your meals are delivered fresh every day. Delivery windows are fixed to allow kitchen preparation.</p>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#E85D04] text-white flex items-center justify-center font-bold text-sm shrink-0">04</div>
+                <h2 className="text-2xl font-bold">Your Details</h2>
+              </div>
+              <p className="text-[#666] text-[14px] mb-8 ml-11">Enter your details and delivery address.</p>
 
-              {/* Prefixed schedule — read-only */}
+              {/* Personal details */}
+              <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Personal Details</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label className="block text-[12px] text-[#666] mb-1">Full Name</label>
+                  <input value={details.name} onChange={(e) => setDetails({ ...details, name: e.target.value })}
+                    placeholder="Alex Johnson"
+                    className="w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-sm placeholder:text-[#bbb] focus:outline-none focus:border-[#111]" />
+                </div>
+                <div>
+                  <label className="block text-[12px] text-[#666] mb-1">Phone Number</label>
+                  <input value={details.phone} onChange={(e) => setDetails({ ...details, phone: e.target.value })}
+                    placeholder="+60 12-345 6789"
+                    className="w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-sm placeholder:text-[#bbb] focus:outline-none focus:border-[#111]" />
+                </div>
+              </div>
               <div className="mb-8">
-                <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-3">Your Weekly Delivery Schedule</label>
-                <div className="bg-white border border-[#E5E2DA]overflow-hidden">
-                  {DELIVERY_WEEK.map((d, i) => (
-                    <div key={d.day} className={`flex items-center justify-between px-5 py-3.5 ${i < DELIVERY_WEEK.length - 1 ? "border-b border-[#F0EDE8]" : ""}`}>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-[#E85D04] rounded-full flex items-center justify-center text-[#111] font-bold text-[11px]">{d.date}</div>
-                        <div>
-                          <div className="text-[13px] font-semibold text-[#111]">{d.day}, {d.date} {d.month}</div>
-                          <div className="text-[11px] text-[#888]">{mealCount === 1 ? "Lunch" : "Lunch + Dinner"}</div>
-                        </div>
-                      </div>
-                      <div className="text-[11px] text-[#aaa] font-mono">7am – 10am</div>
-                    </div>
-                  ))}
-                  <div className="px-5 py-3 bg-[#FFFBF0] border-t border-[#E85D04]/30">
-                    <p className="text-[11px] text-[#7A5C00]">
-                      📦 Meals are prepared fresh each morning and delivered before 10am. Delivery windows are fixed — no scheduling needed.
-                    </p>
-                  </div>
+                <label className="block text-[12px] text-[#666] mb-1">Email</label>
+                <input value={details.email} onChange={(e) => setDetails({ ...details, email: e.target.value })}
+                  type="email" placeholder="alex@email.com"
+                  className="w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-sm placeholder:text-[#bbb] focus:outline-none focus:border-[#111]" />
+              </div>
+
+              {/* Delivery address */}
+              <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Delivery Address</p>
+
+              {/* Fixed delivery schedule banner */}
+              <div className="border-l-4 border-[#E85D04] bg-[#FFF9F5] px-4 py-3 mb-4 flex items-center gap-3">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E85D04" strokeWidth="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
+                </svg>
+                <div className="text-[13px]">
+                  <span className="font-semibold text-[#1A1A1A]">Delivery:</span>
+                  <span className="text-[#666] ml-1">Sun, Tue & Thu · 5:00 – 8:00 pm</span>
                 </div>
               </div>
 
-              {/* Address */}
-              <div className="mb-8">
-                <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-3">Delivery Address</label>
-                <div className="flex flex-col gap-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input type="text" placeholder="Full name" value={address.name}
-                      onChange={(e) => setAddress({ ...address, name: e.target.value })}
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <input type="text" placeholder="Phone / WhatsApp" value={address.phone}
-                      onChange={(e) => setAddress({ ...address, phone: e.target.value })}
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+              <div className="flex items-center gap-2 mb-5">
+                <div className="w-4 h-4 bg-[#E85D04] flex items-center justify-center shrink-0">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
+                </div>
+                <span className="text-[13px] text-[#666]">Same as personal details address</span>
+              </div>
+
+              <div className="flex flex-col gap-3 mb-8">
+                <div>
+                  <label className="block text-[12px] text-[#666] mb-1">Street Address</label>
+                  <input value={details.street} onChange={(e) => setDetails({ ...details, street: e.target.value })}
+                    placeholder="123 Jalan Ampang"
+                    className="w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-sm placeholder:text-[#bbb] focus:outline-none focus:border-[#111]" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[12px] text-[#666] mb-1">City</label>
+                    <input value={details.city} onChange={(e) => setDetails({ ...details, city: e.target.value })}
+                      placeholder="Kuala Lumpur"
+                      className="w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-sm placeholder:text-[#bbb] focus:outline-none focus:border-[#111]" />
                   </div>
-                  <input type="text" placeholder="Street address" value={address.line1}
-                    onChange={(e) => setAddress({ ...address, line1: e.target.value })}
-                    className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                  <div className="grid grid-cols-2 gap-3">
-                    <input type="text" placeholder="Unit / Level (optional)" value={address.unit}
-                      onChange={(e) => setAddress({ ...address, unit: e.target.value })}
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <input type="text" placeholder="Postal code" value={address.postal}
-                      onChange={(e) => setAddress({ ...address, postal: e.target.value })}
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
+                  <div>
+                    <label className="block text-[12px] text-[#666] mb-1">Postcode</label>
+                    <input value={details.postcode} onChange={(e) => setDetails({ ...details, postcode: e.target.value })}
+                      placeholder="50450"
+                      className="w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-sm placeholder:text-[#bbb] focus:outline-none focus:border-[#111]" />
                   </div>
+                </div>
+                <div>
+                  <label className="block text-[12px] text-[#666] mb-1">Delivery Notes (optional)</label>
+                  <textarea value={details.notes} onChange={(e) => setDetails({ ...details, notes: e.target.value })}
+                    placeholder="Leave at door, call on arrival..."
+                    rows={3}
+                    className="w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-sm placeholder:text-[#bbb] focus:outline-none focus:border-[#111] resize-none" />
                 </div>
               </div>
 
-              <button onClick={handleNext} disabled={!canProceedStep4}
-                className={`w-full py-4 font-semibold text-[15px] transition-all ${canProceedStep4 ? "bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
-                Continue →
-              </button>
+              <div className="flex gap-3">
+                <button onClick={goBack} className="border border-[#D0CCC4] px-6 py-3.5 text-[14px] font-semibold text-[#666] hover:border-[#111] hover:text-[#111] transition-colors flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                  Back
+                </button>
+                <button onClick={() => { if (canProceedStep4) setStep(5); }} disabled={!canProceedStep4}
+                  className={`flex-1 py-3.5 font-semibold text-[15px] transition-colors flex items-center justify-center gap-2 ${canProceedStep4 ? "bg-[#E85D04] text-white hover:bg-[#1A1A1A]" : "bg-[#E5E2DA] text-[#aaa] cursor-not-allowed"}`}>
+                  Continue
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
             </div>
           )}
 
-          {/* ─── Step 5: Auth + Payment ─── */}
+          {/* ════ Step 5: Review ════ */}
           {step === 5 && (
             <div>
-              {/* Auth gate — NO guest option for meal plan (subscription requires account) */}
-              {wizardAuthMode === null && (
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-bold mb-1">Account required</h1>
-                  <p className="text-[#666] mb-2 text-[14px]">Meal Plans are subscription-based. An account lets you review your menu weekly, manage deliveries, and earn rewards points.</p>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="w-8 h-8 rounded-full bg-[#E85D04] text-white flex items-center justify-center font-bold text-sm shrink-0">05</div>
+                <h2 className="text-2xl font-bold">Order Summary</h2>
+              </div>
+              <p className="text-[#666] text-[14px] mb-8 ml-11">Review your programme, meal plan and payment details.</p>
 
-                  <div className="bg-[#111] text-whitep-4 mb-6 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#F5B300] rounded-full flex items-center justify-center shrink-0 text-[#111] text-lg font-bold">🪙</div>
-                    <div>
-                      <p className="font-semibold text-[14px]">Earn <span className="text-[#F5B300]">+{Math.round(Number(price) * 1.5)} points</span> on this plan</p>
-                      <p className="text-white/50 text-[12px]">Redeem for free meals, discounts and referral bonuses.</p>
+              {/* Programme & plan summary */}
+              <div className="border border-[#E8E4DC] mb-4">
+                {[
+                  ["Programme", progLabel],
+                  ["Menu availability", `${progInfo.menuWeeks} weekly menus`],
+                  ["Meal Plan", mealPlan],
+                  ["Meals", mealCountLabel],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC] last:border-b-0">
+                    <span className="text-[14px] text-[#666]">{k}</span>
+                    <span className="text-[14px] font-semibold text-[#1A1A1A] text-right">{v}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Period dates (fixed programmes only) */}
+              {progInfo.days && (
+                <div className="border border-[#E8E4DC] mb-4">
+                  {[
+                    ["Programme Period", `${progInfo.days} days`],
+                    ["Start Date", fmtDate(startDate)],
+                    ["End Date", endDate ? fmtDate(endDate) : "—"],
+                  ].map(([k, v]) => (
+                    <div key={k} className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC] last:border-b-0">
+                      <span className="text-[14px] text-[#666]">{k}</span>
+                      <span className="text-[14px] font-semibold text-[#1A1A1A]">{v}</span>
                     </div>
-                  </div>
-
-                  <div className="flex flex-col gap-3 mb-4">
-                    <button onClick={() => setWizardAuthMode("signup")}
-                      className="w-full bg-[#E85D04] text-[#111] py-4 font-bold text-[15px] hover:bg-[#1A1A1A] hover:text-white transition-colors">
-                      Create Account & Subscribe
-                    </button>
-                    <button onClick={() => setWizardAuthMode("signin")}
-                      className="w-full border-2 border-[#111] text-[#111] py-4 font-bold text-[15px] hover:bg-[#111] hover:text-white transition-colors">
-                      Sign In to Existing Account
-                    </button>
-                  </div>
-                  <p className="text-center text-[12px] text-[#aaa]">Meal Plan subscriptions require an account to manage your weekly menu and deliveries.</p>
+                  ))}
                 </div>
               )}
 
-              {/* Sign Up */}
-              {wizardAuthMode === "signup" && (
-                <div>
-                  <button onClick={() => setWizardAuthMode(null)} className="text-[#666] text-sm mb-4 flex items-center gap-1 hover:text-[#111]">← Back</button>
-                  <h1 className="text-xl font-bold mb-1">Create Your Account</h1>
-                  <p className="text-[#666] mb-5 text-sm">Takes 30 seconds — earn points from day one.</p>
-                  <div className="flex flex-col gap-3 mb-5">
-                    <input value={waName} onChange={(e) => setWaName(e.target.value)} placeholder="Full name"
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <input value={waEmail} onChange={(e) => setWaEmail(e.target.value)} type="email" placeholder="Email address"
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <input value={waPhone} onChange={(e) => setWaPhone(e.target.value)} type="tel" placeholder="Phone (WhatsApp order updates)"
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <input value={waPassword} onChange={(e) => setWaPassword(e.target.value)} type="password" placeholder="Create password"
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                  </div>
-                  <button disabled={!waName || !waEmail || !waPassword} onClick={() => setWizardAuthMode("signup_done")}
-                    className="w-full bg-[#E85D04] text-[#111] py-4 font-bold text-[15px] disabled:opacity-40 hover:bg-[#1A1A1A] hover:text-white transition-colors">
-                    Continue to Payment →
-                  </button>
+              {/* Pricing breakdown */}
+              <div className="border border-[#E8E4DC] mb-4">
+                <div className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC]">
+                  <span className="text-[14px] text-[#666]">{progInfo.days ? `${progInfo.days} days programme` : progInfo.label}</span>
+                  <span className="text-[14px] text-[#1A1A1A]">RM {basePrice.toFixed(2)}</span>
                 </div>
-              )}
-
-              {/* Sign In */}
-              {wizardAuthMode === "signin" && (
-                <div>
-                  <button onClick={() => setWizardAuthMode(null)} className="text-[#666] text-sm mb-4 flex items-center gap-1 hover:text-[#111]">← Back</button>
-                  <h1 className="text-xl font-bold mb-1">Sign In</h1>
-                  <p className="text-[#666] mb-5 text-sm">Welcome back — let us activate your plan.</p>
-                  <div className="flex flex-col gap-3 mb-5">
-                    <input value={waEmail} onChange={(e) => setWaEmail(e.target.value)} type="email" placeholder="Email address"
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <input value={waPassword} onChange={(e) => setWaPassword(e.target.value)} type="password" placeholder="Password"
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                  </div>
-                  <button disabled={!waEmail || !waPassword} onClick={() => setWizardAuthMode("signin_done")}
-                    className="w-full bg-[#111] text-white py-4 font-bold text-[15px] disabled:opacity-40 hover:bg-[#222] transition-colors">
-                    Sign In & Continue →
-                  </button>
+                <div className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC]">
+                  <span className="text-[14px] text-[#666]">Delivery</span>
+                  <span className="text-[14px] text-[#1A1A1A]">Free</span>
                 </div>
-              )}
-
-              {/* Payment form */}
-              {(wizardAuthMode === "signup_done" || wizardAuthMode === "signin_done") && (
-                <div>
-                  <h1 className="text-xl sm:text-2xl font-bold mb-1">Payment</h1>
-                  <p className="text-[#666] mb-6">Enter your card details to activate your meal plan.</p>
-
-                  {/* Order summary */}
-                  <div className="bg-white border border-[#E5E2DA] p-5 mb-6">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <p className="font-semibold">{plan.name} Plan</p>
-                        <p className="text-sm text-[#666]">{mealCount} meal{mealCount > 1 ? "s" : ""}/day · {billing === "week" ? "Weekly" : "Monthly"} billing</p>
-                        <p className="text-sm text-[#666]">7 days/week · Delivered by 10am daily</p>
-                      </div>
-                      <div className="text-right">
-                        {promoApplied && <p className="text-xs text-[#999] line-through">${basePrice}/{billing === "week" ? "wk" : "mo"}</p>}
-                        <p className="text-xl font-bold">${price}</p>
-                        <p className="text-xs text-[#999]">/{billing === "week" ? "week" : "month"}</p>
-                        {promoApplied && <p className="text-xs text-green-600 font-medium mt-0.5">{promoCode} applied ✓</p>}
-                      </div>
-                    </div>
-                    {promoApplied && (
-                      <div className="flex justify-between text-[12px] text-green-600 font-medium border-t border-[#F0EDE8] pt-2 mt-2">
-                        <span>Promo discount ({promoFlat > 0 ? `$${promoFlat.toFixed(2)} off` : `${Math.round(promoRate * 100)}% off`})</span>
-                        <span>–${promoDiscount.toFixed(2)}/{billing === "week" ? "wk" : "mo"}</span>
-                      </div>
-                    )}
-                    <div className="h-1 rounded-full mt-3" style={{ backgroundColor: plan.accent }} />
-                  </div>
-
-                  {/* Card fields */}
-                  <div className="flex flex-col gap-3 mb-6">
-                    <input type="text" placeholder="Cardholder name"
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <input type="text" placeholder="Card number"
-                      className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    <div className="grid grid-cols-2 gap-3">
-                      <input type="text" placeholder="MM / YY"
-                        className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                      <input type="text" placeholder="CVV"
-                        className="border border-[#D0CCC4] bg-white text-[#111] px-4 py-3 text-sm font-mono placeholder:text-[#999] focus:outline-none focus:border-[#111]" />
-                    </div>
-                  </div>
-
-                  {/* Promo code */}
-                  <div className="mb-5">
-                    <p className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Promo / Discount Code</p>
-                    <div className="flex gap-2">
-                      <input value={promoCode}
-                        onChange={(e) => { setPromoCode(e.target.value.toUpperCase()); setPromoApplied(false); setPromoError(null); }}
-                        placeholder="e.g. WELCOME10"
-                        className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono outline-none transition-colors uppercase ${promoApplied ? "border-green-500 bg-green-50" : promoError ? "border-red-400" : "border-[#D0CCC4] focus:border-[#111]"}`}
-                      />
-                      <button onClick={handleApplyPromo}
-                        className="px-5 py-3 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#E85D04] hover:text-[#111] transition-colors">
-                        Apply
-                      </button>
-                    </div>
-                    {promoApplied && <p className="text-green-600 text-[12px] mt-1.5 font-medium">✓ Code <strong>{promoCode}</strong> applied — saving ${promoDiscount.toFixed(2)}/{billing === "week" ? "wk" : "mo"}</p>}
-                    {promoError === "invalid" && <p className="text-red-500 text-[12px] mt-1.5 font-medium">✕ Invalid promo code. Check spelling or try another.</p>}
-                    {promoError === "expired" && <p className="text-red-500 text-[12px] mt-1.5 font-medium">⏰ This promo code has expired. Check our latest offers!</p>}
-                  </div>
-
-                  {/* Trust seal */}
-                  <div className="flex items-center gap-3 bg-[#E85D04]/10 border border-[#E85D04]/30 px-4 py-3 mb-4">
-                    <span className="text-[24px] shrink-0">🔒</span>
-                    <div className="text-[12px] text-[#555] leading-tight">
-                      <span className="font-bold text-[#111]">Satisfaction guarantee.</span> Exceptional meals and support — or your money back. No questions asked.
-                    </div>
-                  </div>
-
-                  <button onClick={handleSubscribe}
-                    className="w-full py-4 font-semibold text-[15px] bg-[#E85D04] text-[#111] hover:bg-[#111] hover:text-white transition-all">
-                    Subscribe — ${price}/{billing === "week" ? "wk" : "mo"}
-                  </button>
-                  <p className="text-center text-xs text-[#999] mt-4">Cancel anytime from your account. No lock-in.</p>
+                <div className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC]">
+                  <span className="text-[14px] text-[#666]">Subtotal</span>
+                  <span className="text-[14px] text-[#1A1A1A]">RM {basePrice.toFixed(2)}</span>
                 </div>
-              )}
+                <div className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC]">
+                  <span className="text-[14px] text-[#666]">GST (6%)</span>
+                  <span className="text-[14px] text-[#1A1A1A]">RM {gst.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between px-5 py-4">
+                  <span className="text-[15px] font-semibold">Total</span>
+                  <span className="text-[20px] font-bold text-[#E85D04]">RM {total.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {/* Payment method */}
+              <div className="border border-[#E8E4DC] px-5 pt-4 pb-5 mb-8">
+                <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Payment Method</p>
+                <div className="border border-[#E85D04] bg-[#FFF9F5] px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-6 bg-[#1A1A1A] flex items-center justify-center">
+                      <svg width="18" height="12" viewBox="0 0 30 20" fill="none">
+                        <rect width="30" height="20" fill="#1A1A1A"/>
+                        <rect x="2" y="7" width="26" height="3" fill="#888"/>
+                        <rect x="2" y="13" width="8" height="2" rx="0.5" fill="#ccc"/>
+                      </svg>
+                    </div>
+                    <span className="text-[14px] font-medium">Card</span>
+                  </div>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E85D04" strokeWidth="2.5">
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button onClick={goBack} className="border border-[#D0CCC4] px-6 py-3.5 text-[14px] font-semibold text-[#666] hover:border-[#111] hover:text-[#111] transition-colors flex items-center gap-2">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                  Back
+                </button>
+                <button
+                  onClick={() => onCheckoutComplete({ name: details.name, phone: details.phone, line1: details.street, unit: "", postal: details.postcode })}
+                  className="flex-1 bg-[#E85D04] text-white py-3.5 font-semibold text-[15px] hover:bg-[#1A1A1A] transition-colors flex items-center justify-center gap-2">
+                  Place Order
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
             </div>
           )}
 
         </div>
-      </div>
 
-      {/* ── Meal Picker Overlay ── */}
-      {pickerState && (
-        <div className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setPickerState(null)} />
-          <div className="relative bg-white w-full sm:max-w-lg max-h-[85vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-[#E5E2DA] px-6 py-4 flex items-center justify-between">
-              <div>
-                <div className="font-bold text-[16px] text-[#111]">
-                  Choose {pickerState.slot.charAt(0).toUpperCase() + pickerState.slot.slice(1)}
-                </div>
-                <div className="text-[12px] text-[#888]">{pickerState.day} — curated for {goal}</div>
-              </div>
-              <button onClick={() => setPickerState(null)} className="text-[#aaa] hover:text-[#111] transition-colors">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
-              </button>
+        {/* ── YOUR ORDER Sidebar ── */}
+        <div className="lg:w-[280px] xl:w-[300px] shrink-0">
+          <div className="bg-[#1A1A1A] text-white p-6 sticky top-[72px]">
+            <div className="flex items-center gap-2 mb-5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E85D04" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="18" rx="1" /><path d="M16 2v4M8 2v4M3 10h18" />
+              </svg>
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#666]">Your Order</span>
             </div>
-            <div className="p-4 flex flex-col gap-3">
-              {getDayOptions(planMeals, DELIVERY_WEEK.findIndex((d) => d.day === pickerState.day)).map((meal) => (
-                <button key={meal.id} onClick={() => selectMeal(meal.id)}
-                  className="flex items-center gap-4 p-3 border border-[#E5E2DA] hover:border-[#E85D04] hover:bg-[#FFFBF0]transition-all text-left group">
-                  <img src={meal.img} alt={meal.name} className="w-16 h-16 object-covershrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-[14px] text-[#111] leading-snug">{meal.name}</div>
-                    <div className="flex gap-3 text-[11px] text-[#888] mt-1">
-                      <span>{meal.protein}g protein</span>
-                      <span>·</span>
-                      <span>{meal.cal} cal</span>
-                      <span>·</span>
-                      <span>${meal.price.toFixed(2)}</span>
-                    </div>
-                    <div className="flex mt-1">
-                      {[1,2,3,4,5].map((s) => <span key={s} className={`text-[10px] ${s <= Math.round(meal.rating) ? "text-[#E85D04]" : "text-[#ddd]"}`}>★</span>)}
-                      <span className="text-[10px] text-[#aaa] ml-1">({meal.reviews})</span>
-                    </div>
-                  </div>
-                  <div className="shrink-0 w-8 h-8 rounded-full border-2 border-[#E5E2DA] group-hover:border-[#E85D04] group-hover:bg-[#E85D04] flex items-center justify-center transition-all">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
-                  </div>
-                </button>
-              ))}
+
+            <div className="space-y-4 text-[13px]">
+              {/* Step */}
+              <div>
+                <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Step {step} of 5</p>
+                <p className="font-semibold">{STEP_LABELS[step - 1]}</p>
+              </div>
+
+              {/* Programme / Subscription */}
+              <div className="border-t border-white/10 pt-4">
+                <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">
+                  {progInfo.kind === "recurring" ? "Subscription" : "Programme"}
+                </p>
+                <p className="font-semibold">{progLabel}</p>
+              </div>
+
+              {/* Programme period (fixed only) */}
+              {progInfo.days && (
+                <div className="border-t border-white/10 pt-4">
+                  <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Programme Period</p>
+                  <p className="font-semibold">{progInfo.days} days</p>
+                </div>
+              )}
+
+              {/* Menu availability */}
+              <div className="border-t border-white/10 pt-4">
+                <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Menu Availability</p>
+                <p className="font-semibold">{progInfo.menuWeeks} weekly menus</p>
+              </div>
+
+              {/* Meal Plan (shows from step 2) */}
+              {step >= 2 && (
+                <div className="border-t border-white/10 pt-4">
+                  <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Meal Plan</p>
+                  <p className="font-semibold">{mealPlan}</p>
+                </div>
+              )}
+
+              {/* Meals */}
+              {step >= 2 && (
+                <div className="border-t border-white/10 pt-4">
+                  <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Meals</p>
+                  <p className="font-semibold">{mealCountLabel}</p>
+                </div>
+              )}
+
+              {/* Delivery (always fixed) */}
+              <div className="border-t border-white/10 pt-4">
+                <div className="flex items-center gap-1.5 mb-0.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E85D04" strokeWidth="2">
+                    <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                  </svg>
+                  <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555]">Delivery</p>
+                </div>
+                <p className="font-semibold text-[12px]">SUN, TUE & THU · 5:00–8:00 PM</p>
+              </div>
             </div>
           </div>
         </div>
-      )}
+
+      </div>
     </div>
   );
 }
