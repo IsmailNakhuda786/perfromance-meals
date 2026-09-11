@@ -469,19 +469,18 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
               <>
                 <div className="flex-1 p-4 space-y-3">
                   {cart.map((item) => {
-                    const bundle = item.type === "box" ? BUNDLES.find((b) => b.id === item.id) : null;
-                    const bundleMeals = bundle
-                      ? Array.from(new Set(bundle.mealIds)).map((mid) => MEALS.find((m) => m.id === mid)).filter(Boolean)
-                      : [];
+                    const isBox = item.type === "box";
+                    const boxImgs = item.mealImgs ?? (isBox ? BUNDLES.find((b) => b.id === item.id)?.mealIds.slice(0, 6).map((mid) => MEALS.find((m) => m.id === mid)?.img).filter(Boolean) as string[] ?? [] : []);
+                    const boxNames = item.mealNames ?? [];
                     return (
                       <div key={`${item.id}-${item.type}`} className="bg-[#1A1A1A] p-3">
-                        {bundle ? (
+                        {isBox ? (
                           /* Bundle cart item — show meal strip */
                           <div>
                             <div className="flex items-start justify-between gap-2 mb-2">
                               <div>
                                 <p className="text-[12px] font-bold leading-tight text-white">{item.name}</p>
-                                <p className="text-[10px] text-[#F5B300] mt-0.5">{bundle.mealIds.length} meals · ${bundle.perMeal}/meal</p>
+                                <p className="text-[10px] text-[#F5B300] mt-0.5">${(item.price / (parseInt(item.name.match(/\d+/)?.[0] ?? "1") || 1)).toFixed(2)}/meal</p>
                               </div>
                               <div className="flex items-center gap-1.5 shrink-0">
                                 <span className="font-mono text-[13px] text-[#F5B300] font-bold">${(item.price * item.qty).toFixed(2)}</span>
@@ -491,24 +490,28 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                               </div>
                             </div>
                             {/* Meal thumbnails */}
-                            <div className="flex gap-1 mb-2">
-                              {bundleMeals.slice(0, 5).map((m, i) => (
-                                <div key={i} className="w-10 h-10 overflow-hidden shrink-0 border border-white/10" title={m!.name}>
-                                  <img src={m!.img} alt={m!.name} className="w-full h-full object-cover" />
-                                </div>
-                              ))}
-                              {bundleMeals.length > 5 && (
-                                <div className="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                                  <span className="text-[9px] text-white/40 font-mono">+{bundleMeals.length - 5}</span>
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex flex-wrap gap-1">
-                              {bundleMeals.slice(0, 3).map((m, i) => (
-                                <span key={i} className="text-[9px] text-white/30 font-mono truncate max-w-[100px]">{m!.name.split(" & ")[0]}</span>
-                              ))}
-                              {bundleMeals.length > 3 && <span className="text-[9px] text-white/20 font-mono">+{bundleMeals.length - 3} more</span>}
-                            </div>
+                            {boxImgs.length > 0 && (
+                              <div className="flex gap-1 mb-2">
+                                {boxImgs.slice(0, 5).map((src, i) => (
+                                  <div key={i} className="w-10 h-10 overflow-hidden shrink-0 border border-white/10">
+                                    <img src={src} alt="" className="w-full h-full object-cover" />
+                                  </div>
+                                ))}
+                                {boxImgs.length > 5 && (
+                                  <div className="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                    <span className="text-[9px] text-white/40 font-mono">+{boxImgs.length - 5}</span>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            {boxNames.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {boxNames.slice(0, 3).map((n, i) => (
+                                  <span key={i} className="text-[9px] text-white/30 font-mono truncate max-w-[110px]">{n}</span>
+                                ))}
+                                {boxNames.length > 3 && <span className="text-[9px] text-white/20 font-mono">+{boxNames.length - 3} more</span>}
+                              </div>
+                            )}
                           </div>
                         ) : (
                           /* Regular cart item */

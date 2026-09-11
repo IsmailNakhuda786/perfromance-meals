@@ -25,6 +25,8 @@ export interface CartItem {
   img: string;
   type: "ready" | "box" | "plan";
   planLabel?: string;
+  mealImgs?: string[];
+  mealNames?: string[];
 }
 
 export interface Meal {

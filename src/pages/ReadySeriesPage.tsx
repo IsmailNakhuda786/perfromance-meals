@@ -121,6 +121,8 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
   const [reviewMealId, setReviewMealId] = useState<number | null>(null);
   const [bundleType, setBundleType] = useState<BundleType>("meals");
   const [carouselOffsets, setCarouselOffsets] = useState<Record<string, number>>({});
+  const [selectedBundleDetail, setSelectedBundleDetail] = useState<null | typeof BUNDLES["meals"][0]>(null);
+  const [detailSlide, setDetailSlide] = useState(0);
 
   const scrollCarousel = (bundleName: string, dir: 1 | -1) => {
     setCarouselOffsets((prev) => {
@@ -334,12 +336,20 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       )}
                     </div>
 
-                    <button
-                      onClick={() => addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box" })}
-                      className="w-full bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors"
-                    >
-                      Add Bundle — ${b.price}
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => { setSelectedBundleDetail(b); setDetailSlide(0); }}
+                        className="border border-white/20 text-white/50 text-[10px] font-bold tracking-widest uppercase px-4 py-3 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors whitespace-nowrap"
+                      >
+                        View Contents
+                      </button>
+                      <button
+                        onClick={() => addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box", mealImgs: uniqueMeals.slice(0, 6).map((m) => m.img), mealNames: uniqueMeals.slice(0, 4).map((m) => m.name.split("&")[0].trim()) })}
+                        className="flex-1 bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors"
+                      >
+                        Add Bundle — ${b.price}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -570,6 +580,101 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                 <button onClick={() => { setReviewMealId(null); handleAdd(meal); }}
                   className="w-full bg-[#F5B300] text-[#111] py-3.5 font-bold text-[13px] tracking-wider uppercase hover:bg-white transition-colors">
                   Add to Cart — ${meal.price.toFixed(2)}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* ── BUNDLE DETAIL DIALOG ── */}
+      {selectedBundleDetail && (() => {
+        const b = selectedBundleDetail;
+        const bundleMeals = b.mealIds.map((id) => getMealById(id)).filter(Boolean) as typeof MEALS;
+        const uniqueMeals = bundleMeals.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
+        const slide = Math.max(0, Math.min(detailSlide, uniqueMeals.length - 1));
+        const current = uniqueMeals[slide];
+        return (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8">
+            <div className="absolute inset-0 bg-black/85" onClick={() => setSelectedBundleDetail(null)} />
+            <div className="relative bg-[#111] w-full max-w-[700px] max-h-[90vh] overflow-y-auto flex flex-col">
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0">
+                <div>
+                  <div className="text-[10px] font-mono tracking-[0.3em] text-[#F5B300] uppercase mb-0.5">Bundle Contents</div>
+                  <h2 className="text-[18px] font-extrabold text-white">{b.n} <span className="text-white/30 font-normal text-[14px]">· {b.meals} meals</span></h2>
+                </div>
+                <button onClick={() => setSelectedBundleDetail(null)} className="text-white/30 hover:text-white p-2 transition-colors">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
+
+              {/* Main meal carousel */}
+              {current && (
+                <div className="relative">
+                  <div className="h-[240px] overflow-hidden bg-[#1A1A1A]">
+                    <img src={current.img} alt={current.name} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                  </div>
+                  {/* Nav */}
+                  {uniqueMeals.length > 1 && (
+                    <>
+                      <button onClick={() => setDetailSlide(Math.max(0, slide - 1))} disabled={slide === 0}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/70 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                      </button>
+                      <button onClick={() => setDetailSlide(Math.min(uniqueMeals.length - 1, slide + 1))} disabled={slide === uniqueMeals.length - 1}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/70 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                      </button>
+                    </>
+                  )}
+                  <div className="absolute bottom-3 left-0 right-0 px-5">
+                    <p className="text-white font-bold text-[16px]">{current.name}</p>
+                    <div className="flex gap-3 mt-1 text-[11px] text-white/60 font-mono">
+                      <span>{current.protein}g protein</span>
+                      <span>{current.carbs}g carbs</span>
+                      <span>{current.fat}g fat</span>
+                      <span>{current.cal} kcal</span>
+                    </div>
+                  </div>
+                  {/* Slide counter */}
+                  <div className="absolute top-3 right-3 bg-black/60 text-white/60 text-[10px] font-mono px-2 py-1">
+                    {slide + 1} / {uniqueMeals.length}
+                  </div>
+                </div>
+              )}
+
+              {/* Thumbnail strip */}
+              <div className="flex gap-1 p-4 overflow-x-auto scrollbar-none shrink-0 border-b border-white/8">
+                {uniqueMeals.map((m, i) => (
+                  <button key={m.id} onClick={() => setDetailSlide(i)}
+                    className={`shrink-0 w-14 h-14 overflow-hidden border-2 transition-colors ${i === slide ? "border-[#F5B300]" : "border-transparent opacity-40 hover:opacity-70"}`}>
+                    <img src={m.img} alt={m.name} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+
+              {/* Bundle summary + CTA */}
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <div className="text-[24px] font-extrabold text-[#F5B300] font-mono">${b.price}</div>
+                    <div className="text-white/30 text-[12px]">${b.ppm}/meal · {b.meals} meals total</div>
+                  </div>
+                  {b.badge && (
+                    <div className="bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-[0.15em] px-3 py-1.5">{b.badge}</div>
+                  )}
+                </div>
+                <p className="text-white/50 text-[13px] mb-5">{b.desc}</p>
+                <button
+                  onClick={() => {
+                    addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box", mealImgs: uniqueMeals.slice(0, 6).map((m) => m.img), mealNames: uniqueMeals.slice(0, 4).map((m) => m.name.split("&")[0].trim()) });
+                    setSelectedBundleDetail(null);
+                  }}
+                  className="w-full bg-[#F5B300] text-[#111] py-4 font-extrabold text-[12px] tracking-[0.25em] uppercase hover:bg-white transition-colors"
+                >
+                  Add Bundle to Cart — ${b.price}
                 </button>
               </div>
             </div>
