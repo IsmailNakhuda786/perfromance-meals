@@ -58,21 +58,35 @@ const VALID_PROMOS: Record<string, { discount: number; flat?: number; expired?: 
   "FREEZER5":  { discount: 0, flat: 5.00 },
 };
 
-const WEEKS = [
-  { label: "Week 1", dates: "23–27 Jun" },
-  { label: "Week 2", dates: "30 Jun–4 Jul" },
-  { label: "Week 3", dates: "7–11 Jul" },
-  { label: "Week 4", dates: "14–18 Jul" },
-];
+// Generate the next 4 Mon–Fri delivery weeks from today
+function buildWeeks() {
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const today = new Date();
+  // advance to the nearest upcoming Monday (or today if it's Monday)
+  const dow = today.getDay(); // 0=Sun
+  const daysUntilMon = dow === 0 ? 1 : dow === 1 ? 0 : 8 - dow;
+  const mon = new Date(today);
+  mon.setDate(today.getDate() + daysUntilMon);
+  return Array.from({ length: 4 }, (_, i) => {
+    const wMon = new Date(mon); wMon.setDate(mon.getDate() + i * 7);
+    const wFri = new Date(wMon); wFri.setDate(wMon.getDate() + 4);
+    const start = `${wMon.getDate()} ${MONTHS[wMon.getMonth()]}`;
+    const end   = wFri.getMonth() === wMon.getMonth()
+      ? `${wFri.getDate()}`
+      : `${wFri.getDate()} ${MONTHS[wFri.getMonth()]}`;
+    return { label: `Week ${i + 1}`, dates: `${start}–${end}` };
+  });
+}
+const WEEKS = buildWeeks();
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const WEEKDAY_SHORT = ["MON", "TUE", "WED", "THU", "FRI"];
 
 const WEEK_MENUS: Array<{ lunch: number[]; dinner: number[] }> = [
-  { lunch: [1, 7],  dinner: [4, 9]  },
-  { lunch: [2, 5],  dinner: [6, 10] },
-  { lunch: [3, 8],  dinner: [1, 5]  },
-  { lunch: [7, 9],  dinner: [2, 6]  },
+  { lunch: [1, 7],  dinner: [4, 9] },
+  { lunch: [2, 5],  dinner: [6, 4] },
+  { lunch: [3, 8],  dinner: [1, 5] },
+  { lunch: [7, 9],  dinner: [2, 6] },
 ];
 
 function getMeal(id: number) { return MEALS.find((m) => m.id === id) ?? MEALS[0]; }
@@ -160,10 +174,18 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 const inputCls = "w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-[14px] placeholder:text-[#C0BAB0] focus:outline-none focus:border-[#E85D04] focus:shadow-[0_0_0_3px_rgba(232,93,4,0.12)] transition-all";
 
-export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Props) {
+// Map landing-page goal label → wizard defaults
+function goalDefaults(goal: string): { programme: ProgrammeType; mealPlan: MealPlanType } {
+  if (goal === "CUT")    return { programme: "6by60",      mealPlan: "Low Carb Regular" };
+  if (goal === "BUILD")  return { programme: "buddy-plan",  mealPlan: "Balance Regular"  };
+  return                        { programme: "bi-weekly",   mealPlan: "Balance Regular"  }; // MAINTAIN / default
+}
+
+export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutComplete }: Props) {
+  const defaults = goalDefaults(initialPlan ?? "");
   const [step, setStep] = useState<Step>(1);
-  const [programme, setProgramme] = useState<ProgrammeType>("bi-weekly");
-  const [mealPlan, setMealPlan] = useState<MealPlanType>("Low Carb Regular");
+  const [programme, setProgramme] = useState<ProgrammeType>(defaults.programme);
+  const [mealPlan, setMealPlan] = useState<MealPlanType>(defaults.mealPlan);
   const [mealCount, setMealCount] = useState<MealCount>("lunch-dinner");
   const [selectedWeek, setSelectedWeek] = useState(0);
   const [openDay, setOpenDay] = useState<string | null>("Monday");

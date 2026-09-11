@@ -36,9 +36,9 @@ const GOALS = [
 ];
 
 const PLANS = [
-  { n: "Starter", meals: 5, freq: "Weekly", price: 119, desc: "5 meals/week. Perfect for weekday lunches or dinners." },
-  { n: "Standard", meals: 10, freq: "Weekly", price: 219, desc: "10 meals/week. Cover both lunch and dinner on weekdays.", badge: "POPULAR" },
-  { n: "Full Week", meals: 14, freq: "Weekly", price: 289, desc: "14 meals/week. Every meal sorted, every single day.", badge: "BEST VALUE" },
+  { n: "Lunch Only", meals: 5, freq: "per delivery", price: 120, from: true, desc: "5 lunches per delivery. Clean fuel for your workday, zero prep." },
+  { n: "Lunch + Dinner", meals: 10, freq: "per delivery", price: 180, from: true, desc: "10 meals per delivery — lunch and dinner covered Mon–Fri.", badge: "POPULAR" },
+  { n: "Full Programme", meals: 14, freq: "per delivery", price: 200, from: true, desc: "Lunch + dinner across your full programme. Maximum consistency.", badge: "BEST VALUE" },
 ];
 
 const HOW_IT_WORKS = [
@@ -194,8 +194,11 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
                 )}
                 <div className="font-display text-[20px] font-semibold text-[#1A1A1A] mb-1">{p.n}</div>
                 <div className="text-[#888] text-[12px] mb-4">{p.meals} meals · {p.freq}</div>
-                <div className="font-display text-[36px] font-bold text-[#1A1A1A] mb-1">${p.price}</div>
-                <div className="text-[#aaa] text-[11px] mb-5">/week</div>
+                <div className="flex items-baseline gap-1.5 mb-1">
+                  <span className="text-[#aaa] text-[13px]">from</span>
+                  <span className="font-display text-[36px] font-bold text-[#1A1A1A]">${p.price}</span>
+                </div>
+                <div className="text-[#aaa] text-[11px] mb-5">{p.freq} · exact price set in wizard</div>
                 <p className="text-[#666] text-[12px] leading-relaxed mb-6">{p.desc}</p>
                 <button onClick={() => navigateToWizard(selectedGoal)}
                   className={`w-full py-3.5 font-bold text-[12px] tracking-[0.15em] uppercase transition-colors ${p.badge === "POPULAR" ? "text-white hover:opacity-90" : "border border-[#1A1A1A] text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-white"}`}
