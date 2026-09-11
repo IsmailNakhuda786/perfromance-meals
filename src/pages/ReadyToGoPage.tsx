@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BUNDLES, CartItem, CATS, Meal, MEALS, Page, PROMOTIONS } from "@/data";
+import { ALL_REVIEWS, BUNDLES, CartItem, CATS, Meal, MEALS, Page, PROMOTIONS } from "@/data";
 
 interface Props {
   navigate: (page: Page) => void;
@@ -7,11 +7,15 @@ interface Props {
   cart: CartItem[];
 }
 
+type Bundle = typeof BUNDLES[0];
+
 export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
   const [activeCat, setActiveCat] = useState("all");
   const [sort, setSort] = useState("popular");
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [added, setAdded] = useState<number | null>(null);
+  const [selectedBundle, setSelectedBundle] = useState<Bundle | null>(null);
+  const [bundleSlide, setBundleSlide] = useState(0);
 
   const filtered = (activeCat === "all" ? MEALS : MEALS.filter((m) => m.cat === activeCat))
     .sort((a, b) => sort === "price-asc" ? a.price - b.price : sort === "price-desc" ? b.price - a.price : b.reviews - a.reviews);
@@ -107,23 +111,45 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
         {activeCat === "bundles" && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {BUNDLES.map((b) => (
-              <div key={b.id} className="bg-[#1A1A1A] overflow-hidden border border-white/5">
-                <div className="relative h-44 overflow-hidden">
-                  <img src={b.img} alt={b.name} className="w-full h-full object-cover opacity-70" />
-                  <div className="absolute top-3 left-3 bg-white/10 backdrop-blur text-white text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{b.tag}</div>
+              <div key={b.id} className="bg-[#1A1A1A] overflow-hidden border border-white/5 flex flex-col">
+                <div className="relative h-44 overflow-hidden cursor-pointer group" onClick={() => { setSelectedBundle(b); setBundleSlide(0); }}>
+                  <img src={b.img} alt={b.name} className="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500" />
+                  <div className="absolute top-3 left-3 bg-[#F5B300] text-[#1A1A1A] text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{b.tag}</div>
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100">
+                    <span className="bg-white/15 backdrop-blur-sm text-white text-[11px] uppercase tracking-widest px-5 py-2 border border-white/25">
+                      View What&apos;s Inside →
+                    </span>
+                  </div>
                 </div>
-                <div className="p-4">
+                <div className="p-4 flex flex-col flex-1">
                   <h3 className="font-bold text-[14px] mb-1">{b.name}</h3>
-                  <p className="text-white/40 text-[12px] mb-3">{b.desc}</p>
+                  <p className="text-white/40 text-[12px] mb-3 flex-1">{b.desc}</p>
+                  <div className="flex items-center gap-2 mb-3">
+                    {b.mealIds.slice(0, 4).map((mid, i) => {
+                      const m = MEALS.find((x) => x.id === mid);
+                      return m ? (
+                        <div key={i} className="w-8 h-8 overflow-hidden border border-white/10 shrink-0">
+                          <img src={m.img} alt={m.name} className="w-full h-full object-cover" />
+                        </div>
+                      ) : null;
+                    })}
+                    {b.mealIds.length > 4 && <span className="text-[11px] text-white/30">+{b.mealIds.length - 4} more</span>}
+                  </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="font-mono font-bold text-[18px] text-[#F5B300]">${b.price}</span>
                       <span className="text-white/30 text-[11px] ml-1">(${b.perMeal}/meal)</span>
                     </div>
-                    <button onClick={() => addToCart({ id: b.id, name: b.name, price: b.price, qty: 1, img: b.img, type: "box" })}
-                      className="bg-white/10 hover:bg-[#F5B300] hover:text-[#111] text-white px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
-                      Add
-                    </button>
+                    <div className="flex gap-2">
+                      <button onClick={() => { setSelectedBundle(b); setBundleSlide(0); }}
+                        className="border border-white/15 text-white/50 hover:border-[#F5B300] hover:text-[#F5B300] px-3 py-2 text-[10px] font-bold tracking-wider uppercase transition-colors">
+                        Details
+                      </button>
+                      <button onClick={() => addToCart({ id: b.id, name: b.name, price: b.price, qty: 1, img: b.img, type: "box" })}
+                        className="bg-[#F5B300] hover:bg-white text-[#111] px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
+                        Add
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -238,6 +264,172 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
         </div>
       )}
 
+      {/* Bundle Detail Dialog */}
+      {selectedBundle && (() => {
+        const uniqueIds = Array.from(new Set(selectedBundle.mealIds));
+        const bundleMeals = uniqueIds.map((id) => MEALS.find((m) => m.id === id)).filter(Boolean) as Meal[];
+        const totalSlides = bundleMeals.length;
+        const slide = Math.max(0, Math.min(bundleSlide, totalSlides - 1));
+        const current = bundleMeals[slide];
+        const qty = selectedBundle.mealIds.filter((id) => id === current?.id).length;
+        return (
+          <div className="fixed inset-0 z-[95] flex items-center justify-center p-2 sm:p-4">
+            <div className="absolute inset-0 bg-black/80" onClick={() => setSelectedBundle(null)} />
+            <div className="relative bg-[#1A1A1A] w-full max-w-3xl overflow-hidden max-h-[100dvh] sm:max-h-[92vh] flex flex-col">
+              {/* Header */}
+              <div className="flex items-start justify-between p-5 border-b border-white/10">
+                <div>
+                  <div className="text-[10px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-1">📦 Bundle Contents</div>
+                  <h2 className="font-display text-[22px] font-extrabold">{selectedBundle.name}</h2>
+                  <p className="text-white/40 text-[13px] mt-0.5">{selectedBundle.desc}</p>
+                </div>
+                <button onClick={() => setSelectedBundle(null)} className="text-white/30 hover:text-white ml-4 shrink-0 p-1">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                </button>
+              </div>
+
+              {/* Carousel */}
+              <div className="flex-1 overflow-y-auto">
+                {/* Slide counter + nav */}
+                <div className="flex items-center justify-between px-5 pt-5 pb-3">
+                  <span className="text-[11px] text-white/30 font-mono">{slide + 1} / {totalSlides} meals in this bundle</span>
+                  <div className="flex gap-2">
+                    <button onClick={() => setBundleSlide(Math.max(0, slide - 1))} disabled={slide === 0}
+                      className="w-9 h-9 border border-white/15 flex items-center justify-center hover:border-[#F5B300] hover:text-[#F5B300] disabled:opacity-25 transition-colors">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <button onClick={() => setBundleSlide(Math.min(totalSlides - 1, slide + 1))} disabled={slide === totalSlides - 1}
+                      className="w-9 h-9 border border-white/15 flex items-center justify-center hover:border-[#F5B300] hover:text-[#F5B300] disabled:opacity-25 transition-colors">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Dot pills */}
+                <div className="flex gap-1.5 px-5 mb-5">
+                  {bundleMeals.map((_, i) => (
+                    <button key={i} onClick={() => setBundleSlide(i)}
+                      className={`transition-all h-1.5 ${i === slide ? "w-6 bg-[#F5B300]" : "w-1.5 bg-white/20 hover:bg-white/40"}`} />
+                  ))}
+                </div>
+
+                {current && (
+                  <div className="px-5 pb-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-5 gap-5">
+                      {/* Meal image */}
+                      <div className="sm:col-span-3 relative overflow-hidden h-60">
+                        <img src={current.img} alt={current.name} className="w-full h-full object-cover" />
+                        {qty > 1 && (
+                          <div className="absolute top-3 right-3 bg-[#F5B300] text-[#1A1A1A] font-extrabold text-[12px] px-3 py-1">
+                            ×{qty} in bundle
+                          </div>
+                        )}
+                        {current.badge && (
+                          <div className="absolute top-3 left-3 bg-black/60 text-white text-[10px] font-bold px-2 py-1 tracking-widest uppercase backdrop-blur-sm">
+                            {current.badge}
+                          </div>
+                        )}
+                      </div>
+                      {/* Meal details */}
+                      <div className="sm:col-span-2 flex flex-col justify-between gap-4">
+                        <div>
+                          <div className="text-[10px] font-mono text-white/30 tracking-widest uppercase mb-1">{current.cat}</div>
+                          <h3 className="font-bold text-[18px] leading-snug mb-2">{current.name}</h3>
+                          <p className="text-white/40 text-[13px] leading-relaxed">{current.desc}</p>
+                        </div>
+                        {/* Macros */}
+                        <div className="grid grid-cols-4 gap-1.5">
+                          {[
+                            { label: "CAL", val: current.cal },
+                            { label: "PRO", val: `${current.protein}g` },
+                            { label: "CARB", val: `${current.carbs}g` },
+                            { label: "FAT", val: `${current.fat}g` },
+                          ].map((m) => (
+                            <div key={m.label} className="bg-[#222] py-2.5 text-center">
+                              <div className="font-mono text-[12px] text-[#F5B300] font-medium">{m.val}</div>
+                              <div className="text-white/25 text-[9px] mt-0.5 uppercase tracking-wider">{m.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Reviews for this meal */}
+                        {(() => {
+                          const revs = ALL_REVIEWS[current.id] ?? [];
+                          if (revs.length === 0) return null;
+                          const avg = revs.reduce((s, r) => s + r.rating, 0) / revs.length;
+                          return (
+                            <div className="flex items-center gap-2">
+                              <div className="flex gap-0.5">
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <span key={i} className={`text-[12px] ${i < Math.round(avg) ? "text-[#F5B300]" : "text-white/15"}`}>★</span>
+                                ))}
+                              </div>
+                              <span className="font-mono text-[12px] text-[#F5B300] font-bold">{avg.toFixed(1)}</span>
+                              <span className="text-white/25 text-[11px]">{revs.length} reviews</span>
+                            </div>
+                          );
+                        })()}
+                        <div className="font-mono text-[15px] text-[#F5B300] font-bold">${current.price.toFixed(2)} each</div>
+                      </div>
+                    </div>
+
+                    {/* Top review for this meal */}
+                    {(() => {
+                      const topRev = (ALL_REVIEWS[current.id] ?? [])[0];
+                      if (!topRev) return null;
+                      return (
+                        <div className="mt-5 border border-white/10 p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-7 h-7 bg-[#F5B300] flex items-center justify-center font-extrabold text-[10px] text-[#1A1A1A]">
+                                {topRev.author.charAt(0)}
+                              </div>
+                              <div>
+                                <div className="font-semibold text-[12px]">{topRev.author} <span className="text-white/25 font-normal">· {topRev.role}</span></div>
+                              </div>
+                            </div>
+                            <div className="flex gap-0.5">
+                              {Array.from({ length: 5 }).map((_, i) => (
+                                <span key={i} className={`text-[11px] ${i < topRev.rating ? "text-[#F5B300]" : "text-white/15"}`}>★</span>
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-[12px] text-white/50 leading-relaxed italic">"{topRev.text}"</p>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
+
+                {/* Thumbnail strip */}
+                <div className="flex gap-2 px-5 pb-5 overflow-x-auto">
+                  {bundleMeals.map((m, i) => (
+                    <button key={i} onClick={() => setBundleSlide(i)}
+                      className={`w-16 h-16 shrink-0 overflow-hidden border-2 transition-all ${i === slide ? "border-[#F5B300]" : "border-transparent opacity-40 hover:opacity-70"}`}>
+                      <img src={m.img} alt={m.name} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Footer CTA */}
+              <div className="border-t border-white/10 p-5 flex items-center justify-between gap-4">
+                <div>
+                  <div className="text-[11px] text-white/30 mb-0.5">{selectedBundle.mealIds.length} meals total</div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-mono font-extrabold text-[24px] text-[#F5B300]">${selectedBundle.price}</span>
+                    <span className="text-white/30 text-[13px]">${selectedBundle.perMeal}/meal</span>
+                  </div>
+                </div>
+                <button onClick={() => { addToCart({ id: selectedBundle.id, name: selectedBundle.name, price: selectedBundle.price, qty: 1, img: selectedBundle.img, type: "box" }); setSelectedBundle(null); }}
+                  className="bg-[#F5B300] text-[#111111] px-8 py-4 font-bold text-[13px] tracking-[0.15em] uppercase hover:bg-white transition-colors">
+                  Add Bundle to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Product Detail Modal */}
       {selectedMeal && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center p-2 sm:p-4">
@@ -290,10 +482,65 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                 ))}
               </div>
 
-              <div className="flex items-center gap-2 text-[12px] text-white/30 mb-6">
-                <span className="text-[#F5B300]">{"★".repeat(Math.round(selectedMeal.rating))}</span>
-                <span>{selectedMeal.rating} · {selectedMeal.reviews} reviews</span>
+              {/* Rating row */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex gap-0.5">{Array.from({ length: 5 }).map((_, i) => (
+                  <span key={i} className={`text-[15px] ${i < Math.round(selectedMeal.rating) ? "text-[#F5B300]" : "text-white/15"}`}>★</span>
+                ))}</div>
+                <span className="font-mono font-bold text-[14px] text-[#F5B300]">{selectedMeal.rating}</span>
+                <span className="text-white/30 text-[12px]">{selectedMeal.reviews} reviews</span>
               </div>
+
+              {/* Customer reviews preview */}
+              {(() => {
+                const revs = ALL_REVIEWS[selectedMeal.id] ?? [];
+                if (revs.length === 0) return null;
+                return (
+                  <div className="border border-white/10 mb-6">
+                    <div className="px-4 py-3 bg-white/5 border-b border-white/8 flex items-center justify-between">
+                      <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-[#F5B300]">Customer Reviews</span>
+                      <span className="text-[10px] text-white/25">{revs.length} verified</span>
+                    </div>
+                    <div className="divide-y divide-white/8">
+                      {revs.slice(0, 3).map((r, i) => (
+                        <div key={i} className="px-4 py-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-7 h-7 bg-[#F5B300] flex items-center justify-center font-extrabold text-[10px] text-[#1A1A1A] shrink-0">
+                                {r.author.charAt(0)}
+                              </div>
+                              <div>
+                                <div className="font-semibold text-[12px] text-white">{r.author}</div>
+                                <div className="text-[10px] text-white/30">{r.role}</div>
+                              </div>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <div className="flex gap-0.5 justify-end">
+                                {Array.from({ length: 5 }).map((_, j) => (
+                                  <span key={j} className={`text-[11px] ${j < r.rating ? "text-[#F5B300]" : "text-white/15"}`}>★</span>
+                                ))}
+                              </div>
+                              <div className="text-[9px] text-white/20 font-mono mt-0.5">{r.date}</div>
+                            </div>
+                          </div>
+                          <p className="text-[12px] text-white/55 leading-relaxed">{r.text}</p>
+                          {r.verified && (
+                            <div className="flex items-center gap-1.5 mt-2">
+                              <div className="w-1.5 h-1.5 bg-[#F5B300]" />
+                              <span className="text-[9px] font-mono text-white/20 tracking-wider">VERIFIED PURCHASE</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {revs.length > 3 && (
+                      <div className="px-4 py-3 border-t border-white/8 text-center">
+                        <span className="text-[11px] text-white/25 font-mono">+{revs.length - 3} more reviews on the product page</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               <div className="border border-white/10 p-4 mb-6 text-[12px] text-white/40 space-y-1">
                 <div>❄️ Frozen at peak freshness · 2-month freezer life</div>
