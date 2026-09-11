@@ -15,7 +15,8 @@ export type Page =
   | "wireframe"
   | "about"
   | "screens-export"
-  | "ready-series-product";
+  | "ready-series-product"
+  | "rewards";
 
 export interface CartItem {
   id: number;

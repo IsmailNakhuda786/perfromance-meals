@@ -21,6 +21,7 @@ import WireframePage from "@/pages/WireframePage";
 import AboutPage from "@/pages/AboutPage";
 import ScreensExportPage from "@/pages/ScreensExportPage";
 import ReadySeriesProductPage from "@/pages/ReadySeriesProductPage";
+import RewardsPage from "@/pages/RewardsPage";
 
 const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff", "blueprint", "wireframe", "screens-export", "ready-series-product"];
 
@@ -166,6 +167,7 @@ export default function App() {
       {page === "screens-export" && <ScreensExportPage navigate={navigate} />}
       {page === "wireframe" && <WireframePage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "about" && <AboutPage navigate={navigate} navigateToWizard={navigateToWizard} />}
+      {page === "rewards" && <RewardsPage navigate={navigate} />}
 
       {showFooter && <Footer navigate={navigate} navigateToWizard={navigateToWizard} />}
 

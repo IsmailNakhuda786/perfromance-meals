@@ -341,7 +341,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                         onClick={() => { setSelectedBundleDetail(b); setDetailSlide(0); }}
                         className="border border-white/20 text-white/50 text-[10px] font-bold tracking-widest uppercase px-4 py-3 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors whitespace-nowrap"
                       >
-                        View Contents
+                        View Details
                       </button>
                       <button
                         onClick={() => addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box", mealImgs: uniqueMeals.slice(0, 6).map((m) => m.img), mealNames: uniqueMeals.slice(0, 4).map((m) => m.name.split("&")[0].trim()) })}
@@ -594,14 +594,21 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         const uniqueMeals = bundleMeals.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
         const slide = Math.max(0, Math.min(detailSlide, uniqueMeals.length - 1));
         const current = uniqueMeals[slide];
+        const currentReviews = current ? (MEAL_REVIEWS[current.id] ?? []) : [];
+        const avgRating = currentReviews.length > 0
+          ? (currentReviews.reduce((s, r) => s + r.rating, 0) / currentReviews.length)
+          : 4.8;
+        const individualTotal = uniqueMeals.reduce((s, m) => s + m.price, 0) * (b.meals / uniqueMeals.length);
+        const savings = Math.max(0, individualTotal - b.price);
         return (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8">
-            <div className="absolute inset-0 bg-black/85" onClick={() => setSelectedBundleDetail(null)} />
-            <div className="relative bg-[#111] w-full max-w-[700px] max-h-[90vh] overflow-y-auto flex flex-col">
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-6">
+            <div className="absolute inset-0 bg-black/88" onClick={() => setSelectedBundleDetail(null)} />
+            <div className="relative bg-[#111] w-full max-w-[680px] max-h-[92vh] overflow-y-auto flex flex-col">
+
               {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0">
                 <div>
-                  <div className="text-[10px] font-mono tracking-[0.3em] text-[#F5B300] uppercase mb-0.5">Bundle Contents</div>
+                  <div className="text-[10px] font-mono tracking-[0.3em] text-[#F5B300] uppercase mb-0.5">Bundle Details</div>
                   <h2 className="text-[18px] font-extrabold text-white">{b.n} <span className="text-white/30 font-normal text-[14px]">· {b.meals} meals</span></h2>
                 </div>
                 <button onClick={() => setSelectedBundleDetail(null)} className="text-white/30 hover:text-white p-2 transition-colors">
@@ -609,72 +616,156 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                 </button>
               </div>
 
-              {/* Main meal carousel */}
+              {/* Main meal image */}
               {current && (
-                <div className="relative">
-                  <div className="h-[240px] overflow-hidden bg-[#1A1A1A]">
-                    <img src={current.img} alt={current.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <div className="relative bg-[#1A1A1A]">
+                  <div className="h-[220px] overflow-hidden">
+                    <img
+                      src={current.img.includes("?") ? current.img.split("?")[0] + "?w=680&h=220&fit=crop&auto=format" : current.img}
+                      alt={current.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   </div>
-                  {/* Nav */}
+
+                  {/* Prev / Next */}
                   {uniqueMeals.length > 1 && (
                     <>
                       <button onClick={() => setDetailSlide(Math.max(0, slide - 1))} disabled={slide === 0}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/70 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                        className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/80 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
                       </button>
                       <button onClick={() => setDetailSlide(Math.min(uniqueMeals.length - 1, slide + 1))} disabled={slide === uniqueMeals.length - 1}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/70 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/80 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
                       </button>
                     </>
                   )}
-                  <div className="absolute bottom-3 left-0 right-0 px-5">
-                    <p className="text-white font-bold text-[16px]">{current.name}</p>
-                    <div className="flex gap-3 mt-1 text-[11px] text-white/60 font-mono">
-                      <span>{current.protein}g protein</span>
-                      <span>{current.carbs}g carbs</span>
-                      <span>{current.fat}g fat</span>
-                      <span>{current.cal} kcal</span>
+                  <div className="absolute top-3 left-3 bg-black/70 text-white/60 text-[10px] font-mono px-2 py-1">
+                    {slide + 1} / {uniqueMeals.length} meals
+                  </div>
+                </div>
+              )}
+
+              {/* Current meal details */}
+              {current && (
+                <div className="px-6 py-4 border-b border-white/8">
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div>
+                      <h3 className="font-bold text-[16px] text-white leading-tight">{current.name}</h3>
+                      {/* Star rating + review count */}
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="flex">
+                          {[1,2,3,4,5].map((s) => (
+                            <span key={s} className={`text-[12px] ${s <= Math.round(avgRating) ? "text-[#F5B300]" : "text-white/20"}`}>★</span>
+                          ))}
+                        </div>
+                        <span className="text-[11px] font-mono text-white/40">
+                          {avgRating.toFixed(1)} · {currentReviews.length > 0 ? `${currentReviews.length} reviews` : "Highly rated"}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Individual price + savings */}
+                    <div className="text-right shrink-0">
+                      <div className="text-[11px] text-white/30 line-through font-mono">${current.price.toFixed(2)} individually</div>
+                      <div className="text-[14px] font-extrabold text-[#F5B300] font-mono">${b.ppm.toFixed(2)} in bundle</div>
+                      <div className="text-[10px] text-green-400 font-semibold mt-0.5">
+                        Save ${(current.price - b.ppm).toFixed(2)} per meal
+                      </div>
                     </div>
                   </div>
-                  {/* Slide counter */}
-                  <div className="absolute top-3 right-3 bg-black/60 text-white/60 text-[10px] font-mono px-2 py-1">
-                    {slide + 1} / {uniqueMeals.length}
+                  {/* Macros */}
+                  <div className="flex gap-3 mt-2 flex-wrap">
+                    {[
+                      { label: "Protein", val: `${current.protein}g` },
+                      { label: "Carbs", val: `${current.carbs}g` },
+                      { label: "Fat", val: `${current.fat}g` },
+                      { label: "Calories", val: `${current.cal}` },
+                    ].map((m) => (
+                      <div key={m.label} className="bg-white/5 px-3 py-1.5 text-center">
+                        <div className="text-[11px] font-mono font-bold text-white">{m.val}</div>
+                        <div className="text-[9px] text-white/30 uppercase tracking-wide">{m.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Customer reviews for this meal */}
+              {currentReviews.length > 0 && (
+                <div className="px-6 py-4 border-b border-white/8">
+                  <p className="text-[10px] font-mono tracking-[0.25em] text-white/30 uppercase mb-3">Customer Reviews</p>
+                  <div className="flex flex-col gap-3">
+                    {currentReviews.slice(0, 2).map((r, i) => (
+                      <div key={i} className="bg-white/4 px-4 py-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[12px] font-semibold text-white">{r.author}</span>
+                            <div className="flex">
+                              {[1,2,3,4,5].map((s) => (
+                                <span key={s} className={`text-[10px] ${s <= r.rating ? "text-[#F5B300]" : "text-white/15"}`}>★</span>
+                              ))}
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-white/25 font-mono">{r.date}</span>
+                        </div>
+                        <p className="text-[12px] text-white/55 leading-relaxed">{r.text}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
 
               {/* Thumbnail strip */}
-              <div className="flex gap-1 p-4 overflow-x-auto scrollbar-none shrink-0 border-b border-white/8">
-                {uniqueMeals.map((m, i) => (
-                  <button key={m.id} onClick={() => setDetailSlide(i)}
-                    className={`shrink-0 w-14 h-14 overflow-hidden border-2 transition-colors ${i === slide ? "border-[#F5B300]" : "border-transparent opacity-40 hover:opacity-70"}`}>
-                    <img src={m.img} alt={m.name} className="w-full h-full object-cover" />
-                  </button>
-                ))}
+              <div className="px-4 py-3 border-b border-white/8 overflow-x-auto scrollbar-none shrink-0">
+                <p className="text-[9px] font-mono tracking-[0.25em] text-white/25 uppercase mb-2">All meals in this bundle</p>
+                <div className="flex gap-1.5">
+                  {uniqueMeals.map((m, i) => (
+                    <button key={m.id} onClick={() => setDetailSlide(i)} title={m.name}
+                      className={`shrink-0 w-14 h-14 overflow-hidden border-2 transition-all ${i === slide ? "border-[#F5B300] opacity-100" : "border-transparent opacity-35 hover:opacity-65"}`}>
+                      <img
+                        src={m.img.includes("?") ? m.img.split("?")[0] + "?w=56&h=56&fit=crop&auto=format" : m.img}
+                        alt={m.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Bundle summary + CTA */}
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
+              {/* Bundle price summary + savings + CTA */}
+              <div className="px-6 py-5">
+                <div className="flex items-start justify-between gap-4 mb-3">
                   <div>
-                    <div className="text-[24px] font-extrabold text-[#F5B300] font-mono">${b.price}</div>
-                    <div className="text-white/30 text-[12px]">${b.ppm}/meal · {b.meals} meals total</div>
+                    <div className="text-[28px] font-extrabold text-[#F5B300] font-mono leading-none">${b.price}</div>
+                    <div className="text-white/30 text-[12px] mt-0.5">${b.ppm}/meal · {b.meals} meals</div>
                   </div>
-                  {b.badge && (
-                    <div className="bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-[0.15em] px-3 py-1.5">{b.badge}</div>
-                  )}
+                  <div className="text-right">
+                    {b.badge && <div className="bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-[0.15em] px-3 py-1.5 mb-1 inline-block">{b.badge}</div>}
+                    {savings > 0 && (
+                      <div className="text-green-400 text-[12px] font-semibold">
+                        You save ${savings.toFixed(0)} vs individual
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <p className="text-white/50 text-[13px] mb-5">{b.desc}</p>
+                <p className="text-white/40 text-[13px] mb-4">{b.desc}</p>
                 <button
                   onClick={() => {
-                    addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box", mealImgs: uniqueMeals.slice(0, 6).map((m) => m.img), mealNames: uniqueMeals.slice(0, 4).map((m) => m.name.split("&")[0].trim()) });
+                    addToCart({
+                      id: 200 + b.meals + (bundleType === "protein" ? 100 : 0),
+                      name: `${b.n} (${b.meals} meals)`,
+                      price: b.price, qty: 1,
+                      img: uniqueMeals[0]?.img ?? "",
+                      type: "box",
+                      mealImgs: uniqueMeals.slice(0, 6).map((m) => m.img.includes("?") ? m.img.split("?")[0] + "?w=80&h=80&fit=crop&auto=format" : m.img),
+                      mealNames: uniqueMeals.map((m) => m.name.split("&")[0].trim()),
+                    });
                     setSelectedBundleDetail(null);
                   }}
-                  className="w-full bg-[#F5B300] text-[#111] py-4 font-extrabold text-[12px] tracking-[0.25em] uppercase hover:bg-white transition-colors"
+                  className="w-full bg-[#F5B300] text-[#111] py-4 font-extrabold text-[13px] tracking-[0.2em] uppercase hover:bg-white transition-colors"
                 >
-                  Add Bundle to Cart — ${b.price}
+                  Add to Cart — ${b.price} · Save ${savings.toFixed(0)}
                 </button>
               </div>
             </div>

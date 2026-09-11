@@ -18,6 +18,15 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [logoutToast, setLogoutToast] = useState(false);
+  const [expandedBundles, setExpandedBundles] = useState<Set<string>>(new Set());
+
+  const toggleBundleExpand = (key: string) => {
+    setExpandedBundles((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  };
 
   // Login modal state
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -89,8 +98,8 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
               Meal Plans
             </button>
             <div className="w-px h-4 bg-white/15" />
-            <button onClick={() => go("account")}
-              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "account" ? "text-[#F5B300]" : "text-white/50 hover:text-white"}`}>
+            <button onClick={() => go(isLoggedIn ? "account" : "rewards")}
+              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "account" || currentPage === "rewards" ? "text-[#F5B300]" : "text-white/50 hover:text-white"}`}>
               Rewards
             </button>
             <button onClick={() => go("gift-card")}
@@ -173,7 +182,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
               {[
                 { label: "Ready Series", action: () => go("ready-series"), accent: "#F5B300" },
                 { label: "Meal Plans", action: () => go("meal-plan-landing"), accent: "#E85D04" },
-                { label: "Rewards", action: () => go("account"), accent: null },
+                { label: "Rewards", action: () => go(isLoggedIn ? "account" : "rewards"), accent: null },
                 { label: "Gift Cards", action: () => go("gift-card"), accent: null },
                 { label: "About", action: () => go("about"), accent: null },
                 { label: "How It Works", action: () => go("how-it-works"), accent: null },
@@ -475,10 +484,10 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                     return (
                       <div key={`${item.id}-${item.type}`} className="bg-[#1A1A1A] p-3">
                         {isBox ? (
-                          /* Bundle cart item — show meal strip */
+                          /* Bundle cart item — expandable */
                           <div>
-                            <div className="flex items-start justify-between gap-2 mb-2">
-                              <div>
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
                                 <p className="text-[12px] font-bold leading-tight text-white">{item.name}</p>
                                 <p className="text-[10px] text-[#F5B300] mt-0.5">${(item.price / (parseInt(item.name.match(/\d+/)?.[0] ?? "1") || 1)).toFixed(2)}/meal</p>
                               </div>
@@ -489,27 +498,45 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                                 </button>
                               </div>
                             </div>
-                            {/* Meal thumbnails */}
+                            {/* Thumbnail strip always visible */}
                             {boxImgs.length > 0 && (
-                              <div className="flex gap-1 mb-2">
+                              <div className="flex gap-1 mt-2">
                                 {boxImgs.slice(0, 5).map((src, i) => (
-                                  <div key={i} className="w-10 h-10 overflow-hidden shrink-0 border border-white/10">
+                                  <div key={i} className="w-9 h-9 overflow-hidden shrink-0 border border-white/10">
                                     <img src={src} alt="" className="w-full h-full object-cover" />
                                   </div>
                                 ))}
                                 {boxImgs.length > 5 && (
-                                  <div className="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                  <div className="w-9 h-9 bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                                     <span className="text-[9px] text-white/40 font-mono">+{boxImgs.length - 5}</span>
                                   </div>
                                 )}
                               </div>
                             )}
-                            {boxNames.length > 0 && (
-                              <div className="flex flex-wrap gap-1">
-                                {boxNames.slice(0, 3).map((n, i) => (
-                                  <span key={i} className="text-[9px] text-white/30 font-mono truncate max-w-[110px]">{n}</span>
+                            {/* Expand/collapse toggle */}
+                            <button
+                              onClick={() => toggleBundleExpand(`${item.id}-${item.type}`)}
+                              className="flex items-center gap-1.5 mt-2 text-[10px] text-white/35 hover:text-[#F5B300] font-mono uppercase tracking-wider transition-colors"
+                            >
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                                className={`transition-transform ${expandedBundles.has(`${item.id}-${item.type}`) ? "rotate-180" : ""}`}>
+                                <path d="M6 9l6 6 6-6"/>
+                              </svg>
+                              {expandedBundles.has(`${item.id}-${item.type}`) ? "Hide meals" : "See all meals"}
+                            </button>
+                            {/* Expanded meal list */}
+                            {expandedBundles.has(`${item.id}-${item.type}`) && boxNames.length > 0 && (
+                              <div className="mt-2 border-t border-white/8 pt-2 flex flex-col gap-1.5">
+                                {boxNames.map((n, i) => (
+                                  <div key={i} className="flex items-center gap-2">
+                                    {boxImgs[i] && (
+                                      <div className="w-8 h-8 overflow-hidden shrink-0">
+                                        <img src={boxImgs[i]} alt="" className="w-full h-full object-cover" />
+                                      </div>
+                                    )}
+                                    <span className="text-[11px] text-white/45 leading-tight truncate">{n}</span>
+                                  </div>
                                 ))}
-                                {boxNames.length > 3 && <span className="text-[9px] text-white/20 font-mono">+{boxNames.length - 3} more</span>}
                               </div>
                             )}
                           </div>
