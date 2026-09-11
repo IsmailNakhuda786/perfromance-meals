@@ -28,6 +28,7 @@ export interface CartItem {
   planLabel?: string;
   mealImgs?: string[];
   mealNames?: string[];
+  mealCounts?: number[];
 }
 
 export interface Meal {

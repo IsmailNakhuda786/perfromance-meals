@@ -527,16 +527,22 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                             {/* Expanded meal list */}
                             {expandedBundles.has(`${item.id}-${item.type}`) && boxNames.length > 0 && (
                               <div className="mt-2 border-t border-white/8 pt-2 flex flex-col gap-1.5">
-                                {boxNames.map((n, i) => (
-                                  <div key={i} className="flex items-center gap-2">
-                                    {boxImgs[i] && (
-                                      <div className="w-8 h-8 overflow-hidden shrink-0">
-                                        <img src={boxImgs[i]} alt="" className="w-full h-full object-cover" />
-                                      </div>
-                                    )}
-                                    <span className="text-[11px] text-white/45 leading-tight truncate">{n}</span>
-                                  </div>
-                                ))}
+                                {boxNames.map((n, i) => {
+                                  const count = item.mealCounts?.[i] ?? 1;
+                                  return (
+                                    <div key={i} className="flex items-center gap-2">
+                                      {boxImgs[i] && (
+                                        <div className="w-8 h-8 overflow-hidden shrink-0">
+                                          <img src={boxImgs[i]} alt="" className="w-full h-full object-cover" />
+                                        </div>
+                                      )}
+                                      <span className="text-[11px] text-white/45 leading-tight flex-1 truncate">{n}</span>
+                                      <span className="shrink-0 text-[10px] font-mono font-bold text-[#F5B300] bg-[#F5B300]/10 px-1.5 py-0.5 leading-none">
+                                        ×{count}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
                               </div>
                             )}
                           </div>

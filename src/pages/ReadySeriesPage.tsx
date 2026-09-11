@@ -344,7 +344,11 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                         View Details
                       </button>
                       <button
-                        onClick={() => addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box", mealImgs: uniqueMeals.slice(0, 6).map((m) => m.img), mealNames: uniqueMeals.slice(0, 4).map((m) => m.name.split("&")[0].trim()) })}
+                        onClick={() => {
+                          const countMap: Record<number, number> = {};
+                          b.mealIds.forEach((id) => { countMap[id] = (countMap[id] ?? 0) + 1; });
+                          addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box", mealImgs: uniqueMeals.map((m) => m.img.includes("?") ? m.img.split("?")[0] + "?w=80&h=80&fit=crop&auto=format" : m.img), mealNames: uniqueMeals.map((m) => m.name.split("&")[0].trim()), mealCounts: uniqueMeals.map((m) => countMap[m.id] ?? 1) });
+                        }}
                         className="flex-1 bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors"
                       >
                         Add Bundle — ${b.price}
@@ -752,14 +756,17 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                 <p className="text-white/40 text-[13px] mb-4">{b.desc}</p>
                 <button
                   onClick={() => {
+                    const countMap: Record<number, number> = {};
+                    b.mealIds.forEach((id) => { countMap[id] = (countMap[id] ?? 0) + 1; });
                     addToCart({
                       id: 200 + b.meals + (bundleType === "protein" ? 100 : 0),
                       name: `${b.n} (${b.meals} meals)`,
                       price: b.price, qty: 1,
                       img: uniqueMeals[0]?.img ?? "",
                       type: "box",
-                      mealImgs: uniqueMeals.slice(0, 6).map((m) => m.img.includes("?") ? m.img.split("?")[0] + "?w=80&h=80&fit=crop&auto=format" : m.img),
+                      mealImgs: uniqueMeals.map((m) => m.img.includes("?") ? m.img.split("?")[0] + "?w=80&h=80&fit=crop&auto=format" : m.img),
                       mealNames: uniqueMeals.map((m) => m.name.split("&")[0].trim()),
+                      mealCounts: uniqueMeals.map((m) => countMap[m.id] ?? 1),
                     });
                     setSelectedBundleDetail(null);
                   }}
