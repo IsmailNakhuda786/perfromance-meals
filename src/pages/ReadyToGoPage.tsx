@@ -109,51 +109,84 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
 
         {/* Bundles grid */}
         {activeCat === "bundles" && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            {BUNDLES.map((b) => (
-              <div key={b.id} className="bg-[#1A1A1A] overflow-hidden border border-white/5 flex flex-col">
-                <div className="relative h-44 overflow-hidden cursor-pointer group" onClick={() => { setSelectedBundle(b); setBundleSlide(0); }}>
-                  <img src={b.img} alt={b.name} className="w-full h-full object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-500" />
-                  <div className="absolute top-3 left-3 bg-[#F5B300] text-[#1A1A1A] text-[10px] font-bold px-2 py-1 tracking-wider uppercase">{b.tag}</div>
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100">
-                    <span className="bg-white/15 backdrop-blur-sm text-white text-[11px] uppercase tracking-widest px-5 py-2 border border-white/25">
-                      View What&apos;s Inside →
-                    </span>
-                  </div>
-                </div>
-                <div className="p-4 flex flex-col flex-1">
-                  <h3 className="font-bold text-[14px] mb-1">{b.name}</h3>
-                  <p className="text-white/40 text-[12px] mb-3 flex-1">{b.desc}</p>
-                  <div className="flex items-center gap-2 mb-3">
-                    {b.mealIds.slice(0, 4).map((mid, i) => {
-                      const m = MEALS.find((x) => x.id === mid);
-                      return m ? (
-                        <div key={i} className="w-8 h-8 overflow-hidden border border-white/10 shrink-0">
-                          <img src={m.img} alt={m.name} className="w-full h-full object-cover" />
-                        </div>
-                      ) : null;
-                    })}
-                    {b.mealIds.length > 4 && <span className="text-[11px] text-white/30">+{b.mealIds.length - 4} more</span>}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="font-mono font-bold text-[18px] text-[#F5B300]">${b.price}</span>
-                      <span className="text-white/30 text-[11px] ml-1">(${b.perMeal}/meal)</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
+            {BUNDLES.map((b) => {
+              const uniqueMeals = Array.from(new Set(b.mealIds)).map((id) => MEALS.find((m) => m.id === id)).filter(Boolean) as typeof MEALS;
+              return (
+                <div key={b.id} className="bg-[#111] border border-white/8 flex flex-col overflow-hidden">
+
+                  {/* Meal image strip — clickable, shows all meals */}
+                  <div className="relative">
+                    {b.tag === "Best Value" || b.tag === "Popular" ? (
+                      <div className="absolute top-3 left-3 z-10 bg-[#F5B300] text-[#111] text-[9px] font-extrabold px-2 py-1 tracking-widest uppercase">
+                        {b.tag === "Popular" ? "MOST POPULAR" : b.tag.toUpperCase()}
+                      </div>
+                    ) : null}
+                    <div className="absolute top-3 right-3 z-10 bg-black/60 text-white/60 text-[10px] font-mono px-2 py-1">
+                      {b.mealIds.length} meals
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex overflow-x-auto scrollbar-none">
+                      {uniqueMeals.map((m, i) => (
+                        <div key={i} className="shrink-0 w-[22%] min-w-[110px] relative group cursor-pointer"
+                          onClick={() => { setSelectedBundle(b); setBundleSlide(i); }}>
+                          <div className="h-[140px] overflow-hidden">
+                            <img src={m.img} alt={m.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-400 opacity-85 group-hover:opacity-100" />
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-2 pb-1.5 pt-4">
+                            <p className="text-white text-[9px] font-semibold leading-tight truncate">{m.name.split(" & ")[0]}</p>
+                          </div>
+                        </div>
+                      ))}
+                      {/* See more arrow */}
+                      <div className="shrink-0 w-10 flex items-center justify-center bg-black/40 cursor-pointer hover:bg-[#F5B300]/20 transition-colors"
+                        onClick={() => { setSelectedBundle(b); setBundleSlide(0); }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" className="opacity-60"><path d="M9 18l6-6-6-6"/></svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bundle info */}
+                  <div className="p-5 flex flex-col flex-1">
+                    <div className="flex items-start justify-between gap-3 mb-1">
+                      <h3 className="font-bold text-[18px] text-white leading-tight">{b.name}</h3>
+                      <div className="text-right shrink-0">
+                        <div className="font-mono font-extrabold text-[24px] text-[#F5B300] leading-none">${b.price}</div>
+                        <div className="text-white/30 text-[11px]">${b.perMeal}/meal</div>
+                      </div>
+                    </div>
+                    <p className="text-white/40 text-[13px] mb-4">{b.desc}</p>
+
+                    {/* Meal name tags */}
+                    <div className="flex flex-wrap gap-1.5 mb-5">
+                      {uniqueMeals.slice(0, 4).map((m, i) => (
+                        <span key={i} className="text-[10px] text-white/50 border border-white/10 px-2.5 py-1 font-mono">
+                          {m.name.split(" & ")[0]}
+                        </span>
+                      ))}
+                      {uniqueMeals.length > 4 && (
+                        <button onClick={() => { setSelectedBundle(b); setBundleSlide(0); }}
+                          className="text-[10px] text-[#F5B300] border border-[#F5B300]/30 px-2.5 py-1 font-mono hover:bg-[#F5B300]/10 transition-colors">
+                          +{uniqueMeals.length - 4} more →
+                        </button>
+                      )}
+                    </div>
+
+                    {/* CTAs */}
+                    <div className="flex gap-2 mt-auto">
                       <button onClick={() => { setSelectedBundle(b); setBundleSlide(0); }}
-                        className="border border-white/15 text-white/50 hover:border-[#F5B300] hover:text-[#F5B300] px-3 py-2 text-[10px] font-bold tracking-wider uppercase transition-colors">
-                        Details
+                        className="border border-white/20 text-white/50 px-4 py-3 text-[10px] font-bold tracking-widest uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors whitespace-nowrap">
+                        View Contents
                       </button>
                       <button onClick={() => addToCart({ id: b.id, name: b.name, price: b.price, qty: 1, img: b.img, type: "box" })}
-                        className="bg-[#F5B300] hover:bg-white text-[#111] px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
-                        Add
+                        className="flex-1 bg-white/8 hover:bg-[#F5B300] hover:text-[#111] text-white py-3 text-[11px] font-bold tracking-[0.2em] uppercase transition-colors">
+                        ADD BUNDLE — ${b.price}
                       </button>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

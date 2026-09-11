@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CartItem, Page } from "@/data";
+import { BUNDLES, CartItem, MEALS, Page } from "@/data";
 import { PerformanceMealsLogo } from "@/components/Logos";
 
 interface NavProps {
@@ -468,30 +468,76 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
             ) : (
               <>
                 <div className="flex-1 p-4 space-y-3">
-                  {cart.map((item) => (
-                    <div key={`${item.id}-${item.type}`} className="flex gap-3 bg-[#1A1A1A] p-3">
-                      <img src={item.img} alt={item.name} className="w-14 h-14 object-cover shrink-0 bg-[#222]" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-medium leading-snug line-clamp-2">{item.name}</p>
-                        {item.planLabel && <p className="text-[11px] text-[#E85D04] mt-0.5">{item.planLabel}</p>}
-                        <div className="flex items-center justify-between mt-2 gap-2">
-                          <span className="font-mono text-[12px] text-[#F5B300]">${(item.price * item.qty).toFixed(2)}</span>
-                          {item.type !== "plan" ? (
-                            <div className="flex items-center gap-1">
-                              <button onClick={() => updateCartQty(item.id, item.type, -1)} className="w-7 h-7 bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-[14px] transition-colors">−</button>
-                              <span className="text-[13px] w-5 text-center font-mono">{item.qty}</span>
-                              <button onClick={() => updateCartQty(item.id, item.type, 1)} className="w-7 h-7 bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-[14px] transition-colors">+</button>
-                              <button onClick={() => removeFromCart(item.id, item.type)} className="w-7 h-7 ml-0.5 text-white/30 hover:text-red-400 flex items-center justify-center transition-colors">
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                              </button>
+                  {cart.map((item) => {
+                    const bundle = item.type === "box" ? BUNDLES.find((b) => b.id === item.id) : null;
+                    const bundleMeals = bundle
+                      ? Array.from(new Set(bundle.mealIds)).map((mid) => MEALS.find((m) => m.id === mid)).filter(Boolean)
+                      : [];
+                    return (
+                      <div key={`${item.id}-${item.type}`} className="bg-[#1A1A1A] p-3">
+                        {bundle ? (
+                          /* Bundle cart item — show meal strip */
+                          <div>
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                              <div>
+                                <p className="text-[12px] font-bold leading-tight text-white">{item.name}</p>
+                                <p className="text-[10px] text-[#F5B300] mt-0.5">{bundle.mealIds.length} meals · ${bundle.perMeal}/meal</p>
+                              </div>
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="font-mono text-[13px] text-[#F5B300] font-bold">${(item.price * item.qty).toFixed(2)}</span>
+                                <button onClick={() => removeFromCart(item.id, item.type)} className="w-6 h-6 text-white/25 hover:text-red-400 flex items-center justify-center transition-colors">
+                                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                                </button>
+                              </div>
                             </div>
-                          ) : (
-                            <button onClick={() => removeFromCart(item.id, item.type)} className="text-white/30 hover:text-red-400 text-[11px] transition-colors">Remove</button>
-                          )}
-                        </div>
+                            {/* Meal thumbnails */}
+                            <div className="flex gap-1 mb-2">
+                              {bundleMeals.slice(0, 5).map((m, i) => (
+                                <div key={i} className="w-10 h-10 overflow-hidden shrink-0 border border-white/10" title={m!.name}>
+                                  <img src={m!.img} alt={m!.name} className="w-full h-full object-cover" />
+                                </div>
+                              ))}
+                              {bundleMeals.length > 5 && (
+                                <div className="w-10 h-10 bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                                  <span className="text-[9px] text-white/40 font-mono">+{bundleMeals.length - 5}</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              {bundleMeals.slice(0, 3).map((m, i) => (
+                                <span key={i} className="text-[9px] text-white/30 font-mono truncate max-w-[100px]">{m!.name.split(" & ")[0]}</span>
+                              ))}
+                              {bundleMeals.length > 3 && <span className="text-[9px] text-white/20 font-mono">+{bundleMeals.length - 3} more</span>}
+                            </div>
+                          </div>
+                        ) : (
+                          /* Regular cart item */
+                          <div className="flex gap-3">
+                            <img src={item.img} alt={item.name} className="w-14 h-14 object-cover shrink-0 bg-[#222]" />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[12px] font-medium leading-snug line-clamp-2">{item.name}</p>
+                              {item.planLabel && <p className="text-[11px] text-[#E85D04] mt-0.5">{item.planLabel}</p>}
+                              <div className="flex items-center justify-between mt-2 gap-2">
+                                <span className="font-mono text-[12px] text-[#F5B300]">${(item.price * item.qty).toFixed(2)}</span>
+                                {item.type !== "plan" ? (
+                                  <div className="flex items-center gap-1">
+                                    <button onClick={() => updateCartQty(item.id, item.type, -1)} className="w-7 h-7 bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-[14px] transition-colors">−</button>
+                                    <span className="text-[13px] w-5 text-center font-mono">{item.qty}</span>
+                                    <button onClick={() => updateCartQty(item.id, item.type, 1)} className="w-7 h-7 bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-[14px] transition-colors">+</button>
+                                    <button onClick={() => removeFromCart(item.id, item.type)} className="w-7 h-7 ml-0.5 text-white/30 hover:text-red-400 flex items-center justify-center transition-colors">
+                                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <button onClick={() => removeFromCart(item.id, item.type)} className="text-white/30 hover:text-red-400 text-[11px] transition-colors">Remove</button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Add-more-to-save nudge */}

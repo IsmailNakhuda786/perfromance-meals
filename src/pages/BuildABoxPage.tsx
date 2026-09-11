@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ALL_REVIEWS } from "@/data";
 import { BOX_SIZES, CartItem, CATS, Meal, MEALS, Page } from "@/data";
 
 interface Props {
@@ -381,6 +382,67 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
                 <div>⚡ Heat in 3 minutes in microwave or oven</div>
                 <div>✓ USDA nutritional standards · Macro-labelled</div>
               </div>
+
+              {/* Customer Reviews */}
+              {(() => {
+                const revs = ALL_REVIEWS[detailMeal.id] ?? [];
+                if (revs.length === 0) return null;
+                const avg = revs.reduce((s, r) => s + r.rating, 0) / revs.length;
+                return (
+                  <div className="mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-[#F5B300]">Customer Reviews</span>
+                        <span className="text-[10px] text-white/25 font-mono">{revs.length} verified</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="flex gap-0.5">
+                          {Array.from({ length: 5 }).map((_, i) => (
+                            <span key={i} className={`text-[12px] ${i < Math.round(avg) ? "text-[#F5B300]" : "text-white/15"}`}>★</span>
+                          ))}
+                        </div>
+                        <span className="font-mono text-[13px] text-[#F5B300] font-bold">{avg.toFixed(1)}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-0 border border-white/8 divide-y divide-white/8">
+                      {revs.slice(0, 3).map((r, i) => (
+                        <div key={i} className="px-4 py-4">
+                          <div className="flex items-start justify-between gap-3 mb-2">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-8 h-8 bg-[#F5B300] flex items-center justify-center font-extrabold text-[11px] text-[#1A1A1A] shrink-0">
+                                {r.author.charAt(0)}
+                              </div>
+                              <div>
+                                <div className="font-semibold text-[12px] text-white">{r.author}</div>
+                                <div className="text-[10px] text-white/30">{r.role}</div>
+                              </div>
+                            </div>
+                            <div className="shrink-0 text-right">
+                              <div className="flex gap-0.5 justify-end">
+                                {Array.from({ length: 5 }).map((_, j) => (
+                                  <span key={j} className={`text-[11px] ${j < r.rating ? "text-[#F5B300]" : "text-white/15"}`}>★</span>
+                                ))}
+                              </div>
+                              <div className="text-[9px] text-white/20 font-mono mt-0.5">{r.date}</div>
+                            </div>
+                          </div>
+                          <p className="text-[12px] text-white/55 leading-relaxed">{r.text}</p>
+                          {r.verified && (
+                            <div className="flex items-center gap-1.5 mt-2">
+                              <div className="w-1.5 h-1.5 bg-[#F5B300]" />
+                              <span className="text-[9px] font-mono text-white/20 tracking-wider">VERIFIED PURCHASE</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    {revs.length > 3 && (
+                      <p className="text-[10px] text-white/25 text-center mt-2 font-mono">+{revs.length - 3} more reviews on the product page</p>
+                    )}
+                  </div>
+                );
+              })()}
+
               <div className="flex gap-3 items-center">
                 {(selections[detailMeal.id] || 0) > 0 && (
                   <div className="flex items-center gap-1">
