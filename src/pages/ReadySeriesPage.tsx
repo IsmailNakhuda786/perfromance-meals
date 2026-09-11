@@ -26,33 +26,65 @@ const MEALS = [
 
 const CATS = ["All", "High Protein", "Low Carb", "High Carb", "Breakfast"];
 
-// Each bundle comes with specific meal picks (for carousel display)
-const BUNDLES = [
-  {
-    n: "Starter Pack", meals: 5, price: 62, ppm: 12.40,
-    desc: "Try 5 chef-picked meals — perfect first order.",
-    badge: null,
-    mealIds: [101, 104, 103, 107, 111],
-  },
-  {
-    n: "Weekly Pack", meals: 10, price: 119, ppm: 11.90,
-    desc: "Stock the freezer. A full week of performance eating.",
-    badge: "MOST POPULAR",
-    mealIds: [101, 106, 102, 104, 105, 108, 103, 109, 112, 111],
-  },
-  {
-    n: "Performance Pack", meals: 15, price: 172, ppm: 11.50,
-    desc: "High-output week sorted. 15 macro-tracked meals.",
-    badge: "BEST VALUE",
-    mealIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 101, 104, 106],
-  },
-  {
-    n: "Monthly Pack", meals: 20, price: 220, ppm: 11.00,
-    desc: "Full month of performance nutrition locked in.",
-    badge: null,
-    mealIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 101, 102, 103, 104, 105, 106, 107, 108],
-  },
-];
+type BundleType = "meals" | "protein";
+
+const BUNDLES: Record<BundleType, Array<{
+  n: string; meals: number; price: number; ppm: number;
+  desc: string; badge: string | null; mealIds: number[];
+}>> = {
+  meals: [
+    {
+      n: "Starter Pack", meals: 5, price: 62, ppm: 12.40,
+      desc: "5 chef-picked balanced meals — ideal first order.",
+      badge: null,
+      mealIds: [101, 104, 103, 107, 111],
+    },
+    {
+      n: "Weekly Variety", meals: 10, price: 119, ppm: 11.90,
+      desc: "Full week sorted — mix of high protein, low carb, and breakfast.",
+      badge: "MOST POPULAR",
+      mealIds: [101, 106, 102, 104, 105, 108, 103, 109, 112, 111],
+    },
+    {
+      n: "Performance Pack", meals: 15, price: 172, ppm: 11.50,
+      desc: "15 macro-tracked meals for a high-output week.",
+      badge: "BEST VALUE",
+      mealIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 101, 104, 106],
+    },
+    {
+      n: "Monthly Fuel", meals: 20, price: 220, ppm: 11.00,
+      desc: "Full month of performance nutrition locked in.",
+      badge: null,
+      mealIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 101, 102, 103, 104, 105, 106, 107, 108],
+    },
+  ],
+  protein: [
+    {
+      n: "Protein Starter", meals: 5, price: 69, ppm: 13.80,
+      desc: "5 high-protein picks — 40g+ protein per serve.",
+      badge: null,
+      mealIds: [101, 104, 106, 108, 102],
+    },
+    {
+      n: "Protein Weekly", meals: 10, price: 132, ppm: 13.20,
+      desc: "10 premium protein-first meals. Max muscle, zero guesswork.",
+      badge: "MOST POPULAR",
+      mealIds: [101, 104, 106, 108, 102, 101, 104, 106, 108, 110],
+    },
+    {
+      n: "Lean Machine", meals: 15, price: 189, ppm: 12.60,
+      desc: "15 high-protein, low-carb meals for shredding or maintenance.",
+      badge: "BEST VALUE",
+      mealIds: [101, 102, 104, 106, 108, 110, 101, 102, 104, 106, 108, 110, 101, 104, 106],
+    },
+    {
+      n: "Protein Month", meals: 20, price: 248, ppm: 12.40,
+      desc: "A full month of lean protein — built for those who train hard.",
+      badge: null,
+      mealIds: [101, 102, 104, 106, 108, 110, 101, 102, 104, 106, 108, 110, 101, 102, 104, 106, 108, 110, 101, 104],
+    },
+  ],
+};
 
 const FREE_DELIVERY_THRESHOLD = 80;
 
@@ -87,6 +119,16 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
   const [activeCat, setActiveCat] = useState("All");
   const [addedId, setAddedId] = useState<number | null>(null);
   const [reviewMealId, setReviewMealId] = useState<number | null>(null);
+  const [bundleType, setBundleType] = useState<BundleType>("meals");
+  const [carouselOffsets, setCarouselOffsets] = useState<Record<string, number>>({});
+
+  const scrollCarousel = (bundleName: string, dir: 1 | -1) => {
+    setCarouselOffsets((prev) => {
+      const current = prev[bundleName] ?? 0;
+      const next = current + dir * 120;
+      return { ...prev, [bundleName]: Math.max(0, next) };
+    });
+  };
 
   const filtered = activeCat === "All" ? MEALS : MEALS.filter((m) => m.cat === activeCat);
 
@@ -196,11 +238,11 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       {/* ── BUNDLES ── */}
       <section className="py-16 px-6 sm:px-8 bg-[#1A1A1A]">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
               <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Useful Bundles</div>
               <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Stock up and save<span className="text-[#F5B300]">.</span></h2>
-              <p className="text-white/40 text-[13px] mt-2">Each bundle is curated from our bestselling meals — see what you get inside.</p>
+              <p className="text-white/40 text-[13px] mt-2">Curated bundles — see every meal inside before you order.</p>
             </div>
             <button
               onClick={() => navigate("build-a-box")}
@@ -210,26 +252,63 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             </button>
           </div>
 
+          {/* Bundle type tabs */}
+          <div className="flex gap-0 border border-white/10 p-1 bg-white/5 w-full sm:w-auto sm:inline-flex mb-8">
+            {([
+              { key: "meals" as BundleType, label: "All Meals", sub: "Variety packs" },
+              { key: "protein" as BundleType, label: "High Protein", sub: "40g+ per serve" },
+            ]).map((t) => (
+              <button key={t.key} onClick={() => setBundleType(t.key)}
+                className={`flex-1 sm:flex-none px-6 py-3 text-[12px] font-bold tracking-wide transition-all text-left ${bundleType === t.key ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white"}`}>
+                <div>{t.label}</div>
+                <div className={`text-[10px] font-normal mt-0.5 ${bundleType === t.key ? "text-[#111]/60" : "text-white/25"}`}>{t.sub}</div>
+              </button>
+            ))}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {BUNDLES.map((b) => {
+            {BUNDLES[bundleType].map((b) => {
               const bundleMeals = b.mealIds.map((id) => getMealById(id)).filter(Boolean) as typeof MEALS;
               const uniqueMeals = bundleMeals.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
+              const offset = carouselOffsets[b.n] ?? 0;
+              const maxOffset = Math.max(0, uniqueMeals.length * 120 - 360);
               return (
-                <div key={b.n} className="bg-[#111] border border-white/8 overflow-hidden hover:border-[#F5B300]/30 transition-colors">
-                  {/* Meal image carousel — scrollable thumbnails */}
-                  <div className="relative">
-                    <div className="flex gap-0 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+                <div key={b.n} className="bg-[#111] border border-white/10 overflow-hidden hover:border-[#F5B300]/30 transition-colors">
+                  {/* Meal image carousel with nav arrows */}
+                  <div className="relative overflow-hidden" style={{ height: "100px" }}>
+                    <div
+                      className="flex gap-0 transition-transform duration-300"
+                      style={{ transform: `translateX(-${offset}px)` }}
+                    >
                       {uniqueMeals.map((meal) => (
-                        <div key={meal.id} className="shrink-0 relative" style={{ width: "120px", height: "90px" }}>
+                        <div key={meal.id} className="shrink-0 relative" style={{ width: "120px", height: "100px" }}>
                           <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#111]/60 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#111]/70 to-transparent" />
+                          <div className="absolute bottom-1.5 left-1.5 right-1.5 text-[8px] text-white/70 leading-tight line-clamp-1">{meal.name.split("&")[0].trim()}</div>
                         </div>
                       ))}
                     </div>
+                    {/* Badge */}
                     {b.badge && (
-                      <div className="absolute top-3 right-3 bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-[0.15em] px-2.5 py-1">{b.badge}</div>
+                      <div className="absolute top-2 left-2 bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-[0.15em] px-2 py-0.5">{b.badge}</div>
                     )}
-                    <div className="absolute bottom-2 left-3 text-[10px] text-white/50 font-mono">{b.meals} meals · scroll to see all →</div>
+                    {/* Navigation arrows */}
+                    <div className="absolute bottom-2 right-2 flex gap-1">
+                      <button
+                        onClick={() => scrollCarousel(b.n, -1)}
+                        disabled={offset === 0}
+                        className="w-6 h-6 bg-black/60 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6" /></svg>
+                      </button>
+                      <button
+                        onClick={() => scrollCarousel(b.n, 1)}
+                        disabled={offset >= maxOffset}
+                        className="w-6 h-6 bg-black/60 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6" /></svg>
+                      </button>
+                    </div>
+                    {/* Meal count */}
+                    <div className="absolute top-2 right-2 bg-black/60 text-white/70 text-[9px] font-mono px-2 py-0.5">{uniqueMeals.length} meals</div>
                   </div>
 
                   {/* Bundle info */}
@@ -245,19 +324,19 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       </div>
                     </div>
 
-                    {/* Meal name list (compact) */}
+                    {/* Meal name tags */}
                     <div className="flex flex-wrap gap-1.5 mt-3 mb-4">
-                      {uniqueMeals.slice(0, 5).map((meal) => (
-                        <span key={meal.id} className="bg-white/5 text-white/40 text-[10px] px-2 py-0.5 rounded">{meal.name.split("&")[0].trim()}</span>
+                      {uniqueMeals.slice(0, 4).map((meal) => (
+                        <span key={meal.id} className="bg-white/5 text-white/40 text-[10px] px-2 py-0.5">{meal.name.split("&")[0].trim()}</span>
                       ))}
-                      {uniqueMeals.length > 5 && (
-                        <span className="bg-white/5 text-white/30 text-[10px] px-2 py-0.5 rounded">+{uniqueMeals.length - 5} more</span>
+                      {uniqueMeals.length > 4 && (
+                        <span className="bg-white/5 text-white/30 text-[10px] px-2 py-0.5">+{uniqueMeals.length - 4} more</span>
                       )}
                     </div>
 
                     <button
-                      onClick={() => addToCart({ id: 200 + b.meals, name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box" })}
-                      className="w-full bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors rounded-lg"
+                      onClick={() => addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box" })}
+                      className="w-full bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors"
                     >
                       Add Bundle — ${b.price}
                     </button>
@@ -489,7 +568,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
               <div className="px-6 pb-6">
                 <button onClick={() => { setReviewMealId(null); handleAdd(meal); }}
-                  className="w-full bg-[#F5B300] text-[#111] py-3.5 font-bold text-[13px] tracking-wider uppercase hover:bg-white transition-colors rounded-lg">
+                  className="w-full bg-[#F5B300] text-[#111] py-3.5 font-bold text-[13px] tracking-wider uppercase hover:bg-white transition-colors">
                   Add to Cart — ${meal.price.toFixed(2)}
                 </button>
               </div>
