@@ -252,7 +252,13 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
   };
 
   const getMealById = (id: number | null) => id ? MEALS.find((m) => m.id === id) : null;
-  const startDate = new Date(2025, 5, 25);
+  // Next upcoming Sunday (first delivery day)
+  const startDate = (() => {
+    const d = new Date();
+    const daysUntilSun = (7 - d.getDay()) % 7 || 7;
+    d.setDate(d.getDate() + daysUntilSun);
+    return d;
+  })();
   const endDate = progInfo.days ? new Date(startDate.getTime() + (progInfo.days - 1) * 86400000) : null;
   const fmtDate = (d: Date) => d.toLocaleDateString("en-MY", { day: "numeric", month: "short", year: "numeric" });
 
@@ -423,7 +429,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                         <div className={`font-bold text-[15px] ${sel ? "text-[#1A1A1A]" : "text-[#555]"}`}>{opt.label}</div>
                         <div className="text-[12px] text-[#888] mt-0.5">{opt.sub}</div>
                         <div className="mt-3 flex items-center justify-between">
-                          <span className="text-[13px] font-extrabold text-[#E85D04]">RM {opt.price}</span>
+                          <span className="text-[13px] font-extrabold text-[#E85D04]">${opt.price}</span>
                           {sel && <span className="text-[10px] font-bold text-[#E85D04] flex items-center gap-1">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5"/></svg>
                             Selected
@@ -446,7 +452,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                 </div>
                 <div className="ml-auto text-right">
                   <div className="text-[11px] text-white/40">From</div>
-                  <div className="text-[18px] font-extrabold text-[#F5B300]">RM {basePrice}</div>
+                  <div className="text-[18px] font-extrabold text-[#F5B300]">${basePrice}</div>
                 </div>
               </div>
               <NavButtons />
@@ -737,7 +743,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                         Apply
                       </button>
                     </div>
-                    {promoApplied && <p className="text-green-600 text-[12px] mt-2 font-semibold">✓ {promoCode} applied — saving RM {promoDiscount.toFixed(2)}</p>}
+                    {promoApplied && <p className="text-green-600 text-[12px] mt-2 font-semibold">✓ {promoCode} applied — saving ${promoDiscount.toFixed(2)}</p>}
                     {promoError === "invalid" && <p className="text-red-500 text-[12px] mt-2">✕ Invalid promo code. Check spelling or try another.</p>}
                     {promoError === "expired" && <p className="text-red-500 text-[12px] mt-2">⏰ This promo code has expired.</p>}
                   </div>
@@ -747,8 +753,8 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#888] mb-0.5">Wallet Credit</p>
-                        <p className="font-bold text-[15px]">RM {WALLET_BALANCE.toFixed(2)} available</p>
-                        {useWallet && <p className="text-[12px] text-green-600 font-semibold mt-0.5">−RM {walletDiscount.toFixed(2)} applied</p>}
+                        <p className="font-bold text-[15px]">${WALLET_BALANCE.toFixed(2)} available</p>
+                        {useWallet && <p className="text-[12px] text-green-600 font-semibold mt-0.5">−${walletDiscount.toFixed(2)} applied</p>}
                       </div>
                       <button onClick={() => setUseWallet(!useWallet)}
                         className={`relative w-12 h-6 transition-colors duration-200 ${useWallet ? "bg-[#E85D04]" : "bg-[#E8E4DC]"}`}
@@ -778,18 +784,18 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                     </div>
                     <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
                       <span className="text-[13px] text-[#666]">{progInfo.days ? `${progInfo.days}-day programme` : progInfo.label}</span>
-                      <span className="text-[13px]">RM {basePrice.toFixed(2)}</span>
+                      <span className="text-[13px]">${basePrice.toFixed(2)}</span>
                     </div>
                     {promoApplied && (
                       <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
                         <span className="text-[13px] text-green-600">Promo ({promoCode})</span>
-                        <span className="text-[13px] text-green-600">−RM {promoDiscount.toFixed(2)}</span>
+                        <span className="text-[13px] text-green-600">−${promoDiscount.toFixed(2)}</span>
                       </div>
                     )}
                     {useWallet && (
                       <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
                         <span className="text-[13px] text-green-600">Wallet credit</span>
-                        <span className="text-[13px] text-green-600">−RM {walletDiscount.toFixed(2)}</span>
+                        <span className="text-[13px] text-green-600">−${walletDiscount.toFixed(2)}</span>
                       </div>
                     )}
                     <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
@@ -798,11 +804,11 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                     </div>
                     <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
                       <span className="text-[13px] text-[#666]">GST (6%)</span>
-                      <span className="text-[13px]">RM {gst.toFixed(2)}</span>
+                      <span className="text-[13px]">${gst.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center px-5 py-4 bg-[#1A1A1A]">
                       <span className="text-white font-bold text-[15px]">Total</span>
-                      <span className="text-[#F5B300] font-extrabold text-[22px]">RM {total.toFixed(2)}</span>
+                      <span className="text-[#F5B300] font-extrabold text-[22px]">${total.toFixed(2)}</span>
                     </div>
                   </div>
 
@@ -834,7 +840,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
 
                   <button onClick={() => onCheckoutComplete({ name: details.name, phone: details.phone, line1: details.street, unit: "", postal: details.postcode })}
                     className="w-full bg-[#E85D04] text-white py-4 font-bold text-[16px] tracking-wide hover:bg-[#1A1A1A] transition-colors active:scale-[0.99] flex items-center justify-center gap-2">
-                    Place Order · RM {total.toFixed(2)}
+                    Place Order · ${total.toFixed(2)}
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </button>
                   <p className="text-center text-[12px] text-[#aaa]">Cancel anytime from your account · No lock-in</p>
@@ -897,7 +903,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
               <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
                 <div>
                   <p className="text-[10px] font-extrabold tracking-[0.15em] uppercase text-[#555] mb-0.5">Wallet Credit</p>
-                  <p className="text-[14px] font-bold text-[#F5B300]">RM {WALLET_BALANCE.toFixed(2)}</p>
+                  <p className="text-[14px] font-bold text-[#F5B300]">${WALLET_BALANCE.toFixed(2)}</p>
                   <p className="text-[10px] text-white/30">Available to use</p>
                 </div>
                 <button onClick={() => setUseWallet(!useWallet)}
@@ -955,9 +961,9 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
               <div className="px-6 py-4 flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-extrabold tracking-[0.15em] uppercase text-[#555] mb-0.5">Total incl. GST</p>
-                  <p className="text-[24px] font-extrabold text-[#F5B300] leading-none">RM {total.toFixed(2)}</p>
+                  <p className="text-[24px] font-extrabold text-[#F5B300] leading-none">${total.toFixed(2)}</p>
                   {(promoApplied || useWallet) && (
-                    <p className="text-[10px] text-white/40 line-through mt-0.5">RM {(basePrice * 1.06).toFixed(2)}</p>
+                    <p className="text-[10px] text-white/40 line-through mt-0.5">${(basePrice * 1.06).toFixed(2)}</p>
                   )}
                 </div>
                 <div className="text-right text-[10px] text-white/30 leading-relaxed">
