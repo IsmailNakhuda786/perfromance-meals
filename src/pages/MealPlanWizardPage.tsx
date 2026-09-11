@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MEALS, Page } from "@/data";
 import { MealPlanLogo } from "@/components/Logos";
 
@@ -20,10 +20,10 @@ const STEP_LABELS = ["Type", "Plan & Meals", "Menu", "Your Details", "Review"];
 const PROGRAMME_DETAILS: Record<ProgrammeType, {
   label: string; description: string; kind: "recurring" | "fixed"; days?: number; menuWeeks: number;
 }> = {
-  "bi-weekly":  { label: "Bi-weekly",  description: "Delivery every 2 weeks",                              kind: "recurring", menuWeeks: 2 },
-  "monthly":    { label: "Monthly",    description: "One delivery per month",                               kind: "recurring", menuWeeks: 4 },
-  "6by60":      { label: "6by60",      description: "60-day programme · Fresh structure for your goal",     kind: "fixed", days: 60, menuWeeks: 4 },
-  "buddy-plan": { label: "Buddy Plan", description: "20-day programme · Consistent meals for your week",   kind: "fixed", days: 20, menuWeeks: 4 },
+  "bi-weekly":  { label: "Bi-weekly",  description: "Delivery every 2 weeks",                                  kind: "recurring", menuWeeks: 2 },
+  "monthly":    { label: "Monthly",    description: "One delivery per month",                                   kind: "recurring", menuWeeks: 4 },
+  "6by60":      { label: "6by60",      description: "60-day programme · Fresh structure for your goal",         kind: "fixed", days: 60, menuWeeks: 4 },
+  "buddy-plan": { label: "Buddy Plan", description: "20-day programme · Consistent meals for your week",       kind: "fixed", days: 20, menuWeeks: 4 },
   "hyrox":      { label: "HYROX",      description: "20-day programme · Structured fuel around your sessions", kind: "fixed", days: 20, menuWeeks: 4 },
 };
 
@@ -48,12 +48,32 @@ const WEEKS = [
 
 const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-function getDayMealOptions(dayIndex: number, slot: "lunch" | "dinner") {
-  const offset = slot === "dinner" ? 5 : 0;
-  return [
-    MEALS[(dayIndex * 2 + offset) % MEALS.length],
-    MEALS[(dayIndex * 2 + 1 + offset) % MEALS.length],
-  ];
+// ── Pre-set weekly menu pool ──────────────────────────────────────────────────
+// Each week has exactly 4 meals pre-set by the kitchen: 2 for the lunch slot
+// and 2 for the dinner slot. Customers pick 1 from each pool per day —
+// the pool is shared across every day in that week.
+const WEEK_MENUS: Array<{ lunch: number[]; dinner: number[] }> = [
+  { lunch: [1, 7],   dinner: [4, 9]   }, // Week 1 pool
+  { lunch: [2, 5],   dinner: [6, 10]  }, // Week 2 pool
+  { lunch: [3, 8],   dinner: [1, 5]   }, // Week 3 pool
+  { lunch: [7, 9],   dinner: [2, 6]   }, // Week 4 pool
+];
+
+function getMeal(id: number) {
+  return MEALS.find((m) => m.id === id) ?? MEALS[0];
+}
+
+// Gamification milestones: % of wizard → label + reward hint
+const MILESTONES = [
+  { at: 20,  hint: "Complete Step 2 to unlock your personal menu" },
+  { at: 40,  hint: "Choose your weekly menu for a 5% early-bird discount" },
+  { at: 60,  hint: "Add your details — almost there!" },
+  { at: 80,  hint: "Final review before your plan goes live" },
+  { at: 100, hint: "🎉 Plan complete — your meals are on their way!" },
+];
+
+function getNextMilestone(pct: number) {
+  return MILESTONES.find((m) => m.at > pct) ?? MILESTONES[MILESTONES.length - 1];
 }
 
 type MenuSelections = Record<number, Record<string, { lunch: number | null; dinner: number | null }>>;
@@ -87,6 +107,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
 
   const slotsPerDay = mealCount === "lunch-dinner" ? 2 : 1;
   const totalSlots = WEEKDAYS.length * slotsPerDay;
+
   const weekSels = menuSelections[selectedWeek] || {};
   const filledSlots = WEEKDAYS.reduce((acc, day) => {
     const d = weekSels[day];
@@ -95,6 +116,18 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
     if (mealCount === "lunch-dinner") c += d.dinner ? 1 : 0;
     return acc + c;
   }, 0);
+
+  // Overall wizard completion % — used for the progress bar
+  const completionPct = useMemo(() => {
+    let pct = (step - 1) * 20; // each completed step = 20%
+    // Within step 3 (menu), add partial credit proportional to meals selected
+    if (step === 3) pct += Math.round((filledSlots / totalSlots) * 20);
+    return Math.min(pct, 100);
+  }, [step, filledSlots, totalSlots]);
+
+  const nextMilestone = getNextMilestone(completionPct);
+  const milestoneTarget = nextMilestone.at;
+  const pctToNext = milestoneTarget - completionPct;
 
   const selectMeal = (day: string, slot: "lunch" | "dinner", mealId: number) => {
     setMenuSelections((prev) => ({
@@ -128,6 +161,11 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
     else setStep((s) => (s - 1) as Step);
   };
 
+  // Weekly pre-set meal pool for current week tab
+  const weekPool = WEEK_MENUS[selectedWeek] ?? WEEK_MENUS[0];
+  const lunchOptions = weekPool.lunch.map(getMeal);
+  const dinnerOptions = weekPool.dinner.map(getMeal);
+
   return (
     <div className="min-h-screen bg-white text-[#1A1A1A]">
 
@@ -137,6 +175,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
           <button onClick={() => navigate("meal-plan-landing")} className="shrink-0 flex items-center pr-6 border-r border-[#E8E4DC] my-3">
             <MealPlanLogo size="sm" variant="light" />
           </button>
+          {/* Step tabs — desktop */}
           <div className="flex-1 hidden sm:grid" style={{ gridTemplateColumns: "repeat(5, 1fr)" }}>
             {STEP_LABELS.map((label, i) => {
               const s = (i + 1) as Step;
@@ -156,6 +195,60 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
           {/* Mobile step indicator */}
           <div className="sm:hidden flex items-center ml-4 text-[13px] font-semibold">
             {step}/{STEP_LABELS.length} · {STEP_LABELS[step - 1]}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Gamification Progress Bar ── */}
+      <div className="bg-[#1A1A1A] px-4 sm:px-8 py-3">
+        <div className="max-w-[1160px] mx-auto">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#F5B300]">
+                {completionPct === 100 ? "Complete!" : `${completionPct}% done`}
+              </div>
+              {completionPct < 100 && (
+                <div className="text-[11px] text-white/40">
+                  — {pctToNext}% to: <span className="text-white/70">{nextMilestone.hint}</span>
+                </div>
+              )}
+              {completionPct === 100 && (
+                <div className="text-[11px] text-white/60">{nextMilestone.hint}</div>
+              )}
+            </div>
+            <div className="text-[11px] text-white/40 shrink-0 hidden sm:block">
+              RM {basePrice.toFixed(0)} · incl. GST RM {gst.toFixed(2)}
+            </div>
+          </div>
+
+          {/* Track */}
+          <div className="relative h-2 bg-white/10 overflow-hidden">
+            {/* Fill */}
+            <div
+              className="absolute inset-y-0 left-0 bg-[#F5B300] transition-all duration-700"
+              style={{ width: `${completionPct}%` }}
+            />
+            {/* Milestone tick marks */}
+            {MILESTONES.map((m) => (
+              <div
+                key={m.at}
+                className={`absolute top-0 bottom-0 w-0.5 transition-colors duration-500 ${completionPct >= m.at ? "bg-[#E85D04]" : "bg-white/20"}`}
+                style={{ left: `${m.at}%` }}
+              />
+            ))}
+          </div>
+
+          {/* Milestone labels */}
+          <div className="relative h-4 mt-1">
+            {MILESTONES.map((m) => (
+              <div
+                key={m.at}
+                className={`absolute text-[9px] font-bold transition-colors duration-500 ${completionPct >= m.at ? "text-[#F5B300]" : "text-white/20"}`}
+                style={{ left: `${m.at}%`, transform: "translateX(-50%)" }}
+              >
+                {m.at}%
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -271,8 +364,8 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
               <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Number of Meals</p>
               <div className="flex flex-col gap-3 mb-8">
                 {([
-                  { id: "lunch-only" as MealCount,   label: "Lunch Only",      desc: "1 meal per day" },
-                  { id: "lunch-dinner" as MealCount, label: "Lunch & Dinner",  desc: "2 meals per day" },
+                  { id: "lunch-only"   as MealCount, label: "Lunch Only",     desc: "1 meal per day" },
+                  { id: "lunch-dinner" as MealCount, label: "Lunch & Dinner", desc: "2 meals per day" },
                 ]).map((opt) => {
                   const selected = mealCount === opt.id;
                   return (
@@ -309,10 +402,21 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                 <div className="w-8 h-8 rounded-full bg-[#E85D04] text-white flex items-center justify-center font-bold text-sm shrink-0">03</div>
                 <h2 className="text-2xl font-bold">Menu Selection</h2>
               </div>
-              <p className="text-[#666] text-[14px] mb-5 ml-11">
+              <p className="text-[#666] text-[14px] mb-2 ml-11">
                 {WEEKS[selectedWeek].label} · {WEEKS[selectedWeek].dates} · Meals selected:{" "}
-                <strong>{filledSlots} / {totalSlots}</strong>
+                <strong className="text-[#1A1A1A]">{filledSlots} / {totalSlots}</strong>
               </p>
+
+              {/* Pre-set pool notice */}
+              <div className="ml-11 mb-5 flex items-start gap-2 bg-[#F7F5F0] border-l-4 border-[#F5B300] px-4 py-3">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5B300" strokeWidth="2" className="shrink-0 mt-0.5">
+                  <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+                </svg>
+                <p className="text-[12px] text-[#555] leading-relaxed">
+                  <strong className="text-[#1A1A1A]">This week&apos;s menu is pre-set by our kitchen.</strong>{" "}
+                  Choose from the 2 options below for each slot — you can pick the same meal multiple days or mix it up.
+                </p>
+              </div>
 
               {/* Week tabs */}
               <div className="flex border-b border-[#E8E4DC] mb-1 overflow-x-auto">
@@ -325,11 +429,38 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                 ))}
               </div>
 
-              <p className="text-[12px] text-[#888] mb-5 pt-3">Choose from the weekday menu for each available week. Up to four weeks are shown for any programme.</p>
+              {/* This week's pre-set pool — always visible above the accordion */}
+              <div className="bg-[#FAF9F6] border border-[#E8E4DC] px-5 py-4 my-4">
+                <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">
+                  {WEEKS[selectedWeek].label} Pre-Set Menu · {mealCountLabel}
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  {lunchOptions.map((meal) => (
+                    <div key={`l-${meal.id}`} className="flex items-center gap-3 bg-white border border-[#E8E4DC] p-3">
+                      <img src={meal.img} alt={meal.name} className="w-12 h-12 object-cover shrink-0" />
+                      <div className="min-w-0">
+                        <div className="text-[9px] font-bold tracking-[0.15em] uppercase text-[#F5B300] mb-0.5">Lunch option</div>
+                        <div className="text-[12px] font-semibold leading-tight">{meal.name}</div>
+                        <div className="text-[10px] text-[#888]">{meal.cal} kcal · P {meal.protein}g</div>
+                      </div>
+                    </div>
+                  ))}
+                  {mealCount === "lunch-dinner" && dinnerOptions.map((meal) => (
+                    <div key={`d-${meal.id}`} className="flex items-center gap-3 bg-white border border-[#E8E4DC] p-3">
+                      <img src={meal.img} alt={meal.name} className="w-12 h-12 object-cover shrink-0" />
+                      <div className="min-w-0">
+                        <div className="text-[9px] font-bold tracking-[0.15em] uppercase text-[#E85D04] mb-0.5">Dinner option</div>
+                        <div className="text-[12px] font-semibold leading-tight">{meal.name}</div>
+                        <div className="text-[10px] text-[#888]">{meal.cal} kcal · P {meal.protein}g</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              {/* Day accordion */}
+              {/* Day-by-day accordion */}
               <div className="border border-[#E8E4DC] mb-8 divide-y divide-[#E8E4DC]">
-                {WEEKDAYS.map((day, dayIndex) => {
+                {WEEKDAYS.map((day) => {
                   const isOpen = openDay === day;
                   const dayData = (menuSelections[selectedWeek] || {})[day] || { lunch: null, dinner: null };
                   const lunchMeal = getMealById(dayData.lunch);
@@ -342,11 +473,31 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                       <button
                         onClick={() => setOpenDay(isOpen ? null : day)}
                         className="w-full flex items-center justify-between px-5 py-4 hover:bg-[#FAFAF8] transition-colors text-left">
-                        <div className="flex items-center gap-3">
-                          <span className="font-semibold text-[16px]">{day}</span>
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="font-semibold text-[16px] shrink-0">{day}</span>
                           {isOpen && <span className="text-[12px] text-[#888] italic">Editing</span>}
-                          {!isOpen && dayDone && <span className="text-[12px] text-[#E85D04] font-medium">✓ Done</span>}
+                          {!isOpen && dayDone && (
+                            <span className="text-[12px] text-[#E85D04] font-medium flex items-center gap-1">
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5"/></svg>
+                              Done
+                            </span>
+                          )}
                           {!isOpen && !dayDone && <span className="text-[12px] text-[#888]">Tap to edit</span>}
+                          {/* Mini preview of selected meals */}
+                          {!isOpen && (lunchMeal || dinnerMeal) && (
+                            <div className="hidden sm:flex items-center gap-1.5 ml-2 min-w-0">
+                              {lunchMeal && (
+                                <span className="text-[11px] text-[#555] truncate max-w-[140px]">
+                                  L: {lunchMeal.name}
+                                </span>
+                              )}
+                              {dinnerMeal && (
+                                <span className="text-[11px] text-[#555] truncate max-w-[140px]">
+                                  · D: {dinnerMeal.name}
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                           className={`transition-transform shrink-0 ${isOpen ? "rotate-180" : ""}`}>
@@ -356,10 +507,11 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
 
                       {isOpen && (
                         <div className="px-5 pb-5 pt-3 bg-[#FAFAF8]">
+
                           {/* Lunch slot */}
-                          <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Lunch</p>
+                          <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Lunch — choose 1</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-                            {getDayMealOptions(dayIndex, "lunch").map((meal) => {
+                            {lunchOptions.map((meal) => {
                               const selected = dayData.lunch === meal.id;
                               return (
                                 <button key={meal.id} onClick={() => selectMeal(day, "lunch", meal.id)}
@@ -379,9 +531,9 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                           {/* Dinner slot */}
                           {mealCount === "lunch-dinner" && (
                             <>
-                              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Dinner</p>
+                              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Dinner — choose 1</p>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {getDayMealOptions(dayIndex, "dinner").map((meal) => {
+                                {dinnerOptions.map((meal) => {
                                   const selected = dayData.dinner === meal.id;
                                   return (
                                     <button key={meal.id} onClick={() => selectMeal(day, "dinner", meal.id)}
@@ -429,7 +581,6 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
               </div>
               <p className="text-[#666] text-[14px] mb-8 ml-11">Enter your details and delivery address.</p>
 
-              {/* Personal details */}
               <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Personal Details</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <div>
@@ -452,10 +603,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                   className="w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-sm placeholder:text-[#bbb] focus:outline-none focus:border-[#111]" />
               </div>
 
-              {/* Delivery address */}
               <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#888] mb-3">Delivery Address</p>
-
-              {/* Fixed delivery schedule banner */}
               <div className="border-l-4 border-[#E85D04] bg-[#FFF9F5] px-4 py-3 mb-4 flex items-center gap-3">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E85D04" strokeWidth="2">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
@@ -465,14 +613,12 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                   <span className="text-[#666] ml-1">Sun, Tue & Thu · 5:00 – 8:00 pm</span>
                 </div>
               </div>
-
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-4 h-4 bg-[#E85D04] flex items-center justify-center shrink-0">
                   <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
                 </div>
                 <span className="text-[13px] text-[#666]">Same as personal details address</span>
               </div>
-
               <div className="flex flex-col gap-3 mb-8">
                 <div>
                   <label className="block text-[12px] text-[#666] mb-1">Street Address</label>
@@ -526,13 +672,13 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
               </div>
               <p className="text-[#666] text-[14px] mb-8 ml-11">Review your programme, meal plan and payment details.</p>
 
-              {/* Programme & plan summary */}
+              {/* Programme summary */}
               <div className="border border-[#E8E4DC] mb-4">
                 {[
-                  ["Programme", progLabel],
+                  ["Programme",         progLabel],
                   ["Menu availability", `${progInfo.menuWeeks} weekly menus`],
-                  ["Meal Plan", mealPlan],
-                  ["Meals", mealCountLabel],
+                  ["Meal Plan",         mealPlan],
+                  ["Meals",             mealCountLabel],
                 ].map(([k, v]) => (
                   <div key={k} className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC] last:border-b-0">
                     <span className="text-[14px] text-[#666]">{k}</span>
@@ -541,13 +687,13 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                 ))}
               </div>
 
-              {/* Period dates (fixed programmes only) */}
+              {/* Period (fixed programmes) */}
               {progInfo.days && (
                 <div className="border border-[#E8E4DC] mb-4">
                   {[
                     ["Programme Period", `${progInfo.days} days`],
-                    ["Start Date", fmtDate(startDate)],
-                    ["End Date", endDate ? fmtDate(endDate) : "—"],
+                    ["Start Date",       fmtDate(startDate)],
+                    ["End Date",         endDate ? fmtDate(endDate) : "—"],
                   ].map(([k, v]) => (
                     <div key={k} className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC] last:border-b-0">
                       <span className="text-[14px] text-[#666]">{k}</span>
@@ -557,7 +703,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                 </div>
               )}
 
-              {/* Pricing breakdown */}
+              {/* Pricing */}
               <div className="border border-[#E8E4DC] mb-4">
                 <div className="flex justify-between px-5 py-3.5 border-b border-[#E8E4DC]">
                   <span className="text-[14px] text-[#666]">{progInfo.days ? `${progInfo.days} days programme` : progInfo.label}</span>
@@ -588,9 +734,9 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-6 bg-[#1A1A1A] flex items-center justify-center">
                       <svg width="18" height="12" viewBox="0 0 30 20" fill="none">
-                        <rect width="30" height="20" fill="#1A1A1A"/>
-                        <rect x="2" y="7" width="26" height="3" fill="#888"/>
-                        <rect x="2" y="13" width="8" height="2" rx="0.5" fill="#ccc"/>
+                        <rect width="30" height="20" fill="#222"/>
+                        <rect x="2" y="7" width="26" height="3" fill="#666"/>
+                        <rect x="2" y="13" width="8" height="2" rx="0.5" fill="#999"/>
                       </svg>
                     </div>
                     <span className="text-[14px] font-medium">Card</span>
@@ -620,22 +766,20 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
 
         {/* ── YOUR ORDER Sidebar ── */}
         <div className="lg:w-[280px] xl:w-[300px] shrink-0">
-          <div className="bg-[#1A1A1A] text-white p-6 sticky top-[72px]">
+          <div className="bg-[#1A1A1A] text-white p-6 sticky top-[120px]">
             <div className="flex items-center gap-2 mb-5">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E85D04" strokeWidth="2">
-                <rect x="3" y="4" width="18" height="18" rx="1" /><path d="M16 2v4M8 2v4M3 10h18" />
+                <rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/>
               </svg>
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#666]">Your Order</span>
             </div>
 
             <div className="space-y-4 text-[13px]">
-              {/* Step */}
               <div>
                 <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Step {step} of 5</p>
                 <p className="font-semibold">{STEP_LABELS[step - 1]}</p>
               </div>
 
-              {/* Programme / Subscription */}
               <div className="border-t border-white/10 pt-4">
                 <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">
                   {progInfo.kind === "recurring" ? "Subscription" : "Programme"}
@@ -643,7 +787,6 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                 <p className="font-semibold">{progLabel}</p>
               </div>
 
-              {/* Programme period (fixed only) */}
               {progInfo.days && (
                 <div className="border-t border-white/10 pt-4">
                   <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Programme Period</p>
@@ -651,13 +794,11 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                 </div>
               )}
 
-              {/* Menu availability */}
               <div className="border-t border-white/10 pt-4">
                 <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Menu Availability</p>
                 <p className="font-semibold">{progInfo.menuWeeks} weekly menus</p>
               </div>
 
-              {/* Meal Plan (shows from step 2) */}
               {step >= 2 && (
                 <div className="border-t border-white/10 pt-4">
                   <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Meal Plan</p>
@@ -665,7 +806,6 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                 </div>
               )}
 
-              {/* Meals */}
               {step >= 2 && (
                 <div className="border-t border-white/10 pt-4">
                   <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#555] mb-0.5">Meals</p>
@@ -673,7 +813,6 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete }: Pro
                 </div>
               )}
 
-              {/* Delivery (always fixed) */}
               <div className="border-t border-white/10 pt-4">
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E85D04" strokeWidth="2">
