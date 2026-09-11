@@ -177,7 +177,7 @@ export default function MealPlanWizardPage({ navigate, onCheckoutComplete, initi
                   { count: 2 as const, label: "Lunch & Dinner", desc: "2 fresh meals per day — full day nutrition fully covered.", slots: ["Lunch", "Dinner"], price: "From $148/wk", popular: true },
                 ]).map((opt) => (
                   <button key={opt.count} onClick={() => setMealCount(opt.count)}
-                    className={`relative text-left border-2 p-6transition-all ${mealCount === opt.count ? "border-[#111] bg-white" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
+                    className={`relative text-left border-2 p-6 transition-all ${mealCount === opt.count ? "border-[#111] bg-white" : "border-[#D0CCC4] bg-white hover:border-[#999]"}`}>
                     {opt.popular && (
                       <div className="absolute top-3 right-3 bg-[#E85D04] text-[#111] text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-0.5">Most Popular</div>
                     )}
