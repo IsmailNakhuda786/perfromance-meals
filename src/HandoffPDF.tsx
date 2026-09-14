@@ -77,10 +77,10 @@ const s = StyleSheet.create({
   elementRationale: { width: 120, fontSize: 7.5, color: "#555", lineHeight: 1.5, flexShrink: 0 },
 
   /* QA checklist */
-  qaItem: { flexDirection: "row", alignItems: "flex-start", gap: 8, marginBottom: 5 },
-  qaBox: { width: 10, height: 10, border: `1 solid ${C.lightgray}`, marginTop: 1, flexShrink: 0 },
+  qaItem: { flexDirection: "row", alignItems: "flex-start", marginBottom: 5 },
+  qaBox: { width: 9, height: 9, border: `1 solid ${C.lightgray}`, marginRight: 8, marginTop: 1.5, flexShrink: 0 },
   qaText: { flex: 1, fontSize: 8, color: "#333", lineHeight: 1.5 },
-  qaCategory: { fontSize: 7, fontFamily: "Helvetica-Bold", letterSpacing: 1.2, color: C.orange, textTransform: "uppercase", marginBottom: 6, marginTop: 10 },
+  qaCategory: { fontSize: 7, fontFamily: "Helvetica-Bold", letterSpacing: 1.2, color: C.orange, textTransform: "uppercase", marginBottom: 5, marginTop: 10 },
 
   /* Pill / badge */
   badge: { paddingHorizontal: 6, paddingVertical: 2, fontSize: 7, fontFamily: "Helvetica-Bold", letterSpacing: 0.8, textTransform: "uppercase" },
@@ -140,6 +140,47 @@ const ElemRow = ({ name, type, desc, why }: { name: string; type: string; desc: 
     <Text style={s.elementType}>{type}</Text>
     <Text style={s.elementDesc}>{desc}</Text>
     <Text style={s.elementRationale}>{why}</Text>
+  </View>
+);
+
+/* ── Screen wireframe diagram ── */
+type WireBlock = { label: string; h: number; bg: string; fg?: string; accent?: boolean };
+
+const ScreenDiagram = ({ blocks, caption, accent = C.yellow }: { blocks: WireBlock[]; caption: string; accent?: string }) => (
+  <View style={{ width: 136, flexShrink: 0, marginLeft: 10 }}>
+    {/* browser bar */}
+    <View style={{ backgroundColor: "#2A2A2A", paddingHorizontal: 6, paddingVertical: 4, flexDirection: "row", alignItems: "center" }}>
+      <View style={{ width: 4, height: 4, backgroundColor: "#FF5F57", marginRight: 3 }} />
+      <View style={{ width: 4, height: 4, backgroundColor: "#FEBC2E", marginRight: 3 }} />
+      <View style={{ width: 4, height: 4, backgroundColor: "#28C840", marginRight: 6 }} />
+      <View style={{ flex: 1, height: 5, backgroundColor: "rgba(255,255,255,0.08)" }} />
+    </View>
+    {/* sticky nav */}
+    <View style={{ backgroundColor: C.black, paddingHorizontal: 7, paddingVertical: 5, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <Text style={{ fontSize: 5, fontFamily: "Helvetica-Bold", color: accent, letterSpacing: 0.5 }}>PERF.MEALS</Text>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ width: 18, height: 2.5, backgroundColor: "rgba(255,255,255,0.15)", marginRight: 4 }} />
+        <View style={{ width: 12, height: 2.5, backgroundColor: "rgba(255,255,255,0.15)", marginRight: 4 }} />
+        <View style={{ width: 7, height: 7, backgroundColor: "rgba(255,255,255,0.08)" }} />
+      </View>
+    </View>
+    {/* content blocks */}
+    {blocks.map((b, i) => (
+      <View key={i} style={{ height: b.h, backgroundColor: b.bg, justifyContent: "center", alignItems: "center", borderBottom: `0.5 solid rgba(0,0,0,0.06)` }}>
+        {b.accent
+          ? <View style={{ width: 28, height: 6, backgroundColor: accent, justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ fontSize: 4, fontFamily: "Helvetica-Bold", color: C.black }}>{b.label}</Text>
+            </View>
+          : <Text style={{ fontSize: 4.5, color: b.fg || "rgba(0,0,0,0.3)", textAlign: "center", paddingHorizontal: 4 }}>{b.label}</Text>
+        }
+      </View>
+    ))}
+    {/* footer strip */}
+    <View style={{ backgroundColor: C.black, paddingVertical: 3 }}>
+      <Text style={{ fontSize: 3.5, color: "rgba(255,255,255,0.15)", textAlign: "center", letterSpacing: 0.3 }}>PERFORMANCEMEALS.COM.SG</Text>
+    </View>
+    {/* caption */}
+    <Text style={{ fontSize: 6, color: C.gray, textAlign: "center", marginTop: 4, fontFamily: "Helvetica-Bold", letterSpacing: 0.5 }}>{caption.toUpperCase()}</Text>
   </View>
 );
 
@@ -398,11 +439,23 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="01" title="Home Page" sub="Parent brand entry point · Performance Meals identity · Two product paths" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The home page is the parent brand surface — it represents Performance Meals as a whole, not either sub-brand. Its job is to orient first-time visitors, build trust, and channel users into either Ready Series or Meal Plan based on their need. It does NOT push a specific product.</Text>
-
-          <View style={s.callout}>
-            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why no product grid on home?</Text>
-            <Text style={s.calloutText}>The home page intentionally avoids a product grid. First-time visitors don't know if they want a one-off meal or a 12-week programme. The Two Paths section (hover-expand split panel) forces a deliberate choice and reduces decision fatigue. Conversions are higher when users self-select their journey.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The home page is the parent brand surface — it represents Performance Meals as a whole, not either sub-brand. Its job is to orient first-time visitors, build trust, and channel users into either Ready Series or Meal Plan based on their need. It does NOT push a specific product.</Text>
+              <View style={s.callout}>
+                <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why no product grid on home?</Text>
+                <Text style={s.calloutText}>The home page intentionally avoids a product grid. First-time visitors don't know if they want a one-off meal or a 12-week programme. The Two Paths section (hover-expand split panel) forces a deliberate choice and reduces decision fatigue. Conversions are higher when users self-select their journey.</Text>
+              </View>
+            </View>
+            <ScreenDiagram caption="Screen 01 — Home" blocks={[
+              { label: "HERO\n'Nutrition that works.'\nRS + MP CTAs", h: 52, bg: C.black, fg: "rgba(255,255,255,0.4)" },
+              { label: "STATS BAR  8,400+ · 4.9★ · 40+ · 5yrs", h: 18, bg: "#1F1F1F", fg: "rgba(255,255,255,0.3)" },
+              { label: "Who We Are · Milestone Timeline", h: 22, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "What Makes Us Different\nExpandable pillars", h: 22, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "TWO PATHS  ←RS | MP→", h: 30, bg: "#2A1A00", fg: "rgba(255,183,0,0.5)" },
+              { label: "Testimonials · 3 customer cards", h: 20, bg: C.offwhite, fg: "rgba(0,0,0,0.25)" },
+              { label: "BROWSE RS →", h: 12, bg: C.black, accent: true },
+            ]} />
           </View>
 
           <Text style={s.h4}>Elements</Text>
@@ -446,11 +499,20 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="02" title="Ready Series — Shop" sub="Product collection grid · Filters · Category tabs · Cart integration" brand="RS" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The Ready Series shop is a standard product collection with category filtering, macro visibility, and quick-add functionality. The yellow (#F5B300) brand colour is used exclusively throughout. Products display macros (kcal, protein, carbs, fat) pulled from Shopify product metafields.</Text>
-
-          <View style={s.callout}>
-            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why show macros on cards?</Text>
-            <Text style={s.calloutText}>Performance Meals customers are nutrition-aware. Showing macros at the card level (not just on the product page) removes friction — customers don't need to click into each product to check if it fits their macros. This is a key differentiator from generic meal delivery competitors.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The Ready Series shop is a standard product collection with category filtering, macro visibility, and quick-add functionality. The yellow (#F5B300) brand colour is used exclusively throughout. Products display macros (kcal, protein, carbs, fat) pulled from Shopify product metafields.</Text>
+              <View style={s.callout}>
+                <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why show macros on cards?</Text>
+                <Text style={s.calloutText}>Performance Meals customers are nutrition-aware. Showing macros at the card level (not just on the product page) removes friction — customers don't need to click into each product to check if it fits their macros. This is a key differentiator from generic meal delivery competitors.</Text>
+              </View>
+            </View>
+            <ScreenDiagram caption="Screen 02 — Ready Series Shop" blocks={[
+              { label: "ALL · PROTEIN · BALANCED · LEAN · OMEGA-3\nFilter tabs + Sort dropdown", h: 16, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "3-COLUMN PRODUCT GRID\n[img] · Category · Title\nkcal / protein · Price · +", h: 60, bg: "#F9F6F1", fg: "rgba(0,0,0,0.25)" },
+              { label: "Page  1  2  3  →", h: 12, bg: C.offwhite, fg: "rgba(0,0,0,0.25)" },
+              { label: "Subscribe with Box Sub — save 10% →", h: 14, bg: "#1A1A1A", fg: "rgba(255,183,0,0.6)" },
+            ]} />
           </View>
 
           <Text style={s.h4}>Elements</Text>
@@ -490,7 +552,18 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="03" title="Product Detail Page" sub="Meal deep-dive · Full macros · Ingredients · Heating · Add to cart" brand="RS" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The product page provides complete nutritional and preparation information for a single meal. It contains a full macro breakdown, ingredient list, heating instructions, allergen information, and a quantity-aware add-to-cart form. Related meals are shown below.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The product page provides complete nutritional and preparation information for a single meal. It contains a full macro breakdown, ingredient list, heating instructions, allergen information, and a quantity-aware add-to-cart form. Related meals are shown below.</Text>
+            </View>
+            <ScreenDiagram caption="Screen 03 — Product Detail" blocks={[
+              { label: "PRODUCT IMAGE\n(main + thumbs strip)", h: 38, bg: "#EDEDEA", fg: "rgba(0,0,0,0.25)" },
+              { label: "Meal title · Category badge\nkcal | protein | carbs | fat\n$12.50", h: 28, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "−  1  +    ADD TO CART →", h: 14, bg: C.offwhite, accent: true },
+              { label: "INGREDIENTS | HEATING | ALLERGENS\n(tab content area)", h: 28, bg: "#F9F6F1", fg: "rgba(0,0,0,0.25)" },
+              { label: "Related Meals  (4 cards)", h: 20, bg: C.bg, fg: "rgba(0,0,0,0.25)" },
+            ]} />
+          </View>
 
           <Text style={s.h4}>Elements</Text>
           <View style={{ flexDirection: "row", backgroundColor: C.bg, padding: "5 8", marginBottom: 4 }}>
@@ -531,11 +604,21 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="04" title="Meal Plan Landing" sub="Plan overview · Goal selection entry · How it works · Pricing" brand="MP" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The Meal Plan landing page is a marketing/conversion page for the subscription programme. Its job is to explain the programme, build confidence, and move visitors into the wizard. All CTAs use #E85D04 orange (MP brand colour) exclusively.</Text>
-
-          <View style={s.callout}>
-            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Separate landing page vs. direct wizard</Text>
-            <Text style={s.calloutText}>The Meal Plan is a significant commitment ($178–$238/week for 12 weeks). Customers need to understand the value proposition before being asked for personal details. The landing page handles objections (no lock-in, swap meals, pause anytime) before the wizard begins. Conversion rate is higher with a pre-sell page than dropping customers directly into a multi-step form.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The Meal Plan landing page is a marketing/conversion page for the subscription programme. Its job is to explain the programme, build confidence, and move visitors into the wizard. All CTAs use #E85D04 orange (MP brand colour) exclusively.</Text>
+              <View style={s.callout}>
+                <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Separate landing page vs. direct wizard</Text>
+                <Text style={s.calloutText}>The Meal Plan is a significant commitment ($178–$238/week for 12 weeks). Customers need to understand the value proposition before being asked for personal details. The landing page handles objections (no lock-in, swap meals, pause anytime) before the wizard begins. Conversion rate is higher with a pre-sell page than dropping customers directly into a multi-step form.</Text>
+              </View>
+            </View>
+            <ScreenDiagram caption="Screen 04 — Meal Plan Landing" accent={C.orange} blocks={[
+              { label: "HERO  12-Week Transformation\nCUT · MAINTAIN · BUILD cards", h: 38, bg: C.black, fg: "rgba(255,93,4,0.5)" },
+              { label: "How It Works — 4-step timeline", h: 18, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "Sample meals grid  (2×2)", h: 26, bg: C.bg, fg: "rgba(0,0,0,0.25)" },
+              { label: "FAQ accordion  (10 items)", h: 30, bg: C.offwhite, fg: "rgba(0,0,0,0.25)" },
+              { label: "START YOUR PLAN →", h: 14, bg: C.orange, fg: C.white },
+            ]} />
           </View>
 
           <Text style={s.h4}>Elements</Text>
@@ -567,11 +650,21 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="05" title="Meal Plan Wizard" sub="Multi-step sign-up · Goal → Meals → Delivery → Payment" brand="MP" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The wizard is a 4-step sign-up flow for the Meal Plan subscription. Each step collects specific information before proceeding. A progress indicator shows which step the user is on. Back navigation is available at every step.</Text>
-
-          <View style={s.callout}>
-            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why 4 steps instead of one form?</Text>
-            <Text style={s.calloutText}>Breaking a complex subscription sign-up into discrete steps reduces cognitive load and perceived complexity. Each step has a clear single purpose. Drop-off analysis on similar flows shows step 1→2 has lowest drop-off; Step 3 (delivery) is highest friction. Splitting delivery into its own step (rather than combining with goal selection) allows users to focus on one decision at a time.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The wizard is a 4-step sign-up flow for the Meal Plan subscription. Each step collects specific information before proceeding. A progress indicator shows which step the user is on. Back navigation is available at every step.</Text>
+              <View style={s.callout}>
+                <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why 4 steps instead of one form?</Text>
+                <Text style={s.calloutText}>Breaking a complex subscription sign-up into discrete steps reduces cognitive load and perceived complexity. Each step has a clear single purpose. Drop-off analysis on similar flows shows step 1→2 has lowest drop-off; Step 3 (delivery) is highest friction. Splitting delivery into its own step allows users to focus on one decision at a time.</Text>
+              </View>
+            </View>
+            <ScreenDiagram caption="Screen 05 — Meal Plan Wizard" accent={C.orange} blocks={[
+              { label: "●●●● Step progress indicator", h: 10, bg: "#F5F2EE", fg: "rgba(0,0,0,0.3)" },
+              { label: "STEP 1 — Choose Your Goal\n[ CUT ] [ MAINTAIN ] [ BUILD ]\nRadio cards with macro targets", h: 42, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "STEP 2 — Select Your Meals\nMeal grid · 0 of 12 selected", h: 42, bg: C.bg, fg: "rgba(0,0,0,0.25)" },
+              { label: "STEP 3 — Delivery Preferences\nDays · Time window · Address", h: 26, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "STEP 4 — Review & Pay\nSummary + Recharge checkout", h: 22, bg: "#FFF4EE", fg: "rgba(232,93,4,0.4)" },
+            ]} />
           </View>
 
           <Text style={s.h4}>Step 1 — Choose Your Goal</Text>
@@ -614,11 +707,22 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="06" title="Box Subscription" sub="Recurring box · 10% off · Weekly or fortnightly · 5–20 meals" brand="RS" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The Box Subscription page lets customers build a recurring custom box of Ready Series meals. The subscription model defaults to Subscribe (not one-time), shows a 10% discount, and collects delivery frequency before checkout.</Text>
-
-          <View style={s.callout}>
-            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why default to Subscribe, not one-time?</Text>
-            <Text style={s.calloutText}>The page is named Box Subscription — customers arriving here are already subscription-intent. Defaulting to Subscribe (rather than One-time) increases subscription conversion without forcing it. The one-time option is available but de-emphasised. Industry standard: subscription-first with opt-out converts 23–40% more subscriptions than opt-in.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The Box Subscription page lets customers build a recurring custom box of Ready Series meals. The subscription model defaults to Subscribe (not one-time), shows a 10% discount, and collects delivery frequency before checkout.</Text>
+              <View style={s.callout}>
+                <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why default to Subscribe, not one-time?</Text>
+                <Text style={s.calloutText}>The page is named Box Subscription — customers arriving here are already subscription-intent. Defaulting to Subscribe (rather than One-time) increases subscription conversion without forcing it. Industry standard: subscription-first with opt-out converts 23–40% more subscriptions than opt-in.</Text>
+              </View>
+            </View>
+            <ScreenDiagram caption="Screen 06 — Box Subscription" blocks={[
+              { label: "[ One-time ]  [ Subscribe & Save 10% ✓ ]", h: 12, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "Weekly / Fortnightly\nFirst delivery: Thu 25 Sep", h: 14, bg: "#FFFBEA", fg: "rgba(0,0,0,0.3)" },
+              { label: "[ 5 meals ] [ 10 meals ★ ] [ 15 ] [ 20 ]", h: 14, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "MEAL SELECTION GRID\nEach card: − count + controls\nRunning total · Box Full guard", h: 46, bg: "#F9F6F1", fg: "rgba(0,0,0,0.25)" },
+              { label: "SUMMARY PANEL\nSubtotal: ~~$112.39~~\n−10%  $101.15\nPer meal: $10.12", h: 30, bg: "#FAFAF8", fg: "rgba(0,0,0,0.3)" },
+              { label: "START SUBSCRIPTION →", h: 12, bg: C.yellow, accent: true },
+            ]} />
           </View>
 
           <Text style={s.h4}>Elements</Text>
@@ -666,11 +770,22 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="07" title="How It Works" sub="Education page · Process overview · Delivery info · FAQ" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>A top-of-funnel education page for first-time visitors who want to understand the ordering process before committing to a product. Covers both Ready Series and Meal Plan journeys, delivery logistics, packaging, and FAQs. No product-specific colour — parent brand yellow (#F5B300) throughout.</Text>
-
-          <View style={s.callout}>
-            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why a dedicated How It Works page?</Text>
-            <Text style={s.calloutText}>Performance Meals serves two audiences with very different purchase journeys: casual ready-meal buyers and committed 12-week plan subscribers. A shared education page handles top-of-funnel objections (how does delivery work? can I cancel?) before either audience commits to a product. Reduces support queries from confused first-time customers.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>A top-of-funnel education page for first-time visitors who want to understand the ordering process before committing to a product. Covers both Ready Series and Meal Plan journeys, delivery logistics, packaging, and FAQs. No product-specific colour — parent brand yellow (#F5B300) throughout.</Text>
+              <View style={s.callout}>
+                <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why a dedicated How It Works page?</Text>
+                <Text style={s.calloutText}>Performance Meals serves two audiences with very different purchase journeys: casual ready-meal buyers and committed 12-week plan subscribers. A shared education page handles top-of-funnel objections (how does delivery work? can I cancel?) before either audience commits to a product. Reduces support queries from confused first-time customers.</Text>
+              </View>
+            </View>
+            <ScreenDiagram caption="Screen 07 — How It Works" blocks={[
+              { label: "How It Works\nParent brand education page", h: 20, bg: C.black, fg: "rgba(255,183,0,0.5)" },
+              { label: "READY SERIES PROCESS\n① Browse → ② Cart → ③ Deliver → ④ Enjoy", h: 22, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "MEAL PLAN PROCESS\n① Goal → ② Meals → ③ Swap → ④ Deliver → ⑤ Renew", h: 24, bg: C.bg, fg: "rgba(0,0,0,0.25)" },
+              { label: "DELIVERY INFO GRID\nDays · Cutoff · Windows · Packaging", h: 20, bg: "#F9F6F1", fg: "rgba(0,0,0,0.25)" },
+              { label: "FAQ accordion  (10 items)", h: 26, bg: C.offwhite, fg: "rgba(0,0,0,0.25)" },
+              { label: "SHOP RS  ·  START MP →", h: 12, bg: C.black, fg: "rgba(255,183,0,0.5)" },
+            ]} />
           </View>
 
           <Text style={s.h4}>Elements</Text>
@@ -729,7 +844,20 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="08" title="About Us" sub="Brand story · Chef credentials · Team · Values · Singapore origin" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The About Us page is a trust and credibility page. It tells the Performance Meals origin story, introduces the culinary and nutrition team, and lays out the company values. This is a parent brand page — all CTAs use #F5B300 yellow, never orange.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The About Us page is a trust and credibility page. It tells the Performance Meals origin story, introduces the culinary and nutrition team, and lays out the company values. This is a parent brand page — all CTAs use #F5B300 yellow, never orange.</Text>
+            </View>
+            <ScreenDiagram caption="Screen 08 — About Us" blocks={[
+              { label: "ORIGIN STORY HERO\n'Built in Singapore, for performance'", h: 30, bg: C.black, fg: "rgba(255,183,0,0.4)" },
+              { label: "Chef Profile\nPhoto + bio + credentials", h: 28, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "Nutrition Team grid  (3–4 cards)", h: 22, bg: C.bg, fg: "rgba(0,0,0,0.25)" },
+              { label: "Company Values  (4 pillars)", h: 22, bg: C.offwhite, fg: "rgba(0,0,0,0.25)" },
+              { label: "Milestone Timeline 2019·21·22·24", h: 16, bg: "#F9F6F1", fg: "rgba(0,0,0,0.25)" },
+              { label: "Press logos  (greyscale row)", h: 12, bg: C.bg, fg: "rgba(0,0,0,0.2)" },
+              { label: "START YOUR JOURNEY →", h: 12, bg: C.black, accent: true },
+            ]} />
+          </View>
 
           <View style={s.calloutRed}>
             <Text style={[s.calloutTitle, { color: "#B91C1C" }]}>Critical Brand Rule — Colour on About page</Text>
@@ -774,7 +902,19 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="09" title="Gift Cards" sub="Digital gift cards · 5 denominations · Scheduled send · Email delivery" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The Gift Cards page handles the complete digital gift card purchase flow. Customer selects a denomination, enters recipient and sender details, optionally schedules a send date, then checks out via Shopify's native gift card system. Gift cards are redeemable at checkout against any order.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The Gift Cards page handles the complete digital gift card purchase flow. Customer selects a denomination, enters recipient and sender details, optionally schedules a send date, then checks out via Shopify's native gift card system. Gift cards are redeemable at checkout against any order.</Text>
+            </View>
+            <ScreenDiagram caption="Screen 09 — Gift Cards" blocks={[
+              { label: "[ $25 ]  [ $50 ✓ ]  [ $100 ]\n[ $150 ]  [ $200 ]", h: 22, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "Recipient name  ___________\nRecipient email  ___________\nSender name     ___________", h: 32, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "Personal message (optional)\n200 char · 148/200", h: 20, bg: C.offwhite, fg: "rgba(0,0,0,0.25)" },
+              { label: "◉ Send immediately\n○ Schedule: DD/MM/YYYY", h: 18, bg: "#FFFBEA", fg: "rgba(0,0,0,0.3)" },
+              { label: "Summary: $50.00 gift card\nTo: Sarah · From: Ahmad", h: 18, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "SEND GIFT CARD →", h: 12, bg: C.yellow, accent: true },
+            ]} />
+          </View>
 
           <View style={s.callout}>
             <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why offer gift cards?</Text>
@@ -839,7 +979,19 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="10" title="Cart & Checkout" sub="Cart page · Promo codes · Wallet credit · Shopify checkout · Confirmation" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The cart and checkout covers two distinct surfaces: the Performance Meals cart page (custom, pre-checkout) and Shopify's native checkout. Cart page is fully custom-styled. Checkout uses Shopify Checkout with brand customisations via the checkout editor. Subscription orders (Meal Plan, Box Sub) bypass the cart and go directly to Recharge checkout.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The cart and checkout covers two distinct surfaces: the Performance Meals cart page (custom, pre-checkout) and Shopify's native checkout. Cart page is fully custom-styled. Checkout uses Shopify Checkout with brand customisations via the checkout editor. Subscription orders (Meal Plan, Box Sub) bypass the cart and go directly to Recharge checkout.</Text>
+            </View>
+            <ScreenDiagram caption="Screen 10 — Cart & Checkout" blocks={[
+              { label: "████▒▒▒▒▒▒  $12 to free delivery", h: 10, bg: "#FFFBEA", fg: "rgba(0,0,0,0.4)" },
+              { label: "CART ITEMS\n[img] Meal name · qty − + · $12.50\n[img] Meal name · qty − + · $13.00\n[×] remove", h: 36, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "Promo code: [PMFIRST10] APPLY\n✓ −10% applied", h: 14, bg: "#F0FDF4", fg: "rgba(0,0,0,0.3)" },
+              { label: "Wallet: $24.50 credit  [Apply ▢]", h: 12, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "Subtotal: $80.50\nDelivery: FREE ✓\nTotal: $72.45", h: 20, bg: C.offwhite, fg: "rgba(0,0,0,0.35)" },
+              { label: "PROCEED TO CHECKOUT →", h: 12, bg: C.yellow, accent: true },
+            ]} />
+          </View>
 
           <View style={s.callout}>
             <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Custom cart page vs. Shopify native cart</Text>
@@ -896,7 +1048,19 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="11" title="Account — Dashboard" sub="Active plan · Box sub status · Renewal reminder · Wallet · Shortcuts" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The account dashboard is the logged-in customer's home base. It shows their current subscription status, upcoming billing, wallet balance, and quick shortcuts to the most common actions. It is intentionally minimal — detailed plan management is on Screen 12.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The account dashboard is the logged-in customer's home base. It shows their current subscription status, upcoming billing, wallet balance, and quick shortcuts to the most common actions. It is intentionally minimal — detailed plan management is on Screen 12.</Text>
+            </View>
+            <ScreenDiagram caption="Screen 11 — Account Dashboard" blocks={[
+              { label: "⚠ Plan renews in 3 days — $178 · Visa 4242", h: 10, bg: "#FEF9C3", fg: "rgba(0,0,0,0.5)" },
+              { label: "Welcome back, Ahmad\nACTIVE PLAN  |  WALLET", h: 18, bg: "#1A1A1A", fg: "rgba(255,183,0,0.6)" },
+              { label: "[ MAINTAIN  ●active ]\n[ Wallet $24.50 ]", h: 22, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "Active Plan card\nNext charge: Thu 25 Sep · $178\n[MANAGE PLAN →] [PAUSE]", h: 28, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "📦 Box Sub · 10 meals · Weekly\nNext delivery in 7 days  Manage →", h: 14, bg: "#F9F6F1", fg: "rgba(0,0,0,0.3)" },
+              { label: "[ 🔄 Swap meals ]  [ ⚖ Plan type ]", h: 16, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+            ]} />
+          </View>
 
           <View style={s.callout}>
             <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why only 2 stat tiles?</Text>
@@ -940,7 +1104,19 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="12" title="Account — Subscription & Menu Swap" sub="Plan progress · Week tabs · Meal swap · Pause · Box Sub management" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The most complex screen in the product. Customers manage their ongoing subscription, swap meals for upcoming weeks, pause or cancel, and manage their Box Subscription from a single screen. The Thursday 1pm cutoff is prominently enforced here.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The most complex screen in the product. Customers manage their ongoing subscription, swap meals for upcoming weeks, pause or cancel, and manage their Box Subscription from a single screen. The Thursday 1pm cutoff is prominently enforced here.</Text>
+            </View>
+            <ScreenDiagram caption="Screen 12 — Sub & Menu Swap" accent={C.orange} blocks={[
+              { label: "Plan week 13 of 12  ████████████▒\n2 weeks remaining (orange)", h: 16, bg: "#FFF4EE", fg: "rgba(232,93,4,0.5)" },
+              { label: "[ W13 THIS WEEK ]  [ W14 ]  [ W15 ]  [ W16 ]", h: 12, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "⏰ Swap cutoff: Thu 18 Sep 1pm — 4h left\nMEAL ROW: [img] Grilled Chicken · L · SWAP\nMEAL ROW: [img] Teriyaki Salmon · D · SWAP", h: 38, bg: "#FFFBEA", fg: "rgba(0,0,0,0.35)" },
+              { label: "Billing  [ Weekly ✓ ]  [ Monthly ]\nNext charge: Fri 19 Sep · $178", h: 18, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "Box Sub card  10 meals · Weekly\n[Edit size] [Skip] [Cancel]", h: 18, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "[PAUSE PLAN]    [CANCEL]", h: 12, bg: "#FFF4EE", fg: "rgba(232,93,4,0.4)" },
+            ]} />
+          </View>
 
           <View style={s.callout}>
             <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Plan progress bar shows "W13 of 12"</Text>
@@ -997,7 +1173,18 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="13" title="Account — Order History" sub="All orders · Status · Reorder · Tracking" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>Complete order history for both subscription deliveries and one-time purchases. Each order shows items, total, delivery date, and status. Reorder functionality for à la carte purchases.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>Complete order history for both subscription deliveries and one-time purchases. Each order shows items, total, delivery date, and status. Reorder functionality for à la carte purchases.</Text>
+            </View>
+            <ScreenDiagram caption="Screen 13 — Order History" blocks={[
+              { label: "#PM-2041  Thu 18 Sep  $72.45\n2 meals · Delivered ✓  [▼ expand]", h: 20, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "#PM-2028  Thu 11 Sep  $178.00\nMeal Plan W13 · Dispatched  [▼]", h: 20, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "#PM-2015  Thu 4 Sep  $101.15\nBox Sub 10 meals · Delivered ✓  [▼]", h: 20, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "#PM-1998  Thu 28 Aug  $13.50\n1 meal (RtG) · Delivered ✓  [REORDER]", h: 20, bg: C.bg, fg: "rgba(0,0,0,0.3)" },
+              { label: "← prev   1  2  3  next →", h: 12, bg: C.offwhite, fg: "rgba(0,0,0,0.25)" },
+            ]} />
+          </View>
           <Text style={s.h4}>Elements</Text>
           <ElemRow name="Order list" type="Table rows" desc="Order ID (mono font), items summary, total (SGD mono), delivery date, status badge. Expandable row shows full item list." why="Compact list handles high-volume histories. Expand on demand reduces initial complexity." />
           <ElemRow name="Status badges" type="Coloured badges" desc="Confirmed (blue) · Packing (yellow) · Packed (dark) · Dispatched (orange) · Delivered (green) · Cancelled (red)." why="Clear visual status progression. Colour maps to standard logistics states." />
@@ -1014,7 +1201,18 @@ export const HandoffPDF = () => (
       <View style={s.screenBlock}>
         <ScreenHeader num="14" title="Account — Wallet & Rewards" sub="Points balance · Voucher redemption · Earn history · Referrals" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>The Wallet & Rewards screen shows the customer's points balance, redeemable voucher tiers, earning history, and referral code. Points are earned on every purchase and can be redeemed for wallet credits at fixed tiers.</Text>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={s.p}>The Wallet & Rewards screen shows the customer's points balance, redeemable voucher tiers, earning history, and referral code. Points are earned on every purchase and can be redeemed for wallet credits at fixed tiers.</Text>
+            </View>
+            <ScreenDiagram caption="Screen 14 — Wallet & Rewards" blocks={[
+              { label: "★ 1,240 pts available\n$24.50 wallet credit", h: 20, bg: C.black, fg: "rgba(255,183,0,0.6)" },
+              { label: "[ 500pts=$5 ]  [ 1000pts=$11 ★ ]  [ 2000pts=$25 ]", h: 14, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "REDEEM 1000 pts → $11 credit", h: 12, bg: C.bg, accent: true },
+              { label: "Earn history\n+200pts Meal Plan W13 · 18 Sep\n+10pts  RtG order · 18 Sep\n+500pts Referral — John T · 12 Sep", h: 34, bg: C.offwhite, fg: "rgba(0,0,0,0.3)" },
+              { label: "Your referral code: AHMAD2024\nShare link: pm.sg/ref/ahmad2024", h: 18, bg: "#FFFBEA", fg: "rgba(0,0,0,0.35)" },
+            ]} />
+          </View>
 
           <View style={s.callout}>
             <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Fixed voucher tiers (not free-form redemption)</Text>
