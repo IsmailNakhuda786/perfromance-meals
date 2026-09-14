@@ -274,7 +274,7 @@ export const FresherPDF = () => (
             ["03", "Ready-to-Go — Promotions", "Flash sales · Discounted products"],
             ["04", "Ready-to-Go — Useful Bundles", "Curated packs · Best value per meal"],
             ["05", "Product Detail Modal", "Macros · Ratings · Add to cart"],
-            ["06", "Build-A-Box", "Mix & match 5–20 meals · Custom box"],
+            ["06", "Box Subscription", "Recurring delivery · 10% off · Weekly or fortnightly"],
           ].map(([n, title, sub]) => (
             <View key={n} style={{ flexDirection: "row", alignItems: "baseline", paddingVertical: 7, borderBottom: "1 solid " + C.border }}>
               <View style={{ backgroundColor: C.lime, paddingHorizontal: 6, paddingVertical: 2, marginRight: 12 }}>
@@ -315,8 +315,8 @@ export const FresherPDF = () => (
             <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.black }}>ACCOUNT & REWARDS</Text>
           </View>
           {[
-            ["11", "Account — Dashboard", "Stats · Active plan · Renewal reminder · Referral"],
-            ["12", "Account — Subscription & Meal Swap", "Edit plan · Thursday cutoff · Week tabs · Swap meals"],
+            ["11", "Account — Dashboard", "Active plan · Box sub · Renewal reminder · Wallet balance"],
+            ["12", "Account — Subscription & Meal Swap", "Plan progress · Weeks remaining · Menu swap · Pause with dates"],
             ["13", "Account — Order History", "All orders · Promo savings · Reorder · Reviews"],
             ["14", "Account — Wallet & Rewards", "Points balance · Redeem · Transaction history"],
           ].map(([n, title, sub]) => (
@@ -331,7 +331,7 @@ export const FresherPDF = () => (
         </View>
       </View>
       <View style={s.pageFooter}>
-        <Text style={s.footerText}>FRESHER.COM.SG  ·  PROTOTYPE SCREEN DOCUMENTATION  ·  CONFIDENTIAL</Text>
+        <Text style={s.footerText}>PERFORMANCEMEALS.COM.SG  ·  PROTOTYPE SCREEN DOCUMENTATION  ·  CONFIDENTIAL</Text>
         <Text style={s.footerLime}>INDEX</Text>
       </View>
     </Page>
@@ -339,14 +339,14 @@ export const FresherPDF = () => (
     {/* ═══════ SCREEN 01 — HOME PAGE ═══════ */}
     <ScreenPage n="01" title="Home Page" sub="Entry · Discovery · Hook building" color={C.lime}
       features={[
-        "Promo popup fires on every home page visit (1.8s delay)",
-        "Hero: headline, CTA buttons (Shop Ready Meals / Meal Plans / Build-A-Box)",
-        "Trust bar: Free delivery $80 · Macro-accurate · 60-day guarantee",
-        "Plans section: 3 cards (Ready Series / Meal Plan / Build-A-Box) with pricing",
-        "Trusted By: Athletes, Busy Professionals, Families + media logos strip",
-        "Created By: Chef Ahmad + Sports Nutrition Team credentials",
-        "Real Results: 6-card testimonials grid with names and results",
-        "Gift Card promotional section",
+        "Staggered hero entrance animation with scroll-reveal on all sections",
+        "Hero: 'Nutrition that works.' — company brand headline, two CTAs (Browse Ready Series / Explore Meal Plans)",
+        "4-stat animated counter bar: 8,400+ customers · 4.9/5 · 40+ meals · 5 yrs",
+        "Who We Are section: brand origin story + interactive milestone timeline (2019/2021/2022/2024)",
+        "What Makes Us Different: 4 expanding pillar cards (click to reveal full description)",
+        "Testimonials: 3 customer quotes with star ratings",
+        "Two Paths split-panel: hover-expand animation — Ready Series (dark/yellow) vs Meal Plan (white/orange)",
+        "No Gift Cards, no Rewards on parent brand page",
       ]}>
       {/* Nav */}
       <Nav />
@@ -619,21 +619,21 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 06 — BUILD-A-BOX ═══════ */}
-    <ScreenPage n="06" title="Build-A-Box" sub="Mix & match · 5–20 meals · Best value per meal" color={C.lime}
+    <ScreenPage n="06" title="Box Subscription" sub="Recurring delivery · 10% off · Weekly or fortnightly" color={C.lime}
       features={[
-        "Box size selector: 5 / 10 / 15 / 20 meals with per-meal price",
+        "Order type toggle: One-time vs Subscribe & Save 10% (defaults to Subscribe)",
+        "Frequency picker when subscribing: Weekly or Fortnightly",
+        "Box size selector: 5 / 10 / 15 / 20 meals with per-meal price (10% discount shown)",
         "10-meal Standard box highlighted as 'Most Popular'",
-        "Progress bar: X of N meals selected",
-        "Quantity controls on each meal card (+ / −)",
-        "Quantity badge on card thumbnail",
-        "'View Details' hover overlay linking to product modal",
-        "Box Summary panel: total meals, total price, per-meal rate",
-        "'Box Full' state disables adding more",
+        "Subscriber discount line item in summary (−10%)",
+        "Subscription badge in review step: frequency, first delivery date, 'Cancel anytime'",
+        "Start Subscription CTA → recurring billing set up",
+        "Box managed in Account → My Plan → Box Subscription card",
       ]}>
-      <Nav active="BUILD-A-BOX" />
+      <Nav active="BOX SUBSCRIPTION" />
       <View style={{ backgroundColor: C.black, padding: "10 14" }}>
-        <Text style={{ fontSize: 13, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 2 }}>Build Your Box</Text>
-        <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>Mix & match any meals. Best price per meal on the site.</Text>
+        <Text style={{ fontSize: 13, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 2 }}>Box Subscription</Text>
+        <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>Pick your meals, set a cadence. 10% off every delivery. Cancel anytime.</Text>
         {/* Size selector */}
         <View style={{ flexDirection: "row", gap: 5, marginBottom: 10 }}>
           {[{ qty: "5 meals", label: "Starter", ppm: "$12.40/meal", pop: false },
@@ -662,9 +662,11 @@ export const FresherPDF = () => (
           <View style={{ width: 110, backgroundColor: "#111", border: "1 solid rgba(255,255,255,0.08)", padding: 10 }}>
             <Text style={[s.mono, { color: C.gray, marginBottom: 4 }]}>BOX SUMMARY</Text>
             <Text style={{ fontSize: 8, color: C.white, marginBottom: 1 }}>10 meals · Standard</Text>
-            <Text style={{ fontSize: 18, fontFamily: "Courier-Bold", color: C.lime }}>{`$119.00`}</Text>
-            <Text style={{ fontSize: 6, color: C.gray, marginBottom: 10 }}>$11.90/meal</Text>
-            <View style={[s.btnLime, { width: "100%", alignItems: "center" }]}><Text style={s.btnText}>ADD TO CART →</Text></View>
+            <Text style={{ fontSize: 7, color: C.gray, textDecoration: "line-through" }}>$119.00</Text>
+            <Text style={{ fontSize: 18, fontFamily: "Courier-Bold", color: C.lime }}>{`$107.10`}</Text>
+            <Text style={{ fontSize: 6, color: C.gray, marginBottom: 4 }}>$10.71/meal · Save $11.90</Text>
+            <Text style={{ fontSize: 6, color: C.lime, marginBottom: 8 }}>↻ Weekly subscription</Text>
+            <View style={[s.btnLime, { width: "100%", alignItems: "center" }]}><Text style={s.btnText}>START SUBSCRIPTION →</Text></View>
           </View>
         </View>
       </View>
@@ -1050,13 +1052,12 @@ export const FresherPDF = () => (
     {/* ═══════ SCREEN 11 — ACCOUNT DASHBOARD ═══════ */}
     <ScreenPage n="11" title="Account — Dashboard" sub="Stats · Active plan · Renewal reminder · Referral" color={C.mint}
       features={[
-        "Renewal reminder amber banner: 'Plan renews in 3 days — $178 charged to Visa 4242'",
-        "Stats grid: Active Plan, Wallet Balance, Orders This Month, Reward Points",
-        "Active subscription card (dark forest): plan name, meals/day, days, billing",
-        "Quick actions: Pause Plan, Customize",
-        "Recent Orders list with order ID, items, total, status",
-        "Referral section: unique code, share link, earnings",
-        "Logout confirmation toast (3-second auto-dismiss)",
+        "Renewal reminder amber banner: 'Plan renews in 3 days'",
+        "2-stat grid only: Active Plan + Wallet Balance (Orders This Month and Reward Points removed per Jerome)",
+        "Active Meal Plan subscription card: plan name, billing cycle, Manage Plan / Pause buttons",
+        "Quick shortcuts: Swap meals + Plan type",
+        "Box Subscription status row: 10 meals · Weekly · Next delivery in 7 days · Manage →",
+        "No Recent Orders section on dashboard (moved to Order History tab)",
       ]}>
       <View style={{ flexDirection: "row" }}>
         {/* Sidebar */}
@@ -1079,12 +1080,10 @@ export const FresherPDF = () => (
             </View>
             <View style={s.badgeGold}><Text style={s.badgeText}>REVIEW PLAN</Text></View>
           </View>
-          {/* Stats */}
+          {/* Stats — 2 only per Jerome feedback */}
           <View style={{ flexDirection: "row", gap: 5, marginBottom: 8 }}>
-            {[{ l: "Active Plan", v: "MAINTAIN", c: C.gold, bg: C.forest },
+            {[{ l: "Active Plan", v: "MAINTAIN", c: C.gold, bg: C.black },
               { l: "Wallet Balance", v: "$12.50", c: C.lime, bg: C.black },
-              { l: "Orders / Month", v: "3", c: "#A78BFA", bg: C.black },
-              { l: "Reward Points", v: "1,234", c: C.mint, bg: C.black }
             ].map((s2) => (
               <View key={s2.l} style={{ flex: 1, backgroundColor: s2.bg, padding: 7 }}>
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.3)", letterSpacing: 1, marginBottom: 2 }}>{s2.l.toUpperCase()}</Text>
@@ -1092,35 +1091,40 @@ export const FresherPDF = () => (
               </View>
             ))}
           </View>
-          {/* Active plan */}
-          <View style={{ backgroundColor: C.forest, padding: 8, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          {/* Box sub status row */}
+          <View style={{ backgroundColor: C.white, border: "1 solid " + C.border, padding: "7 10", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+              <Text style={{ fontSize: 12 }}>📦</Text>
+              <View>
+                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.black }}>Box Subscription · 10 meals</Text>
+                <Text style={{ fontSize: 6, color: C.gray }}>Weekly · Next delivery in 7 days</Text>
+              </View>
+            </View>
+            <Text style={{ fontSize: 7, color: C.gray }}>Manage →</Text>
+          </View>
+          {/* Active plan card */}
+          <View style={{ backgroundColor: C.black, padding: 8, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <View>
-              <Text style={[s.mono, { color: C.mint, marginBottom: 2 }]}>ACTIVE SUBSCRIPTION</Text>
-              <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.white }}>MAINTAIN Plan · 4 meals/day</Text>
-              <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)" }}>Mon, Wed, Fri, Sat · 6am–9am · Weekly billing</Text>
+              <Text style={[s.mono, { color: C.lime, marginBottom: 2 }]}>● ACTIVE SUBSCRIPTION</Text>
+              <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.white }}>MAINTAIN Plan</Text>
+              <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)" }}>Weekly billing · Next charge Friday 19 Sep</Text>
               <Text style={{ fontSize: 13, fontFamily: "Courier-Bold", color: C.gold, marginTop: 2 }}>$178.00/week</Text>
             </View>
             <View style={{ gap: 4 }}>
-              <View style={{ backgroundColor: "rgba(255,255,255,0.1)", padding: "4 8" }}><Text style={{ fontSize: 7, color: C.white }}>EDIT PLAN</Text></View>
+              <View style={{ backgroundColor: C.lime, padding: "4 8" }}><Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black }}>MANAGE PLAN →</Text></View>
               <View style={{ backgroundColor: "rgba(255,255,255,0.05)", padding: "4 8" }}><Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)" }}>PAUSE</Text></View>
             </View>
           </View>
-          {/* Recent orders */}
-          <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: C.black, marginBottom: 5 }}>Recent Orders</Text>
-          {[["❄️ Herb Chicken ×2, Teriyaki ×1", "$36.70", "Delivered"],
-            ["🥗 Meal Plan — Maintain (Week 12)", "$178.00", "Delivered"]
-          ].map(([items, total, status]) => (
-            <View key={String(items)} style={{ backgroundColor: C.white, border: "1 solid " + C.border, padding: 7, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-              <View>
-                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold" }}>{items}</Text>
-                <Text style={{ fontSize: 6, color: C.gray }}>1 Sep 2025</Text>
+          {/* Quick shortcuts */}
+          <View style={{ flexDirection: "row", gap: 5, marginBottom: 0 }}>
+            {[{ icon: "🔄", label: "Swap meals", desc: "Change upcoming meals" }, { icon: "⚖️", label: "Plan type", desc: "MAINTAIN · 2,200 kcal" }].map((item) => (
+              <View key={item.label} style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.05)", padding: 8 }}>
+                <Text style={{ fontSize: 12, marginBottom: 3 }}>{item.icon}</Text>
+                <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.black }}>{item.label}</Text>
+                <Text style={{ fontSize: 6, color: C.gray, marginTop: 1 }}>{item.desc}</Text>
               </View>
-              <View style={{ alignItems: "flex-end" }}>
-                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold" }}>{total}</Text>
-                <Text style={{ fontSize: 6, color: C.green }}>{status}</Text>
-              </View>
-            </View>
-          ))}
+            ))}
+          </View>
         </View>
       </View>
     </ScreenPage>
@@ -1128,14 +1132,16 @@ export const FresherPDF = () => (
     {/* ═══════ SCREEN 12 — ACCOUNT SUBSCRIPTION + SWAP ═══════ */}
     <ScreenPage n="12" title="Account — Subscription & Meal Swap" sub="Edit plan · Thursday cutoff · Week tabs · Swap meals" color={C.mint}
       features={[
-        "Browse Menu / Review toggle",
-        "Week tabs: This Week, Week 2, 3, 4 with date ranges",
+        "Plan progress bar: 'Plan week 13 of 12' with yellow fill + weeks remaining counter (turns orange when ≤2 weeks left)",
+        "Week tabs show absolute plan week number (W13, W14…) alongside This Week / Week 2 / Week 3 / Week 4",
         "Thursday 1pm cutoff warning banner (amber) on current week",
-        "Review mode: meal rows with Lunch/Dinner slot label + Swap button",
-        "Swap modal: browse full menu, select replacement",
-        "Plan editing: Change goal (CUT/MAINTAIN/BUILD), meals/day, delivery days, time slot",
-        "Pause subscription: 1–4 weeks, with resume button when paused",
-        "Cancel subscription with retention flow and confirmation",
+        "My Menu / Browse toggle — review selected meals or browse available menu",
+        "Meal rows: image, name, macros, Lunch/Dinner badge, Swap button; Locked state on past-cutoff weeks",
+        "Swap modal: browse full menu, select replacement meal",
+        "Billing cycle: Weekly vs Monthly toggle with next billing date shown dynamically",
+        "Pause: 1–4 weeks selector WITH date range shown (e.g. 15 Sep – 5 Oct)",
+        "Box Subscription card: size picker, frequency toggle (weekly/fortnightly), Skip Next / Edit / Cancel",
+        "Cancel subscription with retention flow and 2-step confirmation",
       ]}>
       <View style={{ flexDirection: "row" }}>
         <View style={{ width: 110, backgroundColor: C.black, padding: 10 }}>
@@ -1146,16 +1152,20 @@ export const FresherPDF = () => (
           ))}
         </View>
         <View style={{ flex: 1, backgroundColor: C.parchment, padding: 10 }}>
-          {/* Plan card */}
-          <View style={{ backgroundColor: C.forest, padding: 8, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <View>
-              <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.white }}>MAINTAIN Plan · 4 meals/day</Text>
-              <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)" }}>Mon, Wed, Fri, Sat · 6am–9am</Text>
-              <Text style={{ fontSize: 13, fontFamily: "Courier-Bold", color: C.gold, marginTop: 2 }}>$178.00/week</Text>
+          {/* Plan progress */}
+          <View style={{ backgroundColor: C.white, border: "1 solid " + C.border, padding: "8 10", marginBottom: 8 }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 5 }}>
+              <View>
+                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: C.black }}>Menu Review</Text>
+                <Text style={{ fontSize: 6, color: C.gray }}>Swap cutoff: <Text style={{ fontFamily: "Helvetica-Bold" }}>Thursday 1pm</Text></Text>
+              </View>
+              <View style={{ alignItems: "flex-end" }}>
+                <Text style={{ fontSize: 7, color: C.black }}>Plan week <Text style={{ fontFamily: "Helvetica-Bold" }}>13</Text> of 12</Text>
+                <Text style={{ fontSize: 7, color: "#E85D04", fontFamily: "Helvetica-Bold" }}>1 week remaining</Text>
+              </View>
             </View>
-            <View style={{ gap: 3 }}>
-              <View style={{ backgroundColor: "rgba(255,255,255,0.1)", padding: "4 8" }}><Text style={{ fontSize: 7, color: C.white }}>EDIT PLAN</Text></View>
-              <View style={{ backgroundColor: "rgba(255,255,255,0.05)", padding: "4 8" }}><Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)" }}>PAUSE</Text></View>
+            <View style={{ height: 4, backgroundColor: C.border, marginBottom: 2 }}>
+              <View style={{ height: 4, width: "95%", backgroundColor: C.gold }} />
             </View>
           </View>
           {/* Menu review panel */}
@@ -1197,7 +1207,7 @@ export const FresherPDF = () => (
                   <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold" }}>{name}</Text>
                   <Text style={{ fontSize: 6, color: C.gray }}>{cal}</Text>
                 </View>
-                <View style={{ backgroundColor: slot === "Lunch" ? "#FFF3CD" : "#E8F4FD", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 10 }}>
+                <View style={{ backgroundColor: slot === "Lunch" ? "#FFF3CD" : "#E8F4FD", paddingHorizontal: 6, paddingVertical: 2 }}>
                   <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: slot === "Lunch" ? "#B8860B" : "#1565C0" }}>{slot}</Text>
                 </View>
                 <View style={s.btnBlack}><Text style={s.btnTextW}>SWAP</Text></View>
@@ -1281,10 +1291,11 @@ export const FresherPDF = () => (
     <ScreenPage n="14" title="Account — Wallet & Rewards" sub="Points balance · Redeem · Transaction history · Referral" color={C.mint}
       features={[
         "3 stat tiles: Wallet Balance ($12.50), Reward Points (1,234), Lifetime Earned (4,891 pts)",
+        "Fixed voucher tiers: 500 pts = $5 · 1,000 pts = $11 (+10% bonus) · 2,000 pts = $25 (+25% bonus)",
         "Points redemption slider: 50-pt increments, shows $-value equivalent",
         "Redeem button: applies credit to next order",
         "Transaction history: each earn/redeem row with date, description, points delta",
-        "Earn rates: 1pt per $1 for Ready-to-Go, 2× for Meal Plans, 1× for Build-A-Box",
+        "Earn rates: 1pt per $1 for Ready-to-Go, 2× for Meal Plans, 1× for Box Subscription",
         "Referral section: unique code (JEROME10), share link, $10 for both parties",
         "Track referral earnings: list of friends referred",
       ]}>
