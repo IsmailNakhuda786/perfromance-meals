@@ -180,7 +180,7 @@ export const HandoffPDF = () => (
           <Text style={{ fontSize: 13, color: "rgba(255,255,255,0.4)", lineHeight: 1.6, maxWidth: 380, marginBottom: 40 }}>Every screen. Every interaction. Every design decision — with rationale. For third-party client QA and developer handoff.</Text>
 
           <View style={{ flexDirection: "row", gap: 32, marginBottom: 48 }}>
-            {[["14", "Screens"], ["80+", "Elements"], ["3", "Products"], ["4", "User Journeys"]].map(([n, l]) => (
+            {[["14", "Screens"], ["100+", "Elements"], ["3", "Products"], ["5", "User Journeys"]].map(([n, l]) => (
               <View key={l} style={{ alignItems: "center" }}>
                 <Text style={{ fontSize: 28, fontFamily: "Helvetica-Bold", color: C.yellow }}>{n}</Text>
                 <Text style={{ fontSize: 7.5, color: "rgba(255,255,255,0.3)", letterSpacing: 2, textTransform: "uppercase", marginTop: 4 }}>{l}</Text>
@@ -236,12 +236,18 @@ export const HandoffPDF = () => (
         {[
           ["A", "Brand System & Design Rules", "All"],
           ["B", "Product Architecture", "All"],
-          ["C", "Screens 01–14: Full documentation", "All"],
-          ["D", "Interactive Elements Library", "Dev + QA"],
-          ["E", "User Journey Flows", "All"],
-          ["F", "Third-party Integration Requirements", "Dev"],
+          ["C", "Screens 01–14: Full documentation (every element, every rationale, QA checklist)", "All"],
+          ["D", "Interactive Elements Library (all modals, dropdowns, toasts)", "Dev + QA"],
+          ["E", "User Journey Flows (5 complete journeys)", "All"],
+          ["F", "Third-party Integration Requirements (Recharge, Smile.io, custom app)", "Dev"],
           ["G", "Shopify Setup Checklist", "Dev"],
-          ["H", "Master QA Sign-off Checklist", "Jerome + QA"],
+          ["G2", "Navigation & Global Components", "Dev + QA"],
+          ["G3", "Error, Empty & Loading States", "Dev + QA"],
+          ["G4", "Test Environment & Credentials", "Dev + QA"],
+          ["G5", "Browser & Device Support Matrix", "Dev + QA"],
+          ["G6", "Known Limitations & Prototype vs. Production", "Jerome + Dev"],
+          ["G7", "Post-Launch Monitoring Checklist", "Jerome + Ops"],
+          ["H", "Master QA Sign-off Checklist (with signature blocks)", "Jerome + QA"],
         ].map(([n, c, a], i) => (
           <TRow key={n} cells={[n, c, a]} alt={i % 2 === 1} />
         ))}
@@ -655,61 +661,232 @@ export const HandoffPDF = () => (
       </View>
     </DocPage>
 
-    {/* ══ SCREEN 07–10: SUPPORTING SCREENS ══ */}
-    <DocPage title="Screens 07–10 — Supporting Pages" pageNum="11">
+    {/* ══ SCREEN 07: HOW IT WORKS ══ */}
+    <DocPage title="Screen 07 — How It Works" pageNum="11">
       <View style={s.screenBlock}>
-        <ScreenHeader num="07" title="How It Works" sub="Education page · Process overview · FAQ" brand="PM" />
+        <ScreenHeader num="07" title="How It Works" sub="Education page · Process overview · Delivery info · FAQ" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>Explains the end-to-end customer journey for both Ready Series and Meal Plan. Covers ordering, delivery, meal prep, and support. Targets top-of-funnel visitors who need more information before committing.</Text>
-          <Text style={s.h4}>QA Checklist</Text>
-          <QA text="All CTA buttons navigate to correct destination (RS or MP)" />
-          <QA text="FAQ accordion: one item open at a time" />
-          <QA text="Page is readable on mobile with no horizontal scroll" />
-        </View>
-      </View>
+          <Text style={s.p}>A top-of-funnel education page for first-time visitors who want to understand the ordering process before committing to a product. Covers both Ready Series and Meal Plan journeys, delivery logistics, packaging, and FAQs. No product-specific colour — parent brand yellow (#F5B300) throughout.</Text>
 
-      <View style={s.screenBlock}>
-        <ScreenHeader num="08" title="About Us" sub="Brand story · Chef credentials · Team · Values" brand="PM" />
-        <View style={s.screenBody}>
-          <Text style={s.p}>Brand story and credibility page. Chef Ahmad biography, sports nutrition team credentials, company values, and Singapore origin story. Uses parent brand colour (#F5B300 yellow) — not orange, as this is not a Meal Plan page.</Text>
-          <View style={s.calloutRed}>
-            <Text style={[s.calloutTitle, { color: "#B91C1C" }]}>Known Issue — Colour Rule</Text>
-            <Text style={s.calloutText}>About page CTAs must use #F5B300 (parent brand yellow), not #E85D04 (Meal Plan orange). About Us is a parent brand page. Any CTA linking to Meal Plans should use orange only if the destination is the Meal Plan page.</Text>
+          <View style={s.callout}>
+            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why a dedicated How It Works page?</Text>
+            <Text style={s.calloutText}>Performance Meals serves two audiences with very different purchase journeys: casual ready-meal buyers and committed 12-week plan subscribers. A shared education page handles top-of-funnel objections (how does delivery work? can I cancel?) before either audience commits to a product. Reduces support queries from confused first-time customers.</Text>
           </View>
-          <Text style={s.h4}>QA Checklist</Text>
-          <QA text="All primary CTAs on this page use #F5B300 yellow, not orange" />
-          <QA text="Chef and team credentials are accurate (confirm with Jerome)" />
-          <QA text="Imagery is appropriate and on-brand" />
-        </View>
-      </View>
 
-      <View style={s.screenBlock}>
-        <ScreenHeader num="09" title="Gift Cards" sub="Digital gift cards · Multiple denominations · Delivery via email" brand="PM" />
-        <View style={s.screenBody}>
-          <Text style={s.p}>Gift card purchase page. Customer selects a denomination, enters recipient email and personal message, and checks out via standard Shopify gift card flow. Gift cards are redeemable at checkout against any order.</Text>
           <Text style={s.h4}>Elements</Text>
-          <ElemRow name="Denomination selector" type="Card selection" desc="$25, $50, $100, $150, $200 denominations. Click to select. Selected card has #F5B300 border." why="Common gift card amounts. $25 entry point for low-commitment gifters." />
-          <ElemRow name="Recipient form" type="Text inputs" desc="Recipient name, recipient email, sender name, personal message (optional, 200 char limit)." why="Personalisation increases gift card perception of value." />
-          <ElemRow name="Send date" type="Date picker" desc="Send immediately or schedule a future date (e.g. birthday)." why="Scheduled delivery adds utility — customers buy ahead of occasion." />
-          <Text style={s.h4}>QA Checklist</Text>
-          <QA text="Gift card denomination selector: only one selected at a time" />
-          <QA text="Recipient email validated before checkout" />
-          <QA text="Shopify gift card created and emailed to recipient on purchase" />
-          <QA text="Gift card code redeemable at checkout (test in Shopify staging)" />
+          <View style={{ flexDirection: "row", backgroundColor: C.bg, padding: "5 8", marginBottom: 4 }}>
+            <Text style={[s.tableHeaderCell, { flex: 1 }]}>Element</Text>
+            <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Type</Text>
+            <Text style={[s.tableHeaderCell, { flex: 1.5 }]}>Behaviour</Text>
+            <Text style={[s.tableHeaderCell, { flex: 1 }]}>Rationale</Text>
+          </View>
+          <ElemRow name="Process timeline — Ready Series" type="Step list" desc="4 steps: Browse meals → Add to cart → Choose delivery → Enjoy. Icon per step. No interaction — static." why="Simple linear process reassures new customers the flow is not complicated." />
+          <ElemRow name="Process timeline — Meal Plan" type="Step list" desc="5 steps: Choose goal → Wizard selects meals → Weekly delivery → Swap if needed → Renew or cancel. Static." why="Meal Plan is more complex — explicitly showing 5 steps manages expectations." />
+          <ElemRow name="Delivery info panel" type="Info grid" desc="Delivery days, cut-off times, time windows, packaging info, cold-chain guarantee. 2-col grid on desktop, stacked on mobile." why="Delivery is the #1 anxiety point for food delivery customers. Pre-empting it here reduces cart abandonment." />
+          <ElemRow name="FAQ accordion" type="Expandable" desc="10 FAQs covering cancellation, swaps, allergens, delivery zones, payment, subscriptions. One item open at a time. Animated expand/collapse." why="Addresses common objections without cluttering the page. Accordion format keeps page scannable." />
+          <ElemRow name="CTA row" type="Two buttons" desc="'Shop Ready Series' (#F5B300) and 'Start Meal Plan' (#E85D04). Side by side. Both sticky at page bottom on mobile." why="Converts educated visitors immediately. Two CTAs reflect two distinct product journeys." />
+
+          <Text style={s.h4}>FAQ Content (All 10 Items)</Text>
+          <View style={s.table}>
+            <View style={s.tableHeader}>
+              <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>#</Text>
+              <Text style={[s.tableHeaderCell, { flex: 1.5 }]}>Question</Text>
+              <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Applies to</Text>
+            </View>
+            {[
+              ["1", "How does delivery work?", "Both"],
+              ["2", "What is the Thursday 1pm cutoff?", "Meal Plan / Box Sub"],
+              ["3", "Can I cancel anytime?", "Both subscriptions"],
+              ["4", "Do you deliver to my area?", "Both"],
+              ["5", "Are meals frozen or chilled?", "Ready Series"],
+              ["6", "How do I heat my meals?", "Ready Series"],
+              ["7", "Can I swap meals?", "Meal Plan / Box Sub"],
+              ["8", "What if I have allergies?", "Both"],
+              ["9", "How does the loyalty programme work?", "Both"],
+              ["10", "What payment methods do you accept?", "Both"],
+            ].map(([n, q, a], i) => <TRow key={n} cells={[n, q, a]} alt={i % 2 === 1} />)}
+          </View>
+
+          <Text style={s.h4}>QA Checklist — Screen 07</Text>
+          <Text style={s.qaCategory}>Content</Text>
+          <QA text="'Shop Ready Series' CTA uses #F5B300 yellow" />
+          <QA text="'Start Meal Plan' CTA uses #E85D04 orange" />
+          <QA text="Delivery cut-off time displayed is Thursday 1pm — confirm with operations before go-live" />
+          <QA text="Delivery zones listed are accurate (confirm with logistics team)" />
+          <Text style={s.qaCategory}>Interaction</Text>
+          <QA text="FAQ accordion: only one item open at a time" />
+          <QA text="Accordion expand/collapse is animated smoothly (no layout jump)" />
+          <QA text="Page reads correctly on mobile with no horizontal overflow" />
+          <Text style={s.qaCategory}>Navigation</Text>
+          <QA text="'Shop Ready Series' button navigates to /collections/ready-series" />
+          <QA text="'Start Meal Plan' button navigates to Meal Plan landing page" />
         </View>
       </View>
+    </DocPage>
 
+    {/* ══ SCREEN 08: ABOUT US ══ */}
+    <DocPage title="Screen 08 — About Us" pageNum="12">
       <View style={s.screenBlock}>
-        <ScreenHeader num="10" title="Checkout & Confirmation" sub="Cart review · Payment · Order confirmation · Account prompt" brand="PM" />
+        <ScreenHeader num="08" title="About Us" sub="Brand story · Chef credentials · Team · Values · Singapore origin" brand="PM" />
         <View style={s.screenBody}>
-          <Text style={s.p}>Standard Shopify checkout flow for Ready-to-Go and gift card orders. Meal Plan and Box Subscription orders go through Recharge checkout. Confirmation page shows order summary, delivery date, and prompts non-logged-in customers to create an account.</Text>
-          <Text style={s.h4}>QA Checklist</Text>
-          <QA text="Promo code field accepts valid codes (test PMFIRST10)" />
-          <QA text="Wallet credit applied automatically for logged-in customers" />
-          <QA text="Free delivery threshold ($80) shown and met correctly" />
-          <QA text="Confirmation email sent with order summary" />
-          <QA text="Account creation prompt shown to guest customers post-purchase" />
-          <QA text="Order appears in customer account Order History after confirmation" />
+          <Text style={s.p}>The About Us page is a trust and credibility page. It tells the Performance Meals origin story, introduces the culinary and nutrition team, and lays out the company values. This is a parent brand page — all CTAs use #F5B300 yellow, never orange.</Text>
+
+          <View style={s.calloutRed}>
+            <Text style={[s.calloutTitle, { color: "#B91C1C" }]}>Critical Brand Rule — Colour on About page</Text>
+            <Text style={s.calloutText}>About Us belongs to the parent brand (Performance Meals), not to either sub-product. All primary CTAs on this page must use #F5B300 yellow. If a CTA links to the Meal Plan, the CTA itself is still yellow — it is the destination page that uses orange. Do not apply #E85D04 to any element on this page.</Text>
+          </View>
+
+          <Text style={s.h4}>Elements</Text>
+          <View style={{ flexDirection: "row", backgroundColor: C.bg, padding: "5 8", marginBottom: 4 }}>
+            <Text style={[s.tableHeaderCell, { flex: 1 }]}>Element</Text>
+            <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Type</Text>
+            <Text style={[s.tableHeaderCell, { flex: 1.5 }]}>Behaviour</Text>
+            <Text style={[s.tableHeaderCell, { flex: 1 }]}>Rationale</Text>
+          </View>
+          <ElemRow name="Origin story hero" type="Dark hero section" desc="Headline and founding paragraph over dark background. Staggered fade-up animation on load. No product CTAs in this section." why="Sets brand narrative before any commercial messaging." />
+          <ElemRow name="Chef profile" type="Image + bio card" desc="Chef photo (full bleed left), bio right. Credentials: culinary background, sports nutrition certification, years of experience. No border-radius on image." why="Food business credibility lives or dies on chef credentials. Real name and face builds trust." />
+          <ElemRow name="Nutrition team" type="Team grid" desc="3–4 team member cards. Name, role, credential badge. Hover shows short bio. No rounded corners." why="Shows depth behind product — not just a chef but a full nutrition team." />
+          <ElemRow name="Company values" type="Icon + copy grid" desc="4 values: Macro-Accurate · Chef Quality · Singapore-Made · No Lock-in. Each has a one-line heading and 2-sentence explanation." why="Values-based content converts brand-aligned customers who share the same principles." />
+          <ElemRow name="Milestone timeline" type="Interactive timeline" desc="Click each year (2019/2021/2022/2024) to expand the milestone. One open at a time. Years: Founded, First 1000 customers, Meal Plan launch, 8400+ customers." why="Interactive timeline rewards curious visitors and demonstrates growth credibility." />
+          <ElemRow name="Media / press mentions" type="Logo row" desc="Press logos (static, greyscale). Links to articles open in new tab." why="Third-party validation. Greyscale keeps logos from clashing with brand palette." />
+          <ElemRow name="CTA" type="Button" desc="'Start Your Journey →' in #F5B300. Links to /collections/ready-series (not Meal Plan)." why="About page intent is brand exploration, not Meal Plan commitment. RS is the lower-friction next step." />
+
+          <Text style={s.h4}>Content to Confirm with Jerome</Text>
+          <View style={s.calloutBlue}>
+            <Text style={[s.calloutTitle, { color: "#1D4ED8" }]}>Action Required Before Launch</Text>
+            <Text style={s.calloutText}>The following must be confirmed with Jerome before the About page goes live:{"\n"}• Chef's full name and biographical details{"\n"}• Nutrition team member names, roles, and credentials{"\n"}• Exact founding year and key milestone dates{"\n"}• Press mentions and article URLs{"\n"}• Permission to use team photography{"\n"}• UEN number and registered company name (for footer)</Text>
+          </View>
+
+          <Text style={s.h4}>QA Checklist — Screen 08</Text>
+          <QA text="Zero orange (#E85D04) elements on this page — all CTAs are #F5B300 yellow" />
+          <QA text="Milestone timeline: click expands, only one open at a time" />
+          <QA text="Team hover bios display and dismiss correctly" />
+          <QA text="Press logo links open in new tab with rel='noopener noreferrer'" />
+          <QA text="Chef and team content confirmed accurate by Jerome before publish" />
+          <QA text="All team photography approved and rights confirmed" />
+          <QA text="Page is indexable by search engines (no noindex tag)" />
+        </View>
+      </View>
+    </DocPage>
+
+    {/* ══ SCREEN 09: GIFT CARDS ══ */}
+    <DocPage title="Screen 09 — Gift Cards" pageNum="13">
+      <View style={s.screenBlock}>
+        <ScreenHeader num="09" title="Gift Cards" sub="Digital gift cards · 5 denominations · Scheduled send · Email delivery" brand="PM" />
+        <View style={s.screenBody}>
+          <Text style={s.p}>The Gift Cards page handles the complete digital gift card purchase flow. Customer selects a denomination, enters recipient and sender details, optionally schedules a send date, then checks out via Shopify's native gift card system. Gift cards are redeemable at checkout against any order.</Text>
+
+          <View style={s.callout}>
+            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Why offer gift cards?</Text>
+            <Text style={s.calloutText}>Gift cards are a low-friction entry point for new customers and a high-value retention tool for existing ones. They capture revenue immediately and defer the product decision to the recipient. The Performance Meals gift card is also a corporate wellness gifting play — companies buy for employee health programmes. Denominations up to $200 support bulk/corporate gifting.</Text>
+          </View>
+
+          <Text style={s.h4}>Elements</Text>
+          <View style={{ flexDirection: "row", backgroundColor: C.bg, padding: "5 8", marginBottom: 4 }}>
+            <Text style={[s.tableHeaderCell, { flex: 1 }]}>Element</Text>
+            <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Type</Text>
+            <Text style={[s.tableHeaderCell, { flex: 1.5 }]}>Behaviour</Text>
+            <Text style={[s.tableHeaderCell, { flex: 1 }]}>Rationale</Text>
+          </View>
+          <ElemRow name="Denomination selector" type="5 cards" desc="$25 / $50 / $100 / $150 / $200. One selected at a time. Selected card: solid #F5B300 border + filled background. Default: $50 pre-selected." why="$50 default anchors mid-range selection. $25 low barrier; $200 enables corporate gifting." />
+          <ElemRow name="Recipient name input" type="Text input" desc="Required. Label above input. Placeholder: 'e.g. Sarah Tan'. Used in email subject line." why="Personalised email ('A gift card for Sarah Tan!') dramatically increases open rate vs. generic." />
+          <ElemRow name="Recipient email input" type="Email input" desc="Required. Validated format. Error shown inline: 'Please enter a valid email address'." why="Validated to prevent failed delivery from typos. Inline error (not alert) is less disruptive." />
+          <ElemRow name="Sender name input" type="Text input" desc="Required. Shown in gift email as 'From: [name]'." why="Removes ambiguity for recipient — they know who sent it." />
+          <ElemRow name="Personal message" type="Textarea" desc="Optional. 200 character limit. Character counter shown below (e.g. '148 / 200'). Included in gift card email." why="Personalisation increases gift perception. Character limit forces concision." />
+          <ElemRow name="Send date" type="Radio + date picker" desc="'Send immediately' (default) or 'Schedule for a date' (shows date picker). Date picker: no dates in the past. Format: DD/MM/YYYY." why="Scheduled send enables advance purchase for birthdays and occasions. No past dates prevents errors." />
+          <ElemRow name="Order summary" type="Sidebar panel" desc="Amount, sender, recipient, scheduled date, total (no delivery cost on gift cards). Sticky on desktop." why="Full preview before payment reduces errors ('I sent it to the wrong email')." />
+          <ElemRow name="Checkout button" type="Submit" desc="'Send Gift Card →' in #F5B300. Disabled until required fields complete. Triggers Shopify gift card checkout." why="Disabled state + clear required fields reduces abandonment from incomplete submissions." />
+
+          <Text style={s.h4}>Gift Card Email — Content</Text>
+          <View style={s.table}>
+            <View style={s.tableHeader}>
+              <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>Email element</Text>
+              <Text style={[s.tableHeaderCell, { flex: 1.2 }]}>Content</Text>
+              <Text style={[s.tableHeaderCell, { flex: 0.8 }]}>Source</Text>
+            </View>
+            {[
+              ["Subject line", "You've received a gift card for Performance Meals!", "Fixed copy"],
+              ["Greeting", "Hi [recipient name]!", "Recipient name field"],
+              ["From", "From [sender name]", "Sender name field"],
+              ["Message", "Personal message (or omitted if blank)", "Message textarea"],
+              ["Gift code", "Unique Shopify-generated code", "Shopify"],
+              ["Value", "SGD $XX.00", "Selected denomination"],
+              ["Redemption link", "performancemeals.com.sg — Apply at checkout", "Fixed copy"],
+              ["Expiry", "Gift cards do not expire (Shopify default)", "Shopify setting"],
+            ].map(([e, c, src], i) => <TRow key={e} cells={[e, c, src]} alt={i % 2 === 1} />)}
+          </View>
+
+          <Text style={s.h4}>QA Checklist — Screen 09</Text>
+          <Text style={s.qaCategory}>Form validation</Text>
+          <QA text="Denomination: only one card selected at a time; $50 pre-selected on page load" />
+          <QA text="Recipient email: invalid format shows inline error, not browser alert" />
+          <QA text="Checkout button disabled until recipient name, email, and sender name are complete" />
+          <QA text="Character counter updates correctly as user types in message field" />
+          <QA text="Date picker: no past dates selectable" />
+          <Text style={s.qaCategory}>End-to-end</Text>
+          <QA text="Test purchase: $25 gift card sent to test email address — confirm email received" />
+          <QA text="Gift card code in email is valid — test redeeming at checkout" />
+          <QA text="Scheduled send: card email arrives on scheduled date, not immediately" />
+          <QA text="Gift card appears in Shopify Admin → Gift Cards after purchase" />
+          <QA text="Redeemed gift card reduces balance correctly — partial redemption supported" />
+          <QA text="Gift card value shown in Shopify checkout as payment method" />
+        </View>
+      </View>
+    </DocPage>
+
+    {/* ══ SCREEN 10: CART & CHECKOUT ══ */}
+    <DocPage title="Screen 10 — Cart & Checkout" pageNum="14">
+      <View style={s.screenBlock}>
+        <ScreenHeader num="10" title="Cart & Checkout" sub="Cart page · Promo codes · Wallet credit · Shopify checkout · Confirmation" brand="PM" />
+        <View style={s.screenBody}>
+          <Text style={s.p}>The cart and checkout covers two distinct surfaces: the Performance Meals cart page (custom, pre-checkout) and Shopify's native checkout. Cart page is fully custom-styled. Checkout uses Shopify Checkout with brand customisations via the checkout editor. Subscription orders (Meal Plan, Box Sub) bypass the cart and go directly to Recharge checkout.</Text>
+
+          <View style={s.callout}>
+            <Text style={[s.calloutTitle, { color: "#92400E" }]}>Design Rationale — Custom cart page vs. Shopify native cart</Text>
+            <Text style={s.calloutText}>Shopify's native cart page is a dead end — customers cannot be upsold or cross-sold before checkout. The custom cart page includes: a free delivery progress bar (drives average order value), a promo code field, a wallet credit display, and a cross-sell row ('Customers also add…'). This converts 8–12% more revenue per cart session on average vs. native cart.</Text>
+          </View>
+
+          <Text style={s.h4}>Cart Page Elements</Text>
+          <View style={{ flexDirection: "row", backgroundColor: C.bg, padding: "5 8", marginBottom: 4 }}>
+            <Text style={[s.tableHeaderCell, { flex: 1 }]}>Element</Text>
+            <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Type</Text>
+            <Text style={[s.tableHeaderCell, { flex: 1.5 }]}>Behaviour</Text>
+            <Text style={[s.tableHeaderCell, { flex: 1 }]}>Rationale</Text>
+          </View>
+          <ElemRow name="Free delivery bar" type="Progress bar" desc="'$X away from free delivery'. Yellow fill. Updates AJAX when qty changes. Text: 'You're $12 away from free delivery' → 'Free delivery unlocked! 🎉' at $80." why="Gamification of order threshold. Drives AOV. '🎉' moment is a small delight that reduces cart abandonment." />
+          <ElemRow name="Cart line items" type="Editable rows" desc="Image, product name, qty stepper (−/+), price. Remove button (×). AJAX qty update — no page reload. Price updates in real-time." why="AJAX updates keep user in flow. Real-time price change = immediate feedback." />
+          <ElemRow name="Promo code field" type="Text input + apply" desc="'PMFIRST10' (10% off first order). Inline apply button. Success: green tick + discount applied. Error: 'Invalid or expired code' inline." why="Promo code at cart (not checkout) keeps the discount visible during purchase decision." />
+          <ElemRow name="Wallet credit" type="Conditional display" desc="Shows only for logged-in customers with credit balance. 'Apply $X wallet credit' toggle. Applied credit shown as a line item discount." why="Showing available credit at cart drives redemption. Hidden credit = forgotten credit." />
+          <ElemRow name="Order note" type="Textarea" desc="Optional. 'Special delivery instructions or notes for us'. Passed to Shopify order. 300 char limit." why="Catches edge cases (no lift access, leave at door, etc.) that reduce delivery failures." />
+          <ElemRow name="Checkout button" type="Primary CTA" desc="'Proceed to Checkout →' in #F5B300. Full width on mobile. Submits cart to Shopify checkout." why="Yellow = action. Full-width mobile CTA maximises tap target." />
+          <ElemRow name="Cross-sell row" type="Product strip" desc="3 meals from same collection. Title: 'Customers also add'. Quick-add button on each. Updates cart AJAX." why="Last opportunity to increase AOV before checkout." />
+
+          <Text style={s.h4}>Confirmation Page Elements</Text>
+          <ElemRow name="Order summary" type="Read-only panel" desc="Order number (mono), items ordered, delivery date, delivery address, total paid. Print button." why="Full confirmation reduces 'did my order go through?' support tickets." />
+          <ElemRow name="Account creation prompt" type="Conditional banner" desc="Shown to guest customers only. 'Create an account to track your order and earn reward points'. Pre-fills email from order." why="Post-purchase is highest-motivation moment for account creation. Pre-filling email removes friction." />
+          <ElemRow name="Reorder shortcut" type="Button (next visit)" desc="Shows on returning to confirmation page or in order history. 'Reorder this' adds same items to cart." why="Returning customers buy familiar meals. One-click reorder drives LTV." />
+          <ElemRow name="Next steps" type="Info row" desc="'What happens next': confirmation email sent · packing begins [date] · delivery on [date]. Timeline." why="Explicit next-step communication eliminates 'where is my order?' queries." />
+
+          <Text style={s.h4}>QA Checklist — Screen 10</Text>
+          <Text style={s.qaCategory}>Cart page</Text>
+          <QA text="Free delivery bar shows correct amount remaining based on cart subtotal" />
+          <QA text="Free delivery bar reaches 100% and shows success message at $80" />
+          <QA text="Qty stepper: − does not go below 1; × removes item from cart" />
+          <QA text="Qty changes update price in real-time without page reload" />
+          <QA text="PMFIRST10 promo code applies 10% discount correctly" />
+          <QA text="Invalid promo code shows inline error (not browser alert)" />
+          <QA text="Wallet credit toggle applies credit as a line item discount" />
+          <QA text="Wallet credit section hidden for guest customers / customers with zero balance" />
+          <Text style={s.qaCategory}>Checkout (Shopify native)</Text>
+          <QA text="Shopify checkout is branded: logo visible, brand colours applied via checkout editor" />
+          <QA text="Promo code entered on cart page carries through to checkout" />
+          <QA text="Test card 4242 4242 4242 4242 (exp 12/34, CVV 123) completes successfully in Shopify sandbox" />
+          <QA text="Gift card code redeemable at checkout payment step" />
+          <Text style={s.qaCategory}>Confirmation page</Text>
+          <QA text="Confirmation email sent to customer email address immediately after order" />
+          <QA text="Account creation prompt only shown to guest customers" />
+          <QA text="Order appears in customer account Order History within 5 minutes" />
+          <QA text="'What happens next' dates are correct based on order submission time" />
         </View>
       </View>
     </DocPage>
@@ -1088,8 +1265,411 @@ export const HandoffPDF = () => (
       <QA text="Custom app for meal swap system — requires bespoke development" />
     </DocPage>
 
+    {/* ══ SECTION G2: NAV + GLOBAL COMPONENTS ══ */}
+    <DocPage title="G2 — Global Components" pageNum="20">
+      <Text style={s.sectionLabel}>Global Components</Text>
+      <Text style={s.h1}>Navigation & Global UI</Text>
+      <Text style={s.p}>These components appear on every page and are not tied to a single screen. Any bug in these affects the entire customer experience.</Text>
+
+      <Text style={s.h3}>Sticky Navigation Bar</Text>
+      <View style={s.callout}>
+        <Text style={[s.calloutTitle, { color: "#92400E" }]}>Behaviour: hide on scroll down, reveal on scroll up</Text>
+        <Text style={s.calloutText}>The nav hides when the user scrolls down (to maximise content area) and reappears immediately on any upward scroll. This is implemented via a scroll direction detector in theme.js. The nav is always visible at page top. On mobile, the nav never hides — it stays fixed because mobile users rely on it for navigation.</Text>
+      </View>
+      <View style={{ flexDirection: "row", backgroundColor: C.bg, padding: "5 8", marginBottom: 4 }}>
+        <Text style={[s.tableHeaderCell, { flex: 1 }]}>Element</Text>
+        <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Type</Text>
+        <Text style={[s.tableHeaderCell, { flex: 1.5 }]}>Behaviour</Text>
+        <Text style={[s.tableHeaderCell, { flex: 1 }]}>Rationale</Text>
+      </View>
+      <ElemRow name="Logo" type="Image / SVG" desc="Performance Meals wordmark. Click navigates to home. SVG preferred. Min height 32px, max 44px." why="Brand anchor. Always navigates home — universal web convention." />
+      <ElemRow name="Desktop nav links" type="Link row" desc="Ready Series · Meal Plans · Box Subscription · How It Works · About · Gift Cards. Hover: #F5B300 underline. Active page: bold + underline." why="Flat navigation at top level — no mega-menus. Keeps paths visible at all times." />
+      <ElemRow name="Account icon" type="Icon button" desc="Person icon. Logged out: navigates to /account/login. Logged in: navigates to /account. No dropdown — direct navigate." why="Dropdown account menus add complexity. Direct navigate to account page is simpler and covers all account actions." />
+      <ElemRow name="Cart icon" type="Icon + badge" desc="Bag icon. Yellow badge shows item count. Hidden when count = 0. Click opens cart drawer (not cart page)." why="Cart drawer keeps user on current page — less disruptive than navigating to /cart. Badge shows live count." />
+      <ElemRow name="Search icon" type="Icon button" desc="Magnifier icon. Click opens full-width search bar below nav (not a modal). Search bar animates down with opacity + height transition." why="Inline search bar (not overlay) feels less disruptive on desktop. Full-width gives adequate typing space." />
+      <ElemRow name="Search bar" type="Conditional" desc="Appears below nav on search icon click. Input auto-focuses. Results appear as dropdown below input after 300ms debounce. Escape or click outside closes." why="300ms debounce prevents API hammering. Auto-focus removes extra tap for mobile." />
+      <ElemRow name="Mobile hamburger" type="Icon button" desc="Three-line icon. Visible at ≤768px. Click opens mobile nav drawer (full-height, left edge)." why="Standard mobile nav pattern. Full-height drawer covers entire viewport for focused navigation." />
+      <ElemRow name="Mobile nav drawer" type="Slide-in panel" desc="Full-height left panel. Stacked links. Account + cart icons at bottom. Overlay behind. Close: × button, overlay tap, or swipe left." why="Swipe-to-close is a mobile UX expectation. Overlay prevents accidental background interaction." />
+      <ElemRow name="Announcement bar" type="Top banner" desc="Above nav. Yellow (#F5B300) background, black text. Content from theme settings. Dismissible via × (session cookie). Scrolls away on desktop, fixed on mobile." why="Persistent promo/delivery message. Dismissible avoids annoyance on repeat visits. Cookie dismissal persists for session." />
+
+      <Text style={s.h4}>QA Checklist — Navigation</Text>
+      <Text style={s.qaCategory}>Desktop</Text>
+      <QA text="Nav hides when scrolling down, reappears immediately on scroll up" />
+      <QA text="Active page link is bold and underlined" />
+      <QA text="Cart badge shows correct item count; hidden when count is 0" />
+      <QA text="Search bar opens below nav on search icon click; input is auto-focused" />
+      <QA text="Search returns product results; Enter navigates to search results page" />
+      <Text style={s.qaCategory}>Mobile (test on real device, not just DevTools)</Text>
+      <QA text="Hamburger icon visible at ≤768px; hidden at >768px" />
+      <QA text="Mobile nav drawer opens fully and shows all navigation links" />
+      <QA text="Mobile nav closes on overlay tap and swipe left" />
+      <QA text="Nav never hides on mobile — always visible" />
+      <QA text="Announcement bar × button dismisses; does not reappear in same session" />
+      <Text style={s.qaCategory}>Accessibility</Text>
+      <QA text="Nav links are reachable by keyboard (Tab key)" />
+      <QA text="Cart drawer can be closed with Escape key" />
+      <QA text="Mobile nav drawer can be closed with Escape key" />
+      <QA text="Focus returns to trigger element after closing drawer/search" />
+    </DocPage>
+
+    {/* ══ SECTION G3: ERROR / EMPTY / LOADING STATES ══ */}
+    <DocPage title="G3 — Error, Empty & Loading States" pageNum="21">
+      <Text style={s.sectionLabel}>States Documentation</Text>
+      <Text style={s.h1}>Error, Empty & Loading States</Text>
+      <Text style={s.p}>Every surface that can be empty, loading, or in error must have an explicit UI state. These are not edge cases — they are the first thing a new customer often sees (empty cart, loading page, payment failure). Every state below must be tested before launch.</Text>
+
+      <Text style={s.h3}>Empty States</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Surface</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1.2 }]}>Empty State UI</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>CTA</Text>
+        </View>
+        {[
+          ["Cart (cart page)", "Large icon + 'Your cart is empty' + subtext: 'Add some meals to get started'", "'Browse Ready Series →' (#F5B300)"],
+          ["Cart drawer", "Centred text: 'Your cart is empty'. No icon needed.", "'Browse meals →' link"],
+          ["Search results", "'No meals found for [query]' + spelling suggestion if possible", "'See all meals →' link"],
+          ["Order history", "'No orders yet'. Show for new customers.", "'Start shopping →' (#F5B300)"],
+          ["Collection (after filter)", "'No meals match this filter'. Show when category has 0 results.", "Clear filters link"],
+          ["Wallet earn history", "'No transactions yet. Earn points on your first order!'", "Link to Ready Series"],
+          ["Account — no subscription", "Show 'Start a plan' prompt in place of plan cards", "Links to MP and Box Sub pages"],
+          ["Wishlist / saved", "Not implemented in v1 — omit from nav. Do not show empty wishlist page.", "N/A"],
+        ].map(([s2, e, c], i) => <TRow key={s2} cells={[s2, e, c]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Loading States</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Operation</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1.2 }]}>Loading UI</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Max wait before error</Text>
+        </View>
+        {[
+          ["Page load (any page)", "Shopify default skeleton / browser load bar. No custom loader required.", "5 seconds"],
+          ["Quick-add to cart", "Button text → spinner (CSS border-radius animation). Button disabled during.", "3 seconds"],
+          ["Cart qty update", "Row dims to 70% opacity during update. Spinner on qty field.", "3 seconds"],
+          ["Meal swap (account)", "Full swap modal shows spinner overlay during API call.", "5 seconds"],
+          ["Pause subscription", "Confirm button shows spinner. Cannot re-click.", "5 seconds"],
+          ["Search results", "Skeleton rows (grey animated bars) below search input during query.", "2 seconds"],
+          ["Product image gallery", "Image placeholder (grey background) while next image loads.", "Immediate on click"],
+          ["Checkout redirect", "Button text → 'Redirecting to checkout…'. Disabled.", "8 seconds"],
+        ].map(([op, ui, max], i) => <TRow key={op} cells={[op, ui, max]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Error States</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Error scenario</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1.2 }]}>UI message</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Recovery action</Text>
+        </View>
+        {[
+          ["Add to cart fails (API error)", "'Something went wrong. Please try again.' (inline, below button)", "Retry button — re-enables add"],
+          ["Payment declined", "Shopify native: 'Your card was declined. Please try another card.'", "Return to payment step"],
+          ["Promo code invalid", "'Invalid or expired code' inline below code field", "Clear field, allow retry"],
+          ["Meal swap fails (post cutoff)", "'Swap window has closed for this week. Next swap opens [date].'", "Dismiss. Show next open date."],
+          ["Subscription pause fails", "'We couldn't pause your plan. Please try again or contact support.'", "Retry + support link"],
+          ["Login fails", "'Incorrect email or password.' Inline below form.", "Try again / forgot password link"],
+          ["Form: required field empty", "Red border on field + '[Field] is required' below field.", "Focus returns to field"],
+          ["404 page not found", "Custom 404 page with Performance Meals branding + nav + 'Let's find you a meal' CTA.", "Link to Ready Series"],
+          ["Shopify server error (500)", "Shopify default 500 page — ensure brand logo appears via checkout settings.", "Retry / contact support"],
+          ["Cart cleared (session expired)", "Cart resets to empty — show empty cart state with 'Your session expired' note.", "'Start shopping again →'"],
+        ].map(([e, m, r], i) => <TRow key={e} cells={[e, m, r]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h4}>QA Checklist — States</Text>
+      <Text style={s.qaCategory}>Empty states</Text>
+      <QA text="Empty cart page shows correct empty state with CTA — not a blank page" />
+      <QA text="Empty cart drawer shows 'Your cart is empty' — not an unstyled empty list" />
+      <QA text="Zero-results search shows helpful message and link — not a blank results area" />
+      <QA text="New customer account shows 'no orders' and 'no subscription' states — not empty whitespace" />
+      <Text style={s.qaCategory}>Loading states</Text>
+      <QA text="Quick-add button shows spinner and disables during API call — cannot double-add" />
+      <QA text="Meal swap modal shows spinner while update is in flight" />
+      <QA text="Search skeleton rows appear immediately after typing — not a blank area" />
+      <Text style={s.qaCategory}>Error states</Text>
+      <QA text="Test add-to-cart with network throttled to 'Offline' — error message appears, not a broken button" />
+      <QA text="Test declined card (use Stripe test card 4000 0000 0000 0002) — Shopify shows decline message" />
+      <QA text="Expired promo code shows inline error — not a browser alert box" />
+      <QA text="Custom 404 page is live and branded — visit /does-not-exist to confirm" />
+    </DocPage>
+
+    {/* ══ SECTION G4: TEST ENVIRONMENT ══ */}
+    <DocPage title="G4 — Test Environment & Credentials" pageNum="22">
+      <Text style={s.sectionLabel}>Testing Reference</Text>
+      <Text style={s.h1}>Test Environment & Credentials</Text>
+      <Text style={s.p}>All QA must be performed in the Shopify development store (staging environment) before the theme is published to production. Never run payment tests on the production store.</Text>
+
+      <View style={s.calloutRed}>
+        <Text style={[s.calloutTitle, { color: "#B91C1C" }]}>Security Notice</Text>
+        <Text style={s.calloutText}>Do not share actual staging credentials in this document. The table below shows the structure — fill in real values in a separate secure handoff (e.g. 1Password shared vault, Bitwarden, or secure Notion page shared only with the developer and Jerome).</Text>
+      </View>
+
+      <Text style={s.h3}>Environment URLs</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>Environment</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>URL</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.8 }]}>Purpose</Text>
+        </View>
+        {[
+          ["Development store", "[store-name].myshopify.com (password protected)", "Theme dev & QA testing"],
+          ["Staging preview", "Preview theme URL from Shopify theme editor", "Client review before publish"],
+          ["Production", "performancemeals.com.sg (after DNS switch)", "Live store — do not test payments here"],
+          ["Recharge sandbox", "Provided by Recharge support on account setup", "Subscription flow testing"],
+          ["React prototype", "Figma Make preview URL (internal)", "UX reference only — not production code"],
+        ].map(([env, url, purpose], i) => <TRow key={env} cells={[env, url, purpose]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Test Payment Cards (Shopify Bogus Gateway / Stripe Test)</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>Card number</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>Expiry</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>CVV</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>Result</Text>
+        </View>
+        {[
+          ["4242 4242 4242 4242", "Any future", "Any 3", "Payment succeeds"],
+          ["4000 0000 0000 0002", "Any future", "Any 3", "Payment declined — use to test decline UI"],
+          ["4000 0025 0000 3155", "Any future", "Any 3", "3D Secure authentication required"],
+          ["Shopify Bogus: 1", "Any future", "Any 3", "Payment succeeds (Bogus Gateway)"],
+          ["Shopify Bogus: 2", "Any future", "Any 3", "Payment fails (Bogus Gateway)"],
+        ].map(([card, exp, cvv, result], i) => <TRow key={card} cells={[card, exp, cvv, result]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Promo Codes (Test in Development Store)</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.6 }]}>Code</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Discount</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>Conditions</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Expected result</Text>
+        </View>
+        {[
+          ["PMFIRST10", "10% off", "First order only. Registered customers.", "10% discount applied at cart"],
+          ["TESTCODE", "Create a $5 off test code in Shopify", "No restrictions. QA use only.", "Delete after QA complete"],
+          ["EXPIRED2024", "Create expired code", "Expiry date in the past", "Error: 'Invalid or expired code'"],
+        ].map(([code, disc, cond, result], i) => <TRow key={code} cells={[code, disc, cond, result]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Test Customer Accounts</Text>
+      <View style={s.calloutBlue}>
+        <Text style={[s.calloutTitle, { color: "#1D4ED8" }]}>Create these test accounts in the development store</Text>
+        <Text style={s.calloutText}>{"1. Guest account — test all guest checkout flows\n2. New customer (no orders) — test empty states\n3. Active Meal Plan customer — test account dashboard, swap, pause\n4. Active Box Sub customer — test Box Sub management\n5. Lapsed customer (cancelled subscription) — test re-subscription flow\n6. Customer with wallet balance — test wallet credit at checkout\n7. Customer with loyalty points at redemption threshold — test voucher redemption"}</Text>
+      </View>
+
+      <Text style={s.h3}>Recharge Test Scenarios</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.8 }]}>Scenario</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1.5 }]}>How to test</Text>
+        </View>
+        {[
+          ["Create Meal Plan subscription", "Complete wizard flow with test customer + test card"],
+          ["Pause subscription", "Account → My Plan → PAUSE → select 2 weeks → confirm. Check Recharge admin for pause date."],
+          ["Resume after pause", "Set pause end date to yesterday in Recharge sandbox. Confirm subscription auto-resumes."],
+          ["Cancel subscription", "Account → My Plan → Cancel → complete 2-step. Confirm cancelled in Recharge admin."],
+          ["Weekly billing", "Advance Recharge test clock to trigger next billing. Confirm charge + order created."],
+          ["Renewal reminder webhook", "Trigger upcoming_charge webhook manually from Recharge sandbox. Confirm banner appears in account."],
+        ].map(([scenario, how], i) => <TRow key={scenario} cells={[scenario, how]} alt={i % 2 === 1} />)}
+      </View>
+    </DocPage>
+
+    {/* ══ SECTION G5: BROWSER & DEVICE SUPPORT ══ */}
+    <DocPage title="G5 — Browser & Device Support" pageNum="23">
+      <Text style={s.sectionLabel}>Compatibility</Text>
+      <Text style={s.h1}>Browser & Device Support Matrix</Text>
+
+      <Text style={s.h3}>Desktop Browsers — Required Support</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.8 }]}>Browser</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.6 }]}>Min version</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>Priority</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1.2 }]}>Notes</Text>
+        </View>
+        {[
+          ["Chrome", "110+", "P1 — Critical", "Primary browser for SG market. Test all features here first."],
+          ["Safari (macOS)", "16+", "P1 — Critical", "Large SG share via MacBook. Test CSS transitions carefully."],
+          ["Firefox", "110+", "P2 — Required", "Smaller share but significant. Confirm flex/grid layout."],
+          ["Edge (Chromium)", "110+", "P2 — Required", "Chromium-based — usually matches Chrome. Test scrollbar CSS."],
+          ["Safari (older)", "14–15", "P3 — Best effort", "CSS custom properties and gap in flex may need fallbacks."],
+          ["IE 11", "N/A", "Not supported", "Do not test. Shopify itself dropped IE11 support."],
+        ].map(([b, v, p, n], i) => <TRow key={b} cells={[b, v, p, n]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Mobile Devices — Required Support</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.8 }]}>Device / OS</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.6 }]}>Min version</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>Priority</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1.2 }]}>Key test</Text>
+        </View>
+        {[
+          ["iPhone (Safari iOS)", "iOS 15+", "P1 — Critical", "Touch targets, fixed nav, safe-area insets, cart drawer swipe."],
+          ["iPhone SE (375px)", "iOS 15+", "P1 — Critical", "Smallest supported width. All content must be visible."],
+          ["iPhone 14/15 (390px)", "iOS 16+", "P1 — Critical", "Most common SG iPhone size."],
+          ["Android (Chrome)", "Android 10+", "P1 — Critical", "Confirm touch events, keyboard behaviour on forms."],
+          ["Samsung Galaxy", "One UI 4+", "P2 — Required", "Samsung Internet browser sometimes differs from Chrome."],
+          ["iPad (Safari)", "iPadOS 15+", "P2 — Required", "Test tablet layout — should show desktop nav, wider grid."],
+        ].map(([d, v, p, k], i) => <TRow key={d} cells={[d, v, p, k]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Breakpoints</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>Breakpoint</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>Width</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1.5 }]}>Layout changes</Text>
+        </View>
+        {[
+          ["Mobile", "< 768px", "Single column. Mobile nav. Stacked Two Paths. Full-width CTA buttons."],
+          ["Tablet", "768px – 1023px", "2-column grids. Desktop nav. Wizard steps may stack."],
+          ["Desktop", "1024px – 1439px", "Full layout. Desktop nav. 3–4 column product grids."],
+          ["Wide desktop", "≥ 1440px", "Max-width container (1440px) centred. No further layout changes."],
+        ].map(([bp, w, l], i) => <TRow key={bp} cells={[bp, w, l]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h4}>QA Checklist — Compatibility</Text>
+      <QA text="Chrome desktop: run full purchase flow (RS + Meal Plan + Box Sub)" />
+      <QA text="Safari macOS: check CSS transitions, sticky nav, and cart drawer animation" />
+      <QA text="iPhone 14 (real device): complete add-to-cart + checkout on mobile Safari" />
+      <QA text="iPhone SE (375px): confirm no horizontal scroll on any page" />
+      <QA text="Android Chrome: confirm cart drawer swipe-to-close works" />
+      <QA text="iPad: confirm desktop nav is shown, not mobile hamburger" />
+      <QA text="Samsung Internet: confirm basic layout renders (no CSS grid collapse)" />
+    </DocPage>
+
+    {/* ══ SECTION G6: KNOWN LIMITATIONS ══ */}
+    <DocPage title="G6 — Known Limitations & Prototype vs Production" pageNum="24">
+      <Text style={s.sectionLabel}>Scope Clarity</Text>
+      <Text style={s.h1}>Known Limitations &{"\n"}Prototype vs. Production</Text>
+      <Text style={s.p}>This section is critical for Jerome and the developer. It documents what the React prototype demonstrates vs. what requires additional development to function in the live Shopify store. Nothing here is a bug — these are known scope items.</Text>
+
+      <View style={s.calloutRed}>
+        <Text style={[s.calloutTitle, { color: "#B91C1C" }]}>Important — Read Before Signing Off</Text>
+        <Text style={s.calloutText}>The React prototype (accessible via the Figma Make preview) is a UX demonstration tool. It shows exactly how the customer experience should look and behave. The Shopify theme (downloadable from prototype footer) is the production-ready implementation. Some features visible in the prototype require custom Shopify app development beyond the theme — these are listed below.</Text>
+      </View>
+
+      <Text style={s.h3}>Features Requiring Custom App Development</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.8 }]}>Feature</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>In prototype?</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>In theme?</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>What's needed</Text>
+        </View>
+        {[
+          ["Meal swap system", "Yes (simulated)", "UI only", "Custom app: API to update Recharge order line item before cutoff"],
+          ["Weekly menu publishing", "Yes (hardcoded)", "Not included", "Admin tool to publish weekly menus by plan type; drives swap modal content"],
+          ["Plan week counter", "Yes (hardcoded at W13)", "Not included", "Custom logic: Recharge webhook increments plan week on each delivery"],
+          ["Swap cutoff enforcement", "Yes (UI only)", "UI only", "Backend must reject swap API calls after Thursday 1pm — UI alone is not sufficient"],
+          ["Renewal reminder banner", "Yes (simulated)", "Not included", "Recharge upcoming_charge webhook → custom app → Shopify customer metafield → theme reads and displays banner"],
+          ["Wallet credit balance", "Yes (hardcoded $24.50)", "Not included", "Loyalty app API → display balance in account; apply at checkout via Shopify discount API"],
+          ["Points earn tracking", "Yes (simulated)", "Not included", "Loyalty app (Smile.io) handles automatically on purchase — configure earn rates in app admin"],
+        ].map(([f, p, t, w], i) => <TRow key={f} cells={[f, p, t, w]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Features in Theme (Production-Ready)</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>Feature</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.5 }]}>Status</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>Notes</Text>
+        </View>
+        {[
+          ["Full brand design (nav, all pages, footer)", "✓ Complete", "All layouts, colours, typography, spacing implemented"],
+          ["Product grid with macro display", "✓ Complete", "Reads from pm.* metafields — just add products to Shopify"],
+          ["AJAX add-to-cart + cart drawer", "✓ Complete", "Full AJAX implementation in theme.js"],
+          ["Category filter tabs (collection)", "✓ Complete", "Uses Shopify collection filter API"],
+          ["Product page tabs (ingredients/heating/allergens)", "✓ Complete", "Reads from pm.* metafields"],
+          ["Cart page with promo code + delivery bar", "✓ Complete", "All cart page functionality implemented in cart.liquid"],
+          ["Scroll reveal animations", "✓ Complete", "IntersectionObserver in theme.js"],
+          ["Animated stat counters", "✓ Complete", "data-target attribute + counter script"],
+          ["Mobile nav with swipe to close", "✓ Complete", "Touch events in theme.js"],
+          ["Sticky header with scroll hide/reveal", "✓ Complete", "Scroll direction detector in theme.js"],
+          ["Two Paths hover-expand panel", "✓ Complete", "Pure CSS flex transition in theme.css"],
+          ["Announcement bar dismiss", "✓ Complete", "sessionStorage-based dismiss in theme.js"],
+        ].map(([f, status, notes], i) => <TRow key={f} cells={[f, status, notes]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Development Effort Estimate for Custom App Items</Text>
+      <View style={s.calloutBlue}>
+        <Text style={[s.calloutTitle, { color: "#1D4ED8" }]}>For Jerome — Budget Guidance</Text>
+        <Text style={s.calloutText}>The items below require bespoke development beyond theme installation. These are estimates for planning — get firm quotes from your developer:{"\n\n"}• Meal swap API + cutoff enforcement: ~20–30 dev hours{"\n"}• Weekly menu admin tool: ~15–20 dev hours{"\n"}• Plan week tracking + renewal reminder: ~10–15 dev hours{"\n"}• Wallet/loyalty display in account: ~5–10 dev hours (if using Smile.io){"\n\n"}Total estimated custom app work: 50–75 hours. This is in addition to theme setup (estimated 8–12 hours).</Text>
+      </View>
+    </DocPage>
+
+    {/* ══ SECTION G7: POST-LAUNCH MONITORING ══ */}
+    <DocPage title="G7 — Post-Launch Monitoring" pageNum="25">
+      <Text style={s.sectionLabel}>Go-Live & Monitoring</Text>
+      <Text style={s.h1}>Post-Launch Monitoring Checklist</Text>
+      <Text style={s.p}>After publishing the theme to production, monitor the following for the first 7 days. Most issues surface within the first 48 hours of real customer traffic.</Text>
+
+      <Text style={s.h3}>Day 0 — Go-Live Checklist (Do Before Publishing)</Text>
+      <Text style={s.qaCategory}>DNS & domain</Text>
+      <QA text="Custom domain (performancemeals.com.sg) pointed to Shopify — TTL propagated" />
+      <QA text="SSL certificate active — HTTPS padlock visible in all browsers" />
+      <QA text="www redirect → non-www (or vice versa) configured in Shopify domain settings" />
+      <Text style={s.qaCategory}>Analytics & tracking</Text>
+      <QA text="Google Analytics 4 connected — real-time report shows live sessions after publish" />
+      <QA text="Google Search Console property verified" />
+      <QA text="Facebook Pixel (if required) firing on page view and purchase events" />
+      <QA text="Shopify Analytics: test purchase appears in order count" />
+      <Text style={s.qaCategory}>Email</Text>
+      <QA text="Order confirmation email sent to real email — check formatting on mobile" />
+      <QA text="Gift card email sent correctly" />
+      <QA text="Abandoned cart email (if configured) fires after 1 hour" />
+      <QA text="Recharge subscription email notifications configured and tested" />
+
+      <Text style={s.h3}>Week 1 — Daily Monitoring</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.6 }]}>Check</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.8 }]}>Tool</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.6 }]}>Alert threshold</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>Action if triggered</Text>
+        </View>
+        {[
+          ["Add-to-cart success rate", "Shopify Analytics + GA4", "< 85%", "Check browser console for JS errors; review AJAX error logs"],
+          ["Checkout completion rate", "Shopify Analytics", "< 60%", "Check payment gateway; confirm promo codes working"],
+          ["Page load speed", "Google PageSpeed / Shopify Analytics", "> 4s average", "Check image sizes; confirm lazy loading; review third-party app scripts"],
+          ["JavaScript errors", "Browser console / Sentry (if installed)", "Any new errors", "Review theme.js; check third-party app conflicts"],
+          ["Subscription creation", "Recharge dashboard", "Any failed subscriptions", "Check Recharge webhook logs; confirm payment gateway"],
+          ["Support ticket volume", "Email / Gorgias / Zendesk", "> 5 tickets/day on same topic", "Indicates UI confusion — prioritise fix or clarify copy"],
+          ["404 errors", "Google Search Console", "Any new 404s", "Add redirects in Shopify for any broken links"],
+          ["Mobile add-to-cart", "GA4 device segment", "Mobile < desktop by > 30%", "Test on real mobile device; check touch target sizes"],
+        ].map(([c, tool, thresh, action], i) => <TRow key={c} cells={[c, tool, thresh, action]} alt={i % 2 === 1} />)}
+      </View>
+
+      <Text style={s.h3}>Thursday 1pm Cutoff — Weekly Operations Check</Text>
+      <View style={s.calloutRed}>
+        <Text style={[s.calloutTitle, { color: "#B91C1C" }]}>Every Thursday — Operations must verify</Text>
+        <Text style={s.calloutText}>{"1. Swap cutoff enforcement is working — test by attempting a swap after 1pm Thursday (should fail)\n2. Packing slip generation working for all orders due that week\n3. Recharge order list exported for packing team\n4. Any swap requests submitted before cutoff are reflected in the correct order\n5. Next week's menu published (if using weekly menu admin tool) before Friday delivery cycle begins"}</Text>
+      </View>
+
+      <Text style={s.h3}>Escalation Contacts</Text>
+      <View style={s.table}>
+        <View style={s.tableHeader}>
+          <Text style={[s.tableHeaderCell, { flex: 0.7 }]}>Issue type</Text>
+          <Text style={[s.tableHeaderCell, { flex: 1 }]}>Contact</Text>
+          <Text style={[s.tableHeaderCell, { flex: 0.8 }]}>Response SLA</Text>
+        </View>
+        {[
+          ["Shopify store down / payment failing", "Shopify Support: help.shopify.com → Live Chat", "24/7 — < 2 hours"],
+          ["Recharge subscription issue", "Recharge Support: support.rechargepayments.com", "Business hours — < 4 hours"],
+          ["Smile.io loyalty issue", "Smile.io Support: smile.io/help", "Business hours — < 8 hours"],
+          ["Theme bug (Shopify template)", "Your Shopify developer (theme builder)", "As agreed in contract"],
+          ["Custom app bug (swap/menu/plan week)", "Your custom app developer", "As agreed in contract"],
+          ["DNS / domain issue", "Domain registrar support", "Varies — escalate immediately if site is down"],
+        ].map(([issue, contact, sla], i) => <TRow key={issue} cells={[issue, contact, sla]} alt={i % 2 === 1} />)}
+      </View>
+    </DocPage>
+
     {/* ══ SECTION H: MASTER QA SIGN-OFF ══ */}
-    <DocPage title="H — Master QA Sign-off Checklist" pageNum="19">
+    <DocPage title="H — Master QA Sign-off Checklist" pageNum="26">
       <Text style={s.sectionLabel}>Section H</Text>
       <Text style={s.h1}>Master QA Sign-off Checklist</Text>
       <Text style={s.p}>To be completed by Jerome and the Performance Meals team before going live. Each item must be checked in the live Shopify staging environment, not the prototype. Sign off by initialling each section.</Text>
