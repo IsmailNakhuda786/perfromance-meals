@@ -1,219 +1,276 @@
 import { useState } from "react";
 import { Page } from "@/data";
-import { PerformanceMealsLogo, ReadySeriesLogo, MealPlanLogo } from "@/components/Logos";
+import { PerformanceMealsLogo } from "@/components/Logos";
 
 interface Props {
   navigate: (page: Page) => void;
   navigateToWizard?: (plan?: string) => void;
 }
 
-const RS_HIGHLIGHTS = [
-  { n: "40+", l: "Meal options" },
-  { n: "From $8.90", l: "Per meal" },
-  { n: "3-min prep", l: "Microwave ready" },
-  { n: "Next-day", l: "Delivery by 10am" },
+const MILESTONES = [
+  { year: "2019", event: "Founded in Singapore by athletes who couldn't find food that actually fit their training." },
+  { year: "2021", event: "Launched the Meal Plan subscription — the first goal-led meal service in SG with personal check-ins." },
+  { year: "2022", event: "Ready Series launched for customers who wanted clean food without the commitment." },
+  { year: "2024", event: "8,400+ active customers. 40+ macro-tracked meals. Still made fresh daily." },
 ];
 
-const MP_HIGHLIGHTS = [
-  { n: "Goal-first", l: "CUT / MAINTAIN / BUILD" },
-  { n: "Boutique", l: "Personal support" },
-  { n: "6by60", l: "Buddy Plan · HYROX" },
-  { n: "Fresh daily", l: "Prepared that morning" },
+const PILLARS = [
+  {
+    n: "01",
+    title: "Performance-first nutrition",
+    desc: "Every meal is built around macros that actually support training — not just calories in, calories out. We engineered the food we wanted to eat ourselves.",
+  },
+  {
+    n: "02",
+    title: "Real food, no shortcuts",
+    desc: "Prepared daily in our Singapore kitchen. No preservatives, no shortcuts. Delivered fresh the next morning before 10am.",
+  },
+  {
+    n: "03",
+    title: "Boutique at scale",
+    desc: "We still answer messages personally. Every Meal Plan customer gets regular check-ins. We've stayed small enough to care.",
+  },
+  {
+    n: "04",
+    title: "Two clear paths, one standard",
+    desc: "Ready Series for everyday momentum. Meal Plan for structured, goal-led progress. The same kitchen, the same quality — however your life works best.",
+  },
 ];
 
-const RS_FEATURES = [
-  { icon: "❄️", title: "Frozen at peak", desc: "Prepared fresh, flash-frozen at peak nutrition. 2-month freezer life." },
-  { icon: "⚡", title: "3-minute meals", desc: "Microwave or oven from frozen. No prep, no dishes, no excuses." },
-  { icon: "📦", title: "Bundle & save", desc: "5, 10, 15, or 20-meal bundles. More meals = lower per-meal price." },
-];
-
-const MP_FEATURES = [
-  { icon: "🎯", title: "Goal-led planning", desc: "CUT, MAINTAIN, or BUILD. Every meal mapped to your target, not the other way around." },
-  { icon: "👤", title: "Personal check-ins", desc: "Regular check-ins, macro reports, and real support from people who know your plan." },
-  { icon: "🔄", title: "Weekly flexibility", desc: "Swap any meal before Thursday 1pm. Your preferences, your schedule." },
+const TESTIMONIALS = [
+  { name: "Jonathan C.", role: "6by60 programme · 12 weeks", text: "Down 9kg. The check-ins made the difference — it felt like having a coach, not just a meal service.", stars: 5 },
+  { name: "Mei Lin T.", role: "Meal Plan · 6 months", text: "Finally stopped guessing what to eat. The meals fit my training schedule and I actually look forward to them.", stars: 5 },
+  { name: "Ravi S.", role: "Ready Series customer", text: "I travel a lot. Stocking the freezer with Ready Series means I never fall off when life gets chaotic.", stars: 5 },
 ];
 
 export default function HomePage({ navigate, navigateToWizard }: Props) {
-  const [brand, setBrand] = useState<"ready" | "plan">("ready");
-
-  const isRS = brand === "ready";
-  const accentColor = isRS ? "#F5B300" : "#E85D04";
-  const bgColor = isRS ? "#1A1A1A" : "#FFFFFF";
-  const textColor = isRS ? "#FFFFFF" : "#1A1A1A";
+  const [expandedMilestone, setExpandedMilestone] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-[#F7F5F0] text-[#1A1A1A]">
+    <div className="bg-[#1A1A1A] text-white">
 
-      {/* ── PARENT BRAND HEADER ── */}
-      <div className="bg-white border-b border-[#E8E4DC]">
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 py-12 flex flex-col items-center gap-3 text-center">
-          <PerformanceMealsLogo size="lg" variant="dark" />
-          <p className="text-[#888] text-[15px] max-w-[480px] leading-relaxed mt-3">
-            Nutrition that works as hard as you do. One standard. Two clear ways to eat well.
+      {/* ── HERO ── */}
+      <section className="relative overflow-hidden min-h-[90svh] flex flex-col justify-center">
+        {/* Subtle grid texture */}
+        <div className="absolute inset-0 opacity-[0.04]"
+          style={{ backgroundImage: "linear-gradient(#F5B300 1px,transparent 1px),linear-gradient(90deg,#F5B300 1px,transparent 1px)", backgroundSize: "80px 80px" }} />
+        {/* Yellow glow top-right */}
+        <div className="absolute -top-32 -right-32 w-[600px] h-[600px] bg-[#F5B300]/6 rounded-full blur-[160px] pointer-events-none" />
+
+        <div className="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-10 py-24 sm:py-32">
+          <div className="mb-10">
+            <PerformanceMealsLogo size="lg" variant="dark" />
+          </div>
+
+          <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-5">Singapore · Est. 2019</p>
+
+          <h1 className="font-display text-[52px] sm:text-[72px] lg:text-[88px] font-extrabold leading-[0.9] mb-8 max-w-[820px]">
+            Nutrition that<br />
+            <span className="text-[#F5B300]">works.</span>
+          </h1>
+
+          <p className="text-white/50 text-[17px] sm:text-[19px] leading-relaxed max-w-[560px] mb-12">
+            We built the food we couldn't find — performance-grade meals made fresh daily,
+            designed around the way serious people actually train and live.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 mt-4">
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-0 border border-white/10 mb-12">
             {[
-              { stat: "8,400+", label: "Active customers" },
-              { stat: "4.9 / 5", label: "Verified rating" },
-              { stat: "40+", label: "Macro-tracked meals" },
-              { stat: "Free delivery", label: "Orders above $80" },
-            ].map((s) => (
-              <div key={s.label} className="flex items-center gap-2">
-                <span className="font-bold text-[13px]">{s.stat}</span>
-                <span className="text-[12px] text-[#888]">{s.label}</span>
+              { v: "8,400+", l: "Active customers" },
+              { v: "4.9 / 5", l: "Average rating" },
+              { v: "40+", l: "Macro-tracked meals" },
+              { v: "Since 2019", l: "Made fresh daily" },
+            ].map((s, i) => (
+              <div key={i} className="p-5 border-r border-b sm:border-b-0 border-white/10 last:border-r-0">
+                <div className="font-display text-[28px] font-extrabold text-[#F5B300] leading-none">{s.v}</div>
+                <div className="text-white/35 text-[11px] mt-1 font-mono uppercase tracking-wider">{s.l}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Two paths CTA */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button onClick={() => navigate("ready-series")}
+              className="flex-1 sm:flex-none inline-flex items-center justify-between gap-3 px-8 py-5 bg-[#F5B300] text-[#111] font-bold text-[12px] tracking-[0.18em] uppercase hover:bg-white transition-colors">
+              <span>Browse Ready Series</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <button onClick={() => navigate("meal-plan-landing")}
+              className="flex-1 sm:flex-none inline-flex items-center justify-between gap-3 px-8 py-5 border border-white/20 text-white/60 font-bold text-[12px] tracking-[0.18em] uppercase hover:border-[#E85D04] hover:text-white transition-colors">
+              <span>Explore Meal Plans</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHO WE ARE ── */}
+      <section className="bg-white text-[#1A1A1A] py-20 sm:py-28 border-t border-white/10">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div>
+              <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-4">Who we are</p>
+              <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold leading-[0.95] text-[#1A1A1A] mb-8">
+                We built the food<br />we couldn't find.
+              </h2>
+              <div className="space-y-5 text-[#555] text-[15px] leading-relaxed">
+                <p>
+                  Performance Meals started because the founders — competitive athletes training in Singapore — couldn't find food
+                  that actually supported what they were doing. Everything was either too expensive, nutritionally vague, or
+                  just plain bad.
+                </p>
+                <p>
+                  So they built it themselves. A kitchen focused entirely on performance nutrition — fresh, macro-tracked,
+                  chef-prepared meals made for people who take their health seriously but still have a life to live.
+                </p>
+                <p>
+                  Today we serve over 8,400 active customers across Singapore. We've stayed close to our original promise:
+                  honest food, personal service, real results.
+                </p>
+              </div>
+            </div>
+
+            {/* Milestones timeline */}
+            <div className="border-l-2 border-[#F5B300] pl-8 space-y-0">
+              <div className="text-[10px] font-mono tracking-[0.35em] uppercase text-[#aaa] mb-6">Our story</div>
+              {MILESTONES.map((m, i) => (
+                <div key={i}
+                  className="relative pb-8 last:pb-0 cursor-pointer group"
+                  onClick={() => setExpandedMilestone(expandedMilestone === i ? null : i)}>
+                  <div className="absolute -left-[41px] top-1 w-3 h-3 bg-[#F5B300]" />
+                  <div className="font-mono text-[13px] font-bold text-[#F5B300] mb-1">{m.year}</div>
+                  <p className={`text-[14px] leading-relaxed transition-colors ${expandedMilestone === i ? "text-[#1A1A1A]" : "text-[#888] group-hover:text-[#555]"}`}>
+                    {m.event}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW WE CHANGED THE GAME ── */}
+      <section className="py-20 sm:py-28 bg-[#F7F5F0]">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
+          <div className="mb-14">
+            <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-3">What makes us different</p>
+            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-[#1A1A1A] leading-[0.95]">
+              We changed what<br />
+              <span style={{ color: "#E85D04" }}>meal prep</span> looks like in Singapore.
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 border border-[#E8E4DC]">
+            {PILLARS.map((p, i) => (
+              <div key={i} className="p-8 border-b border-r border-[#E8E4DC] [&:nth-child(even)]:border-r-0 [&:nth-last-child(-n+2)]:border-b-0">
+                <div className="font-mono text-[11px] tracking-[0.35em] uppercase text-[#aaa] mb-4">{p.n}</div>
+                <h3 className="font-display text-[20px] font-bold text-[#1A1A1A] mb-3">{p.title}</h3>
+                <p className="text-[#666] text-[14px] leading-relaxed">{p.desc}</p>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── BRAND TOGGLE ── */}
-      <div className="bg-[#1A1A1A] border-b border-white/10">
+      {/* ── TESTIMONIALS ── */}
+      <section className="py-20 sm:py-28 bg-[#1A1A1A]">
         <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
-          <div className="flex items-center gap-0">
-            <div className="text-[9px] font-mono tracking-[0.35em] uppercase text-white/25 pr-6 shrink-0 hidden sm:block">Choose</div>
-            <button
-              onClick={() => setBrand("ready")}
-              className={`flex items-center gap-3 px-6 sm:px-10 py-4 border-b-[3px] transition-all ${isRS ? "border-[#F5B300]" : "border-transparent opacity-40 hover:opacity-70"}`}
-            >
-              <ReadySeriesLogo size="sm" variant="dark" />
-            </button>
-            <div className="w-px h-6 bg-white/12 mx-2 shrink-0" />
-            <button
-              onClick={() => setBrand("plan")}
-              className={`flex items-center gap-3 px-6 sm:px-10 py-4 border-b-[3px] transition-all ${!isRS ? "border-[#E85D04]" : "border-transparent opacity-40 hover:opacity-70"}`}
-            >
-              <MealPlanLogo size="sm" variant="dark" />
-            </button>
-            <div className="ml-auto hidden sm:flex items-center gap-2 pr-2">
-              <div className={`w-1.5 h-1.5 ${isRS ? "bg-[#F5B300]" : "bg-[#E85D04]"}`} />
-              <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-white/30">
-                {isRS ? "Ready Series" : "Meal Plan"}
-              </span>
-            </div>
+          <div className="mb-12">
+            <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-3">Real results</p>
+            <h2 className="font-display text-[38px] font-extrabold text-white leading-tight">What our customers say.</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-white/10">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="p-8 border-b md:border-b-0 md:border-r border-white/10 last:border-0">
+                <div className="flex mb-4">
+                  {[...Array(t.stars)].map((_, j) => (
+                    <span key={j} className="text-[#F5B300] text-[14px]">★</span>
+                  ))}
+                </div>
+                <p className="text-white/60 text-[14px] leading-relaxed italic mb-6">"{t.text}"</p>
+                <div className="font-semibold text-white text-[13px]">{t.name}</div>
+                <div className="text-white/30 text-[11px] mt-0.5 font-mono">{t.role}</div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── BRAND HERO ── */}
-      <div
-        className="transition-colors duration-500"
-        style={{ backgroundColor: bgColor, color: textColor }}
-      >
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 py-16 sm:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      {/* ── TWO PATHS ── */}
+      <section className="bg-[#111] border-t border-white/8 py-20 sm:py-28">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
+          <div className="mb-12 text-center">
+            <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-3">Ready to start?</p>
+            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.95]">Two ways to eat well.</h2>
+            <p className="text-white/35 text-[15px] mt-3 max-w-[480px] mx-auto">Same kitchen. Same quality. Choose the format that fits your life.</p>
+          </div>
 
-            {/* Copy side */}
-            <div>
-              <div className="mb-6">
-                {isRS ? <ReadySeriesLogo size="md" variant="dark" /> : <MealPlanLogo size="md" variant="light" />}
-              </div>
-              <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-3" style={{ color: accentColor }}>
-                {isRS ? "Everyday momentum" : "Boutique support"}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {/* Ready Series */}
+            <div className="bg-[#1A1A1A] border border-white/10 p-10 flex flex-col group hover:border-[#F5B300]/30 transition-colors">
+              <div className="w-8 h-[3px] bg-[#F5B300] mb-8" />
+              <div className="font-display text-[10px] font-extrabold tracking-[0.35em] uppercase text-[#F5B300] mb-3">Ready Series</div>
+              <h3 className="font-display text-[32px] font-extrabold text-white leading-tight mb-4">
+                Individual meals.<br />No commitment.
+              </h3>
+              <p className="text-white/45 text-[14px] leading-relaxed mb-8 flex-1">
+                40+ frozen meals, fresh-made and flash-frozen. Order what you want, when you want.
+                Build a box for volume pricing. No subscription required.
               </p>
-              <h1 className={`font-display text-[48px] sm:text-[64px] font-extrabold leading-[0.92] mb-6 ${isRS ? "text-white" : "text-[#1A1A1A]"}`}>
-                {isRS ? (
-                  <>READY<br />FOR<br />REAL LIFE.</>
-                ) : (
-                  <>Fresh structure.<br />Personal<br />support.</>
-                )}
-              </h1>
-              <p className={`text-[16px] leading-relaxed max-w-[440px] mb-8 ${isRS ? "text-white/60" : "text-[#555]"}`}>
-                {isRS
-                  ? "Fast, enjoyable frozen meals that are ready when life gets busy — so keeping on track stays easy."
-                  : "Exceptional meals, tailored support, and practical guidance for meaningful progress — built around the way you live."
-                }
-              </p>
-
-              {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-8">
-                {(isRS ? RS_HIGHLIGHTS : MP_HIGHLIGHTS).map((h) => (
-                  <div key={h.l} className={`px-3 py-2 border text-left ${isRS ? "border-white/15 text-white/50" : "border-[#E8E4DC] text-[#555]"}`}>
-                    <div className={`text-[12px] font-bold ${isRS ? "text-white" : "text-[#1A1A1A]"}`}>{h.n}</div>
-                    <div className="text-[10px] tracking-wide">{h.l}</div>
-                  </div>
+                {["From $8.90/meal", "40+ options", "3-min prep", "Bundles available"].map((t) => (
+                  <span key={t} className="text-[10px] border border-white/12 px-3 py-1.5 text-white/35 font-mono">{t}</span>
                 ))}
               </div>
-
-              {/* CTA */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                {isRS ? (
-                  <>
-                    <button onClick={() => navigate("ready-series")}
-                      className="inline-flex items-center justify-center gap-2 px-9 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase text-[#1A1A1A] transition-colors hover:bg-white"
-                      style={{ backgroundColor: "#F5B300" }}>
-                      SHOP READY SERIES →
-                    </button>
-                    <button onClick={() => navigate("build-a-box")}
-                      className="inline-flex items-center justify-center gap-2 px-9 py-4 font-bold text-[12px] border border-white/20 text-white/60 hover:border-white/50 hover:text-white transition-colors">
-                      Build a Box
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button onClick={() => navigateToWizard?.("MAINTAIN")}
-                      className="inline-flex items-center justify-center gap-2 px-9 py-4 font-bold text-[13px] tracking-[0.15em] uppercase text-white transition-colors hover:opacity-90"
-                      style={{ backgroundColor: "#E85D04" }}>
-                      CHOOSE YOUR GOAL →
-                    </button>
-                    <button onClick={() => navigate("meal-plan-landing")}
-                      className="inline-flex items-center justify-center gap-2 px-9 py-4 font-medium text-[13px] border border-[#D0CCC4] text-[#555] hover:border-[#1A1A1A] hover:text-[#1A1A1A] transition-colors">
-                      View Plans
-                    </button>
-                  </>
-                )}
-              </div>
+              <button onClick={() => navigate("ready-series")}
+                className="w-full py-4 bg-[#F5B300] text-[#111] font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors">
+                Shop Ready Series →
+              </button>
             </div>
 
-            {/* Feature cards side */}
-            <div className="flex flex-col gap-4">
-              {(isRS ? RS_FEATURES : MP_FEATURES).map((f) => (
-                <div key={f.title}
-                  className={`p-5 border ${isRS ? "border-white/10 bg-white/5" : "border-[#E8E4DC] bg-[#FAF9F6]"}`}>
-                  <div className="flex items-start gap-4">
-                    <div className="text-[28px] leading-none shrink-0">{f.icon}</div>
-                    <div>
-                      <div className={`font-display text-[16px] font-bold mb-1 ${isRS ? "text-white" : "text-[#1A1A1A]"}`}>{f.title}</div>
-                      <div className={`text-[13px] leading-relaxed ${isRS ? "text-white/50" : "text-[#666]"}`}>{f.desc}</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {/* Bottom accent */}
-              <div className="p-5 flex items-center gap-4" style={{ backgroundColor: accentColor }}>
-                <div>
-                  <div className="font-display text-[22px] font-extrabold text-[#111] leading-tight">
-                    {isRS ? "Bundle & save" : "No long-term lock-in"}
-                  </div>
-                  <div className="text-[12px] text-[#111]/60 mt-0.5">
-                    {isRS ? "5 to 20 meals · price drops with volume" : "Pause or cancel anytime · your settings stay saved"}
-                  </div>
-                </div>
-                <button
-                  onClick={() => isRS ? navigate("ready-to-go") : navigate("meal-plan-landing")}
-                  className="ml-auto shrink-0 bg-[#1A1A1A] text-white text-[11px] font-bold tracking-[0.15em] uppercase px-5 py-3 hover:bg-white hover:text-[#1A1A1A] transition-colors whitespace-nowrap">
-                  {isRS ? "See Bundles" : "See Plans"}
-                </button>
+            {/* Meal Plan */}
+            <div className="bg-white border border-[#E8E4DC] p-10 flex flex-col group hover:border-[#E85D04]/30 transition-colors">
+              <div className="w-8 h-[3px] mb-8" style={{ backgroundColor: "#E85D04" }} />
+              <div className="font-display text-[10px] font-extrabold tracking-[0.35em] uppercase mb-3" style={{ color: "#E85D04" }}>Meal Plan</div>
+              <h3 className="font-display text-[32px] font-extrabold text-[#1A1A1A] leading-tight mb-4">
+                Goal-led. Personal.<br />Structured.
+              </h3>
+              <p className="text-[#666] text-[14px] leading-relaxed mb-8 flex-1">
+                CUT, MAINTAIN, or BUILD. A plan built around your goal, with real support and weekly check-ins.
+                6by60, Buddy Plan, or HYROX programmes.
+              </p>
+              <div className="flex flex-wrap gap-2 mb-8">
+                {["CUT · MAINTAIN · BUILD", "6by60 · Buddy Plan · HYROX", "Personal check-ins", "Fresh daily"].map((t) => (
+                  <span key={t} className="text-[10px] border border-[#E8E4DC] bg-[#FAF9F6] px-3 py-1.5 text-[#888] font-mono">{t}</span>
+                ))}
               </div>
+              <button onClick={() => navigate("meal-plan-landing")}
+                className="w-full py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase text-white hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: "#E85D04" }}>
+                Explore Meal Plans →
+              </button>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── BOTTOM DIVIDER STRIP ── */}
-      <div className={`border-t py-6 px-6 sm:px-10 ${isRS ? "border-white/10 bg-[#1A1A1A]" : "border-[#E8E4DC] bg-white"}`}>
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className={`text-[12px] ${isRS ? "text-white/30" : "text-[#aaa]"}`}>
-            {isRS ? "Switch to Meal Plan for goal-led structured nutrition with personal support →" : "Switch to Ready Series for individual frozen meals, no commitment →"}
-          </p>
-          <button
-            onClick={() => setBrand(isRS ? "plan" : "ready")}
-            className={`text-[11px] font-bold tracking-[0.15em] uppercase border px-5 py-2.5 transition-colors ${isRS ? "border-white/20 text-white/50 hover:border-[#F5B300] hover:text-[#F5B300]" : "border-[#D0CCC4] text-[#666] hover:border-[#E85D04] hover:text-[#E85D04]"}`}>
-            View {isRS ? "Meal Plan" : "Ready Series"} →
-          </button>
+      {/* ── BRAND FOOTER STRIP ── */}
+      <section className="bg-[#0E0E0E] border-t border-white/6 py-12 px-6 sm:px-10">
+        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <PerformanceMealsLogo size="sm" variant="dark" />
+            <span className="text-white/20 text-[12px] font-mono">performancemeals.com.sg</span>
+          </div>
+          <div className="flex gap-6 text-[11px] font-mono tracking-widest uppercase text-white/25">
+            <button onClick={() => navigate("about")} className="hover:text-white/60 transition-colors">About</button>
+            <button onClick={() => navigate("how-it-works")} className="hover:text-white/60 transition-colors">How It Works</button>
+            <button onClick={() => navigate("ready-series")} className="hover:text-white/60 transition-colors">Ready Series</button>
+            <button onClick={() => navigate("meal-plan-landing")} className="hover:text-white/60 transition-colors">Meal Plan</button>
+          </div>
         </div>
-      </div>
+      </section>
+
     </div>
   );
 }
