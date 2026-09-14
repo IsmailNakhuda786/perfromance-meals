@@ -8,6 +8,14 @@ interface Props {
 }
 
 type BoxStep = "size" | "select" | "review";
+type DeliveryFreq = "weekly" | "fortnightly";
+
+const FREQ_OPTS: { id: DeliveryFreq; label: string; desc: string }[] = [
+  { id: "weekly", label: "Weekly", desc: "New box every 7 days" },
+  { id: "fortnightly", label: "Fortnightly", desc: "New box every 14 days" },
+];
+
+const SUB_DISCOUNT = 0.10; // 10% off for subscribers
 
 export default function BuildABoxPage({ navigate, addToCart }: Props) {
   const [step, setStep] = useState<BoxStep>("size");
@@ -15,8 +23,18 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
   const [activeCat, setActiveCat] = useState("all");
   const [selections, setSelections] = useState<Record<number, number>>({});
   const [detailMeal, setDetailMeal] = useState<Meal | null>(null);
+  const [isSubscription, setIsSubscription] = useState(false);
+  const [deliveryFreq, setDeliveryFreq] = useState<DeliveryFreq>("weekly");
 
   const selectedSize = BOX_SIZES.find((b) => b.qty === boxSize) || BOX_SIZES[1];
+  const effectiveTotal = isSubscription ? selectedSize.total * (1 - SUB_DISCOUNT) : selectedSize.total;
+  const effectivePPM = isSubscription ? selectedSize.pricePerMeal * (1 - SUB_DISCOUNT) : selectedSize.pricePerMeal;
+
+  const nextDeliveryDate = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 3);
+    return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+  })();
   const totalSelected = Object.values(selections).reduce((s, q) => s + q, 0);
   const slotsLeft = boxSize - totalSelected;
   const fillPct = Math.min((totalSelected / boxSize) * 100, 100);
@@ -40,8 +58,10 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
   const handleAddToCart = () => {
     addToCart({
       id: 9999,
-      name: `Build-A-Box ×${boxSize} (${selectedMeals.length} varieties)`,
-      price: selectedSize.total,
+      name: isSubscription
+        ? `Box Sub ×${boxSize} · ${deliveryFreq === "weekly" ? "Weekly" : "Fortnightly"} (${selectedMeals.length} varieties)`
+        : `Build-A-Box ×${boxSize} (${selectedMeals.length} varieties)`,
+      price: effectiveTotal,
       qty: 1,
       img: "https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=100&h=100&fit=crop&auto=format",
       type: "box",
@@ -124,10 +144,37 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             ))}
           </div>
 
+          {/* ── Order type toggle ── */}
+          <div className="mb-8">
+            <div className="text-[10px] font-mono tracking-[0.3em] uppercase text-white/35 mb-3">How would you like to order?</div>
+            <div className="flex gap-0 border border-white/12 overflow-hidden w-fit">
+              <button onClick={() => setIsSubscription(false)}
+                className={`px-7 py-3.5 text-[11px] font-semibold tracking-[0.15em] uppercase transition-colors ${!isSubscription ? "bg-white text-[#1A1A1A]" : "text-white/35 hover:text-white/65"}`}>
+                One-time
+              </button>
+              <button onClick={() => setIsSubscription(true)}
+                className={`px-7 py-3.5 text-[11px] font-semibold tracking-[0.15em] uppercase transition-colors border-l border-white/12 ${isSubscription ? "bg-[#F5B300] text-[#1A1A1A]" : "text-white/35 hover:text-white/65"}`}>
+                Subscribe &amp; Save 10%
+              </button>
+            </div>
+            {isSubscription && (
+              <div className="mt-4 flex gap-3">
+                {FREQ_OPTS.map((f) => (
+                  <button key={f.id} onClick={() => setDeliveryFreq(f.id)}
+                    className={`flex-1 max-w-[200px] p-4 border text-left transition-all ${deliveryFreq === f.id ? "border-[#F5B300] bg-[#F5B300]/8" : "border-white/12 hover:border-white/30"}`}>
+                    <div className={`text-[12px] font-semibold ${deliveryFreq === f.id ? "text-[#F5B300]" : "text-white/55"}`}>{f.label}</div>
+                    <div className="text-white/30 text-[11px] mt-0.5">{f.desc}</div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="border border-white/10 p-3 sm:p-6 mb-10 grid grid-cols-3 gap-6 text-center">
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Price per meal</div>
-              <div className="font-display text-[22px] sm:text-[28px] font-bold text-[#F5B300]">${selectedSize.pricePerMeal.toFixed(2)}</div>
+              <div className="font-display text-[22px] sm:text-[28px] font-bold text-[#F5B300]">${effectivePPM.toFixed(2)}</div>
+              {isSubscription && <div className="text-white/30 text-[10px] line-through">${selectedSize.pricePerMeal.toFixed(2)}</div>}
             </div>
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Meals in box</div>
@@ -135,7 +182,8 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
             </div>
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Box total</div>
-              <div className="font-display text-[22px] sm:text-[28px] font-bold">${selectedSize.total.toFixed(2)}</div>
+              <div className="font-display text-[22px] sm:text-[28px] font-bold">${effectiveTotal.toFixed(2)}</div>
+              {isSubscription && <div className="text-[#F5B300] text-[10px] font-mono">Save ${(selectedSize.total * SUB_DISCOUNT).toFixed(2)}</div>}
             </div>
           </div>
 
@@ -274,15 +322,31 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
 
             {/* Order summary */}
             <div className="bg-[#1A1A1A] p-7 self-start">
+              {/* Subscription badge */}
+              {isSubscription && (
+                <div className="bg-[#F5B300]/10 border border-[#F5B300]/20 px-4 py-3 mb-5 flex items-center gap-2">
+                  <span className="text-[#F5B300] text-[16px]">↻</span>
+                  <div>
+                    <div className="text-[11px] font-mono font-bold tracking-[0.2em] uppercase text-[#F5B300]">{deliveryFreq === "weekly" ? "Weekly" : "Fortnightly"} Subscription</div>
+                    <div className="text-white/35 text-[11px] mt-0.5">First delivery: {nextDeliveryDate} · Cancel anytime</div>
+                  </div>
+                </div>
+              )}
               <h3 className="font-display text-[22px] font-bold mb-6">Box Summary</h3>
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-[13px]">
                   <span className="text-white/40">{boxSize} meals</span>
                   <span>${selectedSize.total.toFixed(2)}</span>
                 </div>
+                {isSubscription && (
+                  <div className="flex justify-between text-[13px]">
+                    <span className="text-white/40">Subscriber discount (10%)</span>
+                    <span className="text-[#F5B300]">−${(selectedSize.total * SUB_DISCOUNT).toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-[13px]">
                   <span className="text-white/40">Price per meal</span>
-                  <span className="text-[#F5B300]">${selectedSize.pricePerMeal.toFixed(2)}</span>
+                  <span className="text-[#F5B300]">${effectivePPM.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-[13px]">
                   <span className="text-white/40">Delivery</span>
@@ -291,8 +355,8 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               </div>
               <div className="border-t border-white/10 pt-4 mb-6">
                 <div className="flex justify-between items-center">
-                  <span className="text-[14px]">Total</span>
-                  <span className="font-display text-[24px] font-bold text-[#F5B300]">${selectedSize.total.toFixed(2)}</span>
+                  <span className="text-[14px]">{isSubscription ? "Per delivery" : "Total"}</span>
+                  <span className="font-display text-[24px] font-bold text-[#F5B300]">${effectiveTotal.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -315,9 +379,11 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
               </div>
 
               <button onClick={handleAddToCart} className="w-full bg-[#F5B300] text-[#1A1A1A] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
-                Proceed to Checkout →
+                {isSubscription ? "Start Subscription →" : "Proceed to Checkout →"}
               </button>
-              <p className="text-white/20 text-[11px] text-center mt-3">Free same-day delivery · Frozen fresh</p>
+              <p className="text-white/20 text-[11px] text-center mt-3">
+                {isSubscription ? `Renews ${deliveryFreq} · Cancel anytime` : "Free same-day delivery · Frozen fresh"}
+              </p>
             </div>
           </div>
         </div>

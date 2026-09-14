@@ -94,6 +94,12 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
     setTopUpDone(true);
   };
 
+  // Box subscription
+  const [boxSubActive, setBoxSubActive] = useState(true);
+  const [boxSubPaused, setBoxSubPaused] = useState(false);
+  const [boxSubFreq, setBoxSubFreq] = useState<"weekly" | "fortnightly">("weekly");
+  const [boxSubSize, setBoxSubSize] = useState(10);
+
   // Card management
   const [showAddCard, setShowAddCard] = useState(false);
 
@@ -275,6 +281,24 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 </div>
               )}
             </div>
+
+          {/* Box subscription dashboard card */}
+          {boxSubActive && (
+            <div className="border border-[#E5E2DA] bg-white mb-2">
+              <div className="p-4 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-[18px]">📦</span>
+                  <div>
+                    <div className="text-[12px] font-semibold text-[#1A1A1A]">Box Subscription · {boxSubSize} meals</div>
+                    <div className="text-[11px] text-[#888] mt-0.5">{boxSubPaused ? "Paused" : `${boxSubFreq === "weekly" ? "Weekly" : "Fortnightly"} · Next delivery in ${boxSubFreq === "weekly" ? "7" : "14"} days`}</div>
+                  </div>
+                </div>
+                <button onClick={() => setTab("subscription")} className="text-[11px] font-mono text-[#888] hover:text-[#1A1A1A] transition-colors whitespace-nowrap">
+                  Manage →
+                </button>
+              </div>
+            </div>
+          )}
 
           </div>
         )}
@@ -484,7 +508,87 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               );
             })()}
 
-            {/* ── 7. PAUSE / CANCEL ── */}
+            {/* ── 7. BOX SUBSCRIPTION ── */}
+            {boxSubActive && (() => {
+              const nextBoxDate = (() => {
+                const d = new Date();
+                d.setDate(d.getDate() + (boxSubFreq === "weekly" ? 7 : 14));
+                return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+              })();
+              const boxPriceMap: Record<number, number> = { 5: 84.50, 10: 101.15, 15: 141.75, 20: 175.00 };
+              return (
+                <div className="bg-white border border-[#E5E2DA]">
+                  <div className="p-5 border-b border-[#E5E2DA] flex items-center justify-between gap-3 flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[20px]">📦</span>
+                      <div>
+                        <h3 className="font-medium text-[15px]">Box Subscription</h3>
+                        <p className="text-[#888] text-[12px] mt-0.5">Ready Series · Recurring delivery · 10% off</p>
+                      </div>
+                    </div>
+                    <div className={`px-3 py-1 text-[10px] font-mono font-bold tracking-[0.2em] uppercase ${boxSubPaused ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-[#F5B300]/10 text-[#1A1A1A] border border-[#F5B300]/30"}`}>
+                      {boxSubPaused ? "⏸ Paused" : "● Active"}
+                    </div>
+                  </div>
+                  <div className="p-5 space-y-5">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {[
+                        { label: "Box size", val: `${boxSubSize} meals` },
+                        { label: "Frequency", val: boxSubFreq === "weekly" ? "Weekly" : "Fortnightly" },
+                        { label: "Per delivery", val: `$${(boxPriceMap[boxSubSize] ?? 101.15).toFixed(2)}` },
+                        { label: "Next delivery", val: boxSubPaused ? "Paused" : nextBoxDate },
+                      ].map((item) => (
+                        <div key={item.label}>
+                          <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#aaa] mb-1">{item.label}</div>
+                          <div className="text-[14px] font-semibold text-[#1A1A1A]">{item.val}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div>
+                      <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-[#888] mb-2">Box size</div>
+                      <div className="flex gap-2 flex-wrap">
+                        {[5, 10, 15, 20].map((n) => (
+                          <button key={n} onClick={() => setBoxSubSize(n)}
+                            className={`px-5 py-2.5 border text-[12px] font-semibold transition-all ${boxSubSize === n ? "border-[#1A1A1A] bg-[#1A1A1A] text-white" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
+                            {n} meals
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-[#888] mb-2">Delivery frequency</div>
+                      <div className="flex gap-2">
+                        {(["weekly", "fortnightly"] as const).map((f) => (
+                          <button key={f} onClick={() => setBoxSubFreq(f)}
+                            className={`px-5 py-2.5 border text-[12px] font-semibold transition-all capitalize ${boxSubFreq === f ? "border-[#1A1A1A] bg-[#1A1A1A] text-white" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
+                            {f}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-3 pt-2 border-t border-[#F0EDE8]">
+                      <button onClick={() => { setBoxSubPaused((v) => !v); save(boxSubPaused ? "Box subscription resumed" : "Next delivery skipped"); }}
+                        className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
+                        {boxSubPaused ? "▶ Resume Box" : "⏸ Skip Next Delivery"}
+                      </button>
+                      <button onClick={() => navigate("build-a-box")}
+                        className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
+                        Edit Meal Selection →
+                      </button>
+                      <button onClick={() => { setBoxSubActive(false); save("Box subscription cancelled"); }}
+                        className="ml-auto text-[12px] text-[#c00] hover:underline transition-colors">
+                        Cancel Box Sub
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* ── 8. PAUSE / CANCEL ── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white border border-[#E5E2DA] p-5">
                 <h3 className="font-medium text-[15px] mb-1">{subPaused ? "Resume Plan" : "Pause Plan"}</h3>
