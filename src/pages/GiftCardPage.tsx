@@ -32,8 +32,8 @@ export default function GiftCardPage({ navigate }: Props) {
           <div className="relative mb-8">
             <div className="absolute -top-4 left-8 w-5 h-5 bg-[#F5B300] rounded-full opacity-50" />
             <div className="absolute top-2 right-10 w-7 h-7 bg-[#F5B300] rounded-full opacity-40" />
-            <div className="absolute -top-2 right-3 w-3 h-3 bg-[#7EE8B0] opacity-50" />
-            <div className="absolute top-6 left-14 w-4 h-4 bg-[#A78BFA] opacity-40" />
+            <div className="absolute -top-2 right-3 w-3 h-3 bg-[#F5B300] opacity-50" />
+            <div className="absolute top-6 left-14 w-4 h-4 bg-[#F5B300] opacity-40" />
             <div className="w-20 h-20 bg-[#F5B300] rounded-full flex items-center justify-center mx-auto">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5">
                 <path d="M20 6 9 17l-5-5" />

@@ -444,12 +444,27 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
 
             {/* ── 5. MENU REVIEW ── */}
             {(() => {
-              const WEEKS = [
-                { label: "This Week", dates: "30 Jun – 4 Jul", editable: true },
-                { label: "Week 2", dates: "7 – 11 Jul", editable: true },
-                { label: "Week 3", dates: "14 – 18 Jul", editable: false },
-                { label: "Week 4", dates: "21 – 25 Jul", editable: false },
-              ];
+              // Plan progress — weeks depend on plan type
+              const PLAN_TOTAL_WEEKS: Record<string, number> = { CUT: 12, MAINTAIN: 12, BUILD: 12, "6BY60": 9, "BUDDY": 3, "HYROX": 8 };
+              const totalWeeks = PLAN_TOTAL_WEEKS[activePlan] ?? 12;
+              const currentPlanWeek = 13; // Week 13 of subscription (from order history)
+              const weeksRemaining = Math.max(0, totalWeeks - (currentPlanWeek - 1));
+
+              // Generate upcoming schedule weeks dynamically
+              const baseDate = new Date();
+              baseDate.setDate(baseDate.getDate() - baseDate.getDay() + 1); // start of this Mon
+              const WEEKS = Array.from({ length: 4 }, (_, i) => {
+                const start = new Date(baseDate); start.setDate(start.getDate() + i * 7);
+                const end = new Date(start); end.setDate(end.getDate() + 4);
+                const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+                return {
+                  label: i === 0 ? "This Week" : `Week ${i + 1}`,
+                  dates: `${fmt(start)} – ${fmt(end)}`,
+                  weekNum: currentPlanWeek + i,
+                  editable: i < 2,
+                };
+              });
+
               const MEAL_SLOTS: Record<number, { mealId: number; slot: "Lunch" | "Dinner" }[]> = {
                 0: [{ mealId: 1, slot: "Lunch" }, { mealId: 4, slot: "Dinner" }],
                 1: [{ mealId: 9, slot: "Lunch" }, { mealId: 7, slot: "Dinner" }],
@@ -462,44 +477,69 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
 
               return (
                 <div className="bg-white border border-[#E5E2DA]">
-                  {/* Header with mode toggle */}
-                  <div className="p-5 border-b border-[#E5E2DA] flex items-start justify-between gap-4 flex-wrap">
-                    <div>
-                      <h3 className="font-medium text-[15px]">Menu Review</h3>
-                      <p className="text-[#888] text-[12px] mt-0.5">View and swap your upcoming meals. Cutoff: <strong>Thursday 1pm</strong> each week.</p>
+                  {/* Plan progress bar */}
+                  <div className="px-5 pt-5 pb-4 border-b border-[#E5E2DA]">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <h3 className="font-medium text-[15px]">Menu Review</h3>
+                        <p className="text-[#888] text-[12px] mt-0.5">Swap cutoff: <strong className="text-[#1A1A1A]">Thursday 1pm</strong> each week</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="font-mono text-[11px] text-[#888]">Plan week <strong className="text-[#1A1A1A]">{currentPlanWeek}</strong> of {totalWeeks}</div>
+                        <div className={`font-mono text-[11px] mt-0.5 ${weeksRemaining <= 2 ? "text-[#E85D04] font-bold" : "text-[#888]"}`}>
+                          {weeksRemaining} week{weeksRemaining !== 1 ? "s" : ""} remaining
+                        </div>
+                      </div>
                     </div>
-                    {/* Browse / Review toggle */}
-                    <div className="flex border border-[#E5E2DA] overflow-hidden shrink-0">
-                      {(["browse", "review"] as const).map((m) => (
+                    {/* Progress bar */}
+                    <div className="h-1.5 bg-[#F0EDE8] w-full">
+                      <div className="h-full bg-[#F5B300] transition-all"
+                        style={{ width: `${Math.min(((currentPlanWeek - 1) / totalWeeks) * 100, 100)}%` }} />
+                    </div>
+                    <div className="flex justify-between mt-1">
+                      <span className="text-[9px] font-mono text-[#ccc]">Week 1</span>
+                      <span className="text-[9px] font-mono text-[#ccc]">Week {totalWeeks}</span>
+                    </div>
+                  </div>
+
+                  {/* Browse / Review toggle + week selector row */}
+                  <div className="flex items-center justify-between border-b border-[#E5E2DA] pr-4">
+                    <div className="flex overflow-x-auto">
+                      {WEEKS.map((w, i) => (
+                        <button key={i} onClick={() => setActiveWeek(i)}
+                          className={`px-5 py-3.5 shrink-0 text-left border-b-2 transition-colors ${activeWeek === i ? "border-[#F5B300] text-[#1A1A1A]" : "border-transparent text-[#999] hover:text-[#1A1A1A]"}`}>
+                          <div className={`text-[12px] font-semibold ${activeWeek === i ? "text-[#1A1A1A]" : ""}`}>
+                            {w.label} <span className="font-mono text-[9px] ml-1 opacity-50">W{w.weekNum}</span>
+                          </div>
+                          <div className="text-[10px] text-[#aaa] mt-0.5">{w.dates}</div>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex border border-[#E5E2DA] overflow-hidden shrink-0 ml-3">
+                      {(["review", "browse"] as const).map((m) => (
                         <button key={m} onClick={() => setMenuMode(m)}
-                          className={`px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${menuMode === m ? "bg-[#111] text-white" : "text-[#888] hover:text-[#111]"}`}>
-                          {m === "browse" ? "Browse Menu" : "Review"}
+                          className={`px-3 py-2 text-[10px] font-bold tracking-[0.12em] uppercase transition-colors ${menuMode === m ? "bg-[#1A1A1A] text-white" : "text-[#888] hover:text-[#1A1A1A]"}`}>
+                          {m === "browse" ? "Browse" : "My Menu"}
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Week selector */}
-                  <div className="flex overflow-x-auto border-b border-[#E5E2DA]">
-                    {WEEKS.map((w, i) => (
-                      <button key={i} onClick={() => setActiveWeek(i)}
-                        className={`px-5 py-3.5 shrink-0 text-left border-b-2 transition-colors ${activeWeek === i ? "border-[#F5B300] text-[#111]" : "border-transparent text-[#999] hover:text-[#111]"}`}>
-                        <div className={`text-[12px] font-semibold ${activeWeek === i ? "text-[#111]" : ""}`}>{w.label}</div>
-                        <div className="text-[10px] text-[#aaa] mt-0.5">{w.dates}</div>
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Cutoff warning */}
+                  {/* Cutoff / pause warning */}
                   {isPastCutoff && !subPaused && (
                     <div className="mx-5 mt-4 bg-amber-50 border border-amber-200 px-4 py-2.5 flex items-center gap-2 text-[12px] text-amber-700">
                       <span>⚠️</span>
                       <span>Cutoff for this week is <strong>Thursday 1pm</strong>. Swap before then to change your meals.</span>
                     </div>
                   )}
+                  {subPaused && (
+                    <div className="mx-5 mt-4 bg-amber-50 border border-amber-200 px-4 py-2.5 flex items-center gap-2 text-[12px] text-amber-700">
+                      <span>⏸</span>
+                      <span>Plan is paused — no deliveries scheduled. Menu selections are preserved.</span>
+                    </div>
+                  )}
 
                   {menuMode === "review" ? (
-                    /* Review mode — delivery schedule with swap */
                     <div className="divide-y divide-[#F0EDE8]">
                       {slots.map(({ mealId, slot }, slotIdx) => {
                         const meal = MEALS.find((m) => m.id === mealId) || MEALS[0];
@@ -508,33 +548,36 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                           <div key={slotIdx} className={`flex items-center gap-4 px-5 py-4 ${isDelivered ? "opacity-50" : ""}`}>
                             <img src={meal.img} alt={meal.name} className="w-14 h-14 object-cover shrink-0" />
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-0.5">
-                                <span className="font-medium text-[14px] truncate">{meal.name}</span>
-                              </div>
-                              <div className="text-[11px] text-[#888]">{meal.cal} kcal · {meal.protein}g protein</div>
+                              <span className="font-medium text-[14px] truncate block">{meal.name}</span>
+                              <div className="text-[11px] text-[#888] mt-0.5">{meal.cal} kcal · {meal.protein}g protein</div>
                             </div>
-                            <div className={`shrink-0 px-2.5 py-1 text-[10px] font-bold tracking-wider rounded-full ${slot === "Lunch" ? "bg-[#FFF3CD] text-[#B8860B]" : "bg-[#E8F4FD] text-[#1565C0]"}`}>
+                            <div className={`shrink-0 px-2.5 py-1 text-[10px] font-bold tracking-wider border ${slot === "Lunch" ? "border-amber-200 bg-amber-50 text-amber-700" : "border-blue-100 bg-blue-50 text-blue-700"}`}>
                               {slot}
                             </div>
                             {!isDelivered && currentWeek.editable && (
                               <button onClick={() => setSwapTarget({ day: `week${activeWeek}-slot${slotIdx}`, slotIdx })}
-                                className="shrink-0 border border-[#D0CCC4] px-4 py-1.5 text-[11px] font-bold text-[#666] hover:border-[#111] hover:text-[#111] hover:bg-[#F7F5F0] transition-colors">
+                                className="shrink-0 border border-[#D0CCC4] px-4 py-1.5 text-[11px] font-bold text-[#666] hover:border-[#1A1A1A] hover:text-[#1A1A1A] hover:bg-[#F7F5F0] transition-colors">
                                 Swap
                               </button>
                             )}
                             {isDelivered && <span className="shrink-0 text-[11px] text-[#aaa] font-medium">Delivered ✓</span>}
-                            {!currentWeek.editable && !isDelivered && <span className="shrink-0 text-[11px] text-[#ccc]">Locked</span>}
+                            {!currentWeek.editable && !isDelivered && (
+                              <span className="shrink-0 text-[10px] font-mono text-[#ccc] border border-[#eee] px-2 py-1">Locked</span>
+                            )}
                           </div>
                         );
                       })}
+                      <div className="px-5 py-3 bg-[#FAFAF8] flex items-center justify-between">
+                        <span className="text-[11px] text-[#888]">{slots.length} meal{slots.length !== 1 ? "s" : ""} · {currentWeek.dates}</span>
+                        {currentWeek.editable && <span className="text-[10px] font-mono text-[#ccc]">Swap closes Thursday 1pm</span>}
+                      </div>
                     </div>
                   ) : (
-                    /* Browse mode — full meal grid to preview options */
                     <div className="p-5">
-                      <p className="text-[#888] text-[13px] mb-4">Browse all available meals for {currentWeek.label} ({currentWeek.dates}). Tap Swap on a scheduled meal above to switch.</p>
+                      <p className="text-[#888] text-[13px] mb-4">Browse available meals for {currentWeek.label} ({currentWeek.dates}). Tap <strong>Swap</strong> on a scheduled meal to switch.</p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         {MEALS.slice(0, 6).map((meal) => (
-                          <div key={meal.id} className="border border-[#E5E2DA] flex gap-3 p-3 items-center">
+                          <div key={meal.id} className="border border-[#E5E2DA] flex gap-3 p-3 items-center hover:border-[#1A1A1A] transition-colors">
                             <img src={meal.img} alt={meal.name} className="w-12 h-12 object-cover shrink-0" />
                             <div className="flex-1 min-w-0">
                               <div className="text-[12px] font-medium leading-snug truncate">{meal.name}</div>

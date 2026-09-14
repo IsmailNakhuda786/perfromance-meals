@@ -76,7 +76,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0E0E0E] text-white">
+    <div className="min-h-screen bg-[#1A1A1A] text-white">
       {/* Header */}
       <div className="bg-[#1A1A1A] border-b border-white/8">
         <div className="max-w-[1440px] mx-auto px-6 py-8">
@@ -200,7 +200,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
       {step === "select" && (
         <div className="max-w-[1440px] mx-auto px-6 py-10">
           {/* Sticky progress bar */}
-          <div className="sticky top-[56px] sm:top-[60px] z-30 bg-[#0E0E0E] border-b border-white/8 py-4 mb-8 -mx-6 px-6">
+          <div className="sticky top-[56px] sm:top-[60px] z-30 bg-[#1A1A1A] border-b border-white/8 py-4 mb-8 -mx-6 px-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[13px] font-medium">
                 {totalSelected === boxSize

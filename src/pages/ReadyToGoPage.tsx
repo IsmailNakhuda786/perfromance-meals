@@ -36,7 +36,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
       {/* Hero banner */}
       <div className="relative h-40 sm:h-52 overflow-hidden bg-[#111]">
         <img src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1400&h=400&fit=crop&auto=format" alt="" className="absolute inset-0 w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0E0E0E] via-transparent to-[#0E0E0E]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1A1A1A] via-transparent to-[#1A1A1A]" />
         <div className="relative max-w-[1440px] mx-auto px-6 h-full flex flex-col justify-center">
           <div className="flex items-center gap-3 mb-3">
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300] uppercase">01 / Ready Series</span>
