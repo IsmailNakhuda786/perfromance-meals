@@ -118,8 +118,8 @@ const s = StyleSheet.create({
 /* ── Shared nav ── */
 const Nav = ({ active = "" }: { active?: string }) => (
   <View style={s.nav}>
-    <Text style={s.navLogo}>FRESHER<Text style={{ color: C.lime }}>.</Text></Text>
-    {["READY SERIES", "MEAL PLANS", "BUILD-A-BOX", "HOW IT WORKS"].map((l) => (
+    <Text style={s.navLogo}>PERF<Text style={{ color: C.lime }}>.</Text>MEALS</Text>
+    {["READY SERIES", "MEAL PLANS", "BOX SUBSCRIPTION", "HOW IT WORKS"].map((l) => (
       <Text key={l} style={l === active ? s.navLinkActive : s.navLink}>{l}</Text>
     ))}
     <View style={s.navRight}>
@@ -162,7 +162,7 @@ const ScreenPage = ({ n, title, sub, color = C.lime, children, features }: {
       )}
     </View>
     <View style={s.pageFooter}>
-      <Text style={s.footerText}>FRESHER.COM.SG  ·  PROTOTYPE SCREEN DOCUMENTATION  ·  CONFIDENTIAL</Text>
+      <Text style={s.footerText}>PERFORMANCEMEALS.COM.SG  ·  PROTOTYPE SCREEN DOCUMENTATION  ·  CONFIDENTIAL</Text>
       <Text style={s.footerLime}>SCREEN {n}</Text>
     </View>
   </Page>
@@ -218,17 +218,17 @@ const TimelineItem = ({ label, detail, done, active }: { label: string; detail: 
    THE PDF DOCUMENT
 ═══════════════════════════════════════════════════ */
 export const FresherPDF = () => (
-  <Document title="Fresher Prototype — Screen Documentation" author="Fresher.com.sg" creator="Figma Make">
+  <Document title="Performance Meals Prototype — Screen Documentation" author="PerformanceMeals.com.sg" creator="Figma Make">
 
     {/* ── COVER ── */}
     <Page size="A4" style={s.coverPage}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 60 }}>
         <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.lime, letterSpacing: 4, marginBottom: 32, textTransform: "uppercase" }}>Prototype · Screen Documentation · Confidential</Text>
 
-        <Text style={{ fontSize: 52, fontFamily: "Helvetica-Bold", color: C.white, letterSpacing: 3, marginBottom: 4 }}>
-          FRESHER<Text style={{ color: C.lime }}>.</Text>
+        <Text style={{ fontSize: 40, fontFamily: "Helvetica-Bold", color: C.white, letterSpacing: 3, marginBottom: 4 }}>
+          PERFORMANCE MEALS<Text style={{ color: C.lime }}>.</Text>
         </Text>
-        <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", letterSpacing: 2, marginBottom: 60 }}>fresher.com.sg  ·  Performance Meals  ·  Singapore</Text>
+        <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", letterSpacing: 2, marginBottom: 60 }}>performancemeals.com.sg  ·  Singapore</Text>
 
         {/* Stats row */}
         <View style={{ flexDirection: "row", gap: 48, marginBottom: 60 }}>
@@ -426,7 +426,7 @@ export const FresherPDF = () => (
       {/* Promo popup note */}
       <View style={{ backgroundColor: C.lime, padding: "5 14", flexDirection: "row", gap: 5, alignItems: "center" }}>
         <Text style={{ fontSize: 9 }}>🎉</Text>
-        <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black }}>PROMO POPUP fires on every home visit (1.8s delay) · "Get 10% off your first order — use code FRESHER10"</Text>
+        <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black }}>PROMO POPUP fires on every home visit (1.8s delay) · "Get 10% off your first order — use code PMFIRST10"</Text>
       </View>
     </ScreenPage>
 
@@ -783,7 +783,7 @@ export const FresherPDF = () => (
                 <View style={[s.input, { flex: 1 }]}><Text style={s.inputText}>MM / YY</Text></View>
                 <View style={[s.input, { flex: 1 }]}><Text style={s.inputText}>CVV</Text></View>
               </View>
-              <View style={s.input}><Text style={s.inputText}>Promo code e.g. FRESHER10</Text></View>
+              <View style={s.input}><Text style={s.inputText}>Promo code e.g. PMFIRST10</Text></View>
               <View style={{ backgroundColor: C.gold, paddingHorizontal: 10, paddingVertical: 5, width: "100%", alignItems: "center" }}>
                 <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.black }}>SUBSCRIBE — $178/WK</Text>
               </View>
@@ -837,7 +837,7 @@ export const FresherPDF = () => (
             <Text style={[s.mono, { marginBottom: 4 }]}>GUEST CHECKOUT WARNING</Text>
             <View style={{ backgroundColor: "#FFF3CD", border: "1 solid " + C.gold, padding: 8, marginBottom: 10 }}>
               <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.amberText, marginBottom: 5 }}>⚠️ Checking out as guest — you'll miss out on:</Text>
-              {["Fresher reward points (worth up to $12/month)", "Exclusive member discounts and early access deals", "Order history, easy reorders, delivery tracking", "Referral bonuses — earn $10 credit per friend"].map((i) => (
+              {["Performance Meals reward points (worth up to $12/month)", "Exclusive member discounts and early access deals", "Order history, easy reorders, delivery tracking", "Referral bonuses — earn $10 credit per friend"].map((i) => (
                 <View key={i} style={{ flexDirection: "row", marginBottom: 3 }}>
                   <Text style={{ fontSize: 7, color: C.amberText, marginRight: 4 }}>•</Text>
                   <Text style={{ fontSize: 7, color: C.amberText, flex: 1 }}>{i}</Text>
@@ -912,11 +912,11 @@ export const FresherPDF = () => (
           </View>
           {/* Promo code */}
           <View style={{ flexDirection: "row", gap: 4, marginBottom: 4 }}>
-            <View style={[s.input, { flex: 1, marginBottom: 0 }]}><Text style={s.inputText}>Promo code e.g. FRESHER10</Text></View>
+            <View style={[s.input, { flex: 1, marginBottom: 0 }]}><Text style={s.inputText}>Promo code e.g. PMFIRST10</Text></View>
             <View style={[s.btnBlack, { paddingVertical: 5 }]}><Text style={s.btnTextW}>APPLY</Text></View>
           </View>
           <View style={{ backgroundColor: "#E8FFD0", border: "1 solid " + C.lime, padding: 5, marginBottom: 6 }}>
-            <Text style={{ fontSize: 7, color: "#2d7a00", fontFamily: "Helvetica-Bold" }}>✓ Code FRESHER10 applied — 10% off (–$5.80)</Text>
+            <Text style={{ fontSize: 7, color: "#2d7a00", fontFamily: "Helvetica-Bold" }}>✓ Code PMFIRST10 applied — 10% off (–$5.80)</Text>
           </View>
           <View style={[s.btnBlack, { width: "100%", alignItems: "center", paddingVertical: 8 }]}>
             <Text style={[s.btnTextW, { fontSize: 9 }]}>PLACE ORDER — $39.70</Text>
@@ -933,7 +933,7 @@ export const FresherPDF = () => (
             </View>
           ))}
           <View style={s.divider} />
-          {[["Subtotal", "$58.00", false], ["Delivery", "Free", true], ["Wallet credit", "–$12.50", true], ["Promo (FRESHER10)", "–$5.80", true]].map(([l, v, g]) => (
+          {[["Subtotal", "$58.00", false], ["Delivery", "Free", true], ["Wallet credit", "–$12.50", true], ["Promo (PMFIRST10)", "–$5.80", true]].map(([l, v, g]) => (
             <View key={String(l)} style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 2 }}>
               <Text style={{ fontSize: 6, color: g ? C.green : C.gray }}>{l}</Text>
               <Text style={{ fontSize: 6, color: g ? C.green : C.black, fontFamily: "Helvetica-Bold" }}>{v}</Text>
@@ -979,7 +979,7 @@ export const FresherPDF = () => (
               <Text style={[s.mono, { marginBottom: 5 }]}>ORDER DETAILS</Text>
               {[["Delivery Address", "123 Toa Payoh Lor 4, #08-22, S310123"],
                 ["Subtotal", "$58.00"],
-                ["Promo (FRESHER10)", "–$5.80"],
+                ["Promo (PMFIRST10)", "–$5.80"],
                 ["Payment", "Visa ending 4242 · $52.20"]
               ].map(([l, v]) => (
                 <View key={String(l)} style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 3 }}>
@@ -1243,7 +1243,7 @@ export const FresherPDF = () => (
           <View style={{ backgroundColor: C.black, padding: 10, marginBottom: 8 }}>
             <Text style={[s.mono, { color: C.lime, marginBottom: 4 }]}>PROMO CODES USED</Text>
             <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 6 }}>Total saved: <Text style={{ color: C.lime }}>$21.93</Text></Text>
-            {[{ code: "FRESHER10", order: "FRE-20250901-7721", saved: "–$4.08" },
+            {[{ code: "PMFIRST10", order: "FRE-20250901-7721", saved: "–$4.08" },
               { code: "WELCOME15", order: "FRE-20250818-7641", saved: "–$17.85" }
             ].map((p) => (
               <View key={p.code} style={{ backgroundColor: "rgba(255,255,255,0.05)", padding: "4 7", flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 3 }}>
@@ -1255,7 +1255,7 @@ export const FresherPDF = () => (
           </View>
           {/* Order rows */}
           {[
-            { icon: "❄️", items: "Herb Chicken ×2, Teriyaki ×1", id: "FRE-20250901-7721", date: "1 Sep 2025", total: "$36.70", saved: "saved $4.08", promo: "FRESHER10" },
+            { icon: "❄️", items: "Herb Chicken ×2, Teriyaki ×1", id: "FRE-20250901-7721", date: "1 Sep 2025", total: "$36.70", saved: "saved $4.08", promo: "PMFIRST10" },
             { icon: "🥗", items: "Meal Plan — Maintain (Week 12)", id: "FRE-20250825-7698", date: "25 Aug 2025", total: "$178.00", saved: null, promo: null },
             { icon: "📦", items: "Build-A-Box ×10", id: "FRE-20250818-7641", date: "18 Aug 2025", total: "$101.15", saved: "saved $17.85", promo: "WELCOME15" },
           ].map((o) => (
@@ -1374,7 +1374,7 @@ export async function downloadFresherPDF() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "Fresher-Screen-Documentation.pdf";
+  a.download = "PerformanceMeals-Screen-Documentation.pdf";
   a.click();
   URL.revokeObjectURL(url);
 }
