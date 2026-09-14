@@ -94,14 +94,14 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
           {/* Site-switcher */}
           <div className="relative flex items-center shrink-0">
             <button onClick={() => setSiteSwitcherOpen((v) => !v)}
-              className="flex items-center gap-2 group hover:opacity-90 transition-opacity">
+              className={`flex items-center gap-2.5 pl-1 pr-2.5 py-1.5 border transition-colors ${siteSwitcherOpen ? "border-white/30 bg-white/8" : "border-white/15 hover:border-white/30 bg-white/5"}`}>
               <PerformanceMealsLogo size="sm" variant="light" />
-              <div className="hidden sm:flex items-center gap-1 ml-1">
-                {currentSite !== "parent" && (
-                  <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-white/35 border-l border-white/15 pl-2">{currentSiteLabel}</span>
-                )}
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                  className={`text-white/25 transition-transform ${siteSwitcherOpen ? "rotate-180" : ""}`}>
+              <div className="flex items-center gap-1.5">
+                <span className="hidden sm:block text-[10px] font-mono tracking-[0.2em] uppercase text-white/60">
+                  {currentSiteLabel}
+                </span>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                  className={`text-white/50 transition-transform shrink-0 ${siteSwitcherOpen ? "rotate-180" : ""}`}>
                   <path d="M6 9l6 6 6-6"/>
                 </svg>
               </div>
@@ -308,9 +308,14 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                       className={`w-full border px-4 py-3 text-[14px] outline-none transition-colors ${loginError && !loginPassword ? "border-red-400 bg-red-50" : "border-[#D0CCC4] focus:border-[#111]"}`}
                     />
                   </div>
-                  <div className="flex justify-end mb-5">
-                    <button onClick={() => { setForgotEmail(loginEmail); setLoginTab("forgot"); }} className="text-[11px] text-[#888] hover:text-[#111] transition-colors underline underline-offset-2">
-                      Forgot password?
+                  <div className="mb-5 mt-1">
+                    <button onClick={() => { setForgotEmail(loginEmail); setLoginTab("forgot"); }}
+                      className="flex items-center gap-2 text-[12px] text-[#555] hover:text-[#111] transition-colors group">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#888] group-hover:text-[#111] transition-colors">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+                      </svg>
+                      <span className="underline underline-offset-2">Forgot your password?</span>
+                      <span className="text-[#888] text-[11px]">Reset via email →</span>
                     </button>
                   </div>
                   {loginError && (
@@ -333,8 +338,14 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
 
               {loginTab === "forgot" && (
                 <>
+                  <div className="bg-[#F7F5F0] border border-[#E5E2DA] px-4 py-3 text-[12px] text-[#555] mb-5 flex items-start gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mt-0.5 shrink-0 text-[#888]">
+                      <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                    </svg>
+                    <span>Enter the email linked to your account. We'll send a reset link to your inbox within 1 minute.</span>
+                  </div>
                   <div className="mb-5">
-                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Email address</label>
+                    <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">Your email address</label>
                     <input
                       type="email" value={forgotEmail} onChange={(e) => setForgotEmail(e.target.value)}
                       placeholder="jerome@email.com"

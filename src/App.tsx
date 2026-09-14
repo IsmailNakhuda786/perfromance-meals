@@ -143,7 +143,7 @@ export default function App() {
         onCheckout={handleReadyCheckout}
       />
 
-      {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} addToCart={addToCart} navigateToReferral={navigateToAccountReferral} />}
+      {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "ready-series" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} onSelectMeal={(id) => { setSelectedMealId(id); navigate("ready-series-product"); }} />}
       {page === "ready-series-product" && <ReadySeriesProductPage mealId={selectedMealId} navigate={navigate} addToCart={addToCart} />}
       {page === "ready-to-go" && <ReadyToGoPage navigate={navigate} addToCart={addToCart} cart={cart} />}
