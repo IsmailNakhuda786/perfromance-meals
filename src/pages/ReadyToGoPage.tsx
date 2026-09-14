@@ -52,11 +52,11 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
         <div className="mb-8 border border-[#F5B300]/20 bg-[#F5B300]/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] mb-1 uppercase">Save more</div>
-            <h3 className="font-display text-[22px] font-bold">Build-A-Box — from $11.00/meal</h3>
-            <p className="text-white/40 text-[13px] mt-1">Mix & match any 5–20 meals. Best value on the site.</p>
+            <h3 className="font-display text-[22px] font-bold">Box Subscription — from $10.00/meal</h3>
+            <p className="text-white/40 text-[13px] mt-1">Pick your meals, set a cadence. 10% off every delivery. Cancel anytime.</p>
           </div>
           <button onClick={() => navigate("build-a-box")} className="inline-flex items-center gap-2 bg-[#F5B300] text-[#111111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors whitespace-nowrap shrink-0">
-            Start Building →
+            Subscribe &amp; Save →
           </button>
         </div>
 
@@ -599,7 +599,7 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                 </button>
                 <button onClick={() => { navigate("build-a-box"); setSelectedMeal(null); }}
                   className="border border-white/15 px-5 py-4 text-[11px] text-white/40 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors whitespace-nowrap">
-                  Add to Box
+                  Add to Sub Box
                 </button>
               </div>
             </div>

@@ -651,7 +651,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                             Add {toAdd} more meal{toAdd !== 1 ? "s" : ""}{saving > 0.5 ? ` — save $${saving.toFixed(2)}` : " to unlock box pricing"}
                           </p>
                           <p className="text-white/40 text-[10px] leading-relaxed">
-                            {next.qty}-meal Build-A-Box drops to <strong className="text-white/60">${next.ppm.toFixed(2)}/meal</strong>. You currently have {readyQty}.
+                            A {next.qty}-meal box subscription drops to <strong className="text-white/60">${next.ppm.toFixed(2)}/meal</strong>. You currently have {readyQty}.
                           </p>
                           <button onClick={() => { setCartOpen(false); navigate("ready-series"); }}
                             className="mt-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[#F5B300] hover:underline">

@@ -23,7 +23,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
   const [activeCat, setActiveCat] = useState("all");
   const [selections, setSelections] = useState<Record<number, number>>({});
   const [detailMeal, setDetailMeal] = useState<Meal | null>(null);
-  const [isSubscription, setIsSubscription] = useState(false);
+  const [isSubscription, setIsSubscription] = useState(true);
   const [deliveryFreq, setDeliveryFreq] = useState<DeliveryFreq>("weekly");
 
   const selectedSize = BOX_SIZES.find((b) => b.qty === boxSize) || BOX_SIZES[1];
@@ -83,8 +83,8 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
           <div className="flex items-center gap-3 mb-4">
             <span className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300] uppercase">01 / Ready Series</span>
           </div>
-          <h1 className="font-display text-[28px] sm:text-[42px] font-extrabold uppercase">BUILD-A-BOX</h1>
-          <p className="text-white/40 mt-1 text-[14px]">Mix and match any meals. Best value on the site.</p>
+          <h1 className="font-display text-[28px] sm:text-[42px] font-extrabold uppercase">BOX SUBSCRIPTION</h1>
+          <p className="text-white/40 mt-1 text-[14px]">Pick your meals, set a cadence. 10% off every delivery. Cancel anytime.</p>
         </div>
 
         {/* Step indicators */}
@@ -146,7 +146,7 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
 
           {/* ── Order type toggle ── */}
           <div className="mb-8">
-            <div className="text-[10px] font-mono tracking-[0.3em] uppercase text-white/35 mb-3">How would you like to order?</div>
+            <div className="text-[10px] font-mono tracking-[0.3em] uppercase text-white/35 mb-3">Order type</div>
             <div className="flex gap-0 border border-white/12 overflow-hidden w-fit">
               <button onClick={() => setIsSubscription(false)}
                 className={`px-7 py-3.5 text-[11px] font-semibold tracking-[0.15em] uppercase transition-colors ${!isSubscription ? "bg-white text-[#1A1A1A]" : "text-white/35 hover:text-white/65"}`}>

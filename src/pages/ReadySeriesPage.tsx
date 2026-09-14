@@ -250,7 +250,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               onClick={() => navigate("build-a-box")}
               className="inline-flex items-center gap-2 border border-[#F5B300]/40 text-[#F5B300] text-[11px] font-bold tracking-[0.2em] uppercase px-6 py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors whitespace-nowrap"
             >
-              Build-A-Box →
+              Box Subscription →
             </button>
           </div>
 
@@ -365,7 +365,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               onClick={() => navigate("build-a-box")}
               className="inline-flex items-center gap-3 text-white/40 hover:text-[#F5B300] text-[12px] font-mono tracking-widest uppercase transition-colors"
             >
-              Or build your own custom box →
+              Or subscribe with your own custom box →
             </button>
           </div>
         </div>
