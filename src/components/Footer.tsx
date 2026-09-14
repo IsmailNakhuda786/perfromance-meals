@@ -1,5 +1,6 @@
 import { Page } from "@/data";
 import { PerformanceMealsLogo } from "@/components/Logos";
+import { downloadHandoffPDF } from "@/HandoffPDF";
 
 interface FooterProps {
   navigate: (page: Page) => void;
@@ -67,6 +68,12 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             <button onClick={() => navigate("screens-export")}
               className="border border-[#F5B300]/40 bg-[#F5B300]/5 text-[#F5B300] px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors font-bold">
               🖨 All Screens PDF
+            </button>
+            <button
+              onClick={() => downloadHandoffPDF()}
+              className="border border-white/20 bg-white/5 text-white/60 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors font-bold"
+            >
+              ⬇ Final QA PDF
             </button>
             <a
               href="/PerformanceMeals-Shopify-Theme.zip"
