@@ -214,17 +214,14 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 mb-8">
+            <div className="grid grid-cols-2 gap-3 mb-8">
               {[
-                { label: "Active Plan", val: activePlan, sub: `${plan.cal} kcal/day`, color: "#F5B300", bg: "#1A1A1A" },
-                { label: "Next Delivery", val: "Tomorrow", sub: `${timeSlot.split("–")[0].trim()}`, color: "#F5B300", bg: "#1A1A1A" },
-                { label: "Wallet Balance", val: "$12.50", sub: "1,234 reward pts", color: "#F5B300", bg: "#1A1A1A" },
-                { label: "Orders This Month", val: "3", sub: "$373.70 spent", color: "#F5B300", bg: "#1A1A1A" },
+                { label: "Active Plan", val: activePlan, sub: `${plan.cal} kcal/day`, onClick: () => setTab("subscription") },
+                { label: "Wallet Balance", val: "$12.50", sub: "1,234 reward pts", onClick: () => setTab("wallet") },
               ].map((s) => (
-                <div key={s.label} className="p-5 cursor-pointer hover:opacity-90 transition-opacity" style={{ backgroundColor: s.bg }}
-                  onClick={() => { if (s.label === "Active Plan") setTab("subscription"); if (s.label === "Wallet Balance") setTab("wallet"); if (s.label === "Orders This Month") setTab("orders"); }}>
-                  <div className="text-[10px] font-mono tracking-[0.3em] uppercase mb-3" style={{ color: `${s.color}80` }}>{s.label}</div>
-                  <div className="font-display text-[26px] font-bold" style={{ color: s.color }}>{s.val}</div>
+                <div key={s.label} className="p-5 bg-[#1A1A1A] cursor-pointer hover:opacity-90 transition-opacity" onClick={s.onClick}>
+                  <div className="text-[10px] font-mono tracking-[0.3em] uppercase mb-3 text-[#F5B30080]">{s.label}</div>
+                  <div className="font-display text-[26px] font-bold text-[#F5B300]">{s.val}</div>
                   <div className="text-white/30 text-[12px] mt-1">{s.sub}</div>
                 </div>
               ))}
@@ -241,7 +238,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     {activePlan} Plan · {mealsPerDay} meals/day
                   </h3>
                   <div className={`text-[13px] mt-1 ${subPaused ? "text-amber-700" : "text-white/40"}`}>
-                    {subPaused ? `Paused · Resumes 15 Sep 2025` : `${billing === "week" ? "Weekly" : "Monthly"} · ${deliveryDays.join(", ")} · ${timeSlot}`}
+                    {subPaused ? `Paused · Resumes ${(() => { const d = new Date(); d.setDate(d.getDate() + pauseWeeks * 7); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}` : `${billing === "week" ? "Weekly" : "Monthly"} · ${deliveryDays.join(", ")} · ${timeSlot}`}
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -263,11 +260,9 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               </div>
               {/* Customize shortcuts */}
               {!subPaused && (
-                <div className="border-t border-white/10 px-6 py-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="border-t border-white/10 px-6 py-4 grid grid-cols-2 gap-3">
                   {[
                     { icon: "🔄", label: "Swap meals", desc: "Change upcoming meals" },
-                    { icon: "📅", label: "Delivery days", desc: "Mon, Wed, Fri, Sat" },
-                    { icon: "🕐", label: "Time slot", desc: timeSlot.split("–")[0].trim() },
                     { icon: "⚖️", label: "Plan type", desc: `${activePlan} · ${plan.cal} kcal` },
                   ].map((item) => (
                     <button key={item.label} onClick={() => setTab("subscription")}
@@ -281,27 +276,6 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               )}
             </div>
 
-            {/* Recent orders */}
-            <div className="bg-white border border-[#E5E2DA] p-6">
-              <div className="flex items-center justify-between mb-5">
-                <h3 className="font-display text-[18px] font-bold">Recent Orders</h3>
-                <button onClick={() => setTab("orders")} className="text-[12px] uppercase tracking-wider text-[#888] hover:text-[#111] transition-colors">View All →</button>
-              </div>
-              <div className="space-y-0">
-                {ORDERS.slice(0, 3).map((o) => (
-                  <div key={o.id} className="flex items-center justify-between gap-4 py-3.5 border-t border-[#F0EDE8] first:border-0">
-                    <div>
-                      <div className="text-[13px] font-medium">{o.items}</div>
-                      <div className="text-[#999] text-[11px] mt-0.5">{o.id} · {o.date}</div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="font-bold text-[14px]">${o.total.toFixed(2)}</div>
-                      <div className="text-[11px] text-green-600 font-medium">{o.status}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         )}
 
@@ -326,207 +300,43 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 <span className="text-[20px]">⏸</span>
                 <div>
                   <div className="font-medium text-amber-800">Plan paused for {pauseWeeks} week{pauseWeeks > 1 ? "s" : ""}</div>
-                  <div className="text-amber-600 text-[13px]">No deliveries or charges until 15 Sep 2025. You can still edit your plan settings below.</div>
+                  <div className="text-amber-600 text-[13px]">No deliveries or charges until {(() => { const d = new Date(); d.setDate(d.getDate() + pauseWeeks * 7); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}. You can still edit your plan settings below.</div>
                 </div>
               </div>
             )}
 
             {/* ── 1. PLAN TYPE ── */}
             <div className="bg-white border border-[#E5E2DA]">
-              <div className="flex items-center justify-between p-5 border-b border-[#E5E2DA]">
-                <div>
-                  <h3 className="font-medium text-[15px]">Plan Type</h3>
-                  <p className="text-[#888] text-[12px] mt-0.5">Your caloric target and macro split</p>
-                </div>
-                <button onClick={() => setEditingPlan((v) => !v)} className={`px-4 py-2 text-[12px] font-medium border transition-colors ${editingPlan ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#111]"}`}>
-                  {editingPlan ? "Done" : "Change Plan"}
-                </button>
+              <div className="p-5 border-b border-[#E5E2DA]">
+                <h3 className="font-medium text-[15px]">Plan Type</h3>
+                <p className="text-[#888] text-[12px] mt-0.5">Your caloric target and macro split</p>
               </div>
-
-              {!editingPlan ? (
-                /* Read-only plan summary */
-                <div className="p-5">
-                  <div className="flex items-center gap-6 flex-wrap">
-                    <div>
-                      <span className="font-mono text-[10px] tracking-[0.3em]" style={{ color: plan.accent }}>{activePlan}</span>
-                      <div className="font-display text-[32px] font-bold">{plan.cal} <span className="text-[18px] font-normal text-[#888]">kcal/day</span></div>
-                    </div>
-                    <div className="flex gap-4">
-                      {[{ l: "Protein", v: `${plan.protein}g` }, { l: "Carbs", v: `${plan.carbs}g` }, { l: "Fat", v: `${plan.fat}g` }].map((m) => (
-                        <div key={m.l} className="text-center bg-[#F7F5F0] px-5 py-3">
-                          <div className="font-mono text-[14px] font-medium">{m.v}</div>
-                          <div className="text-[#999] text-[10px] uppercase tracking-wider mt-0.5">{m.l}</div>
-                        </div>
-                      ))}
-                    </div>
+              <div className="p-5">
+                <div className="flex items-center gap-6 flex-wrap">
+                  <div>
+                    <span className="font-mono text-[10px] tracking-[0.3em]" style={{ color: plan.accent }}>{activePlan}</span>
+                    <div className="font-display text-[32px] font-bold">{plan.cal} <span className="text-[18px] font-normal text-[#888]">kcal/day</span></div>
                   </div>
-                  {/* Plan comparison blurb */}
-                  <div className="mt-4 border-t border-[#F0EDE8] pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {PLANS.map((p) => (
-                      <div key={p.name} className={`p-3 border text-[13px] ${activePlan === p.name ? "border-[#111] bg-[#F7F5F0]" : "border-[#E5E2DA] text-[#888]"}`}>
-                        <div className="font-mono text-[10px] tracking-[0.25em] mb-1" style={{ color: p.accent }}>{p.name} — {p.cal} kcal</div>
-                        <div className="text-[12px] leading-relaxed">{p.desc}</div>
+                  <div className="flex gap-4">
+                    {[{ l: "Protein", v: `${plan.protein}g` }, { l: "Carbs", v: `${plan.carbs}g` }, { l: "Fat", v: `${plan.fat}g` }].map((m) => (
+                      <div key={m.l} className="text-center bg-[#F7F5F0] px-5 py-3">
+                        <div className="font-mono text-[14px] font-medium">{m.v}</div>
+                        <div className="text-[#999] text-[10px] uppercase tracking-wider mt-0.5">{m.l}</div>
                       </div>
                     ))}
                   </div>
                 </div>
-              ) : (
-                /* Edit: pick plan */
-                <div className="p-5">
-                  <p className="text-[#888] text-[13px] mb-4">Changes apply from your next billing cycle.</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-                    {PLANS.map((p) => (
-                      <button key={p.name} onClick={() => setActivePlan(p.name)}
-                        className={`text-left p-5 border transition-all ${activePlan === p.name ? "border-[#111] bg-[#111] text-white" : "border-[#D0CCC4] hover:border-[#888]"}`}>
-                        <div className="font-mono text-[10px] tracking-[0.3em] mb-1" style={{ color: activePlan === p.name ? p.accent : p.accent }}>{p.name}</div>
-                        <div className={`font-display text-[28px] font-bold ${activePlan === p.name ? "text-white" : "text-[#111]"}`}>{p.cal}<span className="text-[14px] font-normal opacity-50"> kcal</span></div>
-                        <div className={`text-[12px] mt-1.5 leading-relaxed ${activePlan === p.name ? "text-white/60" : "text-[#888]"}`}>{p.desc}</div>
-                        <div className="flex gap-3 mt-3 text-[11px]">
-                          {[{ l: "PRO", v: `${p.protein}g` }, { l: "CARB", v: `${p.carbs}g` }, { l: "FAT", v: `${p.fat}g` }].map((m) => (
-                            <span key={m.l} style={{ color: activePlan === p.name ? p.accent : p.accent }}>{m.v} {m.l}</span>
-                          ))}
-                        </div>
-                        {activePlan === p.name && <div className="mt-3 text-[#F5B300] text-[11px] font-bold">✓ Current selection</div>}
-                      </button>
-                    ))}
-                  </div>
-                  <button onClick={() => { setEditingPlan(false); save("Plan updated — applies next billing cycle"); }}
-                    className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                    Confirm Plan Change
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* ── 2. MEALS PER DAY ── */}
-            <div className="bg-white border border-[#E5E2DA]">
-              <div className="flex items-center justify-between p-5 border-b border-[#E5E2DA]">
-                <div>
-                  <h3 className="font-medium text-[15px]">Meals Per Day</h3>
-                  <p className="text-[#888] text-[12px] mt-0.5">How many meals are delivered each day</p>
-                </div>
-                <button onClick={() => setEditingQty((v) => !v)} className={`px-4 py-2 text-[12px] font-medium border transition-colors ${editingQty ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#111]"}`}>
-                  {editingQty ? "Done" : "Change"}
-                </button>
-              </div>
-              <div className="p-5">
-                {!editingQty ? (
-                  <div className="flex items-center gap-3">
-                    <span className="font-display text-[36px] font-bold">{mealsPerDay}</span>
-                    <div>
-                      <div className="text-[14px] font-medium">meals per day</div>
-                      <div className="text-[#888] text-[12px]">${(plan.priceWeek / 7 * deliveryDays.length).toFixed(2)} / delivery day · {plan.cal / mealsPerDay} kcal per meal avg.</div>
+                <div className="mt-4 border-t border-[#F0EDE8] pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {PLANS.map((p) => (
+                    <div key={p.name} className={`p-3 border text-[13px] ${activePlan === p.name ? "border-[#111] bg-[#F7F5F0]" : "border-[#E5E2DA] text-[#888]"}`}>
+                      <div className="font-mono text-[10px] tracking-[0.25em] mb-1" style={{ color: p.accent }}>{p.name} — {p.cal} kcal</div>
+                      <div className="text-[12px] leading-relaxed">{p.desc}</div>
                     </div>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-[#888] text-[13px] mb-4">More meals = smaller portions per sitting. Price adjusts accordingly.</p>
-                    <div className="flex gap-3 flex-wrap">
-                      {[2, 3, 4, 5, 6].map((n) => (
-                        <button key={n} onClick={() => setMealsPerDay(n)}
-                          className={`px-6 py-4 border text-center transition-all ${mealsPerDay === n ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] hover:border-[#888]"}`}>
-                          <div className="font-display text-[24px] font-bold">{n}</div>
-                          <div className={`text-[11px] mt-1 ${mealsPerDay === n ? "text-white/60" : "text-[#888]"}`}>meals/day</div>
-                          <div className={`text-[11px] font-mono ${mealsPerDay === n ? "text-[#F5B300]" : "text-[#aaa]"}`}>{Math.round(plan.cal / n)} kcal ea.</div>
-                        </button>
-                      ))}
-                    </div>
-                    <button onClick={() => { setEditingQty(false); save("Meals per day updated"); }}
-                      className="mt-4 bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                      Save
-                    </button>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* ── 3. DELIVERY DAYS ── */}
-            <div className="bg-white border border-[#E5E2DA]">
-              <div className="flex items-center justify-between p-5 border-b border-[#E5E2DA]">
-                <div>
-                  <h3 className="font-medium text-[15px]">Delivery Days</h3>
-                  <p className="text-[#888] text-[12px] mt-0.5">Which days your meals are delivered</p>
-                </div>
-                <button onClick={() => setEditingDays((v) => !v)} className={`px-4 py-2 text-[12px] font-medium border transition-colors ${editingDays ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#111]"}`}>
-                  {editingDays ? "Done" : "Change Days"}
-                </button>
-              </div>
-              <div className="p-5">
-                {!editingDays ? (
-                  <div className="flex gap-2 flex-wrap">
-                    {ALL_DAYS.map((d) => (
-                      <div key={d} className={`px-4 py-2.5 text-[13px] font-medium border ${deliveryDays.includes(d) ? "bg-[#111] text-white border-[#111]" : "border-[#E5E2DA] text-[#ccc]"}`}>
-                        {d}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-[#888] text-[13px] mb-4">Tap to toggle. Cut-off is 10pm the night before each delivery. Changes apply from next week.</p>
-                    <div className="flex gap-2 flex-wrap mb-4">
-                      {ALL_DAYS.map((d) => {
-                        const active = deliveryDays.includes(d);
-                        return (
-                          <button key={d} onClick={() => toggleDay(d)}
-                            className={`px-5 py-3 text-[13px] font-medium border transition-all ${active ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
-                            {d}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    <p className="text-[#888] text-[12px] mb-4">{deliveryDays.length} day{deliveryDays.length !== 1 ? "s" : ""} selected</p>
-                    <button onClick={() => { setEditingDays(false); save("Delivery days updated — applies next week"); }}
-                      className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                      Save Days
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* ── 4. DELIVERY TIME ── */}
-            <div className="bg-white border border-[#E5E2DA]">
-              <div className="flex items-center justify-between p-5 border-b border-[#E5E2DA]">
-                <div>
-                  <h3 className="font-medium text-[15px]">Delivery Time Slot</h3>
-                  <p className="text-[#888] text-[12px] mt-0.5">When your meals arrive each delivery day</p>
-                </div>
-                <button onClick={() => setEditingTime((v) => !v)} className={`px-4 py-2 text-[12px] font-medium border transition-colors ${editingTime ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#111]"}`}>
-                  {editingTime ? "Done" : "Change Time"}
-                </button>
-              </div>
-              <div className="p-5">
-                {!editingTime ? (
-                  <div className="flex items-center gap-3">
-                    <span className="text-[24px]">🕐</span>
-                    <div>
-                      <div className="font-medium text-[16px]">{timeSlot}</div>
-                      <div className="text-[#888] text-[12px]">Applies to all delivery days</div>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-[#888] text-[13px] mb-4">Same time slot applies across all delivery days. Changes apply from next delivery.</p>
-                    <div className="grid grid-cols-2 gap-3 mb-4">
-                      {TIME_SLOTS.map((s) => (
-                        <button key={s} onClick={() => setTimeSlot(s)}
-                          className={`py-4 px-5 border text-left transition-all ${timeSlot === s ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] hover:border-[#888]"}`}>
-                          <div className={`text-[14px] font-medium ${timeSlot === s ? "text-white" : "text-[#111]"}`}>{s}</div>
-                          {s === TIME_SLOTS[0] && <div className={`text-[11px] mt-1 ${timeSlot === s ? "text-[#F5B300]" : "text-[#888]"}`}>Most popular</div>}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="bg-[#FFF9E8] border border-amber-200 p-3 text-[12px] text-amber-700 mb-4">
-                      ⚠ Changes to time slot require at least 24 hours notice. If your next delivery is within 24 hours, the new time applies from the following delivery.
-                    </div>
-                    <button onClick={() => { setEditingTime(false); save("Delivery time updated"); }}
-                      className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                      Save Time Slot
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
 
             {/* ── 5. MENU REVIEW ── */}
             {(() => {
@@ -636,20 +446,43 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             })()}
 
             {/* ── 6. BILLING CYCLE ── */}
-            <div className="bg-white border border-[#E5E2DA] p-5">
-              <h3 className="font-medium text-[15px] mb-4">Billing Cycle</h3>
-              <div className="flex gap-3 mb-4">
-                {(["week", "month"] as const).map((c) => (
-                  <button key={c} onClick={() => setBilling(c)}
-                    className={`flex-1 sm:flex-none px-6 py-3 border text-[13px] font-medium transition-all ${billing === c ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
-                    {c === "week" ? `Weekly — $${plan.priceWeek}` : `Monthly — $${plan.priceMonth} (save 12%)`}
+            {(() => {
+              const nextBillingDate = (() => {
+                const d = new Date();
+                billing === "week" ? d.setDate(d.getDate() + 7) : d.setMonth(d.getMonth() + 1);
+                return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+              })();
+              return (
+                <div className="bg-white border border-[#E5E2DA] p-5">
+                  <h3 className="font-medium text-[15px] mb-1">Billing Cycle</h3>
+                  <p className="text-[#888] text-[13px] mb-4">
+                    Next charge: <strong className="text-[#111]">{nextBillingDate}</strong>
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                    <button onClick={() => setBilling("week")}
+                      className={`flex-1 px-6 py-4 border text-left transition-all ${billing === "week" ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
+                      <div className={`text-[13px] font-semibold ${billing === "week" ? "text-white" : "text-[#111]"}`}>Weekly</div>
+                      <div className={`text-[22px] font-display font-bold mt-0.5 ${billing === "week" ? "text-[#F5B300]" : "text-[#111]"}`}>${plan.priceWeek}</div>
+                      <div className={`text-[11px] mt-0.5 ${billing === "week" ? "text-white/50" : "text-[#888]"}`}>per week · billed each week</div>
+                    </button>
+                    <button onClick={() => setBilling("month")}
+                      className={`flex-1 px-6 py-4 border text-left transition-all ${billing === "month" ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
+                      <div className="flex items-center gap-2">
+                        <div className={`text-[13px] font-semibold ${billing === "month" ? "text-white" : "text-[#111]"}`}>Monthly</div>
+                        <span className="text-[9px] font-bold tracking-[0.15em] uppercase bg-[#F5B300] text-[#111] px-1.5 py-0.5">Save 12%</span>
+                      </div>
+                      <div className={`text-[22px] font-display font-bold mt-0.5 ${billing === "month" ? "text-[#F5B300]" : "text-[#111]"}`}>${plan.priceMonth}</div>
+                      <div className={`text-[11px] mt-0.5 ${billing === "month" ? "text-white/50" : "text-[#888]"}`}>
+                        per month · save ${(plan.priceWeek * 4 - plan.priceMonth).toFixed(0)} vs. weekly
+                      </div>
+                    </button>
+                  </div>
+                  <button onClick={() => save("Billing cycle updated")} className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                    Save Billing Preference
                   </button>
-                ))}
-              </div>
-              <button onClick={() => save("Billing cycle updated")} className="text-[12px] text-[#888] border border-[#D0CCC4] px-4 py-2 hover:border-[#111] hover:text-[#111] transition-colors">
-                Save Billing Preference
-              </button>
-            </div>
+                </div>
+              );
+            })()}
 
             {/* ── 7. PAUSE / CANCEL ── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -657,15 +490,19 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 <h3 className="font-medium text-[15px] mb-1">{subPaused ? "Resume Plan" : "Pause Plan"}</h3>
                 <p className="text-[#888] text-[13px] mb-4">No charges while paused. Plan and meal settings are preserved.</p>
                 {!subPaused && (
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="text-[13px] text-[#666]">Duration:</span>
-                    {[1, 2, 3, 4].map((w) => (
-                      <button key={w} onClick={() => setPauseWeeks(w)}
-                        className={`w-9 h-9 border text-[13px] font-bold transition-colors ${pauseWeeks === w ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] hover:border-[#888]"}`}>
-                        {w}
-                      </button>
-                    ))}
-                    <span className="text-[13px] text-[#666]">wk{pauseWeeks > 1 ? "s" : ""}</span>
+                  <div className="flex flex-col gap-2 mb-4">
+                    {[1, 2, 3, 4].map((w) => {
+                      const start = new Date(); start.setDate(start.getDate() + 1);
+                      const end = new Date(start); end.setDate(end.getDate() + w * 7 - 1);
+                      const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+                      return (
+                        <button key={w} onClick={() => setPauseWeeks(w)}
+                          className={`flex items-center justify-between px-4 py-2.5 border text-left transition-all ${pauseWeeks === w ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] hover:border-[#888]"}`}>
+                          <span className={`text-[13px] font-bold ${pauseWeeks === w ? "text-white" : "text-[#111]"}`}>{w} week{w > 1 ? "s" : ""}</span>
+                          <span className={`text-[11px] font-mono ${pauseWeeks === w ? "text-white/50" : "text-[#888]"}`}>{fmt(start)} – {fmt(end)}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
                 <button
@@ -812,42 +649,41 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
 
             <div className="bg-white border border-[#E5E2DA] p-6 mb-5">
               <h3 className="font-medium text-[16px] mb-1">Redeem Your Points</h3>
-              <p className="text-[#888] text-[13px] mb-5">You have <strong className="text-[#111]">1,234 points</strong> = <strong className="text-[#111]">$12.34 value</strong></p>
-
-              {/* Points stepper */}
-              <div className="mb-5">
-                <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Points to redeem</label>
-                <div className="flex items-center gap-4">
-                  <button onClick={() => setRedeemPts((v) => Math.max(50, v - 50))} className="w-9 h-9 border border-[#D0CCC4] text-[18px] hover:border-[#111] transition-colors flex items-center justify-center">−</button>
-                  <div className="flex-1">
-                    <input type="range" min={50} max={1234} step={50} value={redeemPts} onChange={(e) => setRedeemPts(Number(e.target.value))} className="w-full accent-[#111]" />
-                  </div>
-                  <button onClick={() => setRedeemPts((v) => Math.min(1234, v + 50))} className="w-9 h-9 border border-[#D0CCC4] text-[18px] hover:border-[#111] transition-colors flex items-center justify-center">+</button>
-                  <div className="text-[#111] font-mono font-bold text-[16px] w-20 text-right">{redeemPts} pts</div>
-                </div>
-                <p className="text-[#888] text-[12px] mt-1">= ${(redeemPts / 100).toFixed(2)} wallet credit</p>
+              <p className="text-[#888] text-[13px] mb-5">You have <strong className="text-[#111]">1,234 points</strong>. Choose a voucher to apply to your next order.</p>
+              <div className="space-y-2">
+                {[
+                  { pts: 500,  credit: 5.00,  label: "$5 wallet credit",  bonus: null },
+                  { pts: 1000, credit: 11.00, label: "$11 wallet credit", bonus: "10% bonus" },
+                  { pts: 2000, credit: 25.00, label: "$25 wallet credit", bonus: "25% bonus" },
+                ].map((tier) => {
+                  const canRedeem = 1234 >= tier.pts;
+                  const selected = redeemPts === tier.pts;
+                  return (
+                    <div key={tier.pts}
+                      onClick={() => canRedeem && setRedeemPts(tier.pts)}
+                      className={`flex items-center justify-between gap-4 px-5 py-4 border transition-all ${selected ? "border-[#111] bg-[#111] text-white" : canRedeem ? "border-[#D0CCC4] hover:border-[#111] cursor-pointer" : "border-[#E5E2DA] opacity-40 cursor-not-allowed"}`}>
+                      <div className="flex items-center gap-4">
+                        <div className={`font-display text-[22px] font-bold ${selected ? "text-[#F5B300]" : "text-[#111]"}`}>{tier.pts}<span className={`text-[12px] font-normal ml-1 ${selected ? "text-white/50" : "text-[#888]"}`}>pts</span></div>
+                        <div>
+                          <div className={`text-[14px] font-semibold ${selected ? "text-white" : "text-[#111]"}`}>{tier.label}</div>
+                          {tier.bonus && <div className={`text-[11px] mt-0.5 ${selected ? "text-[#F5B300]" : "text-[#F5B300]"}`}>{tier.bonus} value</div>}
+                        </div>
+                      </div>
+                      <div className="shrink-0">
+                        {selected ? (
+                          <button onClick={() => save(`${tier.pts} points redeemed → ${tier.label} added to wallet`)}
+                            className="bg-[#F5B300] text-[#111] px-4 py-2 text-[11px] font-bold tracking-widest uppercase hover:bg-white transition-colors">
+                            Redeem
+                          </button>
+                        ) : (
+                          <div className={`w-5 h-5 border-2 ${canRedeem ? "border-[#D0CCC4]" : "border-[#E5E2DA]"}`} />
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-
-              {/* Redemption options */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="border border-[#E5E2DA] p-4">
-                  <div className="font-medium text-[14px] mb-1">Apply as Wallet Credit</div>
-                  <div className="text-[#888] text-[12px] mb-3">Convert points directly to spend on your next order</div>
-                  <button onClick={() => { save(`${redeemPts} points redeemed → $${(redeemPts / 100).toFixed(2)} added to wallet`); }}
-                    className="w-full py-2.5 bg-[#111] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                    Convert {redeemPts} pts → ${(redeemPts / 100).toFixed(2)} credit
-                  </button>
-                </div>
-                <div className="border border-[#E5E2DA] p-4">
-                  <div className="font-medium text-[14px] mb-1">Redeem for Free Meal</div>
-                  <div className="text-[#888] text-[12px] mb-3">1,000 pts = 1 free meal added to your next delivery</div>
-                  <button onClick={() => { if (redeemPts >= 1000) { save("1,000 points redeemed → 1 Free Meal added to next delivery"); } }}
-                    className={`w-full py-2.5 text-[12px] font-bold tracking-widest uppercase transition-colors ${redeemPts >= 1000 ? "bg-[#1A1A1A] text-[#F5B300] hover:bg-[#F5B300] hover:text-[#111]" : "bg-[#F0EDE8] text-[#aaa] cursor-not-allowed"}`}>
-                    Redeem 1,000 pts → 1 Free Meal
-                  </button>
-                  {redeemPts < 1000 && <p className="text-[#aaa] text-[11px] mt-1">Need {1000 - redeemPts} more pts</p>}
-                </div>
-              </div>
+              <p className="text-[#aaa] text-[11px] mt-3">Rate: 100 pts = $1. Bonus credit applies at higher tiers.</p>
             </div>
             <div className="bg-white border border-[#E5E2DA] p-6">
               <h3 className="font-medium text-[16px] mb-5">Transaction History</h3>
@@ -1278,16 +1114,26 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
           <div className="relative bg-white max-w-[440px] w-full p-8">
             <h3 className="font-display text-[24px] font-bold mb-3">Pause your plan</h3>
             <p className="text-[#666] text-[14px] mb-6">No deliveries or charges during the pause. Your plan resumes automatically.</p>
-            <div className="flex gap-3 mb-5">
-              {[1, 2, 3, 4].map((w) => (
-                <button key={w} onClick={() => setPauseWeeks(w)}
-                  className={`flex-1 py-3 border text-[14px] font-bold transition-colors ${pauseWeeks === w ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] hover:border-[#111]"}`}>
-                  {w}w
-                </button>
-              ))}
-            </div>
-            <div className="bg-[#F7F5F0] p-3 mb-6 text-[13px] text-[#666]">
-              Resumes: <strong className="text-[#111]">15 September 2025</strong>
+            <div className="flex flex-col gap-2 mb-5">
+              {[1, 2, 3, 4].map((w) => {
+                const start = new Date(); start.setDate(start.getDate() + 1);
+                const end = new Date(start); end.setDate(end.getDate() + w * 7 - 1);
+                const resumeDate = new Date(end); resumeDate.setDate(resumeDate.getDate() + 1);
+                const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+                return (
+                  <button key={w} onClick={() => setPauseWeeks(w)}
+                    className={`flex items-center justify-between px-5 py-3.5 border transition-all ${pauseWeeks === w ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] hover:border-[#111]"}`}>
+                    <div className="text-left">
+                      <div className={`text-[14px] font-bold ${pauseWeeks === w ? "text-white" : "text-[#111]"}`}>{w} week{w > 1 ? "s" : ""}</div>
+                      <div className={`text-[11px] font-mono mt-0.5 ${pauseWeeks === w ? "text-white/50" : "text-[#888]"}`}>{fmt(start)} – {fmt(end)}</div>
+                    </div>
+                    <div className="text-right shrink-0 ml-4">
+                      <div className={`text-[10px] uppercase tracking-wider ${pauseWeeks === w ? "text-white/40" : "text-[#aaa]"}`}>resumes</div>
+                      <div className={`text-[12px] font-semibold ${pauseWeeks === w ? "text-[#F5B300]" : "text-[#555]"}`}>{fmt(resumeDate)}</div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
             <div className="flex gap-3">
               <button onClick={() => setShowPauseModal(false)} className="flex-1 border border-[#D0CCC4] py-3 text-[12px] font-bold uppercase text-[#888] hover:border-[#111] transition-colors">Cancel</button>

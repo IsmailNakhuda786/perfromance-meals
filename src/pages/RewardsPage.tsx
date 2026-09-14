@@ -14,7 +14,7 @@ const TIERS = [
 const HOW_IT_WORKS = [
   { step: "01", title: "Order any meal", desc: "Every $1 spent earns you points. Meal Plan orders earn 1.5× points automatically." },
   { step: "02", title: "Points stack up", desc: "No expiry on points as long as you order once every 90 days. Referrals earn 200 bonus pts per friend." },
-  { step: "03", title: "Redeem for credit", desc: "500 pts = $5 wallet credit. Apply at checkout instantly — no codes, no fuss." },
+  { step: "03", title: "Redeem for credit", desc: "Choose a voucher tier: 500 pts = $5 · 1,000 pts = $11 · 2,000 pts = $25. Applied at checkout instantly." },
 ];
 
 const FAQS = [
@@ -85,21 +85,25 @@ export default function RewardsPage({ navigate, isLoggedIn }: Props) {
         </div>
       </section>
 
-      {/* Conversion rate callout */}
+      {/* Voucher tiers callout */}
       <section className="bg-[#111] border-y border-white/8 py-12">
-        <div className="max-w-[1200px] mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-8 text-center sm:text-left">
-          <div>
-            <div className="font-display text-[56px] font-extrabold text-[#F5B300] leading-none">500</div>
-            <div className="text-white/40 text-[13px] font-mono uppercase tracking-wider mt-1">points</div>
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="text-[10px] font-mono tracking-[0.3em] text-[#F5B300] uppercase mb-6 text-center">Voucher Tiers</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 border border-white/8">
+            {[
+              { pts: "500 pts", credit: "$5",  bonus: null,        label: "Starter voucher" },
+              { pts: "1,000 pts", credit: "$11", bonus: "10% bonus", label: "Value voucher" },
+              { pts: "2,000 pts", credit: "$25", bonus: "25% bonus", label: "Premium voucher" },
+            ].map((t, i) => (
+              <div key={i} className="p-8 border-b sm:border-b-0 sm:border-r border-white/8 last:border-0 text-center">
+                <div className="font-display text-[48px] font-extrabold text-[#F5B300] leading-none">{t.credit}</div>
+                <div className="text-white/60 text-[14px] mt-1">{t.pts}</div>
+                {t.bonus && <div className="text-[#F5B300] text-[11px] font-bold mt-1 tracking-wider">{t.bonus}</div>}
+                <div className="text-white/25 text-[11px] font-mono mt-2 uppercase tracking-wider">{t.label}</div>
+              </div>
+            ))}
           </div>
-          <div className="text-white/20 text-[32px] font-light hidden sm:block">=</div>
-          <div>
-            <div className="font-display text-[56px] font-extrabold text-white leading-none">$5</div>
-            <div className="text-white/40 text-[13px] font-mono uppercase tracking-wider mt-1">wallet credit</div>
-          </div>
-          <div className="sm:ml-8 max-w-[280px]">
-            <p className="text-white/40 text-[13px] leading-relaxed">Applied instantly at checkout — no codes needed. Combine with promos for maximum savings.</p>
-          </div>
+          <p className="text-white/25 text-[12px] text-center mt-4">Applied instantly at checkout — no codes needed. Combine with promos for maximum savings.</p>
         </div>
       </section>
 

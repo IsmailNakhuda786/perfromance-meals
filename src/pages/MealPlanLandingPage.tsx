@@ -235,6 +235,21 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
         </div>
       </section>
 
+      {/* ── CROSS-LINK: READY SERIES ── */}
+      <section className="py-10 px-6 sm:px-8 border-t border-[#E8E4DC] bg-[#FAF9F6]">
+        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-1" style={{ color: "#F5B300" }}>Ready Series</p>
+            <p className="text-[#1A1A1A] font-display text-[20px] font-semibold">Looking for single meals, no subscription?</p>
+            <p className="text-[#888] text-[13px] mt-1">Order individual ready-to-eat meals and bundles — no commitment, no plan.</p>
+          </div>
+          <button onClick={() => navigate("ready-series")}
+            className="shrink-0 border-2 border-[#1A1A1A] text-[#1A1A1A] px-8 py-3 font-bold text-[12px] tracking-[0.15em] uppercase hover:bg-[#1A1A1A] hover:text-white transition-colors whitespace-nowrap">
+            Browse Ready Series →
+          </button>
+        </div>
+      </section>
+
       {/* ── PROMISE ── */}
       <section className="py-14 px-6 sm:px-8 border-t border-[#E8E4DC] bg-[#1A1A1A] text-white">
         <div className="max-w-[900px] mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-8">

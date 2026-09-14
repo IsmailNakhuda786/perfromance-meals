@@ -19,6 +19,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [logoutToast, setLogoutToast] = useState(false);
   const [expandedBundles, setExpandedBundles] = useState<Set<string>>(new Set());
+  const [siteSwitcherOpen, setSiteSwitcherOpen] = useState(false);
 
   const toggleBundleExpand = (key: string) => {
     setExpandedBundles((prev) => {
@@ -66,8 +67,19 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const WALLET_BALANCE = 12.50;
   const REWARD_PTS = 1234;
 
-  const go = (page: Page) => { navigate(page); setMobileOpen(false); };
-  const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); };
+  const go = (page: Page) => { navigate(page); setMobileOpen(false); setSiteSwitcherOpen(false); };
+  const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); setSiteSwitcherOpen(false); };
+
+  const SITES = [
+    { id: "parent",       label: "Performance Meals", sub: "Home",                          color: "#F5B300", action: () => go("home") },
+    { id: "meal-plan",    label: "Meal Plan",          sub: "Goal-led structured plans",     color: "#E85D04", action: () => go("meal-plan-landing") },
+    { id: "ready-series", label: "Ready Series",       sub: "Ready-to-eat individual meals", color: "#F5B300", action: () => go("ready-series") },
+  ];
+  const currentSite =
+    currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "meal-plan"
+    : currentPage === "ready-series" || currentPage === "ready-to-go" || currentPage === "build-a-box" || currentPage === "ready-series-product" ? "ready-series"
+    : "parent";
+  const currentSiteLabel = SITES.find((s) => s.id === currentSite)?.label ?? "Performance Meals";
 
   return (
     <>
@@ -79,11 +91,46 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
       <nav className="sticky top-0 z-50 bg-[#1A1A1A] text-white border-b border-white/10">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-[56px] sm:h-[60px] flex items-center justify-between gap-4">
 
-          {/* Logo */}
-          <div className="flex items-center shrink-0">
-            <button onClick={() => go("home")} className="flex items-center">
+          {/* Site-switcher */}
+          <div className="relative flex items-center shrink-0">
+            <button onClick={() => setSiteSwitcherOpen((v) => !v)}
+              className="flex items-center gap-2 group hover:opacity-90 transition-opacity">
               <PerformanceMealsLogo size="sm" variant="light" />
+              <div className="hidden sm:flex items-center gap-1 ml-1">
+                {currentSite !== "parent" && (
+                  <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-white/35 border-l border-white/15 pl-2">{currentSiteLabel}</span>
+                )}
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                  className={`text-white/25 transition-transform ${siteSwitcherOpen ? "rotate-180" : ""}`}>
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
             </button>
+            {siteSwitcherOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setSiteSwitcherOpen(false)} />
+                <div className="absolute top-full left-0 mt-2 w-[260px] bg-[#111] border border-white/12 z-50">
+                  <div className="px-4 py-2.5 border-b border-white/8">
+                    <span className="text-[9px] font-mono tracking-[0.35em] uppercase text-white/25">Switch to</span>
+                  </div>
+                  {SITES.map((s) => (
+                    <button key={s.id} onClick={s.action}
+                      className={`w-full text-left px-4 py-3.5 flex items-center gap-3 hover:bg-white/5 transition-colors border-b border-white/6 last:border-0 ${currentSite === s.id ? "bg-white/5" : ""}`}>
+                      <div className="w-[3px] h-8 shrink-0" style={{ backgroundColor: s.color }} />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-white text-[13px] font-semibold leading-tight">{s.label}</div>
+                        <div className="text-white/30 text-[11px] mt-0.5 truncate">{s.sub}</div>
+                      </div>
+                      {currentSite === s.id && (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/30 shrink-0">
+                          <path d="M20 6 9 17l-5-5"/>
+                        </svg>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Desktop nav links */}
@@ -98,14 +145,6 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
               Meal Plans
             </button>
             <div className="w-px h-4 bg-white/15" />
-            <button onClick={() => go(isLoggedIn ? "account" : "rewards")}
-              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "account" || currentPage === "rewards" ? "text-[#F5B300]" : "text-white/50 hover:text-white"}`}>
-              Rewards
-            </button>
-            <button onClick={() => go("gift-card")}
-              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "gift-card" ? "text-[#F5B300]" : "text-white/50 hover:text-white"}`}>
-              Gift Cards
-            </button>
             <button onClick={() => go("about")}
               className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "about" ? "text-[#F5B300]" : "text-white/50 hover:text-white"}`}>
               About
@@ -180,12 +219,10 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
             <div className="px-5 py-4 space-y-1">
               <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2">Navigation</div>
               {[
-                { label: "Ready Series", action: () => go("ready-series"), accent: "#F5B300" },
-                { label: "Meal Plans", action: () => go("meal-plan-landing"), accent: "#E85D04" },
-                { label: "Rewards", action: () => go(isLoggedIn ? "account" : "rewards"), accent: null },
-                { label: "Gift Cards", action: () => go("gift-card"), accent: null },
-                { label: "About", action: () => go("about"), accent: null },
-                { label: "How It Works", action: () => go("how-it-works"), accent: null },
+                { label: "Ready Series", action: () => go("ready-series") },
+                { label: "Meal Plans", action: () => go("meal-plan-landing") },
+                { label: "About", action: () => go("about") },
+                { label: "How It Works", action: () => go("how-it-works") },
               ].map((l) => (
                 <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
               ))}
@@ -202,8 +239,6 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   </div>
                   {[
                     { label: "My Account", action: () => go("account") },
-                    { label: "Rewards & Points", action: () => go("account") },
-                    { label: "Gift Cards", action: () => go("gift-card") },
                     { label: "↩ Log Out (prototype)", action: handleLogout },
                   ].map((l) => (
                     <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
@@ -221,11 +256,6 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                       Sign Up
                     </button>
                   </div>
-                  {[
-                    { label: "Gift Cards", action: () => go("gift-card") },
-                  ].map((l) => (
-                    <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
-                  ))}
                 </>
               )}
             </div>

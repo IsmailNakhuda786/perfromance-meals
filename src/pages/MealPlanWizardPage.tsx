@@ -27,13 +27,13 @@ const STEP_SUBTITLES = [
 
 const PROGRAMME_DETAILS: Record<ProgrammeType, {
   label: string; description: string; kind: "recurring" | "fixed";
-  days?: number; menuWeeks: number; badge?: string; icon: string;
+  days?: number; menuWeeks: number; badge?: string; icon: string; fixedMealCount?: MealCount;
 }> = {
   "bi-weekly":  { label: "Bi-weekly",  description: "Delivery every 2 weeks",                                  kind: "recurring", menuWeeks: 2, badge: "POPULAR", icon: "🔄" },
   "monthly":    { label: "Monthly",    description: "One delivery per month",                                   kind: "recurring", menuWeeks: 4, icon: "📅" },
-  "6by60":      { label: "6by60",      description: "60-day programme · Fresh structure for your goal",         kind: "fixed", days: 60, menuWeeks: 4, icon: "🎯" },
-  "buddy-plan": { label: "Buddy Plan", description: "20-day programme · Consistent meals for your week",       kind: "fixed", days: 20, menuWeeks: 4, icon: "👥" },
-  "hyrox":      { label: "HYROX",      description: "20-day programme · Structured fuel around your sessions", kind: "fixed", days: 20, menuWeeks: 4, icon: "⚡" },
+  "6by60":      { label: "6by60",      description: "60-day programme · Fresh structure for your goal",         kind: "fixed", days: 60, menuWeeks: 4, icon: "🎯", fixedMealCount: "lunch-dinner" as MealCount },
+  "buddy-plan": { label: "Buddy Plan", description: "20-day programme · Consistent meals for your week",       kind: "fixed", days: 20, menuWeeks: 4, icon: "👥", fixedMealCount: "lunch-dinner" as MealCount },
+  "hyrox":      { label: "HYROX",      description: "20-day programme · Structured fuel around your sessions", kind: "fixed", days: 20, menuWeeks: 4, icon: "⚡", fixedMealCount: "lunch-dinner" as MealCount },
 };
 
 const MEAL_PLANS: { id: MealPlanType; kcal: string; note: string; protein: string; carb: string; icon: string }[] = [
@@ -207,7 +207,8 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
   const WALLET_BALANCE = 12.00; // simulated wallet
 
   const progInfo = PROGRAMME_DETAILS[programme];
-  const basePrice = BASE_PRICES[mealPlan][mealCount];
+  const effectiveMealCount = progInfo.fixedMealCount ?? mealCount;
+  const basePrice = BASE_PRICES[mealPlan][effectiveMealCount];
 
   const promoEntry = promoApplied ? VALID_PROMOS[promoCode.trim().toUpperCase()] : null;
   const promoDiscount = promoEntry
@@ -227,13 +228,13 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
     setPromoError(null); setPromoApplied(true);
   };
 
-  const slotsPerDay = mealCount === "lunch-dinner" ? 2 : 1;
+  const slotsPerDay = effectiveMealCount === "lunch-dinner" ? 2 : 1;
   const totalSlots = WEEKDAYS.length * slotsPerDay;
   const weekSels = menuSelections[selectedWeek] || {};
   const filledSlots = WEEKDAYS.reduce((acc, day) => {
     const d = weekSels[day];
     if (!d) return acc;
-    return acc + (d.lunch ? 1 : 0) + (mealCount === "lunch-dinner" && d.dinner ? 1 : 0);
+    return acc + (d.lunch ? 1 : 0) + (effectiveMealCount === "lunch-dinner" && d.dinner ? 1 : 0);
   }, 0);
 
   const completionPct = useMemo(() => {
@@ -264,7 +265,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
 
   const canProceed4 = !!(details.name && details.phone && details.email && details.street);
   const progLabel = progInfo.kind === "fixed" && progInfo.days ? `${progInfo.label} · ${progInfo.days} days` : progInfo.label;
-  const mealCountLabel = mealCount === "lunch-only" ? "Lunch Only · 1/day" : "Lunch & Dinner · 2/day";
+  const mealCountLabel = effectiveMealCount === "lunch-only" ? "Lunch Only · 1/day" : "Lunch & Dinner · 2/day";
 
   const goBack = () => step === 1 ? navigate("meal-plan-landing") : setStep((s) => (s - 1) as Step);
   const goNext = () => setStep((s) => Math.min(s + 1, 5) as Step);
@@ -275,7 +276,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
 
   const dayDoneMap = WEEKDAYS.map((day) => {
     const d = (menuSelections[selectedWeek] || {})[day] || { lunch: null, dinner: null };
-    return (d.lunch ? 1 : 0) + (mealCount === "lunch-dinner" && d.dinner ? 1 : 0) === slotsPerDay;
+    return (d.lunch ? 1 : 0) + (effectiveMealCount === "lunch-dinner" && d.dinner ? 1 : 0) === slotsPerDay;
   });
 
   // ── Nav buttons shared across steps ──────────────────────────────────────
@@ -413,32 +414,47 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
               {/* Meals per day */}
               <div>
                 <p className="text-[10px] font-extrabold tracking-[0.3em] uppercase text-[#888] mb-3">Meals Per Day</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {([
-                    { id: "lunch-only"   as MealCount, label: "Lunch Only",     sub: "1 meal · midday fuel",       icon: "☀️", price: BASE_PRICES[mealPlan]["lunch-only"] },
-                    { id: "lunch-dinner" as MealCount, label: "Lunch & Dinner", sub: "2 meals · full-day covered",  icon: "🌙", price: BASE_PRICES[mealPlan]["lunch-dinner"] },
-                  ]).map((opt) => {
-                    const sel = mealCount === opt.id;
-                    return (
-                      <button key={opt.id} onClick={() => setMealCount(opt.id)}
-                        className={`p-5 border-2 text-left transition-all duration-150 group active:scale-[0.99]
-                          ${sel ? "border-[#E85D04] bg-white" : "border-[#E8E4DC] bg-white hover:border-[#C0BAB0]"}`}
-                        style={sel ? { boxShadow: "0 0 0 3px #E85D0422" } : undefined}>
-                        <div className="absolute-left-strip" />
-                        <div className="text-3xl mb-3">{opt.icon}</div>
-                        <div className={`font-bold text-[15px] ${sel ? "text-[#1A1A1A]" : "text-[#555]"}`}>{opt.label}</div>
-                        <div className="text-[12px] text-[#888] mt-0.5">{opt.sub}</div>
-                        <div className="mt-3 flex items-center justify-between">
-                          <span className="text-[13px] font-extrabold text-[#E85D04]">${opt.price}</span>
-                          {sel && <span className="text-[10px] font-bold text-[#E85D04] flex items-center gap-1">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5"/></svg>
-                            Selected
-                          </span>}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+                {progInfo.fixedMealCount ? (
+                  <div className="border-2 border-[#E85D04] bg-white p-5">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-3xl">🌙</span>
+                      <div>
+                        <div className="font-bold text-[15px] text-[#1A1A1A]">Lunch & Dinner</div>
+                        <div className="text-[12px] text-[#888]">2 meals · included in programme</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <div className="w-1.5 h-1.5 bg-[#E85D04]" />
+                      <span className="text-[11px] text-[#888]">Meal count is fixed for the <strong className="text-[#1A1A1A]">{progInfo.label}</strong> programme</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    {([
+                      { id: "lunch-only"   as MealCount, label: "Lunch Only",     sub: "1 meal · midday fuel",       icon: "☀️", price: BASE_PRICES[mealPlan]["lunch-only"] },
+                      { id: "lunch-dinner" as MealCount, label: "Lunch & Dinner", sub: "2 meals · full-day covered",  icon: "🌙", price: BASE_PRICES[mealPlan]["lunch-dinner"] },
+                    ]).map((opt) => {
+                      const sel = mealCount === opt.id;
+                      return (
+                        <button key={opt.id} onClick={() => setMealCount(opt.id)}
+                          className={`p-5 border-2 text-left transition-all duration-150 group active:scale-[0.99]
+                            ${sel ? "border-[#E85D04] bg-white" : "border-[#E8E4DC] bg-white hover:border-[#C0BAB0]"}`}
+                          style={sel ? { boxShadow: "0 0 0 3px #E85D0422" } : undefined}>
+                          <div className="text-3xl mb-3">{opt.icon}</div>
+                          <div className={`font-bold text-[15px] ${sel ? "text-[#1A1A1A]" : "text-[#555]"}`}>{opt.label}</div>
+                          <div className="text-[12px] text-[#888] mt-0.5">{opt.sub}</div>
+                          <div className="mt-3 flex items-center justify-between">
+                            <span className="text-[13px] font-extrabold text-[#E85D04]">${opt.price}</span>
+                            {sel && <span className="text-[10px] font-bold text-[#E85D04] flex items-center gap-1">
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6 9 17l-5-5"/></svg>
+                              Selected
+                            </span>}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Points earn teaser */}
@@ -547,7 +563,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                                 onClick={() => selectMeal(day, "lunch", meal.id)} slotColor="#F5B300" />
                             ))}
                           </div>
-                          {mealCount === "lunch-dinner" && (
+                          {effectiveMealCount === "lunch-dinner" && (
                             <>
                               <p className="text-[10px] font-extrabold tracking-[0.25em] uppercase text-[#888] mb-3">Dinner — choose 1</p>
                               <div className="grid grid-cols-2 gap-3">
@@ -899,19 +915,21 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                 </div>
               </div>
 
-              {/* Wallet credit */}
-              <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] font-extrabold tracking-[0.15em] uppercase text-[#555] mb-0.5">Wallet Credit</p>
-                  <p className="text-[14px] font-bold text-[#F5B300]">${WALLET_BALANCE.toFixed(2)}</p>
-                  <p className="text-[10px] text-white/30">Available to use</p>
+              {/* Wallet credit — only shown at checkout step */}
+              {step === 5 && (
+                <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-extrabold tracking-[0.15em] uppercase text-[#555] mb-0.5">Wallet Credit</p>
+                    <p className="text-[14px] font-bold text-[#F5B300]">${WALLET_BALANCE.toFixed(2)}</p>
+                    <p className="text-[10px] text-white/30">Available to use</p>
+                  </div>
+                  <button onClick={() => setUseWallet(!useWallet)}
+                    className={`relative w-11 h-6 transition-colors duration-200 ${useWallet ? "bg-[#E85D04]" : "bg-white/20"}`}
+                    style={{ borderRadius: 999 }}>
+                    <div className={`absolute top-0.5 w-5 h-5 bg-white shadow transition-all duration-200 ${useWallet ? "left-5" : "left-0.5"}`} style={{ borderRadius: 999 }} />
+                  </button>
                 </div>
-                <button onClick={() => setUseWallet(!useWallet)}
-                  className={`relative w-11 h-6 transition-colors duration-200 ${useWallet ? "bg-[#E85D04]" : "bg-white/20"}`}
-                  style={{ borderRadius: 999 }}>
-                  <div className={`absolute top-0.5 w-5 h-5 bg-white shadow transition-all duration-200 ${useWallet ? "left-5" : "left-0.5"}`} style={{ borderRadius: 999 }} />
-                </button>
-              </div>
+              )}
 
               {/* Order details */}
               <div className="px-6 py-4 space-y-3 text-[13px] border-b border-white/10">
@@ -929,10 +947,6 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                     <p className="font-semibold">{progInfo.days} days</p>
                   </div>
                 )}
-                <div className="border-t border-white/10 pt-3">
-                  <p className="text-[9px] font-extrabold tracking-[0.2em] uppercase text-[#555] mb-0.5">Menus Available</p>
-                  <p className="font-semibold">{progInfo.menuWeeks} weekly menus</p>
-                </div>
                 {step >= 2 && (
                   <>
                     <div className="border-t border-white/10 pt-3">

@@ -463,6 +463,17 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
         );
       })()}
 
+      {/* Cross-link: Meal Plan */}
+      <div className="bg-[#F5B300]/10 border-t border-[#F5B300]/25 px-6 py-8 text-center">
+        <p className="text-[11px] font-mono tracking-[0.3em] uppercase text-[#F5B300] mb-2">Meal Plan</p>
+        <p className="font-display text-[20px] font-bold text-white mb-1">Want structured nutrition with personal support?</p>
+        <p className="text-white/40 text-[13px] mb-5">Goal-led meal plans with check-ins, macro tracking, and full flexibility.</p>
+        <button onClick={() => navigate("meal-plan-landing")}
+          className="bg-[#E85D04] text-white px-8 py-3 font-bold text-[12px] tracking-[0.18em] uppercase hover:bg-white hover:text-[#1A1A1A] transition-colors">
+          Explore Meal Plans →
+        </button>
+      </div>
+
       {/* Product Detail Modal */}
       {selectedMeal && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center p-2 sm:p-4">
