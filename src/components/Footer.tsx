@@ -68,6 +68,13 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
               className="border border-[#F5B300]/40 bg-[#F5B300]/5 text-[#F5B300] px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors font-bold">
               🖨 All Screens PDF
             </button>
+            <a
+              href="/PerformanceMeals-Shopify-Theme.zip"
+              download="PerformanceMeals-Shopify-Theme.zip"
+              className="border border-white/20 bg-white/5 text-white/60 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-white/50 hover:text-white transition-colors font-bold"
+            >
+              ⬇ Shopify Theme
+            </a>
           </div>
         </div>
       </div>
