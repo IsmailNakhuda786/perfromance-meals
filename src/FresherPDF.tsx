@@ -241,11 +241,17 @@ export const FresherPDF = () => (
 
         {/* Colour palette */}
         <View style={{ flexDirection: "row", gap: 8, marginBottom: 12 }}>
-          {[C.yellow, C.yellow, C.yellow, "#555555", "#EEEEEE"].map((c) => (
-            <View key={c} style={{ width: 40, height: 40, backgroundColor: c }} />
+          {[
+            { color: C.yellow, label: "YELLOW" },
+            { color: C.orange, label: "ORANGE" },
+            { color: C.black, label: "CHARCOAL" },
+            { color: "#555555", label: "MID" },
+            { color: "#EEEEEE", label: "PARCHMENT" },
+          ].map(({ color, label }) => (
+            <View key={label} style={{ width: 40, height: 40, backgroundColor: color }} />
           ))}
         </View>
-        <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", letterSpacing: 2 }}>LIME · GOLD · MINT · MIDNIGHT · PARCHMENT</Text>
+        <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", letterSpacing: 2 }}>YELLOW · ORANGE · CHARCOAL · MID · PARCHMENT</Text>
 
         <View style={{ marginTop: 60, borderTop: "1 solid rgba(255,255,255,0.08)", paddingTop: 20, width: "100%", alignItems: "center" }}>
           <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.2)", letterSpacing: 1.5 }}>PROTOTYPE BUILD  ·  FIGMA MAKE  ·  REACT + VITE + TAILWIND CSS V4</Text>
