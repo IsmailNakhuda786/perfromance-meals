@@ -29,7 +29,7 @@ const PROGRAMME_DETAILS: Record<ProgrammeType, {
   label: string; description: string; kind: "recurring" | "fixed";
   days?: number; menuWeeks: number; badge?: string; icon: string; fixedMealCount?: MealCount;
 }> = {
-  "bi-weekly":  { label: "Bi-weekly",  description: "Delivery every 2 weeks",                                  kind: "recurring", menuWeeks: 2, badge: "POPULAR", icon: "🔄" },
+  "bi-weekly":  { label: "Biweekly",   description: "Delivery every 2 weeks",                                  kind: "recurring", menuWeeks: 2, badge: "POPULAR", icon: "🔄" },
   "monthly":    { label: "Monthly",    description: "One delivery per month",                                   kind: "recurring", menuWeeks: 4, icon: "📅" },
   "6by60":      { label: "6by60",      description: "60-day programme · Fresh structure for your goal",         kind: "fixed", days: 60, menuWeeks: 4, icon: "🎯", fixedMealCount: "lunch-dinner" as MealCount },
   "buddy-plan": { label: "Buddy Plan", description: "20-day programme · Consistent meals for your week",       kind: "fixed", days: 20, menuWeeks: 4, icon: "👥", fixedMealCount: "lunch-dinner" as MealCount },

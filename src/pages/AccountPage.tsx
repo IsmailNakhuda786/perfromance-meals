@@ -146,7 +146,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
   const [mealsPerDay, setMealsPerDay] = useState(4);
   const [deliveryDays, setDeliveryDays] = useState<string[]>(["Mon", "Wed", "Fri", "Sat"]);
   const [timeSlot, setTimeSlot] = useState(TIME_SLOTS[0]);
-  const [billing, setBilling] = useState<"week" | "month">("week");
+  const [billing, setBilling] = useState<"biweekly" | "month">("biweekly");
 
   // Meal swap state
   const [schedule, setSchedule] = useState(INITIAL_SCHEDULE);
@@ -243,7 +243,8 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             {[
               { val: "1,234", label: "Points" },
               { val: "$12.50", label: "Wallet" },
-              { val: `Week 13`, label: "Plan" },
+              { val: "Week 13", label: "Plan Week" },
+              { val: (() => { const d = new Date(); d.setDate(d.getDate() + 14); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }); })(), label: "Next Billing" },
             ].map((s) => (
               <div key={s.label}>
                 <div className="font-display text-[18px] sm:text-[22px] font-bold text-[#F5B300]">{s.val}</div>
@@ -326,7 +327,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     {activePlan} Plan · {mealsPerDay} meals/day
                   </h3>
                   <div className={`text-[13px] mt-1 ${subPaused ? "text-amber-700" : "text-white/40"}`}>
-                    {subPaused ? `Paused · Resumes ${(() => { const d = new Date(); d.setDate(d.getDate() + pauseWeeks * 7); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}` : `${billing === "week" ? "Weekly" : "Monthly"} · ${deliveryDays.join(", ")} · ${timeSlot}`}
+                    {subPaused ? `Paused · Resumes ${(() => { const d = new Date(); d.setDate(d.getDate() + pauseWeeks * 7); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}` : `${billing === "biweekly" ? "Biweekly" : "Monthly"} · ${deliveryDays.join(", ")} · ${timeSlot}`}
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -386,9 +387,14 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
         {/* ══ MY PLAN / SUBSCRIPTION ══ */}
         {tab === "subscription" && (
           <div className="space-y-5">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-3">
               <h2 className="font-display text-[28px] font-bold">My Plan</h2>
-              {subPaused ? (
+              <div className="flex items-center gap-3 text-[12px] text-[#666] bg-white border border-[#E5E2DA] px-4 py-2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5B300" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span>Next billing cycle:</span>
+                <strong className="text-[#111]">{(() => { const d = new Date(); billing === "biweekly" ? d.setDate(d.getDate() + 14) : d.setMonth(d.getMonth() + 1); return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); })()}</strong>
+              </div>
+            {subPaused ? (
                 <button onClick={() => setSubPaused(false)} className="bg-[#F5B300] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-[#F5B300] transition-colors">
                   Resume Subscription
                 </button>
@@ -453,15 +459,18 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               // Generate upcoming schedule weeks dynamically
               const baseDate = new Date();
               baseDate.setDate(baseDate.getDate() - baseDate.getDay() + 1); // start of this Mon
+              // Cutoff = Thursday 1pm each week. Simulate: week 0 is past cutoff, week 1 approaching, weeks 2-3 open
               const WEEKS = Array.from({ length: 4 }, (_, i) => {
                 const start = new Date(baseDate); start.setDate(start.getDate() + i * 7);
                 const end = new Date(start); end.setDate(end.getDate() + 4);
                 const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+                const cutoffState = i === 0 ? "closed" : i === 1 ? "approaching" : i === 2 ? "open" : "upcoming";
                 return {
                   label: i === 0 ? "This Week" : `Week ${i + 1}`,
                   dates: `${fmt(start)} – ${fmt(end)}`,
                   weekNum: currentPlanWeek + i,
                   editable: i < 2,
+                  cutoffState,
                 };
               });
 
@@ -505,15 +514,27 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   {/* Browse / Review toggle + week selector row */}
                   <div className="flex items-center justify-between border-b border-[#E5E2DA] pr-4">
                     <div className="flex overflow-x-auto">
-                      {WEEKS.map((w, i) => (
-                        <button key={i} onClick={() => setActiveWeek(i)}
-                          className={`px-5 py-3.5 shrink-0 text-left border-b-2 transition-colors ${activeWeek === i ? "border-[#F5B300] text-[#1A1A1A]" : "border-transparent text-[#999] hover:text-[#1A1A1A]"}`}>
-                          <div className={`text-[12px] font-semibold ${activeWeek === i ? "text-[#1A1A1A]" : ""}`}>
-                            {w.label} <span className="font-mono text-[9px] ml-1 opacity-50">W{w.weekNum}</span>
-                          </div>
-                          <div className="text-[10px] text-[#aaa] mt-0.5">{w.dates}</div>
-                        </button>
-                      ))}
+                      {WEEKS.map((w, i) => {
+                        const stateConfig: Record<string, { label: string; cls: string }> = {
+                          closed:     { label: "Changes closed",    cls: "bg-[#FFF5F5] text-[#c00] border border-[#fcc]" },
+                          approaching:{ label: "Cutoff approaching", cls: "bg-amber-50 text-amber-700 border border-amber-200" },
+                          open:       { label: "Open for changes",  cls: "bg-[#F0FAF4] text-green-700 border border-green-200" },
+                          upcoming:   { label: "Upcoming",          cls: "bg-[#F7F5F0] text-[#999] border border-[#E5E2DA]" },
+                        };
+                        const state = stateConfig[w.cutoffState];
+                        return (
+                          <button key={i} onClick={() => setActiveWeek(i)}
+                            className={`px-5 py-3 shrink-0 text-left border-b-2 transition-colors ${activeWeek === i ? "border-[#F5B300] text-[#1A1A1A]" : "border-transparent text-[#999] hover:text-[#1A1A1A]"}`}>
+                            <div className={`text-[12px] font-semibold ${activeWeek === i ? "text-[#1A1A1A]" : ""}`}>
+                              {w.label} <span className="font-mono text-[9px] ml-1 opacity-50">W{w.weekNum}</span>
+                            </div>
+                            <div className="text-[10px] text-[#aaa] mt-0.5 mb-1.5">{w.dates}</div>
+                            <span className={`inline-block text-[9px] font-bold tracking-[0.08em] uppercase px-1.5 py-0.5 ${state.cls}`}>
+                              {state.label}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                     <div className="flex border border-[#E5E2DA] overflow-hidden shrink-0 ml-3">
                       {(["review", "browse"] as const).map((m) => (
@@ -526,10 +547,28 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   </div>
 
                   {/* Cutoff / pause warning */}
-                  {isPastCutoff && !subPaused && (
+                  {currentWeek.cutoffState === "closed" && !subPaused && (
+                    <div className="mx-5 mt-4 bg-[#FFF5F5] border border-[#fcc] px-4 py-2.5 flex items-center gap-2 text-[12px] text-[#c00]">
+                      <span>🔒</span>
+                      <span><strong>Changes closed</strong> — the cutoff for this week has passed. Meals are locked for delivery.</span>
+                    </div>
+                  )}
+                  {currentWeek.cutoffState === "approaching" && !subPaused && (
                     <div className="mx-5 mt-4 bg-amber-50 border border-amber-200 px-4 py-2.5 flex items-center gap-2 text-[12px] text-amber-700">
                       <span>⚠️</span>
-                      <span>Cutoff for this week is <strong>Thursday 1pm</strong>. Swap before then to change your meals.</span>
+                      <span><strong>Cutoff approaching</strong> — swap closes <strong>Thursday 1pm</strong>. Make your changes now.</span>
+                    </div>
+                  )}
+                  {currentWeek.cutoffState === "open" && !subPaused && (
+                    <div className="mx-5 mt-4 bg-[#F0FAF4] border border-green-200 px-4 py-2.5 flex items-center gap-2 text-[12px] text-green-700">
+                      <span>✓</span>
+                      <span><strong>Open for changes</strong> — you can swap meals until <strong>Thursday 1pm</strong> this week.</span>
+                    </div>
+                  )}
+                  {currentWeek.cutoffState === "upcoming" && !subPaused && (
+                    <div className="mx-5 mt-4 bg-[#F7F5F0] border border-[#E5E2DA] px-4 py-2.5 flex items-center gap-2 text-[12px] text-[#888]">
+                      <span>📅</span>
+                      <span><strong>Upcoming week</strong> — menu will be available for selection from Monday.</span>
                     </div>
                   )}
                   {subPaused && (
@@ -596,7 +635,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             {(() => {
               const nextBillingDate = (() => {
                 const d = new Date();
-                billing === "week" ? d.setDate(d.getDate() + 7) : d.setMonth(d.getMonth() + 1);
+                billing === "biweekly" ? d.setDate(d.getDate() + 14) : d.setMonth(d.getMonth() + 1);
                 return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
               })();
               return (
@@ -606,11 +645,11 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     Next charge: <strong className="text-[#111]">{nextBillingDate}</strong>
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                    <button onClick={() => setBilling("week")}
-                      className={`flex-1 px-6 py-4 border text-left transition-all ${billing === "week" ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
-                      <div className={`text-[13px] font-semibold ${billing === "week" ? "text-white" : "text-[#111]"}`}>Weekly</div>
-                      <div className={`text-[22px] font-display font-bold mt-0.5 ${billing === "week" ? "text-[#F5B300]" : "text-[#111]"}`}>${plan.priceWeek}</div>
-                      <div className={`text-[11px] mt-0.5 ${billing === "week" ? "text-white/50" : "text-[#888]"}`}>per week · billed each week</div>
+                    <button onClick={() => setBilling("biweekly")}
+                      className={`flex-1 px-6 py-4 border text-left transition-all ${billing === "biweekly" ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
+                      <div className={`text-[13px] font-semibold ${billing === "biweekly" ? "text-white" : "text-[#111]"}`}>Biweekly</div>
+                      <div className={`text-[22px] font-display font-bold mt-0.5 ${billing === "biweekly" ? "text-[#F5B300]" : "text-[#111]"}`}>${plan.priceWeek}</div>
+                      <div className={`text-[11px] mt-0.5 ${billing === "biweekly" ? "text-white/50" : "text-[#888]"}`}>billed every 2 weeks</div>
                     </button>
                     <button onClick={() => setBilling("month")}
                       className={`flex-1 px-6 py-4 border text-left transition-all ${billing === "month" ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
@@ -620,7 +659,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                       </div>
                       <div className={`text-[22px] font-display font-bold mt-0.5 ${billing === "month" ? "text-[#F5B300]" : "text-[#111]"}`}>${plan.priceMonth}</div>
                       <div className={`text-[11px] mt-0.5 ${billing === "month" ? "text-white/50" : "text-[#888]"}`}>
-                        per month · save ${(plan.priceWeek * 4 - plan.priceMonth).toFixed(0)} vs. weekly
+                        per month · save ${(plan.priceWeek * 4 - plan.priceMonth).toFixed(0)} vs. biweekly
                       </div>
                     </button>
                   </div>
