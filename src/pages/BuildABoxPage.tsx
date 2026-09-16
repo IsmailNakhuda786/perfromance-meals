@@ -269,74 +269,101 @@ export default function BuildABoxPage({ navigate, addToCart, onProceedToCheckout
             </div>
 
             {/* ── Right: sticky box summary sidebar ── */}
-            <div className="hidden lg:block w-[300px] xl:w-[320px] shrink-0">
-              <div className="sticky top-[72px] bg-[#111] border border-white/10">
+            <div className="hidden lg:block w-[360px] xl:w-[400px] shrink-0">
+              <div className="sticky top-[72px] flex flex-col" style={{ maxHeight: "calc(100vh - 90px)" }}>
 
-                {/* Header + progress */}
-                <div className="px-5 py-4 border-b border-white/8">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-white/35">Your Box</span>
-                    <span className="font-mono text-[12px] font-bold text-[#F5B300]">{totalSelected}/{boxSize}</span>
+                {/* Header */}
+                <div className="bg-[#0E0E0E] px-6 py-5 border-b border-white/8">
+                  <div className="flex items-baseline justify-between mb-4">
+                    <div>
+                      <p className="text-[10px] font-mono tracking-[0.35em] uppercase text-white/30 mb-1">Your Box</p>
+                      <p className="text-[22px] font-extrabold leading-none">
+                        {totalSelected}<span className="text-white/20 font-normal text-[16px]">/{boxSize}</span>
+                        <span className="text-[13px] font-normal text-white/30 ml-2">meals</span>
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      {fillPct === 100
+                        ? <span className="text-[#F5B300] text-[11px] font-bold tracking-wide">✓ Box complete</span>
+                        : <span className="text-white/30 text-[11px]">{slotsLeft} slot{slotsLeft !== 1 ? "s" : ""} left</span>}
+                    </div>
                   </div>
-                  <div className="h-1.5 bg-white/8 overflow-hidden">
+                  {/* Progress bar */}
+                  <div className="h-2 bg-white/8">
                     <div className="h-full transition-all duration-300"
-                      style={{ width: `${fillPct}%`, backgroundColor: fillPct === 100 ? "#F5B300" : "#666" }} />
+                      style={{ width: `${fillPct}%`, backgroundColor: fillPct === 100 ? "#F5B300" : "#555" }} />
                   </div>
-                  <div className="mt-2 text-[11px]">
-                    {fillPct === 100
-                      ? <span className="text-[#F5B300] font-semibold">✓ Box complete</span>
-                      : <span className="text-white/35">{slotsLeft} slot{slotsLeft !== 1 ? "s" : ""} remaining</span>}
+                  {/* Slot pips */}
+                  <div className="flex gap-1 mt-2">
+                    {Array.from({ length: boxSize }).map((_, i) => (
+                      <div key={i} className="flex-1 h-0.5 transition-colors duration-200"
+                        style={{ backgroundColor: i < totalSelected ? "#F5B300" : "rgba(255,255,255,0.08)" }} />
+                    ))}
                   </div>
                 </div>
 
-                {/* Selected meals list */}
-                <div className="px-5 py-3 max-h-[340px] overflow-y-auto space-y-3">
+                {/* Selected meals — scrollable */}
+                <div className="bg-[#0E0E0E] flex-1 overflow-y-auto">
                   {selectedMeals.length === 0 ? (
-                    <p className="text-[12px] text-white/20 py-4 text-center">No meals added yet</p>
+                    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                      <div className="w-14 h-14 border border-white/8 flex items-center justify-center mb-4 text-[24px]">📦</div>
+                      <p className="text-[13px] text-white/25 leading-relaxed">Your box is empty.<br />Add meals from the left.</p>
+                    </div>
                   ) : (
-                    selectedMeals.map((meal) => (
-                      <div key={meal.id} className="flex items-center gap-3">
-                        <img src={meal.img} alt={meal.name} className="w-10 h-10 object-cover shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[12px] font-medium leading-snug truncate">{meal.name}</div>
-                          <div className="text-[10px] text-white/30">{meal.protein}g pro · {meal.cal} cal</div>
+                    <div className="divide-y divide-white/5">
+                      {selectedMeals.map((meal) => (
+                        <div key={meal.id} className="flex items-center gap-4 px-6 py-4">
+                          <img src={meal.img} alt={meal.name} className="w-14 h-14 object-cover shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-[13px] font-medium leading-snug mb-1">{meal.name}</div>
+                            <div className="text-[11px] text-white/30">{meal.protein}g pro · {meal.carbs}g carb · {meal.cal} cal</div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button onClick={() => adjustQty(meal, -1)}
+                              className="w-7 h-7 border border-white/15 text-white/40 hover:border-white/50 hover:text-white transition-colors flex items-center justify-center text-[14px]">−</button>
+                            <span className="font-mono text-[13px] w-5 text-center text-[#F5B300] font-bold">{selections[meal.id]}</span>
+                            <button onClick={() => adjustQty(meal, 1)} disabled={totalSelected >= boxSize}
+                              className="w-7 h-7 border border-white/15 text-white/40 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors flex items-center justify-center text-[14px] disabled:opacity-20">+</button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <button onClick={() => adjustQty(meal, -1)}
-                            className="w-6 h-6 border border-white/15 text-white/40 hover:border-white/40 hover:text-white transition-colors text-[13px] flex items-center justify-center">−</button>
-                          <span className="font-mono text-[12px] w-5 text-center text-[#F5B300]">{selections[meal.id]}</span>
-                          <button onClick={() => adjustQty(meal, 1)} disabled={totalSelected >= boxSize}
-                            className="w-6 h-6 border border-white/15 text-white/40 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors text-[13px] flex items-center justify-center disabled:opacity-20">+</button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                {/* Pricing footer */}
-                <div className="px-5 py-4 border-t border-white/8 space-y-2">
-                  <div className="flex justify-between text-[12px] text-white/40">
-                    <span>{boxSize} meals</span><span>${selectedSize.total.toFixed(2)}</span>
-                  </div>
-                  {isSubscription && (
-                    <div className="flex justify-between text-[12px]">
-                      <span className="text-white/40">Sub discount (10%)</span>
-                      <span className="text-[#F5B300]">−${(selectedSize.total * SUB_DISCOUNT).toFixed(2)}</span>
+                      ))}
                     </div>
                   )}
-                  <div className="flex justify-between items-center pt-1 border-t border-white/8">
-                    <span className="text-[13px] font-semibold">Per delivery</span>
-                    <span className="font-mono text-[18px] font-bold text-[#F5B300]">${effectiveTotal.toFixed(2)}</span>
-                  </div>
                 </div>
 
-                {/* CTA */}
-                <div className="px-5 pb-5">
+                {/* Pricing + CTA — always visible at bottom */}
+                <div className="bg-[#0E0E0E] border-t border-white/8 px-6 py-5">
+                  <div className="space-y-2 mb-5">
+                    <div className="flex justify-between text-[13px] text-white/40">
+                      <span>{boxSize} meals</span>
+                      <span>${selectedSize.total.toFixed(2)}</span>
+                    </div>
+                    {isSubscription && (
+                      <div className="flex justify-between text-[13px]">
+                        <span className="text-white/40">Subscriber discount (10%)</span>
+                        <span className="text-[#F5B300]">−${(selectedSize.total * SUB_DISCOUNT).toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-[13px] text-white/40">
+                      <span>Delivery</span>
+                      <span className="text-[#F5B300]">Free</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-3 border-t border-white/8">
+                      <span className="text-[14px] font-semibold">Per delivery</span>
+                      <span className="font-mono text-[22px] font-extrabold text-[#F5B300]">${effectiveTotal.toFixed(2)}</span>
+                    </div>
+                  </div>
                   <button onClick={() => setStep("review")} disabled={totalSelected !== boxSize}
-                    className={`w-full py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase transition-colors ${totalSelected === boxSize ? "bg-[#F5B300] text-[#1A1A1A] hover:bg-white" : "bg-white/8 text-white/25 cursor-not-allowed"}`}>
+                    className={`w-full py-4 text-[13px] font-bold tracking-[0.15em] uppercase transition-all ${totalSelected === boxSize ? "bg-[#F5B300] text-[#1A1A1A] hover:bg-white" : "bg-white/6 text-white/20 cursor-not-allowed"}`}>
                     {totalSelected === boxSize ? "Review My Box →" : `Add ${slotsLeft} more meal${slotsLeft !== 1 ? "s" : ""}`}
                   </button>
+                  {isSubscription && (
+                    <p className="text-center text-[11px] text-white/20 mt-3">
+                      Renews {deliveryFreq === "weekly" ? "weekly" : "fortnightly"} · Cancel anytime
+                    </p>
+                  )}
                 </div>
+
               </div>
             </div>
 
