@@ -518,7 +518,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                   <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
                 </svg>
                 <p className="text-[12px] text-[#666] leading-relaxed">
-                  <strong className="text-[#1A1A1A]">Kitchen sets 4 meals per week</strong> — 2 for lunch, 2 for dinner. Pick any combo across Mon–Fri.
+                  <strong className="text-[#1A1A1A]">Select your meals for each delivery day.</strong> Lunch and Dinner slots are shown per day — choose one meal per slot to complete your week.
                 </p>
               </div>
 
@@ -612,8 +612,8 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                     <rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/>
                     <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
                   </svg>
-                  <span className="text-[13px] font-semibold">Fixed schedule:</span>
-                  <span className="text-white/60 text-[13px]">Sun, Tue & Thu · 5:00–8:00 pm</span>
+                  <span className="text-[13px] font-semibold">Delivery schedule:</span>
+                  <span className="text-white/60 text-[13px]">Dates assigned based on your programme</span>
                 </div>
                 <div className="space-y-3">
                   <Field label="Street Address">
@@ -967,7 +967,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                     </svg>
                     <p className="text-[9px] font-extrabold tracking-[0.2em] uppercase text-[#555]">Delivery</p>
                   </div>
-                  <p className="font-semibold text-[12px]">SUN, TUE & THU · 5:00–8:00 PM</p>
+                  <p className="font-semibold text-[12px]">ASSIGNED BASED ON YOUR PROGRAMME</p>
                 </div>
               </div>
 

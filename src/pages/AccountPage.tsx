@@ -324,10 +324,12 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     {subPaused ? "⏸ Subscription Paused" : "● Active Subscription"}
                   </div>
                   <h3 className={`font-display text-[24px] font-bold ${subPaused ? "text-[#333]" : "text-white"}`}>
-                    {activePlan} Plan · {mealsPerDay} meals/day
+                    {activePlan} Plan
                   </h3>
                   <div className={`text-[13px] mt-1 ${subPaused ? "text-amber-700" : "text-white/40"}`}>
-                    {subPaused ? `Paused · Resumes ${(() => { const d = new Date(); d.setDate(d.getDate() + pauseWeeks * 7); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}` : `${billing === "biweekly" ? "Biweekly" : "Monthly"} · ${deliveryDays.join(", ")} · ${timeSlot}`}
+                    {subPaused
+                      ? `Paused · Resumes ${(() => { const d = new Date(); d.setDate(d.getDate() + pauseWeeks * 7); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}`
+                      : `${billing === "biweekly" ? "Biweekly" : "Monthly"} billing`}
                   </div>
                 </div>
                 <div className="flex gap-3">

@@ -28,7 +28,6 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             { label: "Build Plan", action: () => navigateToWizard("BUILD") },
             { label: "About Us", action: () => navigate("about") },
             { label: "How It Works", action: () => navigate("how-it-works") },
-            { label: "Gift Cards", action: () => navigate("gift-card") },
             { label: "My Account", action: () => navigate("account") },
           ].map((l) => (
             <button key={l.label} onClick={l.action}
@@ -53,36 +52,33 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             {["Privacy", "Terms", "Refunds"].map((l) => (
               <a key={l} href="#" className="hover:text-white/70 transition-colors">{l}</a>
             ))}
-            <button onClick={() => navigate("wireframe")}
-              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
-              Wireframes
-            </button>
-            <button onClick={() => navigate("blueprint")}
-              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
-              Blueprint
-            </button>
-            <button onClick={() => navigate("handoff")}
-              className="border border-white/15 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
-              Dev Handoff
-            </button>
-            <button onClick={() => navigate("screens-export")}
-              className="border border-[#F5B300]/40 bg-[#F5B300]/5 text-[#F5B300] px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors font-bold">
-              🖨 All Screens PDF
-            </button>
-            <button
-              onClick={() => downloadHandoffPDF()}
-              className="border border-white/20 bg-white/5 text-white/60 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-[#F5B300] hover:text-[#F5B300] transition-colors font-bold"
-            >
-              ⬇ Final QA PDF
-            </button>
-            <a
-              href="/PerformanceMeals-Shopify-Theme.zip"
-              download="PerformanceMeals-Shopify-Theme.zip"
-              className="border border-white/20 bg-white/5 text-white/60 px-3 py-1 text-[10px] tracking-[0.15em] uppercase hover:border-white/50 hover:text-white transition-colors font-bold"
-            >
-              ⬇ Shopify Theme
-            </a>
           </div>
+        </div>
+      </div>
+
+      {/* Prototype-only tools — not customer navigation */}
+      <div className="border-t border-white/[0.04] bg-white/[0.02]">
+        <div className="max-w-[1440px] mx-auto px-6 py-2 flex flex-wrap gap-2 items-center justify-end">
+          <span className="text-[9px] font-mono tracking-[0.2em] uppercase text-white/15 mr-1">PROTOTYPE</span>
+          {[
+            { label: "Wireframes", action: () => navigate("wireframe") },
+            { label: "Blueprint",  action: () => navigate("blueprint") },
+            { label: "Dev Handoff", action: () => navigate("handoff") },
+            { label: "Screens Export", action: () => navigate("screens-export") },
+          ].map(({ label, action }) => (
+            <button key={label} onClick={action}
+              className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
+              {label}
+            </button>
+          ))}
+          <button onClick={() => downloadHandoffPDF()}
+            className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
+            QA PDF
+          </button>
+          <a href="/PerformanceMeals-Shopify-Theme.zip" download="PerformanceMeals-Shopify-Theme.zip"
+            className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
+            Shopify Theme
+          </a>
         </div>
       </div>
     </footer>
