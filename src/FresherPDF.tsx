@@ -1,21 +1,19 @@
 import { Document, Page, View, Text, StyleSheet, pdf, Image } from "@react-pdf/renderer";
 
-/* ── Brand colours ── */
+/* ── Brand colours — Performance Meals Brand Template ── */
 const C = {
-  lime:      "#CDFF3A",
-  gold:      "#F2C94C",
-  mint:      "#7EE8B0",
-  violet:    "#A78BFA",
-  black:     "#111111",
-  dark:      "#1A1A1A",
-  forest:    "#0D2818",
-  parchment: "#F7F5F0",
-  border:    "#E5E2DA",
+  /* OFFICIAL BRAND COLOURS ONLY */
+  yellow:    "#F5B300",   /* Performance Yellow — RS, Box Sub, parent brand */
+  orange:    "#E85D04",   /* Boutique Orange — Meal Plan ONLY. Never on RS. */
+  black:     "#1A1A1A",   /* Charcoal Black — typography, structural lines */
+  dark:      "#1A1A1A",   /* alias */
+  white:     "#FFFFFF",   /* Pure White — primary background */
+  /* Supporting neutrals */
+  parchment: "#FAFAF8",
+  border:    "#E8E4DC",
   gray:      "#888888",
   lightGray: "#CCCCCC",
-  white:     "#FFFFFF",
   red:       "#EF4444",
-  green:     "#16A34A",
   amber:     "#FFF3CD",
   amberText: "#7B5900",
 };
@@ -27,14 +25,14 @@ const s = StyleSheet.create({
 
   /* Header strip on each screen page */
   pageHeader:   { flexDirection: "row", alignItems: "center", backgroundColor: C.black, paddingHorizontal: 28, paddingVertical: 10, marginBottom: 0 },
-  screenNum:    { backgroundColor: C.lime, color: C.black, fontSize: 8, fontFamily: "Helvetica-Bold", paddingHorizontal: 6, paddingVertical: 2, marginRight: 10, letterSpacing: 1 },
+  screenNum:    { backgroundColor: C.yellow, color: C.black, fontSize: 8, fontFamily: "Helvetica-Bold", paddingHorizontal: 6, paddingVertical: 2, marginRight: 10, letterSpacing: 1 },
   screenTitle:  { color: C.white, fontSize: 13, fontFamily: "Helvetica-Bold", flex: 1 },
   screenSub:    { color: C.gray, fontSize: 7, letterSpacing: 0.5 },
 
   /* Footer */
   pageFooter:   { position: "absolute", bottom: 14, left: 28, right: 28, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   footerText:   { color: C.lightGray, fontSize: 7, fontFamily: "Helvetica", letterSpacing: 0.5 },
-  footerLime:   { color: C.lime, fontSize: 7, fontFamily: "Helvetica-Bold", letterSpacing: 1 },
+  footerAccent: { color: C.yellow, fontSize: 7, fontFamily: "Helvetica-Bold", letterSpacing: 1 },
 
   /* Body area */
   body:         { paddingHorizontal: 28, paddingTop: 18 },
@@ -46,7 +44,7 @@ const s = StyleSheet.create({
   sectionLabel: { fontSize: 6, fontFamily: "Helvetica-Bold", color: C.gray, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 4 },
   card:         { backgroundColor: C.white, border: "1 solid " + C.border, padding: 8, marginBottom: 6 },
   darkCard:     { backgroundColor: C.dark, padding: 8, marginBottom: 6 },
-  forestCard:   { backgroundColor: C.forest, padding: 8, marginBottom: 6 },
+  forestCard:   { backgroundColor: C.black, padding: 8, marginBottom: 6 },
   blackCard:    { backgroundColor: C.black, padding: 8, marginBottom: 6 },
 
   h1:           { fontSize: 18, fontFamily: "Helvetica-Bold", color: C.black, marginBottom: 4, lineHeight: 1.2 },
@@ -58,22 +56,23 @@ const s = StyleSheet.create({
   body1w:       { fontSize: 8, color: "rgba(255,255,255,0.6)", lineHeight: 1.4 },
   body2w:       { fontSize: 7, color: "rgba(255,255,255,0.35)", lineHeight: 1.4 },
   mono:         { fontFamily: "Courier", fontSize: 6, color: C.gray, letterSpacing: 1, textTransform: "uppercase" },
-  monoBold:     { fontFamily: "Courier-Bold", fontSize: 8, color: C.lime },
-  price:        { fontFamily: "Courier-Bold", fontSize: 14, color: C.lime, marginBottom: 2 },
-  priceSm:      { fontFamily: "Courier-Bold", fontSize: 9, color: C.lime },
+  monoBold:     { fontFamily: "Courier-Bold", fontSize: 8, color: C.yellow },
+  price:        { fontFamily: "Courier-Bold", fontSize: 14, color: C.yellow, marginBottom: 2 },
+  priceSm:      { fontFamily: "Courier-Bold", fontSize: 9, color: C.yellow },
 
   /* Buttons */
-  btnLime:      { backgroundColor: C.lime, paddingHorizontal: 10, paddingVertical: 4, alignSelf: "flex-start" },
+  btnLime:      { backgroundColor: C.yellow, paddingHorizontal: 10, paddingVertical: 4, alignSelf: "flex-start" },
   btnBlack:     { backgroundColor: C.black, paddingHorizontal: 10, paddingVertical: 4, alignSelf: "flex-start" },
   btnOutline:   { border: "1 solid " + C.black, paddingHorizontal: 10, paddingVertical: 4, alignSelf: "flex-start" },
   btnText:      { fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black, letterSpacing: 1 },
   btnTextW:     { fontSize: 7, fontFamily: "Helvetica-Bold", color: C.white, letterSpacing: 1 },
 
   /* Tags / badges */
-  badge:        { backgroundColor: C.lime, paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start", marginBottom: 3 },
+  badge:        { backgroundColor: C.yellow, paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start", marginBottom: 3 },
   badgeText:    { fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black, letterSpacing: 0.8 },
-  badgeGold:    { backgroundColor: C.gold, paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start" },
-  badgeMint:    { backgroundColor: C.mint, paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start" },
+  badgeGold:    { backgroundColor: C.yellow, paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start" },
+  badgeMint:    { backgroundColor: C.yellow, paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start" },
+  badgeOrange:  { backgroundColor: C.orange, paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start" },
   badgeRed:     { backgroundColor: C.red, paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start" },
   badgeDark:    { backgroundColor: "rgba(255,255,255,0.1)", paddingHorizontal: 5, paddingVertical: 1.5, alignSelf: "flex-start" },
 
@@ -81,12 +80,12 @@ const s = StyleSheet.create({
   nav:          { backgroundColor: C.black, flexDirection: "row", alignItems: "center", paddingHorizontal: 14, paddingVertical: 6, marginBottom: 0 },
   navLogo:      { fontSize: 10, fontFamily: "Helvetica-Bold", color: C.white, marginRight: 20 },
   navLink:      { fontSize: 6, color: "rgba(255,255,255,0.35)", marginRight: 10, letterSpacing: 0.5 },
-  navLinkActive:{ fontSize: 6, color: C.lime, marginRight: 10, letterSpacing: 0.5, fontFamily: "Helvetica-Bold" },
+  navLinkActive:{ fontSize: 6, color: C.yellow, marginRight: 10, letterSpacing: 0.5, fontFamily: "Helvetica-Bold" },
   navRight:     { marginLeft: "auto", flexDirection: "row", alignItems: "center", gap: 6 },
   navWallet:    { fontSize: 6, color: "rgba(255,255,255,0.4)" },
-  navAvatar:    { backgroundColor: C.lime, width: 16, height: 16, borderRadius: 8, alignItems: "center", justifyContent: "center" },
+  navAvatar:    { backgroundColor: C.yellow, width: 16, height: 16, alignItems: "center", justifyContent: "center" },
   navAvatarTxt: { fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black },
-  navCart:      { backgroundColor: C.lime, paddingHorizontal: 6, paddingVertical: 2 },
+  navCart:      { backgroundColor: C.yellow, paddingHorizontal: 6, paddingVertical: 2 },
   navCartTxt:   { fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black },
 
   /* Divider */
@@ -97,7 +96,7 @@ const s = StyleSheet.create({
   featureBox:   { backgroundColor: C.parchment, border: "1 solid " + C.border, padding: 10, marginBottom: 8 },
   featureTitle: { fontSize: 8, fontFamily: "Helvetica-Bold", color: C.black, marginBottom: 6, letterSpacing: 0.5 },
   featureRow:   { flexDirection: "row", alignItems: "flex-start", marginBottom: 4 },
-  featureDot:   { width: 5, height: 5, borderRadius: 2.5, backgroundColor: C.lime, marginTop: 1.5, marginRight: 6, flexShrink: 0 },
+  featureDot:   { width: 5, height: 5, backgroundColor: C.yellow, marginTop: 1.5, marginRight: 6, flexShrink: 0 },
   featureText:  { fontSize: 7, color: "#444444", flex: 1, lineHeight: 1.4 },
 
   /* Input */
@@ -106,11 +105,11 @@ const s = StyleSheet.create({
 
   /* Progress bar */
   progressBg:   { height: 4, backgroundColor: "rgba(255,255,255,0.1)", borderRadius: 2, marginBottom: 6 },
-  progressFill: { height: 4, backgroundColor: C.lime, borderRadius: 2 },
+  progressFill: { height: 4, backgroundColor: C.yellow },
 
   /* Chips */
   chip:         { border: "1 solid rgba(255,255,255,0.15)", paddingHorizontal: 8, paddingVertical: 3, marginRight: 4 },
-  chipActive:   { backgroundColor: C.lime, paddingHorizontal: 8, paddingVertical: 3, marginRight: 4 },
+  chipActive:   { backgroundColor: C.yellow, paddingHorizontal: 8, paddingVertical: 3, marginRight: 4 },
   chipText:     { fontSize: 6, color: "rgba(255,255,255,0.35)", letterSpacing: 0.8 },
   chipActiveText:{ fontSize: 6, color: C.black, letterSpacing: 0.8, fontFamily: "Helvetica-Bold" },
 });
@@ -118,7 +117,7 @@ const s = StyleSheet.create({
 /* ── Shared nav ── */
 const Nav = ({ active = "" }: { active?: string }) => (
   <View style={s.nav}>
-    <Text style={s.navLogo}>PERF<Text style={{ color: C.lime }}>.</Text>MEALS</Text>
+    <Text style={s.navLogo}>PERF<Text style={{ color: C.yellow }}>.</Text>MEALS</Text>
     {["READY SERIES", "MEAL PLANS", "BOX SUBSCRIPTION", "HOW IT WORKS"].map((l) => (
       <Text key={l} style={l === active ? s.navLinkActive : s.navLink}>{l}</Text>
     ))}
@@ -131,13 +130,13 @@ const Nav = ({ active = "" }: { active?: string }) => (
 );
 
 /* ── Page wrapper ── */
-const ScreenPage = ({ n, title, sub, color = C.lime, children, features }: {
+const ScreenPage = ({ n, title, sub, color = C.yellow, children, features }: {
   n: string; title: string; sub: string; color?: string;
   children: React.ReactNode; features?: string[];
 }) => (
   <Page size="A4" style={s.page}>
     <View style={s.pageHeader}>
-      <Text style={[s.screenNum, { backgroundColor: color, color: color === C.lime ? C.black : C.black }]}>{n}</Text>
+      <Text style={[s.screenNum, { backgroundColor: color, color: color === C.yellow ? C.black : C.black }]}>{n}</Text>
       <Text style={s.screenTitle}>{title}</Text>
       <Text style={s.screenSub}>{sub}</Text>
     </View>
@@ -155,7 +154,7 @@ const ScreenPage = ({ n, title, sub, color = C.lime, children, features }: {
             ))}
           </View>
           <View style={[s.featureBox, { backgroundColor: C.black, border: 0 }]}>
-            <Text style={[s.mono, { color: C.lime, marginBottom: 4 }]}>USER JOURNEY</Text>
+            <Text style={[s.mono, { color: C.yellow, marginBottom: 4 }]}>USER JOURNEY</Text>
             <Text style={[s.body2w, { lineHeight: 1.6 }]}>{sub}</Text>
           </View>
         </View>
@@ -163,13 +162,13 @@ const ScreenPage = ({ n, title, sub, color = C.lime, children, features }: {
     </View>
     <View style={s.pageFooter}>
       <Text style={s.footerText}>PERFORMANCEMEALS.COM.SG  ·  PROTOTYPE SCREEN DOCUMENTATION  ·  CONFIDENTIAL</Text>
-      <Text style={s.footerLime}>SCREEN {n}</Text>
+      <Text style={s.footerAccent}>SCREEN {n}</Text>
     </View>
   </Page>
 );
 
 /* ── Meal card ── */
-const MealCard = ({ name, cat, price, img, catColor = "#CDFF3A" }: { name: string; cat: string; price: string; img?: string; catColor?: string }) => (
+const MealCard = ({ name, cat, price, img, catColor = "#F5B300" }: { name: string; cat: string; price: string; img?: string; catColor?: string }) => (
   <View style={{ flex: 1, backgroundColor: C.dark, overflow: "hidden" }}>
     {img ? (
       <View style={{ height: 50, overflow: "hidden", position: "relative" }}>
@@ -180,14 +179,14 @@ const MealCard = ({ name, cat, price, img, catColor = "#CDFF3A" }: { name: strin
       </View>
     ) : (
       <View style={{ height: 50, backgroundColor: "#2A2A2A", alignItems: "center", justifyContent: "center" }}>
-        <View style={{ width: 30, height: 3, backgroundColor: C.lime, marginBottom: 2 }} />
+        <View style={{ width: 30, height: 3, backgroundColor: C.yellow, marginBottom: 2 }} />
         <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.2)" }}>{cat}</Text>
       </View>
     )}
     <View style={{ padding: 5 }}>
       <Text style={{ fontSize: 7, color: C.white, fontFamily: "Helvetica-Bold", marginBottom: 3, lineHeight: 1.3 }}>{name}</Text>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Text style={{ fontFamily: "Courier-Bold", fontSize: 8, color: C.lime }}>{price}</Text>
+        <Text style={{ fontFamily: "Courier-Bold", fontSize: 8, color: C.yellow }}>{price}</Text>
         <View style={{ flexDirection: "row", gap: 2 }}>
           <View style={{ width: 12, height: 12, backgroundColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center" }}><Text style={{ fontSize: 8, color: C.white }}>−</Text></View>
           <View style={{ width: 12, height: 12, backgroundColor: "rgba(255,255,255,0.1)", alignItems: "center", justifyContent: "center" }}><Text style={{ fontSize: 8, color: C.white }}>+</Text></View>
@@ -201,11 +200,11 @@ const MealCard = ({ name, cat, price, img, catColor = "#CDFF3A" }: { name: strin
 const TimelineItem = ({ label, detail, done, active }: { label: string; detail: string; done: boolean; active: boolean }) => (
   <View style={{ flexDirection: "row", gap: 8, marginBottom: 6 }}>
     <View style={{ alignItems: "center" }}>
-      <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: done ? C.lime : active ? C.black : C.border, border: done || active ? "0" : "1 solid " + C.lightGray, alignItems: "center", justifyContent: "center" }}>
+      <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: done ? C.yellow : active ? C.black : C.border, border: done || active ? "0" : "1 solid " + C.lightGray, alignItems: "center", justifyContent: "center" }}>
         {done && <Text style={{ fontSize: 7, color: C.black, fontFamily: "Helvetica-Bold" }}>✓</Text>}
-        {active && <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: C.lime }} />}
+        {active && <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: C.yellow }} />}
       </View>
-      <View style={{ width: 1, flex: 1, minHeight: 10, backgroundColor: done ? C.lime : C.border }} />
+      <View style={{ width: 1, flex: 1, minHeight: 10, backgroundColor: done ? C.yellow : C.border }} />
     </View>
     <View style={{ flex: 1, paddingBottom: 4 }}>
       <Text style={{ fontSize: 8, fontFamily: done || active ? "Helvetica-Bold" : "Helvetica", color: done || active ? C.black : C.lightGray }}>{label}</Text>
@@ -223,10 +222,10 @@ export const FresherPDF = () => (
     {/* ── COVER ── */}
     <Page size="A4" style={s.coverPage}>
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", padding: 60 }}>
-        <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.lime, letterSpacing: 4, marginBottom: 32, textTransform: "uppercase" }}>Prototype · Screen Documentation · Confidential</Text>
+        <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.yellow, letterSpacing: 4, marginBottom: 32, textTransform: "uppercase" }}>Prototype · Screen Documentation · Confidential</Text>
 
         <Text style={{ fontSize: 40, fontFamily: "Helvetica-Bold", color: C.white, letterSpacing: 3, marginBottom: 4 }}>
-          PERFORMANCE MEALS<Text style={{ color: C.lime }}>.</Text>
+          PERFORMANCE MEALS<Text style={{ color: C.yellow }}>.</Text>
         </Text>
         <Text style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", letterSpacing: 2, marginBottom: 60 }}>performancemeals.com.sg  ·  Singapore</Text>
 
@@ -234,7 +233,7 @@ export const FresherPDF = () => (
         <View style={{ flexDirection: "row", gap: 48, marginBottom: 60 }}>
           {[["14", "Screens"], ["3", "User Journeys"], ["7", "Page Types"]].map(([n, l]) => (
             <View key={l} style={{ alignItems: "center" }}>
-              <Text style={{ fontSize: 36, fontFamily: "Helvetica-Bold", color: C.lime }}>{n}</Text>
+              <Text style={{ fontSize: 36, fontFamily: "Helvetica-Bold", color: C.yellow }}>{n}</Text>
               <Text style={{ fontSize: 8, color: "rgba(255,255,255,0.3)", letterSpacing: 2, textTransform: "uppercase" }}>{l}</Text>
             </View>
           ))}
@@ -242,7 +241,7 @@ export const FresherPDF = () => (
 
         {/* Colour palette */}
         <View style={{ flexDirection: "row", gap: 8, marginBottom: 12 }}>
-          {[C.lime, C.gold, C.mint, "#555555", "#EEEEEE"].map((c) => (
+          {[C.yellow, C.yellow, C.yellow, "#555555", "#EEEEEE"].map((c) => (
             <View key={c} style={{ width: 40, height: 40, backgroundColor: c }} />
           ))}
         </View>
@@ -265,7 +264,7 @@ export const FresherPDF = () => (
         {/* Journey: Ready Series */}
         <View style={{ marginBottom: 24 }}>
           <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-            <View style={{ width: 4, height: 16, backgroundColor: C.lime, marginRight: 10 }} />
+            <View style={{ width: 4, height: 16, backgroundColor: C.yellow, marginRight: 10 }} />
             <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.black }}>READY SERIES</Text>
           </View>
           {[
@@ -277,7 +276,7 @@ export const FresherPDF = () => (
             ["06", "Box Subscription", "Recurring delivery · 10% off · Weekly or fortnightly"],
           ].map(([n, title, sub]) => (
             <View key={n} style={{ flexDirection: "row", alignItems: "baseline", paddingVertical: 7, borderBottom: "1 solid " + C.border }}>
-              <View style={{ backgroundColor: C.lime, paddingHorizontal: 6, paddingVertical: 2, marginRight: 12 }}>
+              <View style={{ backgroundColor: C.yellow, paddingHorizontal: 6, paddingVertical: 2, marginRight: 12 }}>
                 <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black }}>{n}</Text>
               </View>
               <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold", color: C.black, flex: 1 }}>{title}</Text>
@@ -289,7 +288,7 @@ export const FresherPDF = () => (
         {/* Journey: Meal Plans */}
         <View style={{ marginBottom: 24 }}>
           <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-            <View style={{ width: 4, height: 16, backgroundColor: C.gold, marginRight: 10 }} />
+            <View style={{ width: 4, height: 16, backgroundColor: C.yellow, marginRight: 10 }} />
             <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.black }}>MEAL PLANS & CHECKOUT</Text>
           </View>
           {[
@@ -299,7 +298,7 @@ export const FresherPDF = () => (
             ["10", "Order Confirmation", "WhatsApp + Email · Live status · Points earned"],
           ].map(([n, title, sub]) => (
             <View key={n} style={{ flexDirection: "row", alignItems: "baseline", paddingVertical: 7, borderBottom: "1 solid " + C.border }}>
-              <View style={{ backgroundColor: C.gold, paddingHorizontal: 6, paddingVertical: 2, marginRight: 12 }}>
+              <View style={{ backgroundColor: C.yellow, paddingHorizontal: 6, paddingVertical: 2, marginRight: 12 }}>
                 <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black }}>{n}</Text>
               </View>
               <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold", color: C.black, flex: 1 }}>{title}</Text>
@@ -311,7 +310,7 @@ export const FresherPDF = () => (
         {/* Journey: Account */}
         <View>
           <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-            <View style={{ width: 4, height: 16, backgroundColor: C.mint, marginRight: 10 }} />
+            <View style={{ width: 4, height: 16, backgroundColor: C.yellow, marginRight: 10 }} />
             <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.black }}>ACCOUNT & REWARDS</Text>
           </View>
           {[
@@ -321,7 +320,7 @@ export const FresherPDF = () => (
             ["14", "Account — Wallet & Rewards", "Points balance · Redeem · Transaction history"],
           ].map(([n, title, sub]) => (
             <View key={n} style={{ flexDirection: "row", alignItems: "baseline", paddingVertical: 7, borderBottom: "1 solid " + C.border }}>
-              <View style={{ backgroundColor: C.mint, paddingHorizontal: 6, paddingVertical: 2, marginRight: 12 }}>
+              <View style={{ backgroundColor: C.yellow, paddingHorizontal: 6, paddingVertical: 2, marginRight: 12 }}>
                 <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black }}>{n}</Text>
               </View>
               <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold", color: C.black, flex: 1 }}>{title}</Text>
@@ -332,12 +331,12 @@ export const FresherPDF = () => (
       </View>
       <View style={s.pageFooter}>
         <Text style={s.footerText}>PERFORMANCEMEALS.COM.SG  ·  PROTOTYPE SCREEN DOCUMENTATION  ·  CONFIDENTIAL</Text>
-        <Text style={s.footerLime}>INDEX</Text>
+        <Text style={s.footerAccent}>INDEX</Text>
       </View>
     </Page>
 
     {/* ═══════ SCREEN 01 — HOME PAGE ═══════ */}
-    <ScreenPage n="01" title="Home Page" sub="Entry · Discovery · Hook building" color={C.lime}
+    <ScreenPage n="01" title="Home Page" sub="Entry · Discovery · Hook building" color={C.yellow}
       features={[
         "Staggered hero entrance animation with scroll-reveal on all sections",
         "Hero: 'Nutrition that works.' — company brand headline, two CTAs (Browse Ready Series / Explore Meal Plans)",
@@ -352,8 +351,8 @@ export const FresherPDF = () => (
       <Nav />
       {/* Hero */}
       <View style={{ backgroundColor: C.black, padding: "16 14" }}>
-        <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.lime, letterSpacing: 2, marginBottom: 4 }}>PERFORMANCE MEALS · SINGAPORE</Text>
-        <Text style={{ fontSize: 20, fontFamily: "Helvetica-Bold", color: C.white, lineHeight: 1.15, marginBottom: 4 }}>Fuel your body.{"\n"}<Text style={{ color: C.lime }}>Hit your goals.</Text></Text>
+        <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.yellow, letterSpacing: 2, marginBottom: 4 }}>PERFORMANCE MEALS · SINGAPORE</Text>
+        <Text style={{ fontSize: 20, fontFamily: "Helvetica-Bold", color: C.white, lineHeight: 1.15, marginBottom: 4 }}>Fuel your body.{"\n"}<Text style={{ color: C.yellow }}>Hit your goals.</Text></Text>
         <Text style={{ fontSize: 8, color: "rgba(255,255,255,0.4)", marginBottom: 10 }}>Macro-accurate meals delivered to your door. From $9.90/meal.</Text>
         <View style={{ flexDirection: "row", gap: 6 }}>
           <View style={s.btnLime}><Text style={s.btnText}>SHOP READY MEALS →</Text></View>
@@ -362,7 +361,7 @@ export const FresherPDF = () => (
         </View>
       </View>
       {/* Trust bar */}
-      <View style={{ backgroundColor: C.lime, flexDirection: "row", paddingHorizontal: 14, paddingVertical: 5, gap: 16 }}>
+      <View style={{ backgroundColor: C.yellow, flexDirection: "row", paddingHorizontal: 14, paddingVertical: 5, gap: 16 }}>
         {["✓ FREE DELIVERY OVER $80", "✓ MACRO-ACCURATE", "✓ 60-DAY MONEY-BACK", "✓ NO LOCK-IN"].map((t) => (
           <Text key={t} style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black, letterSpacing: 0.8 }}>{t}</Text>
         ))}
@@ -372,9 +371,9 @@ export const FresherPDF = () => (
         <Text style={[s.mono, { marginBottom: 4 }]}>CHOOSE YOUR JOURNEY</Text>
         <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: C.black, marginBottom: 8 }}>Ready Series · Meal Plans · Build-A-Box</Text>
         <View style={{ flexDirection: "row", gap: 6 }}>
-          {[{ name: "Ready-to-Go", from: "$9.90/meal", bar: C.lime, sub: "Single meals, any day" },
-            { name: "Meal Plan", from: "$148/wk", bar: C.gold, sub: "CUT · MAINTAIN · BUILD" },
-            { name: "Build-A-Box", from: "$11/meal", bar: C.mint, sub: "Mix & match 5–20 meals" }
+          {[{ name: "Ready-to-Go", from: "$9.90/meal", bar: C.yellow, sub: "Single meals, any day" },
+            { name: "Meal Plan", from: "$148/wk", bar: C.yellow, sub: "CUT · MAINTAIN · BUILD" },
+            { name: "Build-A-Box", from: "$11/meal", bar: C.yellow, sub: "Mix & match 5–20 meals" }
           ].map((p) => (
             <View key={p.name} style={{ flex: 1, backgroundColor: C.white, border: "1 solid " + C.border, padding: 8 }}>
               <View style={{ height: 3, backgroundColor: p.bar, marginBottom: 5 }} />
@@ -399,12 +398,12 @@ export const FresherPDF = () => (
             ))}
           </View>
         </View>
-        <View style={{ flex: 1, backgroundColor: C.forest, padding: "8 14", flexDirection: "row", gap: 8, alignItems: "center" }}>
+        <View style={{ flex: 1, backgroundColor: C.black, padding: "8 14", flexDirection: "row", gap: 8, alignItems: "center" }}>
           <View style={{ width: 32, height: 32, backgroundColor: "#1A3D24", borderRadius: 16, alignItems: "center", justifyContent: "center" }}>
             <Text style={{ fontSize: 18 }}>👨‍🍳</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[s.mono, { color: C.mint, marginBottom: 3 }]}>CREATED BY</Text>
+            <Text style={[s.mono, { color: C.yellow, marginBottom: 3 }]}>CREATED BY</Text>
             <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 1 }}>Chef Ahmad + Sports Nutrition Team</Text>
             <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.35)", lineHeight: 1.4 }}>Ex-5-star hotel chef · 10 yrs sports nutrition · Certified dieticians</Text>
           </View>
@@ -416,7 +415,7 @@ export const FresherPDF = () => (
         <View style={{ flexDirection: "row", gap: 5 }}>
           {[["Marcus L.", "Lost 8kg in 60 days"], ["Priya S.", "+3kg muscle in 8wks"], ["David K.", "Dropped 12kg"]].map(([n, r]) => (
             <View key={n} style={{ flex: 1, backgroundColor: C.white, border: "1 solid " + C.border, padding: 6 }}>
-              <Text style={{ fontSize: 9, color: C.gold, marginBottom: 2 }}>★★★★★</Text>
+              <Text style={{ fontSize: 9, color: C.yellow, marginBottom: 2 }}>★★★★★</Text>
               <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", marginBottom: 1 }}>{r}</Text>
               <Text style={{ fontSize: 6, color: C.gray }}>{n}</Text>
             </View>
@@ -424,14 +423,14 @@ export const FresherPDF = () => (
         </View>
       </View>
       {/* Promo popup note */}
-      <View style={{ backgroundColor: C.lime, padding: "5 14", flexDirection: "row", gap: 5, alignItems: "center" }}>
+      <View style={{ backgroundColor: C.yellow, padding: "5 14", flexDirection: "row", gap: 5, alignItems: "center" }}>
         <Text style={{ fontSize: 9 }}>🎉</Text>
         <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black }}>PROMO POPUP fires on every home visit (1.8s delay) · "Get 10% off your first order — use code PMFIRST10"</Text>
       </View>
     </ScreenPage>
 
     {/* ═══════ SCREEN 02 — READY-TO-GO ALL MEALS ═══════ */}
-    <ScreenPage n="02" title="Ready-to-Go — All Meals" sub="Discovery · Purchase · Free delivery signal" color={C.lime}
+    <ScreenPage n="02" title="Ready-to-Go — All Meals" sub="Discovery · Purchase · Free delivery signal" color={C.yellow}
       features={[
         "Category tabs: All Meals, Promotion, Useful Bundles, Low Carb, High Carb, Breakfast, Just Protein",
         "Meal type badges on every product card (colour-coded)",
@@ -444,7 +443,7 @@ export const FresherPDF = () => (
       ]}>
       <Nav active="READY SERIES" />
       <View style={{ backgroundColor: C.black, padding: "10 14" }}>
-        <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.lime, letterSpacing: 2, marginBottom: 2 }}>01 / READY SERIES</Text>
+        <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.yellow, letterSpacing: 2, marginBottom: 2 }}>01 / READY SERIES</Text>
         <Text style={{ fontSize: 16, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 2 }}>Ready-to-Go Meals</Text>
         <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>Macro-accurate. Frozen at peak nutrition. Heat in 3 minutes.</Text>
         {/* Category chips */}
@@ -458,22 +457,22 @@ export const FresherPDF = () => (
         {/* Meal grid */}
         <View style={{ flexDirection: "row", gap: 6, marginBottom: 8 }}>
           <MealCard name="Herb Chicken Rice Bowl" cat="HIGH CARB" price="$12.40"
-            img="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&auto=format" catColor={C.gold} />
+            img="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=200&fit=crop&auto=format" catColor={C.yellow} />
           <MealCard name="Korean BBQ Bowl" cat="LOW CARB" price="$13.20"
-            img="https://images.unsplash.com/photo-1547592180-85f173990554?w=300&h=200&fit=crop&auto=format" catColor={C.mint} />
+            img="https://images.unsplash.com/photo-1547592180-85f173990554?w=300&h=200&fit=crop&auto=format" catColor={C.yellow} />
           <MealCard name="Cajun Salmon Fillet" cat="JUST PROTEIN" price="$14.80"
-            img="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300&h=200&fit=crop&auto=format" catColor="#A78BFA" />
+            img="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300&h=200&fit=crop&auto=format" catColor="#F5B300" />
         </View>
         {/* Free delivery + savings nudge */}
         <View style={{ flexDirection: "row", gap: 6 }}>
           <View style={{ flex: 1, backgroundColor: "#111", border: "1 solid rgba(205,255,58,0.2)", padding: 7 }}>
             <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.4)", marginBottom: 3 }}>CART DRAWER · Free Delivery Progress</Text>
-            <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.5)", marginBottom: 3 }}>Add <Text style={{ color: C.lime, fontFamily: "Helvetica-Bold" }}>$23.50</Text> more for free delivery</Text>
+            <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.5)", marginBottom: 3 }}>Add <Text style={{ color: C.yellow, fontFamily: "Helvetica-Bold" }}>$23.50</Text> more for free delivery</Text>
             <View style={s.progressBg}><View style={[s.progressFill, { width: "70%" }]} /></View>
           </View>
-          <View style={{ flex: 1, backgroundColor: C.forest, border: "1 solid rgba(205,255,58,0.2)", padding: 7 }}>
+          <View style={{ flex: 1, backgroundColor: C.black, border: "1 solid rgba(205,255,58,0.2)", padding: 7 }}>
             <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.4)", marginBottom: 3 }}>CART DRAWER · Savings Nudge</Text>
-            <Text style={{ fontSize: 7, color: C.lime, fontFamily: "Helvetica-Bold" }}>Add 5 more meals — save $0.50/meal</Text>
+            <Text style={{ fontSize: 7, color: C.yellow, fontFamily: "Helvetica-Bold" }}>Add 5 more meals — save $0.50/meal</Text>
             <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.35)" }}>Reach 10 meals for $11.90/meal pricing</Text>
           </View>
         </View>
@@ -481,7 +480,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 03 — PROMOTIONS ═══════ */}
-    <ScreenPage n="03" title="Ready-to-Go — Promotions" sub="Discounted products · Flash sales · Promo codes" color={C.lime}
+    <ScreenPage n="03" title="Ready-to-Go — Promotions" sub="Discounted products · Flash sales · Promo codes" color={C.yellow}
       features={[
         "Dedicated Promotion tab in category filter",
         "Each deal shows: original price, sale price, % saving badge",
@@ -505,7 +504,7 @@ export const FresherPDF = () => (
             <View key={p.name} style={{ flex: 1, backgroundColor: C.dark, border: "1 solid rgba(205,255,58,0.15)", overflow: "hidden" }}>
               <View style={{ height: 80, position: "relative" }}>
                 <Image src={p.img} style={{ width: "100%", height: 80, objectFit: "cover" }} />
-                <View style={{ position: "absolute", top: 5, left: 5, backgroundColor: C.lime, paddingHorizontal: 5, paddingVertical: 2 }}>
+                <View style={{ position: "absolute", top: 5, left: 5, backgroundColor: C.yellow, paddingHorizontal: 5, paddingVertical: 2 }}>
                   <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black }}>{p.tag}</Text>
                 </View>
                 <View style={{ position: "absolute", top: 5, right: 5, backgroundColor: C.red, paddingHorizontal: 5, paddingVertical: 2 }}>
@@ -516,7 +515,7 @@ export const FresherPDF = () => (
                 <Text style={{ fontSize: 8, color: C.white, fontFamily: "Helvetica-Bold", marginBottom: 4 }}>{p.name}</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                   <View style={{ flexDirection: "row", alignItems: "baseline", gap: 6 }}>
-                    <Text style={{ fontSize: 14, fontFamily: "Courier-Bold", color: C.lime }}>{p.sale}</Text>
+                    <Text style={{ fontSize: 14, fontFamily: "Courier-Bold", color: C.yellow }}>{p.sale}</Text>
                     <Text style={{ fontSize: 9, fontFamily: "Courier", color: "rgba(255,255,255,0.2)", textDecoration: "line-through" }}>{p.orig}</Text>
                   </View>
                   <View style={s.btnLime}><Text style={s.btnText}>ADD TO CART</Text></View>
@@ -529,7 +528,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 04 — USEFUL BUNDLES ═══════ */}
-    <ScreenPage n="04" title="Ready-to-Go — Useful Bundles" sub="Curated meal packs · Best value per meal" color={C.lime}
+    <ScreenPage n="04" title="Ready-to-Go — Useful Bundles" sub="Curated meal packs · Best value per meal" color={C.yellow}
       features={[
         "Three curated bundles: Lean Starter (5 meals), Bulk Performance Box (10 meals), Breakfast Week (7 meals)",
         "Each shows: total price, per-meal price, and description",
@@ -556,7 +555,7 @@ export const FresherPDF = () => (
                 <View style={s.badgeDark}><Text style={[s.badgeText, { color: C.white }]}>{b.tag}</Text></View>
                 <Text style={{ fontSize: 8, color: C.white, fontFamily: "Helvetica-Bold", marginTop: 4, marginBottom: 2, lineHeight: 1.3 }}>{b.name}</Text>
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.35)", marginBottom: 5, lineHeight: 1.4 }}>{b.desc}</Text>
-                <Text style={{ fontSize: 13, fontFamily: "Courier-Bold", color: C.lime }}>{b.price}</Text>
+                <Text style={{ fontSize: 13, fontFamily: "Courier-Bold", color: C.yellow }}>{b.price}</Text>
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.3)", marginBottom: 6 }}>{b.ppm}</Text>
                 <View style={{ backgroundColor: "rgba(255,255,255,0.08)", paddingHorizontal: 8, paddingVertical: 4, alignSelf: "flex-start" }}>
                   <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.white }}>ADD →</Text>
@@ -569,7 +568,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 05 — PRODUCT DETAIL MODAL ═══════ */}
-    <ScreenPage n="05" title="Product Detail Modal" sub="Meal info · Macros · Star rating · Add to cart" color={C.lime}
+    <ScreenPage n="05" title="Product Detail Modal" sub="Meal info · Macros · Star rating · Add to cart" color={C.yellow}
       features={[
         "Triggered by clicking any meal card (Ready-to-Go, Build-A-Box, Meal Plan Wizard)",
         "Full-width hero image with meal type badge",
@@ -585,10 +584,10 @@ export const FresherPDF = () => (
           <View style={{ position: "relative" }}>
             <Image src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=250&fit=crop&auto=format"
               style={{ width: "100%", height: 100, objectFit: "cover" }} />
-            <View style={{ position: "absolute", top: 6, left: 6, backgroundColor: C.gold, paddingHorizontal: 6, paddingVertical: 2 }}>
+            <View style={{ position: "absolute", top: 6, left: 6, backgroundColor: C.yellow, paddingHorizontal: 6, paddingVertical: 2 }}>
               <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black }}>HIGH CARB</Text>
             </View>
-            <View style={{ position: "absolute", top: 6, left: 6, backgroundColor: C.lime, paddingHorizontal: 6, paddingVertical: 2, marginLeft: 52 }}>
+            <View style={{ position: "absolute", top: 6, left: 6, backgroundColor: C.yellow, paddingHorizontal: 6, paddingVertical: 2, marginLeft: 52 }}>
               <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.black }}>BESTSELLER</Text>
             </View>
           </View>
@@ -597,19 +596,19 @@ export const FresherPDF = () => (
               <View style={{ flex: 1 }}>
                 <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.gray, letterSpacing: 1, marginBottom: 2 }}>HIGH CARB</Text>
                 <Text style={{ fontSize: 13, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 2 }}>Herb Chicken Rice Bowl</Text>
-                <Text style={{ fontSize: 9, color: C.gold, marginBottom: 3 }}>★★★★★ <Text style={{ fontSize: 7, color: C.gray }}>4.9 · 128 reviews</Text></Text>
+                <Text style={{ fontSize: 9, color: C.yellow, marginBottom: 3 }}>★★★★★ <Text style={{ fontSize: 7, color: C.gray }}>4.9 · 128 reviews</Text></Text>
                 <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)", lineHeight: 1.4 }}>Tender herb-marinated chicken thigh on jasmine rice with roasted vegetables. Chef Ahmad's signature dish.</Text>
               </View>
               <View style={{ width: 100 }}>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 3, marginBottom: 8 }}>
                   {[["450", "kcal"], ["38g", "protein"], ["52g", "carbs"], ["12g", "fat"]].map(([v, l]) => (
                     <View key={l} style={{ backgroundColor: "#222", padding: 5, alignItems: "center", width: 44 }}>
-                      <Text style={{ fontSize: 10, fontFamily: "Courier-Bold", color: C.lime }}>{v}</Text>
+                      <Text style={{ fontSize: 10, fontFamily: "Courier-Bold", color: C.yellow }}>{v}</Text>
                       <Text style={{ fontSize: 5, color: C.gray }}>{l}</Text>
                     </View>
                   ))}
                 </View>
-                <Text style={{ fontSize: 16, fontFamily: "Courier-Bold", color: C.lime, marginBottom: 5 }}>$12.40</Text>
+                <Text style={{ fontSize: 16, fontFamily: "Courier-Bold", color: C.yellow, marginBottom: 5 }}>$12.40</Text>
                 <View style={[s.btnLime, { width: "100%", alignItems: "center" }]}><Text style={s.btnText}>ADD TO CART</Text></View>
               </View>
             </View>
@@ -619,7 +618,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 06 — BUILD-A-BOX ═══════ */}
-    <ScreenPage n="06" title="Box Subscription" sub="Recurring delivery · 10% off · Weekly or fortnightly" color={C.lime}
+    <ScreenPage n="06" title="Box Subscription" sub="Recurring delivery · 10% off · Weekly or fortnightly" color={C.yellow}
       features={[
         "Order type toggle: One-time vs Subscribe & Save 10% (defaults to Subscribe)",
         "Frequency picker when subscribing: Weekly or Fortnightly",
@@ -641,10 +640,10 @@ export const FresherPDF = () => (
             { qty: "15 meals", label: "Pro", ppm: "$11.50/meal", pop: false },
             { qty: "20 meals", label: "Elite", ppm: "$11.00/meal", pop: false }
           ].map((b) => (
-            <View key={b.qty} style={{ flex: 1, border: `2 solid ${b.pop ? C.lime : "rgba(255,255,255,0.15)"}`, padding: 6, alignItems: "center", backgroundColor: b.pop ? "rgba(205,255,58,0.05)" : "transparent" }}>
+            <View key={b.qty} style={{ flex: 1, border: `2 solid ${b.pop ? C.yellow : "rgba(255,255,255,0.15)"}`, padding: 6, alignItems: "center", backgroundColor: b.pop ? "rgba(205,255,58,0.05)" : "transparent" }}>
               {b.pop && <View style={[s.badge, { marginBottom: 2 }]}><Text style={s.badgeText}>MOST POPULAR</Text></View>}
               <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: C.white }}>{b.qty}</Text>
-              <Text style={{ fontSize: 7, fontFamily: "Courier-Bold", color: C.lime }}>{b.ppm}</Text>
+              <Text style={{ fontSize: 7, fontFamily: "Courier-Bold", color: C.yellow }}>{b.ppm}</Text>
               <Text style={{ fontSize: 6, color: C.gray }}>{b.label}</Text>
             </View>
           ))}
@@ -654,18 +653,18 @@ export const FresherPDF = () => (
             <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.3)", marginBottom: 3 }}>Progress · 7 of 10 meals selected</Text>
             <View style={s.progressBg}><View style={[s.progressFill, { width: "70%" }]} /></View>
             <View style={{ flexDirection: "row", gap: 5, marginTop: 4 }}>
-              <MealCard name="Herb Chicken" cat="HIGH CARB" price="×2" img="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=150&h=100&fit=crop&auto=format" catColor={C.gold} />
-              <MealCard name="Korean BBQ Bowl" cat="LOW CARB" price="×2" img="https://images.unsplash.com/photo-1547592180-85f173990554?w=150&h=100&fit=crop&auto=format" catColor={C.mint} />
-              <MealCard name="Cajun Salmon" cat="PROTEIN" price="×3" img="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=150&h=100&fit=crop&auto=format" catColor="#A78BFA" />
+              <MealCard name="Herb Chicken" cat="HIGH CARB" price="×2" img="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=150&h=100&fit=crop&auto=format" catColor={C.yellow} />
+              <MealCard name="Korean BBQ Bowl" cat="LOW CARB" price="×2" img="https://images.unsplash.com/photo-1547592180-85f173990554?w=150&h=100&fit=crop&auto=format" catColor={C.yellow} />
+              <MealCard name="Cajun Salmon" cat="PROTEIN" price="×3" img="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=150&h=100&fit=crop&auto=format" catColor="#F5B300" />
             </View>
           </View>
           <View style={{ width: 110, backgroundColor: "#111", border: "1 solid rgba(255,255,255,0.08)", padding: 10 }}>
             <Text style={[s.mono, { color: C.gray, marginBottom: 4 }]}>BOX SUMMARY</Text>
             <Text style={{ fontSize: 8, color: C.white, marginBottom: 1 }}>10 meals · Standard</Text>
             <Text style={{ fontSize: 7, color: C.gray, textDecoration: "line-through" }}>$119.00</Text>
-            <Text style={{ fontSize: 18, fontFamily: "Courier-Bold", color: C.lime }}>{`$107.10`}</Text>
+            <Text style={{ fontSize: 18, fontFamily: "Courier-Bold", color: C.yellow }}>{`$107.10`}</Text>
             <Text style={{ fontSize: 6, color: C.gray, marginBottom: 4 }}>$10.71/meal · Save $11.90</Text>
-            <Text style={{ fontSize: 6, color: C.lime, marginBottom: 8 }}>↻ Weekly subscription</Text>
+            <Text style={{ fontSize: 6, color: C.yellow, marginBottom: 8 }}>↻ Weekly subscription</Text>
             <View style={[s.btnLime, { width: "100%", alignItems: "center" }]}><Text style={s.btnText}>START SUBSCRIPTION →</Text></View>
           </View>
         </View>
@@ -673,7 +672,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 07 — MEAL PLAN WIZARD ═══════ */}
-    <ScreenPage n="07" title="Meal Plan Wizard — Steps 1–5" sub="Goal → Meals → Menu → Delivery → Auth → Pay" color={C.gold}
+    <ScreenPage n="07" title="Meal Plan Wizard — Steps 1–5" sub="Goal → Meals → Menu → Delivery → Auth → Pay" color={C.orange}
       features={[
         "Step 1: 1 or 2 meals per day (Lunch only / Lunch & Dinner)",
         "Step 2: Goal selection (CUT / MAINTAIN / BUILD) + Weekly or Monthly billing toggle with SAVE 15% badge",
@@ -690,12 +689,12 @@ export const FresherPDF = () => (
           {["MEALS", "GOAL", "MENU", "DELIVERY", "PAY"].map((step, i) => (
             <View key={step} style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
               <View style={{ alignItems: "center", flex: 1 }}>
-                <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: i < 3 ? C.lime : i === 3 ? C.black : C.border, alignItems: "center", justifyContent: "center" }}>
+                <View style={{ width: 18, height: 18, borderRadius: 9, backgroundColor: i < 3 ? C.yellow : i === 3 ? C.black : C.border, alignItems: "center", justifyContent: "center" }}>
                   <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: i < 3 ? C.black : i === 3 ? C.white : C.gray }}>{i < 3 ? "✓" : i + 1}</Text>
                 </View>
                 <Text style={{ fontSize: 6, color: i <= 3 ? C.black : C.gray, marginTop: 2, fontFamily: i === 3 ? "Helvetica-Bold" : "Helvetica" }}>{step}</Text>
               </View>
-              {i < 4 && <View style={{ height: 1, width: 20, backgroundColor: i < 3 ? C.lime : C.border, marginBottom: 12 }} />}
+              {i < 4 && <View style={{ height: 1, width: 20, backgroundColor: i < 3 ? C.yellow : C.border, marginBottom: 12 }} />}
             </View>
           ))}
         </View>
@@ -707,7 +706,7 @@ export const FresherPDF = () => (
               <View style={{ flexDirection: "row", gap: 4 }}>
                 {["1 meal · Lunch only", "2 meals · Lunch & Dinner"].map((o, i) => (
                   <View key={o} style={{ flex: 1, border: `2 solid ${i === 1 ? C.black : C.border}`, padding: 6, backgroundColor: i === 1 ? C.black : C.white }}>
-                    <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: i === 1 ? C.lime : C.black }}>{o}</Text>
+                    <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: i === 1 ? C.yellow : C.black }}>{o}</Text>
                   </View>
                 ))}
               </View>
@@ -718,19 +717,19 @@ export const FresherPDF = () => (
                 <View style={{ flex: 1, padding: 5, alignItems: "center", backgroundColor: C.white }}>
                   <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black }}>WEEKLY</Text>
                 </View>
-                <View style={{ flex: 1, padding: 5, alignItems: "center", backgroundColor: C.gold }}>
+                <View style={{ flex: 1, padding: 5, alignItems: "center", backgroundColor: C.yellow }}>
                   <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black }}>MONTHLY · SAVE 15%</Text>
                 </View>
               </View>
               <View style={{ flexDirection: "row", gap: 4 }}>
-                {[{ name: "CUT", color: C.lime, price: "$148/wk" },
-                  { name: "MAINTAIN", color: C.gold, price: "$178/wk" },
-                  { name: "BUILD", color: C.mint, price: "$208/wk" }
+                {[{ name: "CUT", color: C.yellow, price: "$148/wk" },
+                  { name: "MAINTAIN", color: C.yellow, price: "$178/wk" },
+                  { name: "BUILD", color: C.yellow, price: "$208/wk" }
                 ].map((p) => (
                   <View key={p.name} style={{ flex: 1, border: `2 solid ${p.name === "MAINTAIN" ? C.black : C.border}`, padding: 6 }}>
                     <View style={{ height: 3, backgroundColor: p.color, marginBottom: 4 }} />
                     <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold" }}>{p.name}</Text>
-                    <Text style={{ fontSize: 7, fontFamily: "Courier-Bold", color: C.lime }}>{p.price}</Text>
+                    <Text style={{ fontSize: 7, fontFamily: "Courier-Bold", color: C.yellow }}>{p.price}</Text>
                   </View>
                 ))}
               </View>
@@ -744,8 +743,8 @@ export const FresherPDF = () => (
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.3)", marginBottom: 4 }}>Select 4 meals (can repeat) · 3 of 4 selected</Text>
                 <View style={s.progressBg}><View style={[s.progressFill, { width: "75%" }]} /></View>
                 <View style={{ flexDirection: "row", gap: 3, marginTop: 4 }}>
-                  <MealCard name="Herb Chicken" cat="HIGH CARB" price="×2" img="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&h=80&fit=crop&auto=format" catColor={C.gold} />
-                  <MealCard name="Korean BBQ" cat="LOW CARB" price="×1" img="https://images.unsplash.com/photo-1547592180-85f173990554?w=100&h=80&fit=crop&auto=format" catColor={C.mint} />
+                  <MealCard name="Herb Chicken" cat="HIGH CARB" price="×2" img="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100&h=80&fit=crop&auto=format" catColor={C.yellow} />
+                  <MealCard name="Korean BBQ" cat="LOW CARB" price="×1" img="https://images.unsplash.com/photo-1547592180-85f173990554?w=100&h=80&fit=crop&auto=format" catColor={C.yellow} />
                 </View>
               </View>
             </View>
@@ -754,7 +753,7 @@ export const FresherPDF = () => (
               <View style={{ flexDirection: "row", gap: 3, marginBottom: 5 }}>
                 {["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"].map((d) => (
                   <View key={d} style={{ flex: 1, backgroundColor: ["MON", "WED", "FRI"].includes(d) ? C.black : C.parchment, padding: 3, alignItems: "center" }}>
-                    <Text style={{ fontSize: 5, color: ["MON", "WED", "FRI"].includes(d) ? C.lime : C.gray, fontFamily: "Helvetica-Bold" }}>{d}</Text>
+                    <Text style={{ fontSize: 5, color: ["MON", "WED", "FRI"].includes(d) ? C.yellow : C.gray, fontFamily: "Helvetica-Bold" }}>{d}</Text>
                   </View>
                 ))}
               </View>
@@ -784,7 +783,7 @@ export const FresherPDF = () => (
                 <View style={[s.input, { flex: 1 }]}><Text style={s.inputText}>CVV</Text></View>
               </View>
               <View style={s.input}><Text style={s.inputText}>Promo code e.g. PMFIRST10</Text></View>
-              <View style={{ backgroundColor: C.gold, paddingHorizontal: 10, paddingVertical: 5, width: "100%", alignItems: "center" }}>
+              <View style={{ backgroundColor: C.yellow, paddingHorizontal: 10, paddingVertical: 5, width: "100%", alignItems: "center" }}>
                 <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.black }}>SUBSCRIBE — $178/WK</Text>
               </View>
             </View>
@@ -794,7 +793,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 08 — CHECKOUT AUTH GATE ═══════ */}
-    <ScreenPage n="08" title="Checkout — Auth Gate" sub="New customer · Account creation · Guest warning" color={C.gold}
+    <ScreenPage n="08" title="Checkout — Auth Gate" sub="New customer · Account creation · Guest warning" color={C.yellow}
       features={[
         "Three options: Create Account / Sign In / Continue as Guest",
         "Create Account: name, email, phone, password + points incentive banner",
@@ -835,7 +834,7 @@ export const FresherPDF = () => (
           <View style={{ flex: 1 }}>
             {/* Guest warning */}
             <Text style={[s.mono, { marginBottom: 4 }]}>GUEST CHECKOUT WARNING</Text>
-            <View style={{ backgroundColor: "#FFF3CD", border: "1 solid " + C.gold, padding: 8, marginBottom: 10 }}>
+            <View style={{ backgroundColor: "#FFF3CD", border: "1 solid " + C.yellow, padding: 8, marginBottom: 10 }}>
               <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.amberText, marginBottom: 5 }}>⚠️ Checking out as guest — you'll miss out on:</Text>
               {["Performance Meals reward points (worth up to $12/month)", "Exclusive member discounts and early access deals", "Order history, easy reorders, delivery tracking", "Referral bonuses — earn $10 credit per friend"].map((i) => (
                 <View key={i} style={{ flexDirection: "row", marginBottom: 3 }}>
@@ -848,7 +847,7 @@ export const FresherPDF = () => (
             {/* Signup success */}
             <Text style={[s.mono, { marginBottom: 4 }]}>AFTER SIGNUP · SUCCESS SCREEN</Text>
             <View style={{ backgroundColor: C.white, border: "1 solid " + C.border, padding: 8 }}>
-              <View style={{ width: 28, height: 28, backgroundColor: C.lime, borderRadius: 14, alignItems: "center", justifyContent: "center", marginBottom: 5 }}>
+              <View style={{ width: 28, height: 28, backgroundColor: C.yellow, borderRadius: 14, alignItems: "center", justifyContent: "center", marginBottom: 5 }}>
                 <Text style={{ fontSize: 14, fontFamily: "Helvetica-Bold" }}>✓</Text>
               </View>
               <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold", marginBottom: 2 }}>Account created!</Text>
@@ -859,7 +858,7 @@ export const FresherPDF = () => (
               </View>
               <View style={{ backgroundColor: "rgba(0,0,0,0.04)", border: "1 solid rgba(0,0,0,0.08)", padding: 5, flexDirection: "row", justifyContent: "space-between" }}>
                 <Text style={{ fontSize: 7 }}>✉️ Email</Text>
-                <View style={{ backgroundColor: C.lime, paddingHorizontal: 4, paddingVertical: 1 }}><Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold" }}>✓ Sent</Text></View>
+                <View style={{ backgroundColor: C.yellow, paddingHorizontal: 4, paddingVertical: 1 }}><Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold" }}>✓ Sent</Text></View>
               </View>
             </View>
           </View>
@@ -868,7 +867,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 09 — CHECKOUT DELIVERY + PAYMENT ═══════ */}
-    <ScreenPage n="09" title="Checkout — Delivery & Payment" sub="Address · Date · Card · Promo code · Place order" color={C.gold}
+    <ScreenPage n="09" title="Checkout — Delivery & Payment" sub="Address · Date · Card · Promo code · Place order" color={C.yellow}
       features={[
         "Delivery form: name, phone, address, postal, delivery note",
         "Delivery date picker: next 6 available days",
@@ -915,7 +914,7 @@ export const FresherPDF = () => (
             <View style={[s.input, { flex: 1, marginBottom: 0 }]}><Text style={s.inputText}>Promo code e.g. PMFIRST10</Text></View>
             <View style={[s.btnBlack, { paddingVertical: 5 }]}><Text style={s.btnTextW}>APPLY</Text></View>
           </View>
-          <View style={{ backgroundColor: "#E8FFD0", border: "1 solid " + C.lime, padding: 5, marginBottom: 6 }}>
+          <View style={{ backgroundColor: "#E8FFD0", border: "1 solid " + C.yellow, padding: 5, marginBottom: 6 }}>
             <Text style={{ fontSize: 7, color: "#2d7a00", fontFamily: "Helvetica-Bold" }}>✓ Code PMFIRST10 applied — 10% off (–$5.80)</Text>
           </View>
           <View style={[s.btnBlack, { width: "100%", alignItems: "center", paddingVertical: 8 }]}>
@@ -935,8 +934,8 @@ export const FresherPDF = () => (
           <View style={s.divider} />
           {[["Subtotal", "$58.00", false], ["Delivery", "Free", true], ["Wallet credit", "–$12.50", true], ["Promo (PMFIRST10)", "–$5.80", true]].map(([l, v, g]) => (
             <View key={String(l)} style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 2 }}>
-              <Text style={{ fontSize: 6, color: g ? C.green : C.gray }}>{l}</Text>
-              <Text style={{ fontSize: 6, color: g ? C.green : C.black, fontFamily: "Helvetica-Bold" }}>{v}</Text>
+              <Text style={{ fontSize: 6, color: g ? C.yellow : C.gray }}>{l}</Text>
+              <Text style={{ fontSize: 6, color: g ? C.yellow : C.black, fontFamily: "Helvetica-Bold" }}>{v}</Text>
             </View>
           ))}
           <View style={s.divider} />
@@ -951,7 +950,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 10 — ORDER CONFIRMATION ═══════ */}
-    <ScreenPage n="10" title="Order Confirmation" sub="WhatsApp + Email · Live status timeline · Points earned" color={C.gold}
+    <ScreenPage n="10" title="Order Confirmation" sub="WhatsApp + Email · Live status timeline · Points earned" color={C.yellow}
       features={[
         "Confetti animation and lime checkmark circle",
         "Order details: address, subtotal, promo discount, payment method",
@@ -967,7 +966,7 @@ export const FresherPDF = () => (
           <View style={{ flex: 1 }}>
             {/* Header */}
             <View style={{ alignItems: "center", marginBottom: 10 }}>
-              <View style={{ width: 36, height: 36, backgroundColor: C.lime, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 5 }}>
+              <View style={{ width: 36, height: 36, backgroundColor: C.yellow, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 5 }}>
                 <Text style={{ fontSize: 18, fontFamily: "Helvetica-Bold" }}>✓</Text>
               </View>
               <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.gray, letterSpacing: 2, marginBottom: 2 }}>ORDER CONFIRMED</Text>
@@ -983,8 +982,8 @@ export const FresherPDF = () => (
                 ["Payment", "Visa ending 4242 · $52.20"]
               ].map(([l, v]) => (
                 <View key={String(l)} style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 3 }}>
-                  <Text style={{ fontSize: 7, color: String(l).startsWith("Promo") ? C.green : C.gray }}>{l}</Text>
-                  <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: String(l).startsWith("Promo") ? C.green : C.black }}>{v}</Text>
+                  <Text style={{ fontSize: 7, color: String(l).startsWith("Promo") ? C.yellow : C.gray }}>{l}</Text>
+                  <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: String(l).startsWith("Promo") ? C.yellow : C.black }}>{v}</Text>
                 </View>
               ))}
             </View>
@@ -1019,13 +1018,13 @@ export const FresherPDF = () => (
                 <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.white }}>Confirmation sent to email</Text>
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.35)" }}>jerome@email.com</Text>
               </View>
-              <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.lime }}>✓ SENT</Text>
+              <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.yellow }}>✓ SENT</Text>
             </View>
             {/* Points earned (member) */}
             <View style={{ backgroundColor: C.black, padding: 8, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
               <View>
-                <Text style={[s.mono, { color: C.lime, marginBottom: 2 }]}>POINTS EARNED</Text>
-                <Text style={{ fontSize: 20, fontFamily: "Helvetica-Bold", color: C.lime }}>+58 pts</Text>
+                <Text style={[s.mono, { color: C.yellow, marginBottom: 2 }]}>POINTS EARNED</Text>
+                <Text style={{ fontSize: 20, fontFamily: "Helvetica-Bold", color: C.yellow }}>+58 pts</Text>
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.3)" }}>Added to your balance</Text>
               </View>
               <View style={{ alignItems: "flex-end" }}>
@@ -1037,8 +1036,8 @@ export const FresherPDF = () => (
             {/* Guest variant */}
             <Text style={[s.mono, { marginBottom: 3 }]}>GUEST VARIANT</Text>
             <View style={{ backgroundColor: C.black, padding: 8, marginBottom: 5 }}>
-              <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.gold, letterSpacing: 1, marginBottom: 2 }}>YOU LEFT POINTS ON THE TABLE</Text>
-              <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 2 }}>This order would've earned <Text style={{ color: C.lime }}>+58 pts</Text></Text>
+              <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: C.yellow, letterSpacing: 1, marginBottom: 2 }}>YOU LEFT POINTS ON THE TABLE</Text>
+              <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 2 }}>This order would've earned <Text style={{ color: C.yellow }}>+58 pts</Text></Text>
               <View style={[s.btnLime, { width: "100%", alignItems: "center" }]}><Text style={s.btnText}>SIGN UP — IT'S FREE →</Text></View>
             </View>
             {/* Go to account */}
@@ -1050,7 +1049,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 11 — ACCOUNT DASHBOARD ═══════ */}
-    <ScreenPage n="11" title="Account — Dashboard" sub="Stats · Active plan · Renewal reminder · Referral" color={C.mint}
+    <ScreenPage n="11" title="Account — Dashboard" sub="Stats · Active plan · Renewal reminder · Referral" color={C.yellow}
       features={[
         "Renewal reminder amber banner: 'Plan renews in 3 days'",
         "2-stat grid only: Active Plan + Wallet Balance (Orders This Month and Reward Points removed per Jerome)",
@@ -1064,7 +1063,7 @@ export const FresherPDF = () => (
         <View style={{ width: 110, backgroundColor: C.black, padding: 10 }}>
           <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 16, letterSpacing: 1 }}>JEROME T.</Text>
           {["Dashboard", "Subscription", "Order History", "Wallet & Rewards", "Settings"].map((t, i) => (
-            <View key={t} style={{ padding: "5 8", backgroundColor: i === 0 ? C.lime : "transparent", marginBottom: 2 }}>
+            <View key={t} style={{ padding: "5 8", backgroundColor: i === 0 ? C.yellow : "transparent", marginBottom: 2 }}>
               <Text style={{ fontSize: 7, color: i === 0 ? C.black : "rgba(255,255,255,0.4)", fontFamily: i === 0 ? "Helvetica-Bold" : "Helvetica" }}>{t}</Text>
             </View>
           ))}
@@ -1072,7 +1071,7 @@ export const FresherPDF = () => (
         {/* Main */}
         <View style={{ flex: 1, backgroundColor: C.parchment, padding: 10 }}>
           {/* Renewal reminder */}
-          <View style={{ backgroundColor: "#FFF3CD", border: "1 solid " + C.gold, padding: 7, flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 8 }}>
+          <View style={{ backgroundColor: "#FFF3CD", border: "1 solid " + C.yellow, padding: 7, flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 8 }}>
             <Text style={{ fontSize: 12 }}>⚠️</Text>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 8, fontFamily: "Helvetica-Bold", color: C.amberText }}>Your plan renews in 3 days — Friday 7 Sep</Text>
@@ -1082,8 +1081,8 @@ export const FresherPDF = () => (
           </View>
           {/* Stats — 2 only per Jerome feedback */}
           <View style={{ flexDirection: "row", gap: 5, marginBottom: 8 }}>
-            {[{ l: "Active Plan", v: "MAINTAIN", c: C.gold, bg: C.black },
-              { l: "Wallet Balance", v: "$12.50", c: C.lime, bg: C.black },
+            {[{ l: "Active Plan", v: "MAINTAIN", c: C.yellow, bg: C.black },
+              { l: "Wallet Balance", v: "$12.50", c: C.yellow, bg: C.black },
             ].map((s2) => (
               <View key={s2.l} style={{ flex: 1, backgroundColor: s2.bg, padding: 7 }}>
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.3)", letterSpacing: 1, marginBottom: 2 }}>{s2.l.toUpperCase()}</Text>
@@ -1105,13 +1104,13 @@ export const FresherPDF = () => (
           {/* Active plan card */}
           <View style={{ backgroundColor: C.black, padding: 8, flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <View>
-              <Text style={[s.mono, { color: C.lime, marginBottom: 2 }]}>● ACTIVE SUBSCRIPTION</Text>
+              <Text style={[s.mono, { color: C.yellow, marginBottom: 2 }]}>● ACTIVE SUBSCRIPTION</Text>
               <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.white }}>MAINTAIN Plan</Text>
               <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)" }}>Weekly billing · Next charge Friday 19 Sep</Text>
-              <Text style={{ fontSize: 13, fontFamily: "Courier-Bold", color: C.gold, marginTop: 2 }}>$178.00/week</Text>
+              <Text style={{ fontSize: 13, fontFamily: "Courier-Bold", color: C.yellow, marginTop: 2 }}>$178.00/week</Text>
             </View>
             <View style={{ gap: 4 }}>
-              <View style={{ backgroundColor: C.lime, padding: "4 8" }}><Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black }}>MANAGE PLAN →</Text></View>
+              <View style={{ backgroundColor: C.yellow, padding: "4 8" }}><Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold", color: C.black }}>MANAGE PLAN →</Text></View>
               <View style={{ backgroundColor: "rgba(255,255,255,0.05)", padding: "4 8" }}><Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)" }}>PAUSE</Text></View>
             </View>
           </View>
@@ -1130,7 +1129,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 12 — ACCOUNT SUBSCRIPTION + SWAP ═══════ */}
-    <ScreenPage n="12" title="Account — Subscription & Meal Swap" sub="Edit plan · Thursday cutoff · Week tabs · Swap meals" color={C.mint}
+    <ScreenPage n="12" title="Account — Subscription & Meal Swap" sub="Edit plan · Thursday cutoff · Week tabs · Swap meals" color={C.yellow}
       features={[
         "Plan progress bar: 'Plan week 13 of 12' with yellow fill + weeks remaining counter (turns orange when ≤2 weeks left)",
         "Week tabs show absolute plan week number (W13, W14…) alongside This Week / Week 2 / Week 3 / Week 4",
@@ -1146,7 +1145,7 @@ export const FresherPDF = () => (
       <View style={{ flexDirection: "row" }}>
         <View style={{ width: 110, backgroundColor: C.black, padding: 10 }}>
           {["Dashboard", "Subscription", "Order History", "Wallet & Rewards", "Settings"].map((t, i) => (
-            <View key={t} style={{ padding: "5 8", backgroundColor: i === 1 ? C.lime : "transparent", marginBottom: 2 }}>
+            <View key={t} style={{ padding: "5 8", backgroundColor: i === 1 ? C.yellow : "transparent", marginBottom: 2 }}>
               <Text style={{ fontSize: 7, color: i === 1 ? C.black : "rgba(255,255,255,0.4)", fontFamily: i === 1 ? "Helvetica-Bold" : "Helvetica" }}>{t}</Text>
             </View>
           ))}
@@ -1165,7 +1164,7 @@ export const FresherPDF = () => (
               </View>
             </View>
             <View style={{ height: 4, backgroundColor: C.border, marginBottom: 2 }}>
-              <View style={{ height: 4, width: "95%", backgroundColor: C.gold }} />
+              <View style={{ height: 4, width: "95%", backgroundColor: C.yellow }} />
             </View>
           </View>
           {/* Menu review panel */}
@@ -1191,7 +1190,7 @@ export const FresherPDF = () => (
             {/* Week tabs */}
             <View style={{ flexDirection: "row", borderBottom: "1 solid " + C.border }}>
               {[["This Week", "30 Jun–4 Jul"], ["Week 2", "7–11 Jul"], ["Week 3", "14–18 Jul"], ["Week 4", "21–25 Jul"]].map(([w, d], i) => (
-                <View key={w} style={{ flex: 1, padding: "5 7", borderBottom: `2 solid ${i === 1 ? C.gold : "transparent"}`, alignItems: "center" }}>
+                <View key={w} style={{ flex: 1, padding: "5 7", borderBottom: `2 solid ${i === 1 ? C.yellow : "transparent"}`, alignItems: "center" }}>
                   <Text style={{ fontSize: 7, fontFamily: i === 1 ? "Helvetica-Bold" : "Helvetica", color: i === 1 ? C.black : C.gray }}>{w}</Text>
                   <Text style={{ fontSize: 5, color: C.lightGray }}>{d}</Text>
                 </View>
@@ -1219,7 +1218,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 13 — ORDER HISTORY ═══════ */}
-    <ScreenPage n="13" title="Account — Order History" sub="All orders · Promo savings · Reorder · Reviews" color={C.mint}
+    <ScreenPage n="13" title="Account — Order History" sub="All orders · Promo savings · Reorder · Reviews" color={C.yellow}
       features={[
         "Promo Codes Used summary panel: total saved, per-code breakdown",
         "Each order card shows: type icon, items, order ID, date, total",
@@ -1232,7 +1231,7 @@ export const FresherPDF = () => (
       <View style={{ flexDirection: "row" }}>
         <View style={{ width: 110, backgroundColor: C.black, padding: 10 }}>
           {["Dashboard", "Subscription", "Order History", "Wallet & Rewards", "Settings"].map((t, i) => (
-            <View key={t} style={{ padding: "5 8", backgroundColor: i === 2 ? C.lime : "transparent", marginBottom: 2 }}>
+            <View key={t} style={{ padding: "5 8", backgroundColor: i === 2 ? C.yellow : "transparent", marginBottom: 2 }}>
               <Text style={{ fontSize: 7, color: i === 2 ? C.black : "rgba(255,255,255,0.4)", fontFamily: i === 2 ? "Helvetica-Bold" : "Helvetica" }}>{t}</Text>
             </View>
           ))}
@@ -1241,15 +1240,15 @@ export const FresherPDF = () => (
           <Text style={{ fontSize: 14, fontFamily: "Helvetica-Bold", color: C.black, marginBottom: 8 }}>Order History</Text>
           {/* Promo savings panel */}
           <View style={{ backgroundColor: C.black, padding: 10, marginBottom: 8 }}>
-            <Text style={[s.mono, { color: C.lime, marginBottom: 4 }]}>PROMO CODES USED</Text>
-            <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 6 }}>Total saved: <Text style={{ color: C.lime }}>$21.93</Text></Text>
+            <Text style={[s.mono, { color: C.yellow, marginBottom: 4 }]}>PROMO CODES USED</Text>
+            <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 6 }}>Total saved: <Text style={{ color: C.yellow }}>$21.93</Text></Text>
             {[{ code: "PMFIRST10", order: "FRE-20250901-7721", saved: "–$4.08" },
               { code: "WELCOME15", order: "FRE-20250818-7641", saved: "–$17.85" }
             ].map((p) => (
               <View key={p.code} style={{ backgroundColor: "rgba(255,255,255,0.05)", padding: "4 7", flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 3 }}>
                 <View style={s.badge}><Text style={s.badgeText}>{p.code}</Text></View>
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.4)", flex: 1 }}>{p.order}</Text>
-                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: C.mint }}>{p.saved}</Text>
+                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: C.yellow }}>{p.saved}</Text>
               </View>
             ))}
           </View>
@@ -1272,12 +1271,12 @@ export const FresherPDF = () => (
               </View>
               <View style={{ alignItems: "flex-end", marginRight: 6 }}>
                 <Text style={{ fontSize: 10, fontFamily: "Helvetica-Bold" }}>{o.total}</Text>
-                {o.saved && <Text style={{ fontSize: 6, color: C.green }}>{o.saved}</Text>}
-                {!o.saved && <Text style={{ fontSize: 6, color: C.green }}>Delivered</Text>}
+                {o.saved && <Text style={{ fontSize: 6, color: C.yellow }}>{o.saved}</Text>}
+                {!o.saved && <Text style={{ fontSize: 6, color: C.yellow }}>Delivered</Text>}
               </View>
               <View style={{ gap: 3 }}>
                 <View style={s.btnOutline}><Text style={s.btnText}>REORDER</Text></View>
-                <View style={{ backgroundColor: "#FFF3CD", border: "1 solid " + C.gold, paddingHorizontal: 6, paddingVertical: 3, alignSelf: "flex-start" }}>
+                <View style={{ backgroundColor: "#FFF3CD", border: "1 solid " + C.yellow, paddingHorizontal: 6, paddingVertical: 3, alignSelf: "flex-start" }}>
                   <Text style={{ fontSize: 6, fontFamily: "Helvetica-Bold", color: "#a07800" }}>★ REVIEW</Text>
                 </View>
               </View>
@@ -1288,7 +1287,7 @@ export const FresherPDF = () => (
     </ScreenPage>
 
     {/* ═══════ SCREEN 14 — WALLET & REWARDS ═══════ */}
-    <ScreenPage n="14" title="Account — Wallet & Rewards" sub="Points balance · Redeem · Transaction history · Referral" color={C.mint}
+    <ScreenPage n="14" title="Account — Wallet & Rewards" sub="Points balance · Redeem · Transaction history · Referral" color={C.yellow}
       features={[
         "3 stat tiles: Wallet Balance ($12.50), Reward Points (1,234), Lifetime Earned (4,891 pts)",
         "Fixed voucher tiers: 500 pts = $5 · 1,000 pts = $11 (+10% bonus) · 2,000 pts = $25 (+25% bonus)",
@@ -1302,7 +1301,7 @@ export const FresherPDF = () => (
       <View style={{ flexDirection: "row" }}>
         <View style={{ width: 110, backgroundColor: C.black, padding: 10 }}>
           {["Dashboard", "Subscription", "Order History", "Wallet & Rewards", "Settings"].map((t, i) => (
-            <View key={t} style={{ padding: "5 8", backgroundColor: i === 3 ? C.lime : "transparent", marginBottom: 2 }}>
+            <View key={t} style={{ padding: "5 8", backgroundColor: i === 3 ? C.yellow : "transparent", marginBottom: 2 }}>
               <Text style={{ fontSize: 7, color: i === 3 ? C.black : "rgba(255,255,255,0.4)", fontFamily: i === 3 ? "Helvetica-Bold" : "Helvetica" }}>{t}</Text>
             </View>
           ))}
@@ -1311,9 +1310,9 @@ export const FresherPDF = () => (
           <Text style={{ fontSize: 14, fontFamily: "Helvetica-Bold", color: C.black, marginBottom: 8 }}>Wallet & Rewards</Text>
           {/* Stats */}
           <View style={{ flexDirection: "row", gap: 5, marginBottom: 8 }}>
-            {[{ l: "WALLET BALANCE", v: "$12.50", c: C.lime, bg: C.black },
-              { l: "REWARD POINTS", v: "1,234", c: C.gold, bg: C.forest },
-              { l: "LIFETIME EARNED", v: "4,891 pts", c: C.mint, bg: C.black }
+            {[{ l: "WALLET BALANCE", v: "$12.50", c: C.yellow, bg: C.black },
+              { l: "REWARD POINTS", v: "1,234", c: C.yellow, bg: C.black },
+              { l: "LIFETIME EARNED", v: "4,891 pts", c: C.yellow, bg: C.black }
             ].map((s2) => (
               <View key={s2.l} style={{ flex: 1, backgroundColor: s2.bg, padding: 10 }}>
                 <Text style={{ fontSize: 6, color: "rgba(255,255,255,0.3)", letterSpacing: 1, marginBottom: 3 }}>{s2.l}</Text>
@@ -1348,17 +1347,17 @@ export const FresherPDF = () => (
                   <Text style={{ fontSize: 7, fontFamily: "Helvetica-Bold" }}>{h.desc}</Text>
                   <Text style={{ fontSize: 6, color: C.gray }}>{h.date}</Text>
                 </View>
-                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: h.earn ? C.green : C.red }}>{h.pts}</Text>
+                <Text style={{ fontSize: 9, fontFamily: "Helvetica-Bold", color: h.earn ? C.yellow : C.red }}>{h.pts}</Text>
               </View>
             ))}
           </View>
           {/* Referral */}
-          <View style={{ backgroundColor: C.forest, padding: 10 }}>
-            <Text style={[s.mono, { color: C.mint, marginBottom: 3 }]}>REFER & EARN</Text>
+          <View style={{ backgroundColor: C.black, padding: 10 }}>
+            <Text style={[s.mono, { color: C.yellow, marginBottom: 3 }]}>REFER & EARN</Text>
             <Text style={{ fontSize: 11, fontFamily: "Helvetica-Bold", color: C.white, marginBottom: 2 }}>Give $10, Get $10</Text>
             <Text style={{ fontSize: 7, color: "rgba(255,255,255,0.4)", marginBottom: 6, lineHeight: 1.4 }}>Share your unique code. When a friend orders, you both get $10 wallet credit.</Text>
             <View style={{ backgroundColor: "rgba(255,255,255,0.07)", border: "1 solid rgba(255,255,255,0.12)", padding: "6 10", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-              <Text style={{ fontFamily: "Courier-Bold", fontSize: 13, color: C.lime }}>JEROME10</Text>
+              <Text style={{ fontFamily: "Courier-Bold", fontSize: 13, color: C.yellow }}>JEROME10</Text>
               <View style={s.btnLime}><Text style={s.btnText}>COPY CODE</Text></View>
             </View>
           </View>
