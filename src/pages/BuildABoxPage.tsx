@@ -5,6 +5,7 @@ import { BOX_SIZES, CartItem, CATS, Meal, MEALS, Page } from "@/data";
 interface Props {
   navigate: (page: Page) => void;
   addToCart: (item: CartItem) => void;
+  onProceedToCheckout?: (isSubscription: boolean) => void;
 }
 
 type BoxStep = "size" | "select" | "review";
@@ -17,7 +18,7 @@ const FREQ_OPTS: { id: DeliveryFreq; label: string; desc: string }[] = [
 
 const SUB_DISCOUNT = 0.10; // 10% off for subscribers
 
-export default function BuildABoxPage({ navigate, addToCart }: Props) {
+export default function BuildABoxPage({ navigate, addToCart, onProceedToCheckout }: Props) {
   const [step, setStep] = useState<BoxStep>("size");
   const [boxSize, setBoxSize] = useState(10);
   const [activeCat, setActiveCat] = useState("all");
@@ -66,7 +67,11 @@ export default function BuildABoxPage({ navigate, addToCart }: Props) {
       img: "https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=100&h=100&fit=crop&auto=format",
       type: "box",
     });
-    navigate("checkout");
+    if (onProceedToCheckout) {
+      onProceedToCheckout(isSubscription);
+    } else {
+      navigate("checkout");
+    }
   };
 
   const STEPS: { key: BoxStep; label: string; num: string }[] = [

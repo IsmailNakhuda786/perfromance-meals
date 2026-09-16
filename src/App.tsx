@@ -47,6 +47,7 @@ export default function App() {
   const [accountInitialTab, setAccountInitialTab] = useState<"dashboard" | "settings">("dashboard");
   const [accountInitialSection, setAccountInitialSection] = useState<string | undefined>(undefined);
   const [showPromo, setShowPromo] = useState(false);
+  const [checkoutIsSubscription, setCheckoutIsSubscription] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowPromo(true), 1800);
@@ -148,7 +149,7 @@ export default function App() {
       {page === "ready-series-product" && <ReadySeriesProductPage mealId={selectedMealId} navigate={navigate} addToCart={addToCart} />}
       {page === "ready-to-go" && <ReadyToGoPage navigate={navigate} addToCart={addToCart} cart={cart} />}
       {page === "meal-plan-landing" && <MealPlanLandingPage navigate={navigate} navigateToWizard={navigateToWizard} />}
-      {page === "build-a-box" && <BuildABoxPage navigate={navigate} addToCart={addToCart} />}
+      {page === "build-a-box" && <BuildABoxPage navigate={navigate} addToCart={addToCart} onProceedToCheckout={(isSub) => { setCheckoutIsSubscription(isSub); navigate("checkout"); }} />}
       {page === "meal-plan-wizard" && (
         <MealPlanWizardPage
           navigate={navigate}
@@ -157,7 +158,7 @@ export default function App() {
           onCheckoutComplete={(addr) => { handlePlanCheckout(addr); navigate("confirmation"); }}
         />
       )}
-      {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} onComplete={(isGuest, promoCode, promoDiscount) => { setLastOrderType("ready"); setLastOrderGuest(isGuest); setLastPromoCode(promoCode); setLastPromoDiscount(promoDiscount); navigate("confirmation"); }} />}
+      {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} requireAccount={checkoutIsSubscription} onComplete={(isGuest, promoCode, promoDiscount) => { setLastOrderType("ready"); setLastOrderGuest(isGuest); setLastPromoCode(promoCode); setLastPromoDiscount(promoDiscount); navigate("confirmation"); }} />}
       {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} isGuest={lastOrderGuest} promoCode={lastPromoCode} promoDiscount={lastPromoDiscount} />}
       {page === "account" && <AccountPage navigate={navigate} initialTab={accountInitialTab} initialSection={accountInitialSection} />}
       {page === "how-it-works" && <HowItWorksPage navigate={navigate} navigateToWizard={navigateToWizard} />}

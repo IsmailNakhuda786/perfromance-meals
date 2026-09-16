@@ -5,6 +5,7 @@ interface Props {
   navigate: (page: Page) => void;
   cart: CartItem[];
   savedAddress: { name: string; phone: string; line1: string; unit: string; postal: string } | null;
+  requireAccount?: boolean;
   onComplete: (isGuest: boolean, promoCode: string, promoDiscount: number) => void;
 }
 
@@ -13,7 +14,7 @@ const SLOTS = ["6am – 9am", "9am – 12pm", "12pm – 3pm", "3pm – 6pm"];
 
 type AuthMode = null | "guest" | "signin" | "signup" | "signup_done" | "signin_done";
 
-export default function CheckoutPage({ navigate, cart, savedAddress, onComplete }: Props) {
+export default function CheckoutPage({ navigate, cart, savedAddress, requireAccount = false, onComplete }: Props) {
   const [authMode, setAuthMode] = useState<AuthMode>(null);
   const [authEmail, setAuthEmail] = useState("");
   const [authName, setAuthName] = useState("");
@@ -88,7 +89,17 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
           {authMode === null && (
             <div>
               <h1 className="font-display text-[28px] sm:text-[34px] font-bold mb-2">Almost there.</h1>
-              <p className="text-[#666] text-[14px] mb-8">Sign in to save your order history and earn rewards points — or continue as a guest.</p>
+              {requireAccount ? (
+                <>
+                  <p className="text-[#666] text-[14px] mb-4">Box Subscription requires an account to manage your deliveries, swap meals, and earn rewards.</p>
+                  <div className="flex items-start gap-3 bg-[#F5B300]/10 border border-[#F5B300]/40 px-4 py-3 mb-6 text-[12px] text-[#7B5900]">
+                    <span className="text-[16px] shrink-0">📦</span>
+                    <span>A subscription account lets you pause, skip, or cancel deliveries at any time from your dashboard.</span>
+                  </div>
+                </>
+              ) : (
+                <p className="text-[#666] text-[14px] mb-8">Sign in to save your order history and earn rewards points — or continue as a guest.</p>
+              )}
               <div className="space-y-3 mb-6">
                 <button onClick={() => setAuthMode("signup")}
                   className="w-full bg-[#111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors flex items-center justify-between px-6">
@@ -99,12 +110,16 @@ export default function CheckoutPage({ navigate, cart, savedAddress, onComplete 
                   className="w-full border-2 border-[#111] text-[#111] py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors">
                   Sign In to Existing Account
                 </button>
-                <button onClick={() => setAuthMode("guest")}
-                  className="w-full text-[#888] text-[13px] py-3 hover:text-[#111] transition-colors border border-[#D0CCC4] hover:border-[#111]">
-                  Continue as Guest
-                </button>
+                {!requireAccount && (
+                  <button onClick={() => setAuthMode("guest")}
+                    className="w-full text-[#888] text-[13px] py-3 hover:text-[#111] transition-colors border border-[#D0CCC4] hover:border-[#111]">
+                    Continue as Guest
+                  </button>
+                )}
               </div>
-              <p className="text-[11px] text-[#aaa] text-center">Guest orders earn no reward points and won't appear in order history.</p>
+              {!requireAccount && (
+                <p className="text-[11px] text-[#aaa] text-center">Guest orders earn no reward points and won't appear in order history.</p>
+              )}
             </div>
           )}
 
