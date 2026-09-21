@@ -70,15 +70,6 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const go = (page: Page) => { navigate(page); setMobileOpen(false); setSiteSwitcherOpen(false); };
   const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); setSiteSwitcherOpen(false); };
 
-  const SITES = [
-    { id: "meal-plan",    label: "Meal Plan",    sub: "Goal-led structured plans",     color: "#E85D04", action: () => go("meal-plan-landing") },
-    { id: "ready-series", label: "Ready Series", sub: "Ready-to-eat individual meals", color: "#F5B300", action: () => go("ready-series") },
-  ];
-  const currentSite =
-    currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "meal-plan"
-    : currentPage === "ready-series" || currentPage === "ready-to-go" || currentPage === "build-a-box" || currentPage === "ready-series-product" ? "ready-series"
-    : "parent";
-  const currentSiteLabel = SITES.find((s) => s.id === currentSite)?.label ?? "Menu";
 
   return (
     <>
@@ -90,56 +81,10 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
       <nav className="sticky top-0 z-50 bg-[#1A1A1A] text-white border-b border-white/10">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-[56px] sm:h-[60px] flex items-center justify-between gap-4">
 
-          {/* Logo + site switcher */}
-          <div className="relative flex items-center gap-3 shrink-0">
-            {/* Logo — always clickable, goes home */}
-            <button onClick={() => go("home")} className="shrink-0 hover:opacity-80 transition-opacity">
-              <PerformanceMealsLogo size="sm" variant="light" />
-            </button>
-
-            {/* Segmented site switcher */}
-            <div className="hidden sm:flex items-stretch h-[30px] border border-white/12 bg-white/4 overflow-hidden">
-              {SITES.map((s, i) => {
-                const active = currentSite === s.id;
-                return (
-                  <button key={s.id} onClick={s.action}
-                    title={s.sub}
-                    className={`relative px-3 text-[9.5px] font-mono tracking-[0.18em] uppercase transition-all whitespace-nowrap ${i > 0 ? "border-l border-white/10" : ""} ${active ? "text-[#1A1A1A] font-bold" : "text-white/35 hover:text-white/70"}`}
-                    style={active ? { backgroundColor: s.color } : {}}>
-                    {s.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Mobile: compact icon-only trigger */}
-            <button className="sm:hidden flex items-center gap-1 text-white/40 hover:text-white/70 transition-colors"
-              onClick={() => setSiteSwitcherOpen((v) => !v)}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M3 9h18M3 15h18"/>
-              </svg>
-            </button>
-
-            {/* Mobile dropdown */}
-            {siteSwitcherOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setSiteSwitcherOpen(false)} />
-                <div className="absolute top-full left-0 mt-2 w-[240px] bg-[#111] border border-white/12 z-50">
-                  {SITES.map((s) => (
-                    <button key={s.id} onClick={s.action}
-                      className={`w-full text-left px-4 py-3.5 flex items-center gap-3 hover:bg-white/5 transition-colors border-b border-white/6 last:border-0 ${currentSite === s.id ? "bg-white/5" : ""}`}>
-                      <div className="w-[3px] h-7 shrink-0" style={{ backgroundColor: s.color }} />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-white text-[13px] font-semibold">{s.label}</div>
-                        <div className="text-white/30 text-[10px] mt-0.5 truncate">{s.sub}</div>
-                      </div>
-                      {currentSite === s.id && <div className="w-1.5 h-1.5 rounded-full bg-[#F5B300] shrink-0" />}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+          {/* Logo */}
+          <button onClick={() => go("home")} className="shrink-0 hover:opacity-80 transition-opacity">
+            <PerformanceMealsLogo size="sm" variant="light" />
+          </button>
 
           {/* Desktop nav links */}
           <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
