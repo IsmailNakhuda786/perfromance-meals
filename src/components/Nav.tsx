@@ -19,7 +19,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [logoutToast, setLogoutToast] = useState(false);
   const [expandedBundles, setExpandedBundles] = useState<Set<string>>(new Set());
-  const [siteSwitcherOpen, setSiteSwitcherOpen] = useState(false);
+  const [siteSwitcherOpen, setSiteSwitcherOpen] = useState(false); // kept for go() closure; switcher UI removed
 
   const toggleBundleExpand = (key: string) => {
     setExpandedBundles((prev) => {
