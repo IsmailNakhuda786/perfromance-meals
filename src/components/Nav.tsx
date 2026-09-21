@@ -19,7 +19,6 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [logoutToast, setLogoutToast] = useState(false);
   const [expandedBundles, setExpandedBundles] = useState<Set<string>>(new Set());
-  const [siteSwitcherOpen, setSiteSwitcherOpen] = useState(false); // kept for go() closure; switcher UI removed
 
   const toggleBundleExpand = (key: string) => {
     setExpandedBundles((prev) => {
@@ -67,8 +66,8 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const WALLET_BALANCE = 12.50;
   const REWARD_PTS = 1234;
 
-  const go = (page: Page) => { navigate(page); setMobileOpen(false); setSiteSwitcherOpen(false); };
-  const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); setSiteSwitcherOpen(false); };
+  const go = (page: Page) => { navigate(page); setMobileOpen(false); };
+  const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); };
 
 
   return (
