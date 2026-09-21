@@ -71,15 +71,14 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); setSiteSwitcherOpen(false); };
 
   const SITES = [
-    { id: "parent",       label: "Performance Meals", sub: "Home",                          color: "#F5B300", action: () => go("home") },
-    { id: "meal-plan",    label: "Meal Plan",          sub: "Goal-led structured plans",     color: "#E85D04", action: () => go("meal-plan-landing") },
-    { id: "ready-series", label: "Ready Series",       sub: "Ready-to-eat individual meals", color: "#F5B300", action: () => go("ready-series") },
+    { id: "meal-plan",    label: "Meal Plan",    sub: "Goal-led structured plans",     color: "#E85D04", action: () => go("meal-plan-landing") },
+    { id: "ready-series", label: "Ready Series", sub: "Ready-to-eat individual meals", color: "#F5B300", action: () => go("ready-series") },
   ];
   const currentSite =
     currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "meal-plan"
     : currentPage === "ready-series" || currentPage === "ready-to-go" || currentPage === "build-a-box" || currentPage === "ready-series-product" ? "ready-series"
     : "parent";
-  const currentSiteLabel = SITES.find((s) => s.id === currentSite)?.label ?? "Performance Meals";
+  const currentSiteLabel = SITES.find((s) => s.id === currentSite)?.label ?? "Menu";
 
   return (
     <>
