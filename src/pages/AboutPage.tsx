@@ -1,5 +1,5 @@
 import { Page } from "@/data";
-import { PerformanceMealsLogo } from "@/components/Logos";
+import { PerformanceMealsLogo, MealPlanLogo, ReadySeriesLogo } from "@/components/Logos";
 
 interface Props {
   navigate: (page: Page) => void;
@@ -8,165 +8,242 @@ interface Props {
 
 export default function AboutPage({ navigate, navigateToWizard }: Props) {
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-[#1A1A1A]">
+    <div className="min-h-screen bg-white text-[#1A1A1A]">
 
-      {/* Hero */}
+      {/* ── HERO ── */}
       <section className="bg-[#1A1A1A] text-white">
-        <div className="max-w-[1200px] mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 py-20 sm:py-28 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div>
-            <div className="mb-6">
-              <PerformanceMealsLogo size="lg" variant="light" />
+            <div className="mb-8">
+              <PerformanceMealsLogo size="lg" variant="dark" />
             </div>
-            <h1 className="font-display text-[48px] sm:text-[64px] font-bold leading-none mb-6">
-              The gold standard<br />for meal prep.
+            <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-5">About Performance Meals</p>
+            <h1 className="font-display text-[44px] sm:text-[60px] font-extrabold leading-[0.92] mb-6">
+              Nutrition that works<br />
+              <span className="text-[#F5B300]">as hard as you do.</span>
             </h1>
-            <p className="text-white/60 text-[16px] leading-relaxed mb-8 max-w-lg">
-              Performance Meals was built in Singapore on a simple belief — healthy eating should be easy, enjoyable, and sustainable. Real food for real routines.
+            <p className="text-white/55 text-[16px] leading-relaxed max-w-lg">
+              Performance Meals is the parent brand behind two distinct customer experiences — both built on one shared standard of quality, care, and honest nutrition.
             </p>
-            <div className="flex gap-3 flex-wrap">
-              <button onClick={() => navigate("ready-series")}
-                className="bg-[#F5B300] text-[#1A1A1A] px-6 py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
-                Shop Ready-Series →
-              </button>
-              <button onClick={() => navigateToWizard()}
-                className="border border-white/20 text-white px-6 py-3.5 text-[12px] font-bold tracking-[0.15em] uppercase hover:border-white transition-colors">
-                View Meal Plans
-              </button>
-            </div>
           </div>
           <div className="relative">
-            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=700&h=500&fit=crop&auto=format"
-              alt="Chef preparing meals" className="w-full object-cover" style={{ height: 420 }} />
-            <div className="absolute bottom-4 left-4 bg-[#F5B300] px-4 py-3">
-              <div className="font-display text-[18px] font-bold text-[#1A1A1A]">One Standard</div>
-              <div className="text-[#1A1A1A] text-[11px] font-semibold tracking-wider">Two clear offers</div>
-            </div>
+            <img
+              src="https://images.unsplash.com/photo-1547592180-85f173990554?w=700&h=500&fit=crop&auto=format"
+              alt="Real food for real routines"
+              className="w-full object-cover"
+              style={{ height: 420 }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 h-24"
+              style={{ background: "linear-gradient(to top, rgba(26,26,26,0.9), transparent)" }} />
           </div>
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-[#F5B300]">
-        <div className="max-w-[1200px] mx-auto px-6 py-10 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
-          {[
-            { val: "8,400+", label: "Happy Customers" },
-            { val: "40+", label: "Meal Options" },
-            { val: "2 brands", label: "Fresh & Frozen" },
-            { val: "3 mins", label: "Heat & Eat" },
-          ].map((s) => (
-            <div key={s.label}>
-              <div className="font-display text-[36px] sm:text-[44px] font-bold text-[#1A1A1A]">{s.val}</div>
-              <div className="text-[#1A1A1A]/60 text-[12px] tracking-wider uppercase mt-1">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Our story */}
-      <section className="py-20 border-b border-[#E5E2DA]">
-        <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=700&h=500&fit=crop&auto=format"
-            alt="Fresh meal prep" className="w-full object-cover" style={{ height: 400 }} />
+      {/* ── PURPOSE / MISSION ── */}
+      <section className="bg-[#FAF9F6] border-b border-[#E8E4DC]">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 py-16 sm:py-20 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <div className="font-mono text-[10px] tracking-[0.45em] text-[#1A1A1A]/30 uppercase mb-4">Our Story</div>
-            <h2 className="font-display text-[36px] font-bold mb-5">We cook. You perform.</h2>
-            <p className="text-[#555] text-[15px] leading-relaxed mb-4">
-              Founded in Singapore, Performance Meals started as a meal prep project for a local fitness community. Within months, word spread — the food was too good and too practical to stay local.
+            <p className="text-[10px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-3">Parent Purpose</p>
+            <p className="font-display text-[20px] font-semibold text-[#1A1A1A] leading-snug">
+              To make exceptional meal prep accessible to every customer, with care in every experience.
             </p>
-            <p className="text-[#555] text-[15px] leading-relaxed mb-4">
-              Today our team of chefs prepares every Meal Plan dish fresh each week, and freezes Ready-Series meals at peak nutritional freshness — all delivered across Singapore. Every recipe is macro-tracked by our nutritionists and taste-tested obsessively.
-            </p>
+          </div>
+          <div>
+            <p className="text-[10px] font-mono tracking-[0.45em] uppercase text-[#aaa] mb-3">Mission</p>
             <p className="text-[#555] text-[15px] leading-relaxed">
-              Our purpose: to make exceptional meal prep accessible to every customer, with care in every experience.
+              To deliver exceptional meals and thoughtful support that make healthy eating easier every day.
             </p>
+          </div>
+          <div>
+            <p className="text-[10px] font-mono tracking-[0.45em] uppercase text-[#aaa] mb-3">What we believe</p>
+            <p className="text-[#555] text-[15px] leading-relaxed">
+              Healthy eating is realistic support for a fuller life — not a punishment. We focus on consistency and progress rather than perfection.
+            </p>
+          </div>
+        </div>
+      </section>
 
-            {/* Mission & Vision blocks — from brand template */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-              <div className="border-l-4 border-[#F5B300] pl-5 py-1">
-                <div className="font-mono text-[9px] tracking-[0.35em] uppercase text-[#1A1A1A]/30 mb-2">Mission</div>
-                <p className="text-[#1A1A1A] text-[14px] leading-relaxed font-medium">
-                  To deliver exceptional meals and thoughtful support that make healthy eating easier every day.
+      {/* ── ONE STANDARD. TWO DISTINCT EXPERIENCES. ── */}
+      <section className="py-20 sm:py-28 border-b border-[#E8E4DC]">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
+          <div className="mb-14">
+            <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-4">The brand architecture</p>
+            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-[#1A1A1A] leading-[0.93] mb-5">
+              One Standard.<br />Two Distinct Experiences.
+            </h2>
+            <p className="text-[#666] text-[16px] leading-relaxed max-w-[600px]">
+              Performance Meals sets the performance and quality standard. Meal Plan and Ready-Series then serve two very different customer needs — from the same trusted kitchen.
+            </p>
+          </div>
+
+          {/* Architecture diagram */}
+          <div className="border border-[#E8E4DC] mb-3">
+            <div className="p-8 grid grid-cols-1 md:grid-cols-3 items-center gap-4 border-b border-[#E8E4DC]">
+              <div className="md:col-span-1">
+                <PerformanceMealsLogo size="md" variant="dark" />
+              </div>
+              <div className="md:col-span-2">
+                <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#aaa] mb-2">The Gold Standard</p>
+                <p className="font-display text-[18px] font-semibold text-[#1A1A1A]">Shared food quality, performance standards, and brand trust across every offer.</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              {/* Meal Plan */}
+              <div className="p-8 border-b md:border-b-0 md:border-r border-[#E8E4DC]">
+                <div className="h-[3px] bg-[#E85D04] mb-6" />
+                <div className="mb-4">
+                  <MealPlanLogo size="sm" variant="light" />
+                </div>
+                <p className="text-[10px] font-mono tracking-[0.4em] uppercase mb-2" style={{ color: "#E85D04" }}>When a customer needs a plan</p>
+                <p className="font-display text-[18px] font-semibold text-[#1A1A1A] mb-2">Fresh structure for a personal goal.</p>
+                <p className="text-[#666] text-[13px] leading-relaxed">
+                  <strong>Delivers:</strong> Fresh meals, a regular plan, and personal guidance.
                 </p>
               </div>
-              <div className="border-l-4 border-[#F5B300] pl-5 py-1">
-                <div className="font-mono text-[9px] tracking-[0.35em] uppercase text-[#1A1A1A]/30 mb-2">Vision</div>
-                <p className="text-[#1A1A1A] text-[14px] leading-relaxed font-medium">
-                  For Performance Meals to be the gold standard in meal prep — trusted by people to eat well, every day.
+              {/* Ready-Series */}
+              <div className="p-8">
+                <div className="h-[3px] bg-[#F5B300] mb-6" />
+                <div className="mb-4">
+                  <ReadySeriesLogo size="sm" variant="light" />
+                </div>
+                <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-2">When life needs flexibility</p>
+                <p className="font-display text-[18px] font-extrabold text-[#1A1A1A] mb-2">Frozen convenience for everyday momentum.</p>
+                <p className="text-[#666] text-[13px] leading-relaxed">
+                  <strong>Delivers:</strong> Freezer-ready meals, fast prep, and easy repeat choices.
                 </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* What we believe */}
-      <section className="py-20 border-b border-[#E5E2DA]">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="font-mono text-[10px] tracking-[0.45em] text-[#1A1A1A]/30 uppercase mb-3">What we believe</div>
-            <h2 className="font-display text-[36px] font-bold">Our principles</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { icon: "🥩", title: "Real food, real routines", desc: "No powders, no shortcuts. Every meal uses whole ingredients prepared by trained chefs. Healthy eating should be enjoyable, not a punishment." },
-              { icon: "📊", title: "Nutrition that works as hard as you do", desc: "Every gram of protein, carbs, and fat is calculated to hit your specific goal — whether that's cutting fat, maintaining performance, or building muscle." },
-              { icon: "⏱️", title: "Convenience without compromise", desc: "3 minutes from freezer to table. Vacuum-sealed to lock in nutrition. Delivered fresh or frozen on your schedule, to your door." },
-            ].map((v) => (
-              <div key={v.title} className="bg-white border border-[#E5E2DA] p-7">
-                <div className="text-[36px] mb-4">{v.icon}</div>
-                <h3 className="font-display text-[20px] font-bold mb-3">{v.title}</h3>
-                <p className="text-[#666] text-[14px] leading-relaxed">{v.desc}</p>
-              </div>
-            ))}
+          <div className="bg-[#1A1A1A] px-6 py-5">
+            <p className="text-white/55 text-[13px] leading-relaxed">
+              <span className="text-[#F5B300] font-semibold uppercase tracking-wider text-[10px] mr-3">Relationship in one line</span>
+              One trusted standard — delivered through a <strong className="text-white">personalised fresh-plan experience</strong> or a <strong className="text-white">fast, flexible frozen-meal experience.</strong>
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Team */}
-      <section className="py-20 border-b border-[#E5E2DA]">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="font-mono text-[10px] tracking-[0.45em] text-[#1A1A1A]/30 uppercase mb-3">The team</div>
-            <h2 className="font-display text-[36px] font-bold">Built by people who care about daily habits</h2>
+      {/* ── MEAL PLAN SECTION ── */}
+      <section className="py-20 sm:py-28 border-b border-[#E8E4DC]">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+          <div>
+            <div className="h-[3px] bg-[#E85D04] w-16 mb-8" />
+            <div className="mb-6">
+              <MealPlanLogo size="md" variant="light" />
+            </div>
+            <p className="text-[10px] font-mono tracking-[0.45em] uppercase mb-4" style={{ color: "#E85D04" }}>Boutique Progress</p>
+            <h2 className="font-display text-[34px] sm:text-[44px] font-semibold text-[#1A1A1A] leading-[0.93] mb-5">
+              Planned for your goal.<br />Delivered fresh.
+            </h2>
+            <p className="text-[#555] text-[15px] leading-relaxed mb-6">
+              For busy, goal-oriented people who want more than a generic healthy-food routine. Meal Plan combines exceptional meals with tailored support — making sustainable progress easier to build into everyday life.
+            </p>
+            <div className="space-y-3 mb-8">
+              {[
+                "Fresh meals prepared and delivered to a personal plan",
+                "Structured nutrition built around a real goal",
+                "Personal support — not just a menu",
+                "Practical guidance for meaningful progress",
+              ].map((point) => (
+                <div key={point} className="flex items-start gap-3">
+                  <div className="w-[3px] h-[3px] rounded-full mt-[8px] shrink-0" style={{ backgroundColor: "#E85D04" }} />
+                  <p className="text-[#555] text-[14px]">{point}</p>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => navigate("meal-plan-landing")}
+              className="inline-flex items-center gap-3 text-white text-[11px] font-bold tracking-[0.2em] uppercase px-7 py-4 hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#E85D04" }}>
+              Discover Meal Plan
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
-              { name: "Jerome Tan", role: "Founder & CEO", desc: "Built Performance Meals because clean eating should not require a nutrition degree. Focused on consistency and progress, not perfection.", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&auto=format" },
-              { name: "Chef Marcus Yeo", role: "Head Chef", desc: "10 years in professional kitchens. Obsessed with making healthy food taste like you are genuinely enjoying it.", img: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&h=400&fit=crop&auto=format" },
-              { name: "Dr. Aisha Lim", role: "Lead Nutritionist", desc: "Sports dietitian. Designed every macro target across every programme. Practical guidance, not prescriptive perfection.", img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&auto=format" },
-            ].map((m) => (
-              <div key={m.name} className="text-center">
-                <img src={m.img} alt={m.name} className="w-28 h-28 object-cover rounded-full mx-auto mb-4 grayscale" />
-                <div className="font-bold text-[16px]">{m.name}</div>
-                <div className="text-[12px] font-mono text-[#888] tracking-wider uppercase mt-0.5 mb-3">{m.role}</div>
-                <p className="text-[#666] text-[13px] leading-relaxed">{m.desc}</p>
-              </div>
-            ))}
+
+          <div>
+            <img
+              src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=700&h=520&fit=crop&auto=format"
+              alt="Fresh meal prep — premium plating and personal attention"
+              className="w-full object-cover"
+              style={{ height: 440 }}
+            />
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-[#1A1A1A] text-white py-16">
-        <div className="max-w-[1200px] mx-auto px-6 text-center">
-          <div className="font-mono text-[10px] tracking-[0.45em] text-[#F5B300] uppercase mb-4">Ready to start?</div>
-          <h2 className="font-display text-[40px] sm:text-[52px] font-bold mb-4">
-            Nutrition that works<br />as hard as you do.
+      {/* ── READY-SERIES SECTION ── */}
+      <section className="py-20 sm:py-28 border-b border-[#E8E4DC] bg-[#1A1A1A] text-white">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+          <div className="order-2 lg:order-1">
+            <img
+              src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=700&h=520&fit=crop&auto=format"
+              alt="Ready-Series — fast, enjoyable frozen meals for everyday life"
+              className="w-full object-cover"
+              style={{ height: 440 }}
+            />
+          </div>
+
+          <div className="order-1 lg:order-2">
+            <div className="h-[3px] bg-[#F5B300] w-16 mb-8" />
+            <div className="mb-6">
+              <ReadySeriesLogo size="md" variant="dark" />
+            </div>
+            <p className="text-[10px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-4">Everyday Momentum</p>
+            <h2 className="font-display text-[34px] sm:text-[44px] font-extrabold text-white leading-[0.93] mb-5">
+              FROZEN AT PEAK.<br />READY ON DEMAND.
+            </h2>
+            <p className="text-white/55 text-[15px] leading-relaxed mb-6">
+              For busy people who want a fast, dependable, and accessible way to eat better. Ready-Series is the frozen performance-meal system that makes it easy to choose, heat, enjoy, and stay on track — whenever life gets busy.
+            </p>
+            <div className="space-y-3 mb-8">
+              {[
+                "Frozen at peak nutritional freshness",
+                "Ready in minutes — zero prep required",
+                "Dependable freezer stock for unpredictable days",
+                "Clear individual, bundle, and stock-up pricing",
+              ].map((point) => (
+                <div key={point} className="flex items-start gap-3">
+                  <div className="w-[3px] h-[3px] rounded-full mt-[8px] shrink-0 bg-[#F5B300]" />
+                  <p className="text-white/60 text-[14px]">{point}</p>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => navigate("ready-series")}
+              className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] text-[11px] font-extrabold tracking-[0.2em] uppercase px-7 py-4 hover:bg-white transition-colors">
+              Shop Ready-Series
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CLOSING — ONE PERFORMANCE STANDARD ── */}
+      <section className="py-20 sm:py-24 bg-[#FAF9F6] border-b border-[#E8E4DC]">
+        <div className="max-w-[900px] mx-auto px-6 sm:px-10 text-center">
+          <div className="h-px bg-[#F5B300] w-16 mx-auto mb-10" />
+          <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-6">One connected brand family</p>
+          <h2 className="font-display text-[34px] sm:text-[48px] font-extrabold text-[#1A1A1A] leading-[0.93] mb-6">
+            One Performance Standard.<br />
+            <span className="text-[#555] font-semibold">Two distinct experiences.</span>
           </h2>
-          <p className="text-white/50 text-[15px] mb-8">Choose your journey — fresh structure or frozen flexibility.</p>
-          <div className="flex gap-3 justify-center flex-wrap">
-            <button onClick={() => navigateToWizard()}
-              className="px-8 py-4 text-[13px] font-bold tracking-[0.15em] uppercase text-[#1A1A1A] hover:opacity-90 transition-colors"
-              style={{ backgroundColor: "#F5B300" }}>
-              Start Meal Plan →
+          <p className="text-[#666] text-[16px] leading-relaxed max-w-[560px] mx-auto mb-10">
+            Whether you need the structure and personal support of Meal Plan, or the flexible convenience of Ready-Series — every meal begins with the same standard of quality that Performance Meals was built to uphold.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button onClick={() => navigate("meal-plan-landing")}
+              className="inline-flex items-center justify-center gap-3 text-white text-[11px] font-bold tracking-[0.2em] uppercase px-7 py-4 hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#E85D04" }}>
+              Discover Meal Plan
             </button>
             <button onClick={() => navigate("ready-series")}
-              className="bg-[#F5B300] text-[#1A1A1A] px-8 py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
-              Shop Ready-Series →
+              className="inline-flex items-center justify-center gap-3 bg-[#1A1A1A] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-7 py-4 hover:bg-[#F5B300] hover:text-[#1A1A1A] transition-colors">
+              Shop Ready-Series
             </button>
           </div>
+          <div className="h-px bg-[#F5B300] w-16 mx-auto mt-10" />
         </div>
       </section>
+
     </div>
   );
 }
