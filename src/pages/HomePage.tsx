@@ -92,30 +92,11 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
   return (
     <div className="bg-[#1A1A1A] text-white overflow-x-hidden">
 
-      {/* ── HERO ── */}
-      <section className="relative overflow-hidden min-h-[95svh] flex items-center">
-        {/* Full-bleed food photo */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1547592180-85f173990554?w=1800&h=1200&fit=crop&auto=format&q=85"
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover object-center scale-[1.03]"
-            style={{ transition: "transform 8s ease-out", transform: heroVisible ? "scale(1)" : "scale(1.03)" }}
-          />
-          {/* Left-to-right gradient: opaque charcoal on left fades to translucent on right */}
-          <div className="absolute inset-0"
-            style={{ background: "linear-gradient(105deg, rgba(18,18,18,0.97) 0%, rgba(18,18,18,0.88) 38%, rgba(18,18,18,0.55) 62%, rgba(18,18,18,0.18) 100%)" }} />
-          {/* Bottom fade for stat bar transition */}
-          <div className="absolute bottom-0 left-0 right-0 h-32"
-            style={{ background: "linear-gradient(to top, rgba(18,18,18,1), transparent)" }} />
-          {/* Yellow accent glow top-right */}
-          <div className="absolute top-0 right-0 w-[480px] h-[480px] pointer-events-none"
-            style={{ background: "radial-gradient(circle at 80% 20%, rgba(245,179,0,0.22) 0%, transparent 65%)" }} />
-        </div>
+      {/* ── HERO — parent brand, light-led editorial ── */}
+      <section className="bg-white text-[#1A1A1A] border-b border-[#E8E4DC] min-h-[88svh] flex items-center">
+        <div className="w-full max-w-[1200px] mx-auto px-6 sm:px-10 py-20 sm:py-28 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 sm:px-10 py-28 sm:py-36 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left — text content */}
+          {/* Left — text */}
           <div>
             <div style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(20px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}>
               <PerformanceMealsLogo size="lg" variant="dark" />
@@ -123,58 +104,53 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
 
             <div className="mt-10" style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "120ms" }}>
               <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-5">Singapore · Est. 2019</p>
-              <h1 className="font-display text-[44px] sm:text-[64px] lg:text-[80px] font-extrabold leading-[0.9] mb-8 max-w-[640px]">
+              <h1 className="font-display text-[44px] sm:text-[62px] lg:text-[72px] font-extrabold leading-[0.92] mb-8 text-[#1A1A1A]">
                 Nutrition that works<br />
                 <span className="text-[#F5B300]">as hard as you do.</span>
               </h1>
             </div>
 
             <div style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "260ms" }}>
-              <p className="text-white/55 text-[16px] sm:text-[18px] leading-relaxed max-w-[460px] mb-12">
-                Exceptional meal prep, made accessible. One performance standard —
-                two distinct ways to eat well every day.
+              <p className="text-[#555] text-[16px] sm:text-[18px] leading-relaxed max-w-[460px] mb-12">
+                Performance Meals makes exceptional meal prep accessible to every customer — with care in every experience. One performance standard. Two distinct ways to eat well.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-4" style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "380ms" }}>
+            <div style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "380ms" }}>
               <button onClick={scrollToBrands}
-                className="group inline-flex items-center gap-4 px-8 py-5 bg-[#F5B300] text-[#1A1A1A] font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors">
+                className="group inline-flex items-center gap-4 px-8 py-5 bg-[#F5B300] text-[#1A1A1A] font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-[#1A1A1A] hover:text-white transition-colors">
                 Explore Our Brands
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
                   className="transition-transform group-hover:translate-y-1"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
               </button>
-              <button onClick={() => navigate("ready-series")}
-                className="inline-flex items-center gap-3 px-8 py-5 border border-white/25 text-white font-bold text-[12px] tracking-[0.2em] uppercase hover:border-white/60 hover:bg-white/5 transition-all">
-                Shop Meals
-              </button>
+            </div>
+
+            <div className="mt-14 flex items-center gap-6"
+              style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 1s ease", transitionDelay: "700ms" }}>
+              <div className="h-px flex-1 bg-[#E8E4DC]" />
+              <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-[#aaa]">Scroll to explore</span>
+              <div className="h-px flex-1 bg-[#E8E4DC]" />
             </div>
           </div>
 
-          {/* Right — floating meal cards (desktop only) */}
-          <div className="hidden lg:flex flex-col gap-4 items-end"
-            style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateX(20px)", transition: "opacity 0.9s ease, transform 0.9s ease", transitionDelay: "500ms" }}>
-            {[
-              { label: "MEAL PLAN", sub: "Fresh · Structured · Personal", color: "#E85D04", route: "meal-plan-landing" as const },
-              { label: "READY-SERIES", sub: "Frozen · Flexible · From $9.90", color: "#F5B300", route: "ready-series" as const },
-            ].map((card) => (
-              <button key={card.label} onClick={() => navigate(card.route)}
-                className="group w-[300px] text-left p-5 border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 hover:border-white/25 transition-all">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-[3px] h-5 shrink-0" style={{ backgroundColor: card.color }} />
-                  <span className="font-display font-extrabold text-[13px] tracking-[0.15em] uppercase text-white">{card.label}</span>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
-                    className="ml-auto text-white/20 group-hover:text-white/60 transition-colors"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </div>
-                <p className="text-white/40 text-[12px] font-mono tracking-wide">{card.sub}</p>
-              </button>
-            ))}
+          {/* Right — lifestyle photo: real people, natural light */}
+          <div className="hidden lg:block"
+            style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateX(16px)", transition: "opacity 0.9s ease, transform 0.9s ease", transitionDelay: "460ms" }}>
+            <div className="relative">
+              <img
+                src="https://images.unsplash.com/photo-1758523418005-b0eeb9b9a170?w=900&h=680&fit=crop&auto=format&q=85"
+                alt="Real routines — Performance Meals customers"
+                className="w-full h-[580px] object-cover"
+              />
+              {/* Yellow accent bar bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#F5B300]" />
+              {/* Subtle caption */}
+              <div className="absolute bottom-4 right-4 bg-white/90 px-4 py-2">
+                <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-[#888]">Real routines. Real results.</p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="absolute bottom-8 left-6 sm:left-10 flex items-center gap-3 z-10"
-          style={{ opacity: heroVisible ? 0.4 : 0, transition: "opacity 1.2s ease", transitionDelay: "900ms" }}>
-          <div className="w-px h-10 bg-white/25 animate-pulse" />
-          <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-white/40">Scroll to explore</span>
         </div>
       </section>
 
