@@ -93,46 +93,39 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
       <nav className="sticky top-0 z-50 bg-[#1A1A1A] text-white border-b border-white/10">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-[56px] sm:h-[60px] flex items-center justify-between gap-4">
 
-          {/* Logo + Current Brand selector */}
-          <div className="flex items-center gap-3 shrink-0">
-            <button onClick={() => go("home")} className="shrink-0 hover:opacity-80 transition-opacity">
+          {/* Logo — acts as brand switcher */}
+          <div className="relative shrink-0">
+            <button onClick={() => setBrandOpen((v) => !v)}
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity group">
               <PerformanceMealsLogo size="sm" variant="light" />
+              <div className="flex items-center gap-1 hidden sm:flex">
+                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                  className={`text-white/35 transition-transform ${brandOpen ? "rotate-180" : ""}`}>
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </div>
             </button>
-            <div className="w-px h-8 bg-white/10 hidden sm:block" />
-            {/* Current Brand dropdown */}
-            <div className="relative hidden sm:block">
-              <button onClick={() => setBrandOpen((v) => !v)}
-                className="flex flex-col items-start gap-0.5 hover:opacity-80 transition-opacity">
-                <span className="text-[8px] font-mono tracking-[0.35em] uppercase text-white/30">Current Brand</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
-                  <span className="text-[12px] font-semibold tracking-wide">{currentBrand.label}</span>
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/40 mt-0.5">
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
+            {brandOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setBrandOpen(false)} />
+                <div className="absolute top-full left-0 mt-3 w-[240px] bg-[#111] border border-white/12 z-50">
+                  {BRANDS.map((b) => (
+                    <button key={b.id} onClick={b.action}
+                      className={`w-full text-left px-4 py-3.5 flex items-center gap-3 hover:bg-white/5 transition-colors border-b border-white/6 last:border-0 ${currentBrandId === b.id ? "bg-white/5" : ""}`}>
+                      <div className="w-[3px] h-6 shrink-0" style={{ backgroundColor: b.color }} />
+                      <div className="flex-1 min-w-0">
+                        <div className="text-white text-[13px] font-semibold">{b.label}</div>
+                        <div className="text-white/30 text-[10px] mt-0.5">{b.sub}</div>
+                      </div>
+                      {currentBrandId === b.id && (
+                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: b.color }} />
+                      )}
+                    </button>
+                  ))}
                 </div>
-              </button>
-              {brandOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setBrandOpen(false)} />
-                  <div className="absolute top-full left-0 mt-3 w-[230px] bg-[#111] border border-white/12 z-50">
-                    {BRANDS.map((b) => (
-                      <button key={b.id} onClick={b.action}
-                        className={`w-full text-left px-4 py-3.5 flex items-center gap-3 hover:bg-white/5 transition-colors border-b border-white/6 last:border-0 ${currentBrandId === b.id ? "bg-white/5" : ""}`}>
-                        <div className="w-[3px] h-6 shrink-0" style={{ backgroundColor: b.color }} />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-white text-[13px] font-semibold">{b.label}</div>
-                          <div className="text-white/30 text-[10px] mt-0.5">{b.sub}</div>
-                        </div>
-                        {currentBrandId === b.id && (
-                          <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: b.color }} />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
+              </>
+            )}
           </div>
 
           {/* Desktop right links */}
