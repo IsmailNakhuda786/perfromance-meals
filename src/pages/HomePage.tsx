@@ -62,7 +62,6 @@ const TESTIMONIALS = [
 
 export default function HomePage({ navigate, navigateToWizard }: Props) {
   const [activeMilestone, setActiveMilestone] = useState(3);
-  const [hoveredPath, setHoveredPath] = useState<"ready" | "plan" | null>(null);
   const [heroVisible, setHeroVisible] = useState(false);
   const brandsRef = useRef<HTMLDivElement>(null);
 
@@ -77,10 +76,9 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
     return () => obs.disconnect();
   }, []);
 
-  const storySection      = useReveal();
+  const storySection        = useReveal();
   const testimonialsSection = useReveal();
-  const pathsSection      = useReveal();
-  const statsSection      = useReveal();
+  const statsSection        = useReveal();
 
   const c0 = useCounter(8400, 1600, statsSection.visible);
   const c2 = useCounter(40,   900,  statsSection.visible);
@@ -354,101 +352,8 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         </div>
       </section>
 
-      {/* ── TWO PATHS — animated split ── */}
-      <section ref={pathsSection.ref} className="border-t border-white/8">
-        <div className={`transition-all duration-700 ${pathsSection.visible ? "opacity-100" : "opacity-0"}`}>
-          <div className="bg-[#111] py-14 px-6 sm:px-10 text-center">
-            <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-3">Choose your experience</p>
-            <h2 className="font-display text-[38px] sm:text-[54px] font-extrabold text-white leading-[0.93]">
-              One standard.<br />Two clear offers.
-            </h2>
-            <p className="text-white/30 text-[15px] mt-3">Same quality. Different format. Choose the one that fits your life.</p>
-          </div>
 
-          <div className="flex flex-col lg:flex-row min-h-[500px]" onMouseLeave={() => setHoveredPath(null)}>
-
-            {/* Ready-Series */}
-            <div
-              className="relative flex flex-col justify-between px-10 sm:px-14 py-14 overflow-hidden cursor-pointer"
-              style={{
-                backgroundColor: "#1A1A1A",
-                flex: hoveredPath === "plan" ? "0 0 35%" : hoveredPath === "ready" ? "0 0 65%" : "1 1 50%",
-                transition: "flex 0.45s cubic-bezier(0.4,0,0.2,1)",
-              }}
-              onClick={() => navigate("ready-series")}
-              onMouseEnter={() => setHoveredPath("ready")}
-            >
-              <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#F5B300]" />
-              <div className="absolute inset-0 opacity-[0.04]"
-                style={{ backgroundImage: "radial-gradient(circle, #F5B300 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-
-              <div className="relative z-10">
-                <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-4">Everyday Momentum</p>
-                <h3 className="font-display text-[38px] sm:text-[50px] font-extrabold text-white leading-[0.93] mb-5">
-                  READY FOR<br />REAL LIFE.
-                </h3>
-                <p className={`text-white/50 text-[14px] leading-relaxed max-w-[280px] transition-opacity duration-300 ${hoveredPath === "plan" ? "opacity-0" : "opacity-100"}`}>
-                  Good meals, ready when you need them. Frozen at peak freshness. Fast, dependable, and built for busy schedules.
-                </p>
-              </div>
-
-              <div className="relative z-10 mt-10 lg:mt-0">
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {["Frozen at peak", "No lock-in", "Bundle & save", "From $9.90"].map((t) => (
-                    <span key={t} className="text-[10px] border border-white/15 px-3 py-1.5 text-white/40 font-mono">{t}</span>
-                  ))}
-                </div>
-                <button onClick={(e) => { e.stopPropagation(); navigate("ready-series"); }}
-                  className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-4 hover:bg-white transition-colors">
-                  Shop Ready-Series
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-
-            {/* Meal Plan */}
-            <div
-              className="relative flex flex-col justify-between px-10 sm:px-14 py-14 overflow-hidden cursor-pointer border-t lg:border-t-0 lg:border-l border-white/10"
-              style={{
-                backgroundColor: "#FAFAF8",
-                color: "#1A1A1A",
-                flex: hoveredPath === "ready" ? "0 0 35%" : hoveredPath === "plan" ? "0 0 65%" : "1 1 50%",
-                transition: "flex 0.45s cubic-bezier(0.4,0,0.2,1)",
-              }}
-              onClick={() => navigate("meal-plan-landing")}
-              onMouseEnter={() => setHoveredPath("plan")}
-            >
-              <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ backgroundColor: "#E85D04" }} />
-
-              <div className="relative z-10">
-                <p className="text-[10px] font-mono tracking-[0.4em] uppercase mb-4" style={{ color: "#E85D04" }}>Boutique Progress</p>
-                <h3 className="font-display text-[38px] sm:text-[50px] font-semibold leading-[0.93] mb-5 text-[#1A1A1A]">
-                  Fresh structure.<br />Personal<br />support.
-                </h3>
-                <p className={`text-[#666] text-[14px] leading-relaxed max-w-[280px] transition-opacity duration-300 ${hoveredPath === "ready" ? "opacity-0" : "opacity-100"}`}>
-                  Exceptional meal prep, thoughtfully supported. Built around your goal and your routine — not a one-size plan.
-                </p>
-              </div>
-
-              <div className="relative z-10 mt-10 lg:mt-0">
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {["6by60", "6by60 Plus", "Fresh delivery", "Personal check-ins"].map((t) => (
-                    <span key={t} className="text-[10px] border border-[#E8E4DC] bg-[#F0EDE8] px-3 py-1.5 text-[#888] font-mono">{t}</span>
-                  ))}
-                </div>
-                <button onClick={(e) => { e.stopPropagation(); navigate("meal-plan-landing"); }}
-                  className="inline-flex items-center gap-3 text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-4 hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: "#E85D04" }}>
-                  Discover Meal Plan
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FOOTER STRIP ── */}
+{/* ── FOOTER STRIP ── */}
       <div className="bg-[#0D0D0D] border-t border-white/6 py-10 px-6 sm:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
           <div className="flex items-center gap-4">
