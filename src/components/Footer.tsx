@@ -23,9 +23,6 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             { label: "Ready Series", action: () => navigate("ready-series") },
             { label: "Ready Series Subscription", action: () => navigate("ready-series") },
             { label: "Meal Plans", action: () => navigate("meal-plan-landing") },
-            { label: "Cut Plan", action: () => navigateToWizard("CUT") },
-            { label: "Maintain Plan", action: () => navigateToWizard("MAINTAIN") },
-            { label: "Build Plan", action: () => navigateToWizard("BUILD") },
             { label: "About Us", action: () => navigate("about") },
             { label: "How It Works", action: () => navigate("how-it-works") },
             { label: "My Account", action: () => navigate("account") },
@@ -56,8 +53,9 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
         </div>
       </div>
 
-      {/* Prototype-only tools — not customer navigation */}
-      <div className="border-t border-white/[0.04] bg-white/[0.02]">
+      {/* Prototype-only tools — hidden from customer view, preserved for internal use */}
+      {/* To re-enable: remove the `hidden` class or add a dev-mode flag */}
+      <div className="hidden border-t border-white/[0.04] bg-white/[0.02]">
         <div className="max-w-[1440px] mx-auto px-6 py-2 flex flex-wrap gap-2 items-center justify-end">
           <span className="text-[9px] font-mono tracking-[0.2em] uppercase text-white/15 mr-1">PROTOTYPE</span>
           {[

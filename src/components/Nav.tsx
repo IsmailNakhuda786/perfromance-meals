@@ -93,17 +93,21 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
       <nav className="sticky top-0 z-50 bg-[#1A1A1A] text-white border-b border-white/10">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-[56px] sm:h-[60px] flex items-center justify-between gap-4">
 
-          {/* Logo — acts as brand switcher */}
+          {/* Logo + brand switcher — clearly labelled */}
           <div className="relative shrink-0">
             <button onClick={() => setBrandOpen((v) => !v)}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity group">
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity group">
               <PerformanceMealsLogo size="sm" variant="light" />
-              <div className="flex items-center gap-1 hidden sm:flex">
-                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                  className={`text-white/35 transition-transform ${brandOpen ? "rotate-180" : ""}`}>
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
+              <div className="hidden sm:flex flex-col items-start border-l border-white/10 pl-3">
+                <span className="text-[8px] font-mono tracking-[0.35em] uppercase text-white/35 leading-none mb-0.5">Current Brand</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
+                  <span className="text-[12px] font-semibold tracking-wide text-white">{currentBrand.label}</span>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                    className={`text-white/40 transition-transform ${brandOpen ? "rotate-180" : ""}`}>
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
               </div>
             </button>
             {brandOpen && (
@@ -615,41 +619,6 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                 </div>
 
                 {/* Add-more-to-save nudge */}
-                {(() => {
-                  const readyItems = cart.filter((i) => i.type === "ready");
-                  const readyQty = readyItems.reduce((s, i) => s + i.qty, 0);
-                  if (readyQty === 0) return null;
-                  const tiers = [
-                    { qty: 5,  ppm: 12.40 },
-                    { qty: 10, ppm: 11.90 },
-                    { qty: 15, ppm: 11.50 },
-                    { qty: 20, ppm: 11.00 },
-                  ];
-                  const next = tiers.find((t) => t.qty > readyQty);
-                  if (!next) return null;
-                  const toAdd = next.qty - readyQty;
-                  const avgPrice = readyItems.reduce((s, i) => s + i.price * i.qty, 0) / readyQty;
-                  const saving = (avgPrice - next.ppm) * readyQty;
-                  return (
-                    <div className="mx-4 mb-3 bg-[#F5B300]/8 border border-[#F5B300]/25 p-3">
-                      <div className="flex items-start gap-2">
-                        <span className="text-[15px] shrink-0">🛒</span>
-                        <div className="flex-1">
-                          <p className="text-[#F5B300] text-[11px] font-bold mb-0.5">
-                            Add {toAdd} more meal{toAdd !== 1 ? "s" : ""}{saving > 0.5 ? ` — save $${saving.toFixed(2)}` : " to unlock box pricing"}
-                          </p>
-                          <p className="text-white/40 text-[10px] leading-relaxed">
-                            A {next.qty}-meal box subscription drops to <strong className="text-white/60">${next.ppm.toFixed(2)}/meal</strong>. You currently have {readyQty}.
-                          </p>
-                          <button onClick={() => { setCartOpen(false); navigate("ready-series"); }}
-                            className="mt-1.5 text-[10px] font-bold tracking-[0.15em] uppercase text-[#F5B300] hover:underline">
-                            Add more meals →
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}
 
                 <div className="mx-4 bg-[#F5B300]/10 border border-[#F5B300]/25 p-3 text-[12px] text-[#F5B300] flex items-center gap-2">
                   <span>💳</span>
