@@ -72,9 +72,9 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); setBrandOpen(false); };
 
   const BRANDS = [
-    { id: "parent",       label: "Performance Meals", sub: "The Parent Brand",      color: "#F5B300", action: () => go("home") },
-    { id: "meal-plan",    label: "Meal Plan",          sub: "Goal-led programmes",   color: "#E85D04", action: () => go("meal-plan-landing") },
-    { id: "ready-series", label: "Ready Series",       sub: "Ready-to-eat meals",    color: "#F5B300", action: () => go("ready-series") },
+    { id: "parent",        label: "Performance Meals", sub: "The Parent Brand",      color: "#F5B300", action: () => go("home") },
+    { id: "meal-plan",     label: "Meal Plan",          sub: "Goal-led programmes",   color: "#E85D04", action: () => go("meal-plan-landing") },
+    { id: "ready-series",  label: "Ready Series",       sub: "Ready-to-eat meals",    color: "#F5B300", action: () => go("ready-series") },
   ];
   const currentBrandId =
     currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "meal-plan"

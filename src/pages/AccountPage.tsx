@@ -23,8 +23,8 @@ function BoxSubscriptionCard({ navigate, save }: { navigate: (page: Page) => voi
         <div className="flex items-center gap-3">
           <span className="text-[20px]">📦</span>
           <div>
-            <h3 className="font-medium text-[15px]">Box Subscription</h3>
-            <p className="text-[#888] text-[12px] mt-0.5">Ready Series · Recurring delivery · 10% off</p>
+            <h3 className="font-medium text-[15px]">Ready Series Subscription</h3>
+            <p className="text-[#888] text-[12px] mt-0.5">Ready Series · Predefined subscription product</p>
           </div>
         </div>
         <div className={`px-3 py-1 text-[10px] font-mono font-bold tracking-[0.2em] uppercase ${paused ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-[#F5B300]/10 text-[#1A1A1A] border border-[#F5B300]/30"}`}>
@@ -34,10 +34,10 @@ function BoxSubscriptionCard({ navigate, save }: { navigate: (page: Page) => voi
       <div className="p-5 space-y-5">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { label: "Box size", val: `${size} meals` },
-            { label: "Frequency", val: freq === "weekly" ? "Weekly" : "Fortnightly" },
-            { label: "Per delivery", val: `$${(BOX_PRICE_MAP[size] ?? 101.15).toFixed(2)}` },
-            { label: "Next delivery", val: paused ? "Paused" : nextDate },
+            { label: "Product",      val: `Low Carb Meals · Non-Beef` },
+            { label: "Items",        val: "10 items per delivery" },
+            { label: "Term",         val: "3-month subscription" },
+            { label: "Next renewal", val: paused ? "Paused" : nextDate },
           ].map((item) => (
             <div key={item.label}>
               <div className="text-[10px] font-mono uppercase tracking-[0.25em] text-[#aaa] mb-1">{item.label}</div>
@@ -46,42 +46,18 @@ function BoxSubscriptionCard({ navigate, save }: { navigate: (page: Page) => voi
           ))}
         </div>
 
-        <div>
-          <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-[#888] mb-2">Box size</div>
-          <div className="flex gap-2 flex-wrap">
-            {[5, 10, 15, 20].map((n) => (
-              <button key={n} onClick={() => setSize(n)}
-                className={`px-5 py-2.5 border text-[12px] font-semibold transition-all ${size === n ? "border-[#1A1A1A] bg-[#1A1A1A] text-white" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
-                {n} meals
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <div className="text-[11px] font-mono uppercase tracking-[0.25em] text-[#888] mb-2">Delivery frequency</div>
-          <div className="flex gap-2">
-            {(["weekly", "fortnightly"] as const).map((f) => (
-              <button key={f} onClick={() => setFreq(f)}
-                className={`px-5 py-2.5 border text-[12px] font-semibold transition-all capitalize ${freq === f ? "border-[#1A1A1A] bg-[#1A1A1A] text-white" : "border-[#D0CCC4] text-[#666] hover:border-[#888]"}`}>
-                {f}
-              </button>
-            ))}
-          </div>
-        </div>
-
         <div className="flex flex-wrap gap-3 pt-2 border-t border-[#F0EDE8]">
           <button onClick={() => { setPaused((v) => !v); save(paused ? "Box subscription resumed" : "Next delivery skipped"); }}
             className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
             {paused ? "▶ Resume Box" : "⏸ Skip Next Delivery"}
           </button>
-          <button onClick={() => navigate("build-a-box")}
+          <button onClick={() => navigate("ready-series")}
             className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
-            Edit Meal Selection →
+            View Subscription Options →
           </button>
-          <button onClick={() => { setActive(false); save("Box subscription cancelled"); }}
+          <button onClick={() => { setActive(false); save("Ready Series Subscription cancelled"); }}
             className="ml-auto text-[12px] text-[#c00] hover:underline transition-colors">
-            Cancel Box Sub
+            Cancel Subscription
           </button>
         </div>
       </div>
@@ -373,8 +349,8 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               <div className="flex items-center gap-3">
                 <span className="text-[18px]">📦</span>
                 <div>
-                  <div className="text-[12px] font-semibold text-[#1A1A1A]">Box Subscription · 10 meals</div>
-                  <div className="text-[11px] text-[#888] mt-0.5">Weekly · Next delivery in 7 days</div>
+                  <div className="text-[12px] font-semibold text-[#1A1A1A]">Ready Series Subscription · Low Carb Meals</div>
+                  <div className="text-[11px] text-[#888] mt-0.5">3-Month Term · Next delivery scheduled</div>
                 </div>
               </div>
               <button onClick={() => setTab("subscription")} className="text-[11px] font-mono text-[#888] hover:text-[#1A1A1A] transition-colors whitespace-nowrap">

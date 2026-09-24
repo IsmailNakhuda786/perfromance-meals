@@ -372,30 +372,6 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       </section>
       )}
 
-      {/* ── SINGLE PURCHASE ── (old browse section, shown when mode = single) */}
-      {purchaseMode === "single" && (
-      <section className="py-16 px-6 sm:px-8 bg-[#1A1A1A]">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="mb-10">
-            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Individual Meals</div>
-            <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Browse &amp; add to cart<span className="text-[#F5B300]">.</span></h2>
-            <p className="text-white/40 text-[13px] mt-2">Choose any meals, add to cart, and check out. No subscription needed.</p>
-          </div>
-          <div className="mb-8">
-            <div className="flex flex-wrap gap-2">
-              {CATS.map((c) => (
-                <button key={c} onClick={() => setActiveCat(c)}
-                  className={`px-4 py-2 text-[11px] font-bold tracking-wide transition-all ${activeCat === c ? "bg-[#F5B300] text-[#111]" : "border border-white/15 text-white/40 hover:border-white/40 hover:text-white"}`}>
-                  {c}
-                </button>
-              ))}
-            </div>
-          </div>
-
-        </div>
-      </section>
-      )}
-
       {/* ── PRODUCT GRID (single purchase) ── */}
       {purchaseMode === "single" && (
       <section className="py-16 px-6 sm:px-8">
