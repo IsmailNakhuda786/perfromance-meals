@@ -93,21 +93,17 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
       <nav className="sticky top-0 z-50 bg-[#1A1A1A] text-white border-b border-white/10">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-[56px] sm:h-[60px] flex items-center justify-between gap-4">
 
-          {/* Logo + brand switcher — clearly labelled */}
+          {/* Logo — acts as brand switcher */}
           <div className="relative shrink-0">
             <button onClick={() => setBrandOpen((v) => !v)}
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity group">
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity group">
               <PerformanceMealsLogo size="sm" variant="light" />
-              <div className="hidden sm:flex flex-col items-start border-l border-white/10 pl-3">
-                <span className="text-[8px] font-mono tracking-[0.35em] uppercase text-white/35 leading-none mb-0.5">Current Brand</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
-                  <span className="text-[12px] font-semibold tracking-wide text-white">{currentBrand.label}</span>
-                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                    className={`text-white/40 transition-transform ${brandOpen ? "rotate-180" : ""}`}>
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </div>
+              <div className="hidden sm:flex items-center gap-1">
+                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                  className={`text-white/35 transition-transform ${brandOpen ? "rotate-180" : ""}`}>
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
               </div>
             </button>
             {brandOpen && (
