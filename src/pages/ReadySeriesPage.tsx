@@ -26,46 +26,43 @@ const MEALS = [
 
 const CATS = ["A-la-carte", "Low Carb", "High Carb", "Just Protein"];
 
-// Predefined bundles per product catalogue
+// Predefined bundles — prices sourced from bundle builder spreadsheets (3–7% pre-applied discount)
 const PREDEFINED_BUNDLES = [
   {
     category: "Low Carb Meals",
     color: "#F5B300",
     items: [
-      { name: "Signature Flavours — Non-Beef", variant: "Non-Beef", desc: "Our most-loved low carb flavours, curated for you.", badge: "POPULAR", price: 119.90, meals: 10 },
-      { name: "Signature Flavours — Beef",     variant: "Beef",     desc: "Best-selling beef low carb options in one bundle.", badge: null,      price: 119.90, meals: 10 },
-      { name: "Essential Top Up — Non-Beef",   variant: "Non-Beef", desc: "Top up your fridge with essential low carb staples.", badge: null,     price: 109.90, meals: 10 },
-      { name: "Essential Top Up — Beef",       variant: "Beef",     desc: "Beef-based essentials to keep your macros on track.", badge: null,     price: 109.90, meals: 10 },
-      { name: "9 Flavours of the Month",       variant: null,       desc: "9 rotating seasonal low carb meals, refreshed monthly.", badge: "NEW", price: 104.90, meals: 9 },
+      { name: "Signature 5 — Non-Beef", variant: "Non-Beef", desc: "Our most-loved low carb flavours, curated for you. 3% bundle discount applied.", badge: "POPULAR", price: 48.99, meals: 5 },
+      { name: "Signature 5 — Beef",     variant: "Beef",     desc: "Best-selling beef low carb options in one bundle. 3% bundle discount applied.", badge: null,      price: 48.99, meals: 5 },
+      { name: "9 Flavours of the Month",variant: null,       desc: "9 rotating seasonal low carb meals, refreshed monthly. 5% bundle discount applied.", badge: "NEW", price: 86.55, meals: 9 },
+      { name: "Essential 10 — Non-Beef",variant: "Non-Beef", desc: "Top up your fridge with essential low carb staples. 7% bundle discount applied.", badge: null,     price: 93.00, meals: 10 },
+      { name: "Essential 10 — Beef",    variant: "Beef",     desc: "Beef-based essentials to keep your macros on track. 7% bundle discount applied.", badge: null,     price: 93.00, meals: 10 },
     ],
   },
   {
     category: "High Carb Meals",
     color: "#F5B300",
     items: [
-      { name: "Signature Flavours — Non-Beef", variant: "Non-Beef", desc: "High carb performance meals for fuel-heavy days.", badge: "POPULAR",         price: 119.90, meals: 10 },
-      { name: "Signature Flavours — Beef",     variant: "Beef",     desc: "Beef-based high carb signatures for sustained energy.", badge: null,          price: 119.90, meals: 10 },
-      { name: "Essential Top Up — Non-Beef",   variant: "Non-Beef", desc: "Restock your week with non-beef high carb essentials.", badge: null,           price: 109.90, meals: 10 },
-      { name: "Essential Top Up — Beef",       variant: "Beef",     desc: "Beef high carb top-up for active weeks.", badge: null,                         price: 109.90, meals: 10 },
-      { name: "9 Flavours of the Month",       variant: null,       desc: "9 rotating seasonal high carb meals, refreshed monthly.", badge: "NEW",        price: 104.90, meals: 9 },
+      { name: "Signature 5 — Non-Beef", variant: "Non-Beef", desc: "High carb performance meals for fuel-heavy days. 3% bundle discount applied.", badge: "POPULAR", price: 48.99, meals: 5 },
+      { name: "Signature 5 — Beef",     variant: "Beef",     desc: "Beef-based high carb signatures for sustained energy. 3% bundle discount applied.", badge: null,  price: 48.99, meals: 5 },
+      { name: "9 Flavours of the Month",variant: null,       desc: "9 rotating seasonal high carb meals, refreshed monthly. 5% bundle discount applied.", badge: "NEW", price: 88.45, meals: 9 },
+      { name: "Essential 10 — Non-Beef",variant: "Non-Beef", desc: "Restock your week with non-beef high carb essentials. 7% bundle discount applied.", badge: null,   price: 93.00, meals: 10 },
+      { name: "Essential 10 — Beef",    variant: "Beef",     desc: "Beef high carb top-up for active weeks. 7% bundle discount applied.", badge: null,                  price: 93.00, meals: 10 },
     ],
   },
   {
     category: "Just Protein",
     color: "#F5B300",
     items: [
-      { name: "Bundle of 10 — Non-Beef", variant: "Non-Beef", desc: "10 non-beef high-protein serves. No carb, pure performance.", badge: null, price: 129.90, meals: 10 },
-      { name: "Bundle of 10 — Beef",     variant: "Beef",     desc: "10 beef high-protein serves for maximum muscle support.", badge: null,     price: 129.90, meals: 10 },
+      { name: "JP Variety Bundle of 10", variant: null, desc: "10-meal variety of high-protein just protein serves. 3% bundle discount applied.", badge: "BESTSELLER", price: 55.10, meals: 10 },
     ],
   },
   {
     category: "Mixed Bundle",
     color: "#F5B300",
     items: [
-      { name: "Low Carb Mix — Non-Beef",  variant: "Non-Beef", desc: "A curated mix of non-beef low carb meals.", badge: null,  price: 124.90, meals: 10 },
-      { name: "Low Carb Mix — Beef",      variant: "Beef",     desc: "A curated mix of beef low carb meals.", badge: null,       price: 124.90, meals: 10 },
-      { name: "High Carb Mix — Non-Beef", variant: "Non-Beef", desc: "A curated mix of non-beef high carb meals.", badge: null, price: 124.90, meals: 10 },
-      { name: "High Carb Mix — Beef",     variant: "Beef",     desc: "A curated mix of beef high carb meals.", badge: null,      price: 124.90, meals: 10 },
+      { name: "7 Low Carb + 7 Just Protein",  variant: "Non-Beef", desc: "14-meal mixed bundle: 7 low carb + 7 just protein serves. 7% bundle discount applied.", badge: "BEST VALUE", price: 118.30, meals: 14 },
+      { name: "7 High Carb + 7 Just Protein", variant: "Non-Beef", desc: "14-meal mixed bundle: 7 high carb + 7 just protein serves. 7% bundle discount applied.", badge: null,         price: 117.37, meals: 14 },
     ],
   },
 ];
