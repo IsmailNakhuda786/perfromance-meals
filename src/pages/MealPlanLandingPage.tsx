@@ -63,55 +63,71 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
     <div className="bg-white text-[#1A1A1A] min-h-screen">
 
       {/* ── HERO ── */}
-      <div className="relative overflow-hidden border-b border-[#E8E4DC]">
-        {/* Subtle diagonal texture */}
-        <div
-          className="absolute inset-0 opacity-[0.025]"
-          style={{ backgroundImage: `repeating-linear-gradient(45deg,transparent,transparent 40px,${ORANGE} 40px,${ORANGE} 41px)` }}
-        />
-        <div className="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-8 py-16 sm:py-20">
-          <button onClick={() => navigate("home")} className="inline-flex items-center gap-2 text-[#1A1A1A]/40 hover:text-[#1A1A1A] transition-colors text-[11px] font-mono tracking-widest uppercase mb-10">
+      <div className="relative overflow-hidden min-h-[80svh] flex items-center bg-[#1A1A1A]">
+        {/* Right-half food photo — editorial split */}
+        <div className="absolute inset-y-0 right-0 w-full lg:w-[52%] overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1539735776517-befcae86494d?w=1200&h=900&fit=crop&auto=format&q=85"
+            alt="Premium plated meal — Meal Plan"
+            className="w-full h-full object-cover object-center"
+          />
+          {/* Left-edge bleed: photo fades into charcoal */}
+          <div className="absolute inset-0"
+            style={{ background: "linear-gradient(90deg, rgba(26,26,26,1) 0%, rgba(26,26,26,0.55) 30%, rgba(26,26,26,0.1) 70%, rgba(26,26,26,0) 100%)" }} />
+          {/* Orange accent wash — boutique warmth */}
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: "radial-gradient(ellipse at 60% 50%, rgba(232,93,4,0.12) 0%, transparent 65%)" }} />
+        </div>
+        {/* Bottom fade to white (next section is FAF9F6) */}
+        <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
+          style={{ background: "linear-gradient(to top, rgba(26,26,26,1), transparent)" }} />
+
+        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 sm:px-8 py-20 sm:py-28">
+          <button onClick={() => navigate("home")}
+            className="inline-flex items-center gap-2 text-white/30 hover:text-white/70 transition-colors text-[11px] font-mono tracking-widest uppercase mb-12">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
             Performance Meals
           </button>
 
-          <div className="mb-8">
-            <MealPlanLogo size="md" variant="light" />
+          <div className="mb-8 max-w-[520px]">
+            <MealPlanLogo size="md" variant="dark" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-3" style={{ color: ORANGE }}>BOUTIQUE SUPPORT</p>
-              <h1 className="font-display text-[46px] sm:text-[58px] font-semibold leading-[1.0] mb-6 text-[#1A1A1A]">
-                Fresh structure.<br />Personal support.
-              </h1>
-              <p className="text-[#555] text-[16px] leading-relaxed max-w-[440px] mb-8">
-                Exceptional meals, tailored support, and practical guidance for meaningful progress — built around the way you live.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button onClick={() => navigateToWizard(selectedGoal)}
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 font-bold text-[13px] tracking-[0.15em] uppercase text-white transition-colors"
-                  style={{ backgroundColor: ORANGE }}>
-                  CHOOSE YOUR GOAL →
-                </button>
-                <button onClick={() => navigate("how-it-works")}
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 font-medium text-[13px] border border-[#D0CCC4] text-[#555] hover:border-[#1A1A1A] hover:text-[#1A1A1A] transition-colors">
-                  How it works
-                </button>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+          <div className="max-w-[520px]">
+            <p className="text-[11px] font-mono tracking-[0.4em] uppercase mb-5" style={{ color: ORANGE }}>Boutique Progress</p>
+            <h1 className="font-display text-[44px] sm:text-[58px] font-semibold leading-[1.0] mb-7 text-white">
+              Fresh structure.<br />
+              <span style={{ color: ORANGE }}>Personal support.</span>
+            </h1>
+            <p className="text-white/50 text-[16px] leading-relaxed mb-10">
+              Exceptional meals, tailored guidance, and practical support for meaningful progress — built around the way you actually live.
+            </p>
+
+            {/* Key proof points — calm editorial style */}
+            <div className="flex flex-wrap gap-x-8 gap-y-4 mb-10">
               {[
-                { v: "40+", l: "Meal options" },
+                { v: "40+", l: "Fresh meal options" },
+                { v: "10am", l: "Daily delivery" },
                 { v: "Boutique", l: "Personal support" },
-                { v: "Fresh daily", l: "Delivered by 10am" },
-                { v: "Goal-first", l: "Your target, your plan" },
               ].map((s) => (
-                <div key={s.l} className="border border-[#E8E4DC] p-5">
-                  <div className="font-display text-[26px] font-bold text-[#1A1A1A] mb-1" style={{ color: s.l === "Meal options" ? ORANGE : "#1A1A1A" }}>{s.v}</div>
-                  <div className="text-[#888] text-[12px]">{s.l}</div>
+                <div key={s.l}>
+                  <div className="font-display text-[22px] font-semibold text-white">{s.v}</div>
+                  <div className="text-white/35 text-[11px] mt-0.5 tracking-wide">{s.l}</div>
                 </div>
               ))}
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <button onClick={() => navigateToWizard(selectedGoal)}
+                className="inline-flex items-center gap-3 px-8 py-4 font-semibold text-[13px] tracking-[0.12em] uppercase text-white transition-opacity hover:opacity-85"
+                style={{ backgroundColor: ORANGE }}>
+                Start your plan
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+              <button onClick={() => navigate("how-it-works")}
+                className="inline-flex items-center gap-3 px-8 py-4 font-medium text-[13px] border border-white/20 text-white/60 hover:border-white/40 hover:text-white transition-all">
+                How it works
+              </button>
             </div>
           </div>
         </div>

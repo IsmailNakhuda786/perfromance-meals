@@ -154,45 +154,66 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
     <div className="bg-[#1A1A1A] text-white min-h-screen">
 
       {/* ── HERO ── */}
-      <div className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-[0.06]"
-          style={{ backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 50px,rgba(245,179,0,0.35) 50px,rgba(245,179,0,0.35) 51px),repeating-linear-gradient(90deg,transparent,transparent 50px,rgba(245,179,0,0.35) 50px,rgba(245,179,0,0.35) 51px)" }}
-        />
-        <div className="absolute right-0 top-0 w-[500px] h-[500px] bg-[#F5B300]/6 rounded-full blur-[100px] pointer-events-none" />
+      <div className="relative overflow-hidden min-h-[75svh] flex items-center">
+        {/* Full-bleed food photo background */}
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1600&h=900&fit=crop&auto=format&q=80"
+            alt="Ready-Series meal prep containers"
+            className="w-full h-full object-cover object-center"
+          />
+          {/* Heavy charcoal overlay with yellow undertone — keeps e-commerce energy, not boutique softness */}
+          <div className="absolute inset-0"
+            style={{ background: "linear-gradient(100deg, rgba(16,16,16,0.97) 0%, rgba(16,16,16,0.90) 45%, rgba(16,16,16,0.65) 75%, rgba(16,16,16,0.3) 100%)" }} />
+          {/* Yellow burst — top right, energetic */}
+          <div className="absolute top-0 right-0 w-[600px] h-[400px] pointer-events-none"
+            style={{ background: "radial-gradient(ellipse at 85% 10%, rgba(245,179,0,0.28) 0%, transparent 60%)" }} />
+        </div>
 
-        <div className="relative z-10 max-w-[1200px] mx-auto px-6 sm:px-8 py-16 sm:py-20">
+        {/* Yellow top bar — brand identifier stripe */}
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#F5B300] z-20" />
+
+        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 sm:px-8 py-20 sm:py-24">
           <button onClick={() => navigate("home")} className="inline-flex items-center gap-2 text-white/30 hover:text-white transition-colors text-[11px] font-mono tracking-widest uppercase mb-8">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
             Performance Meals
           </button>
 
-          <div className="mb-6">
+          <div className="mb-7">
             <ReadySeriesLogo size="md" variant="dark" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-end">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
-              <h1 className="font-display text-[52px] sm:text-[68px] font-extrabold leading-[0.9] mb-5">
-                FROZEN<br />AT PEAK.<br /><span className="text-[#F5B300]">READY ON</span><br />DEMAND.
+              <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-5">Everyday Momentum</p>
+              <h1 className="font-display text-[52px] sm:text-[68px] font-extrabold leading-[0.88] mb-6">
+                FROZEN AT PEAK.<br /><span className="text-[#F5B300]">READY ON DEMAND.</span>
               </h1>
-              <p className="text-white/50 text-[15px] leading-relaxed max-w-[400px]">
+              <p className="text-white/50 text-[15px] leading-relaxed max-w-[420px] mb-8">
                 Fast, enjoyable frozen meals that are ready when life gets busy. Keep your week moving.
               </p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => document.getElementById("rs-shop")?.scrollIntoView({ behavior: "smooth" })}
+                  className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] px-8 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors">
+                  Shop Now
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                </button>
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4 lg:justify-end">
-              <div className="bg-[#1A1A1A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#F5B300] font-display text-[32px] font-extrabold">3 min</div>
-                <div className="text-white/40 text-[11px] tracking-wide mt-1">Ready to eat</div>
-              </div>
-              <div className="bg-[#1A1A1A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#F5B300] font-display text-[32px] font-extrabold">40+</div>
-                <div className="text-white/40 text-[11px] tracking-wide mt-1">Meal options</div>
-              </div>
-              <div className="bg-[#1A1A1A] border border-white/10 px-6 py-5 flex-1">
-                <div className="text-[#F5B300] font-display text-[32px] font-extrabold">$8.90</div>
-                <div className="text-white/40 text-[11px] tracking-wide mt-1">Starting from</div>
-              </div>
+
+            {/* Stats — energetic tiles, yellow-accented */}
+            <div className="grid grid-cols-3 gap-3 lg:justify-items-end">
+              {[
+                { v: "3 min", l: "Ready to eat" },
+                { v: "40+", l: "Meal options" },
+                { v: "$8.90", l: "From" },
+              ].map((s) => (
+                <div key={s.l} className="border border-[#F5B300]/25 bg-[#F5B300]/5 px-4 py-5 text-center">
+                  <div className="text-[#F5B300] font-display text-[28px] sm:text-[32px] font-extrabold leading-none">{s.v}</div>
+                  <div className="text-white/40 text-[10px] tracking-wide mt-2 uppercase">{s.l}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -235,7 +256,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       )}
 
       {/* ── PURCHASE MODE TABS ── */}
-      <div className="bg-[#111] border-b border-white/8">
+      <div id="rs-shop" className="bg-[#111] border-b border-white/8">
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="flex">
             {([
