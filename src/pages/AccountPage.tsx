@@ -1,19 +1,15 @@
 import { useEffect, useState } from "react";
 import { MEALS, Page, PLANS } from "@/data";
 
-const BOX_PRICE_MAP: Record<number, number> = { 5: 84.50, 10: 101.15, 15: 141.75, 20: 175.00 };
-
 function BoxSubscriptionCard({ navigate, save }: { navigate: (page: Page) => void; save: (msg: string) => void }) {
   const [active, setActive] = useState(true);
   const [paused, setPaused] = useState(false);
-  const [freq, setFreq] = useState<"weekly" | "fortnightly">("weekly");
-  const [size, setSize] = useState(10);
 
   if (!active) return null;
 
   const nextDate = (() => {
     const d = new Date();
-    d.setDate(d.getDate() + (freq === "weekly" ? 7 : 14));
+    d.setDate(d.getDate() + 7);
     return d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
   })();
 
@@ -47,9 +43,9 @@ function BoxSubscriptionCard({ navigate, save }: { navigate: (page: Page) => voi
         </div>
 
         <div className="flex flex-wrap gap-3 pt-2 border-t border-[#F0EDE8]">
-          <button onClick={() => { setPaused((v) => !v); save(paused ? "Box subscription resumed" : "Next delivery skipped"); }}
+          <button onClick={() => { setPaused((v) => !v); save(paused ? "Ready Series Subscription resumed" : "Next delivery skipped"); }}
             className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
-            {paused ? "▶ Resume Box" : "⏸ Skip Next Delivery"}
+            {paused ? "▶ Resume Subscription" : "⏸ Skip Next Delivery"}
           </button>
           <button onClick={() => navigate("ready-series")}
             className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
@@ -349,8 +345,8 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               <div className="flex items-center gap-3">
                 <span className="text-[18px]">📦</span>
                 <div>
-                  <div className="text-[12px] font-semibold text-[#1A1A1A]">Ready Series Subscription · Low Carb Meals</div>
-                  <div className="text-[11px] text-[#888] mt-0.5">3-Month Term · Next delivery scheduled</div>
+                  <div className="text-[12px] font-semibold text-[#1A1A1A]">Ready Series Subscription · Low Carb Meals · 3-Month Term</div>
+                  <div className="text-[11px] text-[#888] mt-0.5">Next delivery scheduled</div>
                 </div>
               </div>
               <button onClick={() => setTab("subscription")} className="text-[11px] font-mono text-[#888] hover:text-[#1A1A1A] transition-colors whitespace-nowrap">

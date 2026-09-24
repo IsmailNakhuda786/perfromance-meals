@@ -622,9 +622,15 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                 </div>
 
                 <div className="p-4 border-t border-white/10 mt-3">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-2">
                     <span className="text-white/50 text-[13px]">Subtotal ({cartCount} item{cartCount !== 1 ? "s" : ""})</span>
                     <span className="font-mono font-bold text-[16px]">${cartTotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-white/40 text-[12px]">Delivery</span>
+                    {cartTotal >= 120
+                      ? <span className="text-[#F5B300] text-[12px] font-semibold">Free</span>
+                      : <span className="text-white/60 text-[12px]">$10.00</span>}
                   </div>
                   <button onClick={() => { setCartOpen(false); onCheckout(); }} className="w-full bg-[#F5B300] text-[#1A1A1A] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
                     Proceed to Checkout

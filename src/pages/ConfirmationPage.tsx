@@ -15,7 +15,8 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
   const orderNum = `#PM-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random() * 9000)}`;
   const customerName = orderDetails?.name?.split(" ")[0] ?? "Jerome";
   const deliveryFee = orderDetails?.deliveryFee ?? 0;
-  const finalTotal = Math.max(0, orderTotal - promoDiscount);
+  // orderTotal passed from CheckoutPage already includes deliveryFee and deducts promoDiscount
+  const finalTotal = orderTotal;
 
   const [showSignup, setShowSignup] = useState(false);
   const [signupDone, setSignupDone] = useState(false);
@@ -63,7 +64,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
               ...(deliveryFee > 0 ? [{ label: "Delivery Fee", value: `$${deliveryFee.toFixed(2)}` }] : [{ label: "Delivery", value: "Free" }]),
               ...(promoCode ? [{ label: `Promo (${promoCode})`, value: `–$${promoDiscount.toFixed(2)}` }] : []),
               { label: "Total Charged", value: `$${finalTotal.toFixed(2)}` },
-              { label: "Payment", value: `Visa ending 4242 · $${finalTotal.toFixed(2)}` },
+              { label: "Payment", value: `Visa ···· 4242 · $${finalTotal.toFixed(2)}` },
             ].map((d) => (
               <div key={d.label} className={`flex items-start justify-between gap-4 ${d.label.startsWith("Promo") ? "text-green-600" : ""}`}>
                 <span className={`text-[13px] shrink-0 ${d.label.startsWith("Promo") ? "font-medium" : "text-[#999]"}`}>{d.label}</span>
@@ -230,7 +231,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
                 <div className="bg-[#F5B300]/20 border border-[#F5B300]/50 px-4 py-3 mb-6 flex items-center gap-3">
                   <span className="text-[22px]">🪙</span>
                   <p className="text-[12px] text-[#555]">
-                    Your past order would have earned <strong className="text-[#111]">+58 pts</strong> — future orders will from now on.
+                    Your past order would have earned <strong className="text-[#111]">+{Math.floor(finalTotal)} pts</strong> — future orders will from now on.
                   </p>
                 </div>
 

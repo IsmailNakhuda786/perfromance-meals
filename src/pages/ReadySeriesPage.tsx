@@ -218,22 +218,24 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         </div>
       </div>
 
-      {/* ── FREE DELIVERY PROGRESS ── */}
-      <div className="bg-[#111] border-b border-white/5 px-6 py-3">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-center gap-4">
-            <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-              <div className="h-full bg-[#F5B300] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
-            </div>
-            <div className="text-[11px] shrink-0">
-              {toFreeDelivery <= 0
-                ? <span className="text-[#F5B300] font-bold">🎉 Free delivery unlocked!</span>
-                : <span className="text-white/40">Add <span className="text-white font-semibold">${toFreeDelivery.toFixed(2)}</span> more for free delivery</span>
-              }
+      {/* ── FREE DELIVERY PROGRESS — single/bundle only ── */}
+      {purchaseMode !== "subscription" && (
+        <div className="bg-[#111] border-b border-white/5 px-6 py-3">
+          <div className="max-w-[1200px] mx-auto">
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div className="h-full bg-[#F5B300] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
+              </div>
+              <div className="text-[11px] shrink-0">
+                {toFreeDelivery <= 0
+                  ? <span className="text-[#F5B300] font-bold">🎉 Free delivery unlocked!</span>
+                  : <span className="text-white/40">Add <span className="text-white font-semibold">${toFreeDelivery.toFixed(2)}</span> more for free delivery</span>
+                }
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* ── PURCHASE MODE TABS ── */}
       <div className="bg-[#111] border-b border-white/8">
@@ -361,7 +363,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                     <div className="text-[10px] text-white/30 mt-0.5">for {subTerm} months · renews after</div>
                   </div>
                   <button
-                    onClick={(e) => { e.stopPropagation(); addToCart({ id: sub.sku.length, name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`, price, qty: 1, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format", type: "box" }); }}
+                    onClick={(e) => { e.stopPropagation(); addToCart({ id: sub.sku.split("").reduce((a, c) => a + c.charCodeAt(0), 0), name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`, price, qty: 1, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format", type: "box" }); }}
                     className={`w-full py-3 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${isSelected ? "bg-[#F5B300] text-[#111] hover:bg-white" : "bg-white/8 text-white/50 hover:bg-[#F5B300] hover:text-[#111] border border-white/10 hover:border-[#F5B300]"}`}>
                     Subscribe →
                   </button>
@@ -498,8 +500,8 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       {/* ── CART STICKY BAR ── */}
       {cartQty > 0 && (
         <div className="fixed bottom-0 left-0 right-0 z-40 bg-[#F5B300] text-[#111]">
-          {/* Free delivery progress */}
-          {toFreeDelivery > 0 && (
+          {/* Free delivery progress — single/bundle only */}
+          {toFreeDelivery > 0 && purchaseMode !== "subscription" && (
             <div className="bg-[#111] px-6 py-2 flex items-center gap-4">
               <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
                 <div className="h-full bg-[#F5B300] rounded-full transition-all" style={{ width: `${freeDeliveryPct}%` }} />
@@ -511,7 +513,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             <div>
               <div className="font-extrabold text-[16px]">{cartQty} item{cartQty !== 1 ? "s" : ""} · ${cartTotal.toFixed(2)}</div>
               <div className="text-[11px] opacity-60">
-                {toFreeDelivery <= 0 ? "🎉 Free delivery" : `+ $${DELIVERY_FEE} delivery · Add $${toFreeDelivery.toFixed(2)} for free`}
+                {purchaseMode === "subscription" ? "Delivery arranged after confirmation" : toFreeDelivery <= 0 ? "🎉 Free delivery" : `+ $${DELIVERY_FEE} delivery · Add $${toFreeDelivery.toFixed(2)} for free`}
               </div>
             </div>
             <button

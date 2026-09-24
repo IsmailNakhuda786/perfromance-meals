@@ -100,6 +100,9 @@ export default function App() {
     setSavedAddress(addr);
     setLastOrderType("plan");
     setLastOrderTotal(total);
+    setLastOrderGuest(false);
+    setLastPromoCode("");
+    setLastPromoDiscount(0);
     setLastOrderDetails({ name: addr.name, address: `${addr.line1}${addr.unit ? `, ${addr.unit}` : ""}, S${addr.postal}`, date: "Next available", slot: "6am – 9am", deliveryFee: 0 });
   };
 

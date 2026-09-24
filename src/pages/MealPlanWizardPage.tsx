@@ -414,12 +414,21 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                   {programme === "6by60plus" && (
                     <div className="mt-2 space-y-1.5">
                       <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#888]">Also includes</p>
-                      {["Support frozen weekend meals", "Channel access", "Weigh-in machine", "Rewards"].map((item) => (
+                      {["Frozen weekend meals", "Channel access", "Weigh-in machine", "Rewards"].map((item) => (
                         <div key={item} className="flex items-center gap-2 text-[12px] text-[#666]">
                           <div className="w-1 h-1 bg-[#E85D04] shrink-0" />{item}
                         </div>
                       ))}
                     </div>
+                  )}
+                  {progInfo.kind === "fixed" && (
+                    <>
+                      <div className="h-px bg-[#E8E4DC]" />
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-[#888]">Plan Type</span>
+                        <span className="text-[13px] font-bold text-[#555]">{mealPlan}</span>
+                      </div>
+                    </>
                   )}
                   <div className="h-px bg-[#E8E4DC]" />
                   <p className="text-[11px] text-[#AAA] italic">Plan type and meals are predefined for this programme. Meal selection is in the next step.</p>
