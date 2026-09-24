@@ -587,7 +587,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                         ) : (
                           /* Regular cart item */
                           <div className="flex gap-3">
-                            <img src={item.img} alt={item.name} className="w-14 h-14 object-cover shrink-0 bg-[#222]" />
+                            {item.img ? <img src={item.img} alt={item.name} className="w-14 h-14 object-cover shrink-0 bg-[#222]" /> : <div className="w-14 h-14 bg-[#222] shrink-0" />}
                             <div className="flex-1 min-w-0">
                               <p className="text-[12px] font-medium leading-snug line-clamp-2">{item.name}</p>
                               {item.planLabel && <p className="text-[11px] text-[#E85D04] mt-0.5">{item.planLabel}</p>}

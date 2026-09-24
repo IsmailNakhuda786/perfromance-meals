@@ -287,7 +287,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       </div>
                       <p className="text-[12px] text-white/40 leading-relaxed flex-1">{item.desc}</p>
                       <button
-                        onClick={() => addToCart({ id: Math.floor(Math.random() * 9000 + 1000), name: item.name, price: 0, qty: 1, img: "", type: "box" })}
+                        onClick={() => addToCart({ id: Math.floor(Math.random() * 9000 + 1000), name: item.name, price: 0, qty: 1, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format", type: "box" })}
                         className="w-full py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase bg-white/8 text-white/60 hover:bg-[#F5B300] hover:text-[#111] transition-colors border border-white/10 hover:border-[#F5B300]">
                         Add to Cart →
                       </button>
@@ -355,7 +355,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                     <div className="text-[10px] text-white/30 mt-0.5">for {subTerm} months · renews after</div>
                   </div>
                   <button
-                    onClick={(e) => { e.stopPropagation(); addToCart({ id: sub.sku.length, name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`, price, qty: 1, img: "", type: "box" }); }}
+                    onClick={(e) => { e.stopPropagation(); addToCart({ id: sub.sku.length, name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`, price, qty: 1, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format", type: "box" }); }}
                     className={`w-full py-3 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${isSelected ? "bg-[#F5B300] text-[#111] hover:bg-white" : "bg-white/8 text-white/50 hover:bg-[#F5B300] hover:text-[#111] border border-white/10 hover:border-[#F5B300]"}`}>
                     Subscribe →
                   </button>
