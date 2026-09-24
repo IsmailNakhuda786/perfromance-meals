@@ -264,7 +264,7 @@ export default function GiftCardPage({ navigate }: Props) {
         )}
 
         {/* Order summary sidebar */}
-        {step !== "confirmed" && (
+        {(
           <div className="lg:col-span-2">
             <div className="bg-white border border-[#E5E2DA] p-6 sticky top-4">
               <p className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">Order Summary</p>
