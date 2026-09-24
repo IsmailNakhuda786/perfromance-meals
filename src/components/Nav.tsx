@@ -539,11 +539,11 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                             {/* Thumbnail strip always visible */}
                             {boxImgs.length > 0 && (
                               <div className="flex gap-1 mt-2">
-                                {boxImgs.slice(0, 5).map((src, i) => (
+                                {boxImgs.slice(0, 5).map((src, i) => src ? (
                                   <div key={i} className="w-9 h-9 overflow-hidden shrink-0 border border-white/10">
                                     <img src={src} alt="" className="w-full h-full object-cover" />
                                   </div>
-                                ))}
+                                ) : null)}
                                 {boxImgs.length > 5 && (
                                   <div className="w-9 h-9 bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                                     <span className="text-[9px] text-white/40 font-mono">+{boxImgs.length - 5}</span>
@@ -569,11 +569,11 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                                   const count = item.mealCounts?.[i] ?? 1;
                                   return (
                                     <div key={i} className="flex items-center gap-2">
-                                      {boxImgs[i] && (
+                                      {boxImgs[i] ? (
                                         <div className="w-8 h-8 overflow-hidden shrink-0">
                                           <img src={boxImgs[i]} alt="" className="w-full h-full object-cover" />
                                         </div>
-                                      )}
+                                      ) : null}
                                       <span className="text-[11px] text-white/45 leading-tight flex-1 truncate">{n}</span>
                                       <span className="shrink-0 text-[10px] font-mono font-bold text-[#F5B300] bg-[#F5B300]/10 px-1.5 py-0.5 leading-none">
                                         ×{count}
