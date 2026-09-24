@@ -96,14 +96,18 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
           {/* Logo — acts as brand switcher */}
           <div className="relative shrink-0">
             <button onClick={() => setBrandOpen((v) => !v)}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity group">
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity group">
               <PerformanceMealsLogo size="sm" variant="light" />
-              <div className="hidden sm:flex items-center gap-1">
-                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                  className={`text-white/35 transition-transform ${brandOpen ? "rotate-180" : ""}`}>
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
+              <div className="hidden sm:flex flex-col items-start leading-none border-l border-white/10 pl-3">
+                <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-white/30 mb-1">Current Brand</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
+                  <span className="text-[11px] font-bold tracking-[0.1em] uppercase text-white">{currentBrand.label}</span>
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                    className={`text-white/35 transition-transform ml-0.5 ${brandOpen ? "rotate-180" : ""}`}>
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
               </div>
             </button>
             {brandOpen && (
