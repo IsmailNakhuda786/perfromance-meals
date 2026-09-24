@@ -6,7 +6,7 @@ interface Props {
   cart: CartItem[];
   savedAddress: { name: string; phone: string; line1: string; unit: string; postal: string } | null;
   requireAccount?: boolean;
-  onComplete: (isGuest: boolean, promoCode: string, promoDiscount: number, total: number) => void;
+  onComplete: (isGuest: boolean, promoCode: string, promoDiscount: number, total: number, orderDetails: { name: string; address: string; date: string; slot: string; deliveryFee: number }) => void;
 }
 
 const DATES = ["Mon 4", "Tue 5", "Wed 6", "Thu 7", "Fri 8", "Sat 9"];
@@ -23,6 +23,9 @@ export default function CheckoutPage({ navigate, cart, savedAddress, requireAcco
   const [step, setStep] = useState<1 | 2>(1);
   const [date, setDate] = useState(DATES[0]);
   const [slot, setSlot] = useState(SLOTS[0]);
+  const [addrName, setAddrName] = useState(savedAddress?.name ?? "Jerome Tan");
+  const [addrLine, setAddrLine] = useState(savedAddress?.line1 ?? "123 Toa Payoh Lor 4, #08-22");
+  const [addrPostal, setAddrPostal] = useState(savedAddress?.postal ?? "310123");
   const [useWallet, setUseWallet] = useState(false);
   const [saveCard, setSaveCard] = useState(false);
   const [promoCode, setPromoCode] = useState("");
@@ -240,14 +243,14 @@ export default function CheckoutPage({ navigate, cart, savedAddress, requireAcco
 
               {/* Address — 4 fields only */}
               <div className="grid grid-cols-2 gap-3 mb-8">
-                <input placeholder="Full name" defaultValue={savedAddress?.name ?? "Jerome Tan"}
+                <input placeholder="Full name" value={addrName} onChange={(e) => setAddrName(e.target.value)}
                   className="col-span-2 sm:col-span-1 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
                 <input placeholder="Phone" defaultValue={savedAddress?.phone ?? "+65 9123 4567"}
                   className="col-span-2 sm:col-span-1 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
 
-                <input placeholder="Street address + unit" defaultValue={savedAddress?.line1 ?? "123 Toa Payoh Lor 4, #08-22"}
+                <input placeholder="Street address + unit" value={addrLine} onChange={(e) => setAddrLine(e.target.value)}
                   className="col-span-2 border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
-                <input placeholder="Postal code" defaultValue={savedAddress?.postal ?? "310123"}
+                <input placeholder="Postal code" value={addrPostal} onChange={(e) => setAddrPostal(e.target.value)}
                   className="border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] outline-none focus:border-[#111] transition-colors" />
                 <input placeholder="Delivery note (optional)"
                   className="border border-[#D0CCC4] bg-white px-4 py-3 text-[14px] text-[#aaa] outline-none focus:border-[#111] transition-colors" />
@@ -384,7 +387,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, requireAcco
                 </label>
               </div>
 
-              <button onClick={() => onComplete(authMode === "guest", promoApplied ? promoCode.trim().toUpperCase() : "", promoDiscount, total)}
+              <button onClick={() => onComplete(authMode === "guest", promoApplied ? promoCode.trim().toUpperCase() : "", promoDiscount, total, { name: addrName, address: `${addrLine}, S${addrPostal}`, date, slot, deliveryFee })}
                 className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                 Place Order — ${total.toFixed(2)}
               </button>

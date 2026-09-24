@@ -8,9 +8,15 @@ interface Props {
   promoCode?: string;
   promoDiscount?: number;
   orderTotal?: number;
+  orderDetails?: { name: string; address: string; date: string; slot: string; deliveryFee: number } | null;
 }
 
-export default function ConfirmationPage({ navigate, orderType, isGuest = false, promoCode = "", promoDiscount = 0, orderTotal = 0 }: Props) {
+export default function ConfirmationPage({ navigate, orderType, isGuest = false, promoCode = "", promoDiscount = 0, orderTotal = 0, orderDetails = null }: Props) {
+  const orderNum = `#PM-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random() * 9000)}`;
+  const customerName = orderDetails?.name?.split(" ")[0] ?? "Jerome";
+  const deliveryFee = orderDetails?.deliveryFee ?? 0;
+  const finalTotal = Math.max(0, orderTotal - promoDiscount);
+
   const [showSignup, setShowSignup] = useState(false);
   const [signupDone, setSignupDone] = useState(false);
   const [suName, setSuName] = useState("");
@@ -40,9 +46,9 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         <h1 className="font-display text-[36px] sm:text-[48px] font-bold mb-2 leading-tight">
           Your order is confirmed!
         </h1>
-        <p className="text-[#555] text-[18px] mb-4">Jerome, your meals are being prepared.</p>
+        <p className="text-[#555] text-[18px] mb-4">{customerName}, your meals are being prepared.</p>
         <p className="text-[#666] text-[16px] leading-relaxed mb-10">
-          Your order <strong className="text-[#111] font-mono">#PM-20250904-7842</strong> has been confirmed. You'll receive a confirmation email and SMS shortly.
+          Your order <strong className="text-[#111] font-mono">{orderNum}</strong> has been confirmed. You'll receive a confirmation email and SMS shortly.
         </p>
 
         {/* Order details */}
@@ -50,12 +56,14 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
           <div className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">Order Details</div>
           <div className="space-y-4">
             {[
-              { label: "Delivery Address", value: "123 Toa Payoh Lor 4, #08-22, S310123" },
-              { label: "Delivery Time", value: "Today · 6:00am – 9:00am" },
-              { label: "Estimated Arrival", value: "Monday, 4 September 2025" },
+              { label: "Delivery Address", value: orderDetails?.address ?? "—" },
+              { label: "Delivery Date", value: orderDetails?.date ?? "—" },
+              { label: "Time Slot", value: orderDetails?.slot ?? "—" },
               { label: "Subtotal", value: `$${orderTotal.toFixed(2)}` },
+              ...(deliveryFee > 0 ? [{ label: "Delivery Fee", value: `$${deliveryFee.toFixed(2)}` }] : [{ label: "Delivery", value: "Free" }]),
               ...(promoCode ? [{ label: `Promo (${promoCode})`, value: `–$${promoDiscount.toFixed(2)}` }] : []),
-              { label: "Payment", value: `Visa ending 4242 · $${(orderTotal - promoDiscount).toFixed(2)}` },
+              { label: "Total Charged", value: `$${finalTotal.toFixed(2)}` },
+              { label: "Payment", value: `Visa ending 4242 · $${finalTotal.toFixed(2)}` },
             ].map((d) => (
               <div key={d.label} className={`flex items-start justify-between gap-4 ${d.label.startsWith("Promo") ? "text-green-600" : ""}`}>
                 <span className={`text-[13px] shrink-0 ${d.label.startsWith("Promo") ? "font-medium" : "text-[#999]"}`}>{d.label}</span>
@@ -70,7 +78,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
           <div className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">Live Order Status</div>
           <div className="space-y-0">
             {[
-              { label: "Order Confirmed", time: "Today · 9:04am", detail: "Payment processed · Order #PM-20250904-7842", done: true, active: false },
+              { label: "Order Confirmed", time: "Today · 9:04am", detail: `Payment processed · Order ${orderNum}`, done: true, active: false },
               { label: "Kitchen Preparing", time: "Today · 11:00am", detail: "Our chefs are preparing your meals fresh to order", done: false, active: true },
               { label: "Quality Check", time: "Today · 1:00pm", detail: "Macro verification and packaging seal check", done: false, active: false },
               { label: "Out for Delivery", time: "Today · 2:30pm", detail: "Driver assigned · ETA within your selected time window", done: false, active: false },

@@ -44,6 +44,7 @@ export default function App() {
   const [lastPromoCode, setLastPromoCode] = useState("");
   const [lastPromoDiscount, setLastPromoDiscount] = useState(0);
   const [lastOrderTotal, setLastOrderTotal] = useState(0);
+  const [lastOrderDetails, setLastOrderDetails] = useState<{ name: string; address: string; date: string; slot: string; deliveryFee: number } | null>(null);
   const [selectedMealId, setSelectedMealId] = useState<number>(1);
   const [accountInitialTab, setAccountInitialTab] = useState<"dashboard" | "settings">("dashboard");
   const [accountInitialSection, setAccountInitialSection] = useState<string | undefined>(undefined);
@@ -99,6 +100,7 @@ export default function App() {
     setSavedAddress(addr);
     setLastOrderType("plan");
     setLastOrderTotal(total);
+    setLastOrderDetails({ name: addr.name, address: `${addr.line1}${addr.unit ? `, ${addr.unit}` : ""}, S${addr.postal}`, date: "Next available", slot: "6am – 9am", deliveryFee: 0 });
   };
 
   const handleReadyCheckout = () => {
@@ -160,8 +162,8 @@ export default function App() {
           onCheckoutComplete={(addr, total) => { handlePlanCheckout(addr, total); navigate("confirmation"); }}
         />
       )}
-      {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} requireAccount={checkoutIsSubscription} onComplete={(isGuest, promoCode, promoDiscount, total) => { setLastOrderType("ready"); setLastOrderGuest(isGuest); setLastPromoCode(promoCode); setLastPromoDiscount(promoDiscount); setLastOrderTotal(total); navigate("confirmation"); }} />}
-      {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} isGuest={lastOrderGuest} promoCode={lastPromoCode} promoDiscount={lastPromoDiscount} orderTotal={lastOrderTotal} />}
+      {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} requireAccount={checkoutIsSubscription} onComplete={(isGuest, promoCode, promoDiscount, total, details) => { setLastOrderType("ready"); setLastOrderGuest(isGuest); setLastPromoCode(promoCode); setLastPromoDiscount(promoDiscount); setLastOrderTotal(total); setLastOrderDetails(details); navigate("confirmation"); }} />}
+      {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} isGuest={lastOrderGuest} promoCode={lastPromoCode} promoDiscount={lastPromoDiscount} orderTotal={lastOrderTotal} orderDetails={lastOrderDetails} />}
       {page === "account" && <AccountPage navigate={navigate} initialTab={accountInitialTab} initialSection={accountInitialSection} />}
       {page === "how-it-works" && <HowItWorksPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "gift-card" && <GiftCardPage navigate={navigate} />}
