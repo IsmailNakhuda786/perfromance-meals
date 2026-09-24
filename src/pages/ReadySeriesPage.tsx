@@ -32,40 +32,40 @@ const PREDEFINED_BUNDLES = [
     category: "Low Carb Meals",
     color: "#F5B300",
     items: [
-      { name: "Signature Flavours — Non-Beef", variant: "Non-Beef", desc: "Our most-loved low carb flavours, curated for you.", badge: "POPULAR" },
-      { name: "Signature Flavours — Beef",     variant: "Beef",     desc: "Best-selling beef low carb options in one bundle.", badge: null },
-      { name: "Essential Top Up — Non-Beef",   variant: "Non-Beef", desc: "Top up your fridge with essential low carb staples.", badge: null },
-      { name: "Essential Top Up — Beef",       variant: "Beef",     desc: "Beef-based essentials to keep your macros on track.", badge: null },
-      { name: "9 Flavours of the Month",       variant: null,       desc: "9 rotating seasonal low carb meals, refreshed monthly.", badge: "NEW" },
+      { name: "Signature Flavours — Non-Beef", variant: "Non-Beef", desc: "Our most-loved low carb flavours, curated for you.", badge: "POPULAR", price: 119.90, meals: 10 },
+      { name: "Signature Flavours — Beef",     variant: "Beef",     desc: "Best-selling beef low carb options in one bundle.", badge: null,      price: 119.90, meals: 10 },
+      { name: "Essential Top Up — Non-Beef",   variant: "Non-Beef", desc: "Top up your fridge with essential low carb staples.", badge: null,     price: 109.90, meals: 10 },
+      { name: "Essential Top Up — Beef",       variant: "Beef",     desc: "Beef-based essentials to keep your macros on track.", badge: null,     price: 109.90, meals: 10 },
+      { name: "9 Flavours of the Month",       variant: null,       desc: "9 rotating seasonal low carb meals, refreshed monthly.", badge: "NEW", price: 104.90, meals: 9 },
     ],
   },
   {
     category: "High Carb Meals",
     color: "#F5B300",
     items: [
-      { name: "Signature Flavours — Non-Beef", variant: "Non-Beef", desc: "High carb performance meals for fuel-heavy days.", badge: "POPULAR" },
-      { name: "Signature Flavours — Beef",     variant: "Beef",     desc: "Beef-based high carb signatures for sustained energy.", badge: null },
-      { name: "Essential Top Up — Non-Beef",   variant: "Non-Beef", desc: "Restock your week with non-beef high carb essentials.", badge: null },
-      { name: "Essential Top Up — Beef",       variant: "Beef",     desc: "Beef high carb top-up for active weeks.", badge: null },
-      { name: "9 Flavours of the Month",       variant: null,       desc: "9 rotating seasonal high carb meals, refreshed monthly.", badge: "NEW" },
+      { name: "Signature Flavours — Non-Beef", variant: "Non-Beef", desc: "High carb performance meals for fuel-heavy days.", badge: "POPULAR",         price: 119.90, meals: 10 },
+      { name: "Signature Flavours — Beef",     variant: "Beef",     desc: "Beef-based high carb signatures for sustained energy.", badge: null,          price: 119.90, meals: 10 },
+      { name: "Essential Top Up — Non-Beef",   variant: "Non-Beef", desc: "Restock your week with non-beef high carb essentials.", badge: null,           price: 109.90, meals: 10 },
+      { name: "Essential Top Up — Beef",       variant: "Beef",     desc: "Beef high carb top-up for active weeks.", badge: null,                         price: 109.90, meals: 10 },
+      { name: "9 Flavours of the Month",       variant: null,       desc: "9 rotating seasonal high carb meals, refreshed monthly.", badge: "NEW",        price: 104.90, meals: 9 },
     ],
   },
   {
     category: "Just Protein",
     color: "#F5B300",
     items: [
-      { name: "Bundle of 10 — Non-Beef", variant: "Non-Beef", desc: "10 non-beef high-protein serves. No carb, pure performance.", badge: null },
-      { name: "Bundle of 10 — Beef",     variant: "Beef",     desc: "10 beef high-protein serves for maximum muscle support.", badge: null },
+      { name: "Bundle of 10 — Non-Beef", variant: "Non-Beef", desc: "10 non-beef high-protein serves. No carb, pure performance.", badge: null, price: 129.90, meals: 10 },
+      { name: "Bundle of 10 — Beef",     variant: "Beef",     desc: "10 beef high-protein serves for maximum muscle support.", badge: null,     price: 129.90, meals: 10 },
     ],
   },
   {
     category: "Mixed Bundle",
     color: "#F5B300",
     items: [
-      { name: "Low Carb Mix — Non-Beef", variant: "Non-Beef", desc: "A curated mix of non-beef low carb meals.", badge: null },
-      { name: "Low Carb Mix — Beef",     variant: "Beef",     desc: "A curated mix of beef low carb meals.", badge: null },
-      { name: "High Carb Mix — Non-Beef", variant: "Non-Beef", desc: "A curated mix of non-beef high carb meals.", badge: null },
-      { name: "High Carb Mix — Beef",    variant: "Beef",     desc: "A curated mix of beef high carb meals.", badge: null },
+      { name: "Low Carb Mix — Non-Beef",  variant: "Non-Beef", desc: "A curated mix of non-beef low carb meals.", badge: null,  price: 124.90, meals: 10 },
+      { name: "Low Carb Mix — Beef",      variant: "Beef",     desc: "A curated mix of beef low carb meals.", badge: null,       price: 124.90, meals: 10 },
+      { name: "High Carb Mix — Non-Beef", variant: "Non-Beef", desc: "A curated mix of non-beef high carb meals.", badge: null, price: 124.90, meals: 10 },
+      { name: "High Carb Mix — Beef",     variant: "Beef",     desc: "A curated mix of beef high carb meals.", badge: null,      price: 124.90, meals: 10 },
     ],
   },
 ];
@@ -286,8 +286,14 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                         )}
                       </div>
                       <p className="text-[12px] text-white/40 leading-relaxed flex-1">{item.desc}</p>
+                      <div className="flex items-center justify-between mt-1">
+                        <div>
+                          <span className="font-mono text-[18px] font-extrabold text-[#F5B300]">${item.price.toFixed(2)}</span>
+                          <span className="text-[10px] text-white/30 ml-1">{item.meals} meals · ${(item.price / item.meals).toFixed(2)}/meal</span>
+                        </div>
+                      </div>
                       <button
-                        onClick={() => addToCart({ id: Math.floor(Math.random() * 9000 + 1000), name: item.name, price: 0, qty: 1, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format", type: "box" })}
+                        onClick={() => addToCart({ id: Math.floor(Math.random() * 9000 + 1000), name: item.name, price: item.price, qty: 1, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format", type: "box" })}
                         className="w-full py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase bg-white/8 text-white/60 hover:bg-[#F5B300] hover:text-[#111] transition-colors border border-white/10 hover:border-[#F5B300]">
                         Add to Cart →
                       </button>
