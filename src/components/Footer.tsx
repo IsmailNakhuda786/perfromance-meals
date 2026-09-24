@@ -53,9 +53,8 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
         </div>
       </div>
 
-      {/* Prototype-only tools — hidden from customer view, preserved for internal use */}
-      {/* To re-enable: remove the `hidden` class or add a dev-mode flag */}
-      <div className="hidden border-t border-white/[0.04] bg-white/[0.02]">
+      {/* Prototype-only tools — developer/QA navigation */}
+      <div className="border-t border-white/[0.04] bg-white/[0.02]">
         <div className="max-w-[1440px] mx-auto px-6 py-2 flex flex-wrap gap-2 items-center justify-end">
           <span className="text-[9px] font-mono tracking-[0.2em] uppercase text-white/15 mr-1">PROTOTYPE</span>
           {[
