@@ -6,7 +6,7 @@ interface Props {
   cart: CartItem[];
   savedAddress: { name: string; phone: string; line1: string; unit: string; postal: string } | null;
   requireAccount?: boolean;
-  onComplete: (isGuest: boolean, promoCode: string, promoDiscount: number) => void;
+  onComplete: (isGuest: boolean, promoCode: string, promoDiscount: number, total: number) => void;
 }
 
 const DATES = ["Mon 4", "Tue 5", "Wed 6", "Thu 7", "Fri 8", "Sat 9"];
@@ -29,7 +29,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, requireAcco
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState<"invalid" | "expired" | null>(null);
 
-  const FREE_DELIVERY_THRESHOLD = 80;
+  const FREE_DELIVERY_THRESHOLD = 120;
 
   const VALID_PROMOS: Record<string, { discount: number; flat?: number; expired?: boolean }> = {
     "WELCOME10": { discount: 0.10 },
@@ -56,7 +56,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, requireAcco
   const promoRate = promoEntry?.discount ?? 0;
   const promoFlat = promoEntry?.flat ?? 0;
   const promoDiscount = promoFlat > 0 ? promoFlat : subtotal * promoRate;
-  const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 8.50;
+  const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 10;
   const total = Math.max(0, subtotal + deliveryFee - (useWallet ? 12.5 : 0) - promoDiscount);
 
   return (
@@ -384,7 +384,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, requireAcco
                 </label>
               </div>
 
-              <button onClick={() => onComplete(authMode === "guest", promoApplied ? promoCode.trim().toUpperCase() : "", promoDiscount)}
+              <button onClick={() => onComplete(authMode === "guest", promoApplied ? promoCode.trim().toUpperCase() : "", promoDiscount, total)}
                 className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                 Place Order — ${total.toFixed(2)}
               </button>

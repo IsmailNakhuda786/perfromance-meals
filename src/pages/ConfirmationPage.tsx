@@ -7,9 +7,10 @@ interface Props {
   isGuest?: boolean;
   promoCode?: string;
   promoDiscount?: number;
+  orderTotal?: number;
 }
 
-export default function ConfirmationPage({ navigate, orderType, isGuest = false, promoCode = "", promoDiscount = 0 }: Props) {
+export default function ConfirmationPage({ navigate, orderType, isGuest = false, promoCode = "", promoDiscount = 0, orderTotal = 0 }: Props) {
   const [showSignup, setShowSignup] = useState(false);
   const [signupDone, setSignupDone] = useState(false);
   const [suName, setSuName] = useState("");
@@ -52,9 +53,9 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
               { label: "Delivery Address", value: "123 Toa Payoh Lor 4, #08-22, S310123" },
               { label: "Delivery Time", value: "Today · 6:00am – 9:00am" },
               { label: "Estimated Arrival", value: "Monday, 4 September 2025" },
-              { label: "Subtotal", value: "$58.00" },
+              { label: "Subtotal", value: `$${orderTotal.toFixed(2)}` },
               ...(promoCode ? [{ label: `Promo (${promoCode})`, value: `–$${promoDiscount.toFixed(2)}` }] : []),
-              { label: "Payment", value: `Visa ending 4242 · $${promoCode ? (58 - promoDiscount).toFixed(2) : "58.00"}` },
+              { label: "Payment", value: `Visa ending 4242 · $${(orderTotal - promoDiscount).toFixed(2)}` },
             ].map((d) => (
               <div key={d.label} className={`flex items-start justify-between gap-4 ${d.label.startsWith("Promo") ? "text-green-600" : ""}`}>
                 <span className={`text-[13px] shrink-0 ${d.label.startsWith("Promo") ? "font-medium" : "text-[#999]"}`}>{d.label}</span>
@@ -158,7 +159,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
           <div className="bg-[#111111] text-white p-5 mb-8 flex items-center justify-between">
             <div>
               <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-1">Points Earned</div>
-              <div className="font-display text-[28px] font-bold text-[#F5B300]">+58 pts</div>
+              <div className="font-display text-[28px] font-bold text-[#F5B300]">+{Math.floor(orderTotal)} pts</div>
               <div className="text-white/35 text-[12px]">Added to your rewards balance</div>
             </div>
             <div className="text-right">
@@ -171,7 +172,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
           /* Guest — nudge to sign up */
           <div className="bg-[#111111] text-white p-5 mb-8">
             <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-2">You left points on the table</div>
-            <div className="font-display text-[22px] font-bold mb-1">This order would've earned <span className="text-[#F5B300]">+58 pts</span></div>
+            <div className="font-display text-[22px] font-bold mb-1">This order would've earned <span className="text-[#F5B300]">+{Math.floor(orderTotal)} pts</span></div>
             <p className="text-white/50 text-[13px] mb-4">Create a free account to earn points, get exclusive discounts, and track all your orders.</p>
             <button onClick={() => setShowSignup(true)}
               className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">

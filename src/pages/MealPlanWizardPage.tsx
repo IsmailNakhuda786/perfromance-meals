@@ -7,7 +7,7 @@ interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addToCart?: (item: any) => void;
   initialPlan: string;
-  onCheckoutComplete: (addr: { name: string; phone: string; line1: string; unit: string; postal: string }) => void;
+  onCheckoutComplete: (addr: { name: string; phone: string; line1: string; unit: string; postal: string }, total: number) => void;
 }
 
 type ProgrammeType = "bi-weekly" | "monthly" | "2-months" | "6by60" | "6by60plus";
@@ -890,7 +890,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                     </p>
                   </div>
 
-                  <button onClick={() => onCheckoutComplete({ name: details.name, phone: details.phone, line1: details.street, unit: "", postal: details.postcode })}
+                  <button onClick={() => onCheckoutComplete({ name: details.name, phone: details.phone, line1: details.street, unit: "", postal: details.postcode }, total)}
                     className="w-full bg-[#E85D04] text-white py-4 font-bold text-[16px] tracking-wide hover:bg-[#1A1A1A] transition-colors active:scale-[0.99] flex items-center justify-center gap-2">
                     Place Order · ${total.toFixed(2)}
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>

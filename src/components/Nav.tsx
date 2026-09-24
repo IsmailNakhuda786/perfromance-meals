@@ -486,7 +486,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
 
             {/* Free delivery progress bar */}
             {(() => {
-              const FREE_THRESHOLD = 80;
+              const FREE_THRESHOLD = 120;
               const pct = Math.min((cartTotal / FREE_THRESHOLD) * 100, 100);
               const remaining = Math.max(FREE_THRESHOLD - cartTotal, 0);
               return (
