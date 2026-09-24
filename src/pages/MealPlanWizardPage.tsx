@@ -10,8 +10,8 @@ interface Props {
   onCheckoutComplete: (addr: { name: string; phone: string; line1: string; unit: string; postal: string }) => void;
 }
 
-type ProgrammeType = "bi-weekly" | "monthly" | "6by60" | "buddy-plan" | "hyrox";
-type MealPlanType = "Low Carb Regular" | "Low Carb Petite" | "Balance Regular";
+type ProgrammeType = "bi-weekly" | "monthly" | "2-months" | "6by60" | "6by60plus";
+type MealPlanType = "Low Carb Regular" | "Low Carb Regular+" | "Balance Regular" | "Balance Regular+";
 type MealCount = "lunch-only" | "lunch-dinner";
 type Step = 1 | 2 | 3 | 4 | 5;
 type AuthMode = null | "signin" | "signup" | "done";
@@ -29,23 +29,25 @@ const PROGRAMME_DETAILS: Record<ProgrammeType, {
   label: string; description: string; kind: "recurring" | "fixed";
   days?: number; menuWeeks: number; badge?: string; icon: string; fixedMealCount?: MealCount;
 }> = {
-  "bi-weekly":  { label: "Biweekly",   description: "Delivery every 2 weeks",                                  kind: "recurring", menuWeeks: 2, badge: "POPULAR", icon: "🔄" },
-  "monthly":    { label: "Monthly",    description: "One delivery per month",                                   kind: "recurring", menuWeeks: 4, icon: "📅" },
-  "6by60":      { label: "6by60",      description: "60-day programme · Fresh structure for your goal",         kind: "fixed", days: 60, menuWeeks: 4, icon: "🎯", fixedMealCount: "lunch-dinner" as MealCount },
-  "buddy-plan": { label: "Buddy Plan", description: "20-day programme · Consistent meals for your week",       kind: "fixed", days: 20, menuWeeks: 4, icon: "👥", fixedMealCount: "lunch-dinner" as MealCount },
-  "hyrox":      { label: "HYROX",      description: "20-day programme · Structured fuel around your sessions", kind: "fixed", days: 20, menuWeeks: 4, icon: "⚡", fixedMealCount: "lunch-dinner" as MealCount },
+  "bi-weekly":  { label: "Biweekly",     description: "Mon–Fri coverage · renews every 2 weeks",     kind: "recurring", menuWeeks: 2, badge: "POPULAR", icon: "🔄" },
+  "monthly":    { label: "Monthly",      description: "Mon–Fri coverage · renews every month",        kind: "recurring", menuWeeks: 4, icon: "📅" },
+  "2-months":   { label: "2 Months",     description: "Mon–Fri coverage · renews every 2 months",     kind: "recurring", menuWeeks: 4, icon: "🗓" },
+  "6by60":      { label: "6 by 60",      description: "60-day programme · All-week coverage · 6kg+ weight-loss goal", kind: "fixed", days: 60, menuWeeks: 4, icon: "🎯", fixedMealCount: "lunch-dinner" as MealCount },
+  "6by60plus":  { label: "6 by 60 Plus", description: "60-day programme · All-week coverage · Weight loss + muscle support", kind: "fixed", days: 60, menuWeeks: 4, icon: "⚡", fixedMealCount: "lunch-dinner" as MealCount },
 };
 
 const MEAL_PLANS: { id: MealPlanType; kcal: string; note: string; protein: string; carb: string; icon: string }[] = [
-  { id: "Low Carb Regular", kcal: "400–450 kcal", note: "Most popular · balanced macros",        protein: "42g", carb: "22g", icon: "🥗" },
-  { id: "Low Carb Petite",  kcal: "300–350 kcal", note: "Lighter portions · calorie deficit",    protein: "32g", carb: "16g", icon: "🥙" },
-  { id: "Balance Regular",  kcal: "500–550 kcal", note: "Higher energy · performance fuel",      protein: "48g", carb: "55g", icon: "💪" },
+  { id: "Low Carb Regular",  kcal: "400–450 kcal", note: "Most popular · balanced low-carb macros",  protein: "42g", carb: "22g", icon: "🥗" },
+  { id: "Low Carb Regular+", kcal: "450–500 kcal", note: "Enhanced low-carb · higher protein",       protein: "48g", carb: "22g", icon: "🥗" },
+  { id: "Balance Regular",   kcal: "500–550 kcal", note: "Higher energy · performance fuel",         protein: "48g", carb: "55g", icon: "💪" },
+  { id: "Balance Regular+",  kcal: "550–600 kcal", note: "Maximum performance · muscle support",     protein: "54g", carb: "58g", icon: "💪" },
 ];
 
 const BASE_PRICES: Record<MealPlanType, Record<MealCount, number>> = {
-  "Low Carb Regular": { "lunch-only": 140, "lunch-dinner": 200 },
-  "Low Carb Petite":  { "lunch-only": 120, "lunch-dinner": 180 },
-  "Balance Regular":  { "lunch-only": 150, "lunch-dinner": 220 },
+  "Low Carb Regular":  { "lunch-only": 140, "lunch-dinner": 200 },
+  "Low Carb Regular+": { "lunch-only": 155, "lunch-dinner": 215 },
+  "Balance Regular":   { "lunch-only": 150, "lunch-dinner": 220 },
+  "Balance Regular+":  { "lunch-only": 165, "lunch-dinner": 235 },
 };
 
 const VALID_PROMOS: Record<string, { discount: number; flat?: number; expired?: boolean }> = {
@@ -176,9 +178,9 @@ const inputCls = "w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py
 
 // Map landing-page goal label → wizard defaults
 function goalDefaults(goal: string): { programme: ProgrammeType; mealPlan: MealPlanType } {
-  if (goal === "CUT")    return { programme: "6by60",      mealPlan: "Low Carb Regular" };
-  if (goal === "BUILD")  return { programme: "buddy-plan",  mealPlan: "Balance Regular"  };
-  return                        { programme: "bi-weekly",   mealPlan: "Balance Regular"  }; // MAINTAIN / default
+  if (goal === "CUT")    return { programme: "6by60",     mealPlan: "Low Carb Regular" };
+  if (goal === "BUILD")  return { programme: "6by60plus", mealPlan: "Balance Regular"  };
+  return                        { programme: "bi-weekly", mealPlan: "Balance Regular"  };
 }
 
 export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutComplete }: Props) {
@@ -357,12 +359,13 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
               <div>
                 <p className="text-[10px] font-extrabold tracking-[0.3em] uppercase text-[#888] mb-3">Recurring Subscription</p>
                 <div className="space-y-2">
-                  {(["bi-weekly", "monthly"] as ProgrammeType[]).map((t) => {
+                  {(["bi-weekly", "monthly", "2-months"] as ProgrammeType[]).map((t) => {
                     const info = PROGRAMME_DETAILS[t];
+                    const weekLabel = t === "bi-weekly" ? "2 weekly menus" : "4 weekly menus";
                     return (
                       <SelectCard key={t} selected={programme === t} onClick={() => setProgramme(t)}
                         icon={info.icon} title={info.label} sub={info.description} badge={info.badge}
-                        right={<span className="text-[11px] text-[#888]">{t === "bi-weekly" ? "2 weekly menus" : "4 weekly menus"}</span>}
+                        right={<span className="text-[11px] text-[#888]">{weekLabel}</span>}
                       />
                     );
                   })}
@@ -374,7 +377,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
               <div>
                 <p className="text-[10px] font-extrabold tracking-[0.3em] uppercase text-[#888] mb-3">Fixed-Period Programme</p>
                 <div className="space-y-2">
-                  {(["6by60", "buddy-plan", "hyrox"] as ProgrammeType[]).map((t) => {
+                  {(["6by60", "6by60plus"] as ProgrammeType[]).map((t) => {
                     const info = PROGRAMME_DETAILS[t];
                     return (
                       <SelectCard key={t} selected={programme === t} onClick={() => setProgramme(t)}
@@ -392,9 +395,41 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
           {/* ════ STEP 2: PLAN & MEALS ════ */}
           {step === 2 && (
             <div className="space-y-7">
-              {/* Meal type grid */}
+              {/* WHAT'S INCLUDED — predefined, grey, read-only */}
               <div>
-                <p className="text-[10px] font-extrabold tracking-[0.3em] uppercase text-[#888] mb-3">Meal Type & Size</p>
+                <p className="text-[10px] font-extrabold tracking-[0.3em] uppercase text-[#888] mb-3">What's Included</p>
+                <div className="border border-[#E8E4DC] bg-[#F7F5F0] p-5 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-[#888]">Programme</span>
+                    <span className="text-[13px] font-bold text-[#555]">{progInfo.label}</span>
+                  </div>
+                  <div className="h-px bg-[#E8E4DC]" />
+                  <p className="text-[12px] text-[#888] leading-relaxed">{progInfo.description}</p>
+                  {progInfo.kind === "fixed" && progInfo.days && (
+                    <div className="flex gap-4 text-[12px] text-[#888]">
+                      <span>Duration: <strong className="text-[#555]">{progInfo.days} days</strong></span>
+                      <span>All-week coverage: <strong className="text-[#555]">Mon–Fri</strong></span>
+                    </div>
+                  )}
+                  {programme === "6by60plus" && (
+                    <div className="mt-2 space-y-1.5">
+                      <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#888]">Also includes</p>
+                      {["Support frozen weekend meals", "Channel access", "Weigh-in machine", "Rewards"].map((item) => (
+                        <div key={item} className="flex items-center gap-2 text-[12px] text-[#666]">
+                          <div className="w-1 h-1 bg-[#E85D04] shrink-0" />{item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="h-px bg-[#E8E4DC]" />
+                  <p className="text-[11px] text-[#AAA] italic">Plan type and meals are predefined for this programme. Meal selection is in the next step.</p>
+                </div>
+              </div>
+
+              {/* Meal type — shown as selectable only for recurring */}
+              {progInfo.kind === "recurring" && (
+              <div>
+                <p className="text-[10px] font-extrabold tracking-[0.3em] uppercase text-[#888] mb-3">Meal Type &amp; Size</p>
                 <div className="grid grid-cols-1 gap-2">
                   {MEAL_PLANS.map((plan) => (
                     <SelectCard key={plan.id} selected={mealPlan === plan.id} onClick={() => setMealPlan(plan.id)}
@@ -410,6 +445,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                   ))}
                 </div>
               </div>
+              )}
 
               {/* Meals per day */}
               <div>
@@ -478,9 +514,9 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
           {/* ════ STEP 3: MENU ════ */}
           {step === 3 && (
             <div>
-              {/* Week tabs */}
+              {/* Week tabs — biweekly shows 2 weeks, monthly/2-months shows 4 weeks */}
               <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
-                {WEEKS.map((w, i) => (
+                {WEEKS.slice(0, progInfo.menuWeeks).map((w, i) => (
                   <button key={i} onClick={() => { setSelectedWeek(i); setOpenDay("Monday"); }}
                     className={`flex flex-col items-center px-5 py-3 border-2 shrink-0 transition-all font-semibold
                       ${selectedWeek === i ? "border-[#E85D04] bg-[#E85D04] text-white" : "border-[#E8E4DC] bg-white text-[#888] hover:border-[#C0BAB0]"}`}>

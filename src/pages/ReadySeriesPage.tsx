@@ -26,67 +26,66 @@ const MEALS = [
 
 const CATS = ["All", "High Protein", "Low Carb", "High Carb", "Breakfast"];
 
-type BundleType = "meals" | "protein";
+// Predefined bundles per product catalogue
+const PREDEFINED_BUNDLES = [
+  {
+    category: "Low Carb Meals",
+    color: "#F5B300",
+    items: [
+      { name: "Signature Flavours — Non-Beef", variant: "Non-Beef", desc: "Our most-loved low carb flavours, curated for you.", badge: "POPULAR" },
+      { name: "Signature Flavours — Beef",     variant: "Beef",     desc: "Best-selling beef low carb options in one bundle.", badge: null },
+      { name: "Essential Top Up — Non-Beef",   variant: "Non-Beef", desc: "Top up your fridge with essential low carb staples.", badge: null },
+      { name: "Essential Top Up — Beef",       variant: "Beef",     desc: "Beef-based essentials to keep your macros on track.", badge: null },
+      { name: "9 Flavours of the Month",       variant: null,       desc: "9 rotating seasonal low carb meals, refreshed monthly.", badge: "NEW" },
+    ],
+  },
+  {
+    category: "High Carb Meals",
+    color: "#F5B300",
+    items: [
+      { name: "Signature Flavours — Non-Beef", variant: "Non-Beef", desc: "High carb performance meals for fuel-heavy days.", badge: "POPULAR" },
+      { name: "Signature Flavours — Beef",     variant: "Beef",     desc: "Beef-based high carb signatures for sustained energy.", badge: null },
+      { name: "Essential Top Up — Non-Beef",   variant: "Non-Beef", desc: "Restock your week with non-beef high carb essentials.", badge: null },
+      { name: "Essential Top Up — Beef",       variant: "Beef",     desc: "Beef high carb top-up for active weeks.", badge: null },
+      { name: "9 Flavours of the Month",       variant: null,       desc: "9 rotating seasonal high carb meals, refreshed monthly.", badge: "NEW" },
+    ],
+  },
+  {
+    category: "Just Protein",
+    color: "#F5B300",
+    items: [
+      { name: "Bundle of 10 — Non-Beef", variant: "Non-Beef", desc: "10 non-beef high-protein serves. No carb, pure performance.", badge: null },
+      { name: "Bundle of 10 — Beef",     variant: "Beef",     desc: "10 beef high-protein serves for maximum muscle support.", badge: null },
+    ],
+  },
+  {
+    category: "Mixed Bundle",
+    color: "#F5B300",
+    items: [
+      { name: "Low Carb Mix — Non-Beef", variant: "Non-Beef", desc: "A curated mix of non-beef low carb meals.", badge: null },
+      { name: "Low Carb Mix — Beef",     variant: "Beef",     desc: "A curated mix of beef low carb meals.", badge: null },
+      { name: "High Carb Mix — Non-Beef", variant: "Non-Beef", desc: "A curated mix of non-beef high carb meals.", badge: null },
+      { name: "High Carb Mix — Beef",    variant: "Beef",     desc: "A curated mix of beef high carb meals.", badge: null },
+    ],
+  },
+];
 
-const BUNDLES: Record<BundleType, Array<{
-  n: string; meals: number; price: number; ppm: number;
-  desc: string; badge: string | null; mealIds: number[];
-}>> = {
-  meals: [
-    {
-      n: "Starter Pack", meals: 5, price: 62, ppm: 12.40,
-      desc: "5 chef-picked balanced meals — ideal first order.",
-      badge: null,
-      mealIds: [101, 104, 103, 107, 111],
-    },
-    {
-      n: "Weekly Variety", meals: 10, price: 119, ppm: 11.90,
-      desc: "Full week sorted — mix of high protein, low carb, and breakfast.",
-      badge: "MOST POPULAR",
-      mealIds: [101, 106, 102, 104, 105, 108, 103, 109, 112, 111],
-    },
-    {
-      n: "Performance Pack", meals: 15, price: 172, ppm: 11.50,
-      desc: "15 macro-tracked meals for a high-output week.",
-      badge: "BEST VALUE",
-      mealIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 101, 104, 106],
-    },
-    {
-      n: "Monthly Fuel", meals: 20, price: 220, ppm: 11.00,
-      desc: "Full month of performance nutrition locked in.",
-      badge: null,
-      mealIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 101, 102, 103, 104, 105, 106, 107, 108],
-    },
-  ],
-  protein: [
-    {
-      n: "Protein Starter", meals: 5, price: 69, ppm: 13.80,
-      desc: "5 high-protein picks — 40g+ protein per serve.",
-      badge: null,
-      mealIds: [101, 104, 106, 108, 102],
-    },
-    {
-      n: "Protein Weekly", meals: 10, price: 132, ppm: 13.20,
-      desc: "10 premium protein-first meals. Max muscle, zero guesswork.",
-      badge: "MOST POPULAR",
-      mealIds: [101, 104, 106, 108, 102, 101, 104, 106, 108, 110],
-    },
-    {
-      n: "Lean Machine", meals: 15, price: 189, ppm: 12.60,
-      desc: "15 high-protein, low-carb meals for shredding or maintenance.",
-      badge: "BEST VALUE",
-      mealIds: [101, 102, 104, 106, 108, 110, 101, 102, 104, 106, 108, 110, 101, 104, 106],
-    },
-    {
-      n: "Protein Month", meals: 20, price: 248, ppm: 12.40,
-      desc: "A full month of lean protein — built for those who train hard.",
-      badge: null,
-      mealIds: [101, 102, 104, 106, 108, 110, 101, 102, 104, 106, 108, 110, 101, 102, 104, 106, 108, 110, 101, 104],
-    },
-  ],
-};
+// 10 predefined subscription products
+const SUBSCRIPTION_PRODUCTS = [
+  { sku: "JPSUB01", name: "Just Protein",         variant: "Non-Beef", items: 14, price3m: 252.90, price6m: 480.50, badge: null },
+  { sku: "JPSUB02", name: "Just Protein",         variant: "Beef",     items: 14, price3m: 252.90, price6m: 480.50, badge: null },
+  { sku: "LCSUB01", name: "Low Carb Meals",       variant: "Non-Beef", items: 10, price3m: 303.00, price6m: 575.70, badge: "POPULAR" },
+  { sku: "LCSUB02", name: "Low Carb Meals",       variant: "Beef",     items: 10, price3m: 303.00, price6m: 575.70, badge: null },
+  { sku: "HCSUB01", name: "High Carb Meals",      variant: "Non-Beef", items: 10, price3m: 303.00, price6m: 575.70, badge: null },
+  { sku: "HCSUB02", name: "High Carb Meals",      variant: "Beef",     items: 10, price3m: 303.00, price6m: 575.70, badge: null },
+  { sku: "LCMIXSUB01", name: "Low Carb + Just Protein",  variant: "Non-Beef", items: 15, price3m: 354.56, price6m: 693.90, badge: "BEST VALUE" },
+  { sku: "LCMIXSUB02", name: "Low Carb + Just Protein",  variant: "Beef",     items: 15, price3m: 354.56, price6m: 693.90, badge: null },
+  { sku: "HCMIXSUB01", name: "High Carb + Just Protein", variant: "Non-Beef", items: 15, price3m: 354.56, price6m: 693.90, badge: null },
+  { sku: "HCMIXSUB02", name: "High Carb + Just Protein", variant: "Beef",     items: 15, price3m: 354.56, price6m: 693.90, badge: null },
+];
 
-const FREE_DELIVERY_THRESHOLD = 80;
+const FREE_DELIVERY_THRESHOLD = 120;
+const DELIVERY_FEE = 10;
 
 const promos = [
   { code: "READY20", desc: "20% off your first Ready Series order", expires: "30 Sep 2026" },
@@ -116,13 +115,13 @@ const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: strin
 };
 
 export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal }: Props) {
+  const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
+  const [subTerm, setSubTerm] = useState<3 | 6>(3);
+  const [selectedSub, setSelectedSub] = useState<string | null>(null);
   const [activeCat, setActiveCat] = useState("All");
   const [addedId, setAddedId] = useState<number | null>(null);
   const [reviewMealId, setReviewMealId] = useState<number | null>(null);
-  const [bundleType, setBundleType] = useState<BundleType>("meals");
   const [carouselOffsets, setCarouselOffsets] = useState<Record<string, number>>({});
-  const [selectedBundleDetail, setSelectedBundleDetail] = useState<null | typeof BUNDLES["meals"][0]>(null);
-  const [detailSlide, setDetailSlide] = useState(0);
 
   const scrollCarousel = (bundleName: string, dir: 1 | -1) => {
     setCarouselOffsets((prev) => {
@@ -149,11 +148,10 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
   const cartItems = cart.filter((i) => i.type === "ready" || i.type === "box");
   const cartQty = cartItems.reduce((s, i) => s + i.qty, 0);
-  const cartTotal = cart.filter((i) => i.type === "ready").reduce((s, i) => s + i.price * i.qty, 0);
+  const cartTotal = cart.filter((i) => i.type === "ready" || i.type === "box").reduce((s, i) => s + i.price * i.qty, 0);
   const toFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - cartTotal);
   const freeDeliveryPct = Math.min(100, (cartTotal / FREE_DELIVERY_THRESHOLD) * 100);
-
-  const getMealById = (id: number) => MEALS.find((m) => m.id === id);
+  const deliveryFee = cartTotal > 0 ? (cartTotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE) : 0;
 
   return (
     <div className="bg-[#1A1A1A] text-white min-h-screen">
@@ -237,141 +235,169 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         </div>
       </div>
 
-      {/* ── BUNDLES ── */}
-      <section className="py-16 px-6 sm:px-8 bg-[#1A1A1A]">
+      {/* ── PURCHASE MODE TABS ── */}
+      <div className="bg-[#111] border-b border-white/8">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="flex">
+            {([
+              { key: "single" as const,       label: "Single Purchase", sub: "Individual meals" },
+              { key: "bundles" as const,       label: "Bundles",         sub: "Predefined packs" },
+              { key: "subscription" as const,  label: "Subscription",    sub: "3 or 6 months" },
+            ]).map((m) => (
+              <button key={m.key} onClick={() => setPurchaseMode(m.key)}
+                className={`px-6 py-4 text-left transition-all border-b-2 ${purchaseMode === m.key ? "border-[#F5B300] text-white" : "border-transparent text-white/35 hover:text-white/70"}`}>
+                <div className="text-[12px] font-bold tracking-wide">{m.label}</div>
+                <div className="text-[10px] mt-0.5 text-white/30">{m.sub}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── BUNDLES TAB ── */}
+      {purchaseMode === "bundles" && (
+      <section className="py-14 px-6 sm:px-8 bg-[#1A1A1A]">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-            <div>
-              <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Useful Bundles</div>
-              <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Stock up and save<span className="text-[#F5B300]">.</span></h2>
-              <p className="text-white/40 text-[13px] mt-2">Curated bundles — see every meal inside before you order.</p>
-            </div>
-            <button
-              onClick={() => navigate("build-a-box")}
-              className="inline-flex items-center gap-2 border border-[#F5B300]/40 text-[#F5B300] text-[11px] font-bold tracking-[0.2em] uppercase px-6 py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors whitespace-nowrap"
-            >
-              Box Subscription →
-            </button>
+          <div className="mb-10">
+            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Predefined Bundles</div>
+            <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Choose your bundle<span className="text-[#F5B300]">.</span></h2>
+            <p className="text-white/40 text-[13px] mt-2">All bundles are predefined — select the category and variant that suits you.</p>
           </div>
 
-          {/* Bundle type tabs */}
-          <div className="flex gap-0 border border-white/10 p-1 bg-white/5 w-full sm:w-auto sm:inline-flex mb-8">
-            {([
-              { key: "meals" as BundleType, label: "All Meals", sub: "Variety packs" },
-              { key: "protein" as BundleType, label: "High Protein", sub: "40g+ per serve" },
-            ]).map((t) => (
-              <button key={t.key} onClick={() => setBundleType(t.key)}
-                className={`flex-1 sm:flex-none px-6 py-3 text-[12px] font-bold tracking-wide transition-all text-left ${bundleType === t.key ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white"}`}>
-                <div>{t.label}</div>
-                <div className={`text-[10px] font-normal mt-0.5 ${bundleType === t.key ? "text-[#111]/60" : "text-white/25"}`}>{t.sub}</div>
+          <div className="space-y-10">
+            {PREDEFINED_BUNDLES.map((group) => (
+              <div key={group.category}>
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="text-[11px] font-mono tracking-[0.3em] uppercase text-[#F5B300]">{group.category}</div>
+                  <div className="flex-1 h-px bg-white/8" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {group.items.map((item) => (
+                    <div key={item.name} className="bg-[#111] border border-white/8 p-5 flex flex-col gap-3 hover:border-[#F5B300]/30 transition-colors">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="text-[13px] font-semibold leading-snug">{item.name}</div>
+                          {item.variant && (
+                            <div className="text-[10px] font-mono tracking-widest uppercase text-white/30 mt-1">{item.variant}</div>
+                          )}
+                        </div>
+                        {item.badge && (
+                          <span className="bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-0.5 shrink-0">{item.badge}</span>
+                        )}
+                      </div>
+                      <p className="text-[12px] text-white/40 leading-relaxed flex-1">{item.desc}</p>
+                      <button
+                        onClick={() => addToCart({ id: Math.floor(Math.random() * 9000 + 1000), name: item.name, price: 0, qty: 1, img: "", type: "box" })}
+                        className="w-full py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase bg-white/8 text-white/60 hover:bg-[#F5B300] hover:text-[#111] transition-colors border border-white/10 hover:border-[#F5B300]">
+                        Add to Cart →
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 p-4 border border-white/8 bg-white/3 text-[11px] text-white/30">
+            Free delivery on orders $120 and above · $10 delivery fee below $120
+          </div>
+        </div>
+      </section>
+      )}
+
+      {/* ── SUBSCRIPTION TAB ── */}
+      {purchaseMode === "subscription" && (
+      <section className="py-14 px-6 sm:px-8 bg-[#1A1A1A]">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="mb-8">
+            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Ready Series Subscription</div>
+            <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Choose your subscription<span className="text-[#F5B300]">.</span></h2>
+            <p className="text-white/40 text-[13px] mt-2">10 predefined subscription options. Select a term, then subscribe.</p>
+          </div>
+
+          {/* Term selector */}
+          <div className="flex gap-0 mb-8 border border-white/10 p-1 bg-white/4 inline-flex">
+            {([3, 6] as const).map((t) => (
+              <button key={t} onClick={() => setSubTerm(t)}
+                className={`px-8 py-3 text-[12px] font-bold tracking-wide transition-all ${subTerm === t ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white"}`}>
+                {t} Months
+                <div className={`text-[10px] font-normal mt-0.5 ${subTerm === t ? "text-[#111]/60" : "text-white/25"}`}>
+                  {t === 3 ? "Renews after 3 months" : "Renews after 6 months"}
+                </div>
               </button>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {BUNDLES[bundleType].map((b) => {
-              const bundleMeals = b.mealIds.map((id) => getMealById(id)).filter(Boolean) as typeof MEALS;
-              const uniqueMeals = bundleMeals.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
-              const offset = carouselOffsets[b.n] ?? 0;
-              const maxOffset = Math.max(0, uniqueMeals.length * 120 - 360);
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {SUBSCRIPTION_PRODUCTS.map((sub) => {
+              const price = subTerm === 3 ? sub.price3m : sub.price6m;
+              const isSelected = selectedSub === sub.sku;
               return (
-                <div key={b.n} className="bg-[#111] border border-white/10 overflow-hidden hover:border-[#F5B300]/30 transition-colors">
-                  {/* Meal image carousel with nav arrows */}
-                  <div className="relative overflow-hidden" style={{ height: "100px" }}>
-                    <div
-                      className="flex gap-0 transition-transform duration-300"
-                      style={{ transform: `translateX(-${offset}px)` }}
-                    >
-                      {uniqueMeals.map((meal) => (
-                        <div key={meal.id} className="shrink-0 relative" style={{ width: "120px", height: "100px" }}>
-                          <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#111]/70 to-transparent" />
-                          <div className="absolute bottom-1.5 left-1.5 right-1.5 text-[8px] text-white/70 leading-tight line-clamp-1">{meal.name.split("&")[0].trim()}</div>
-                        </div>
-                      ))}
+                <div key={sub.sku}
+                  onClick={() => setSelectedSub(isSelected ? null : sub.sku)}
+                  className={`cursor-pointer border p-5 flex flex-col gap-4 transition-all ${isSelected ? "border-[#F5B300] bg-[#F5B300]/5" : "border-white/8 bg-[#111] hover:border-white/20"}`}>
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="text-[13px] font-semibold leading-snug">{sub.name}</div>
+                      <div className="text-[10px] font-mono tracking-widest uppercase text-white/30 mt-1">{sub.variant}</div>
                     </div>
-                    {/* Badge */}
-                    {b.badge && (
-                      <div className="absolute top-2 left-2 bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-[0.15em] px-2 py-0.5">{b.badge}</div>
+                    {sub.badge && (
+                      <span className="bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-0.5 shrink-0">{sub.badge}</span>
                     )}
-                    {/* Navigation arrows */}
-                    <div className="absolute bottom-2 right-2 flex gap-1">
-                      <button
-                        onClick={() => scrollCarousel(b.n, -1)}
-                        disabled={offset === 0}
-                        className="w-6 h-6 bg-black/60 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6" /></svg>
-                      </button>
-                      <button
-                        onClick={() => scrollCarousel(b.n, 1)}
-                        disabled={offset >= maxOffset}
-                        className="w-6 h-6 bg-black/60 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6" /></svg>
-                      </button>
-                    </div>
-                    {/* Meal count */}
-                    <div className="absolute top-2 right-2 bg-black/60 text-white/70 text-[9px] font-mono px-2 py-0.5">{uniqueMeals.length} meals</div>
                   </div>
-
-                  {/* Bundle info */}
-                  <div className="p-5">
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div>
-                        <div className="font-display text-[18px] font-bold text-white">{b.n}</div>
-                        <div className="text-white/40 text-[12px] mt-0.5 leading-relaxed">{b.desc}</div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <div className="font-display text-[24px] font-extrabold text-[#F5B300]">${b.price}</div>
-                        <div className="text-white/30 text-[11px]">${b.ppm}/meal</div>
-                      </div>
-                    </div>
-
-                    {/* Meal name tags */}
-                    <div className="flex flex-wrap gap-1.5 mt-3 mb-4">
-                      {uniqueMeals.slice(0, 4).map((meal) => (
-                        <span key={meal.id} className="bg-white/5 text-white/40 text-[10px] px-2 py-0.5">{meal.name.split("&")[0].trim()}</span>
-                      ))}
-                      {uniqueMeals.length > 4 && (
-                        <span className="bg-white/5 text-white/30 text-[10px] px-2 py-0.5">+{uniqueMeals.length - 4} more</span>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => { setSelectedBundleDetail(b); setDetailSlide(0); }}
-                        className="border border-white/20 text-white/50 text-[10px] font-bold tracking-widest uppercase px-4 py-3 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors whitespace-nowrap"
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={() => {
-                          const countMap: Record<number, number> = {};
-                          b.mealIds.forEach((id) => { countMap[id] = (countMap[id] ?? 0) + 1; });
-                          addToCart({ id: 200 + b.meals + (bundleType === "protein" ? 100 : 0), name: `${b.n} (${b.meals} meals)`, price: b.price, qty: 1, img: uniqueMeals[0]?.img ?? "", type: "box", mealImgs: uniqueMeals.map((m) => m.img.includes("?") ? m.img.split("?")[0] + "?w=80&h=80&fit=crop&auto=format" : m.img), mealNames: uniqueMeals.map((m) => m.name.split("&")[0].trim()), mealCounts: uniqueMeals.map((m) => countMap[m.id] ?? 1) });
-                        }}
-                        className="flex-1 bg-white/8 text-white text-[11px] font-bold tracking-[0.2em] uppercase py-3 hover:bg-[#F5B300] hover:text-[#111] transition-colors"
-                      >
-                        Add Bundle — ${b.price}
-                      </button>
-                    </div>
+                  <div className="flex items-center gap-2 text-[11px] text-white/30">
+                    <span className="font-mono">{sub.items} items</span>
+                    <span>·</span>
+                    <span className="font-mono text-[9px] text-white/20">{sub.sku}</span>
                   </div>
+                  <div className="mt-auto">
+                    <div className="font-mono text-[24px] font-extrabold text-[#F5B300]">${price.toFixed(2)}</div>
+                    <div className="text-[10px] text-white/30 mt-0.5">for {subTerm} months · renews after</div>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); addToCart({ id: sub.sku.length, name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`, price, qty: 1, img: "", type: "box" }); }}
+                    className={`w-full py-3 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${isSelected ? "bg-[#F5B300] text-[#111] hover:bg-white" : "bg-white/8 text-white/50 hover:bg-[#F5B300] hover:text-[#111] border border-white/10 hover:border-[#F5B300]"}`}>
+                    Subscribe →
+                  </button>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => navigate("build-a-box")}
-              className="inline-flex items-center gap-3 text-white/40 hover:text-[#F5B300] text-[12px] font-mono tracking-widest uppercase transition-colors"
-            >
-              Or subscribe with your own custom box →
-            </button>
+          <div className="mt-8 p-4 border border-white/8 bg-white/3 text-[11px] text-white/30 leading-relaxed">
+            Ready Series Subscription delivers {subTerm === 3 ? "3" : "6"} times over your selected term and renews after {subTerm} months.
+            Delivery dates are assigned after subscription is confirmed. Cancel or manage your subscription from your account.
           </div>
         </div>
       </section>
+      )}
 
-      {/* ── PRODUCT GRID ── */}
+      {/* ── SINGLE PURCHASE ── (old browse section, shown when mode = single) */}
+      {purchaseMode === "single" && (
+      <section className="py-16 px-6 sm:px-8 bg-[#1A1A1A]">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="mb-10">
+            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Individual Meals</div>
+            <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Browse &amp; add to cart<span className="text-[#F5B300]">.</span></h2>
+            <p className="text-white/40 text-[13px] mt-2">Choose any meals, add to cart, and check out. No subscription needed.</p>
+          </div>
+          <div className="mb-8">
+            <div className="flex flex-wrap gap-2">
+              {CATS.map((c) => (
+                <button key={c} onClick={() => setActiveCat(c)}
+                  className={`px-4 py-2 text-[11px] font-bold tracking-wide transition-all ${activeCat === c ? "bg-[#F5B300] text-[#111]" : "border border-white/15 text-white/40 hover:border-white/40 hover:text-white"}`}>
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+      )}
+
+      {/* ── PRODUCT GRID (single purchase) ── */}
+      {purchaseMode === "single" && (
       <section className="py-16 px-6 sm:px-8">
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
@@ -459,6 +485,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
           </div>
         </div>
       </section>
+      )}
 
       {/* ── WHY READY SERIES ── */}
       <section className="py-16 bg-[#1A1A1A] px-6 sm:px-8">
@@ -474,7 +501,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               { icon: "🧊", label: "Frozen at peak", desc: "Locked in at maximum freshness and nutrition." },
               { icon: "⏱", label: "3-minute prep", desc: "Microwave from frozen. No thaw time needed." },
               { icon: "📊", label: "Macro tracked", desc: "Every gram counted. No guesswork required." },
-              { icon: "🚚", label: "Free delivery $80+", desc: "Free delivery on orders over $80. Always." },
+              { icon: "🚚", label: "Free delivery $120+", desc: "Free delivery on orders $120 and above. $10 below." },
             ].map((f) => (
               <div key={f.label} className="bg-[#1A1A1A] px-7 py-8">
                 <div className="text-[30px] mb-4">{f.icon}</div>
@@ -500,9 +527,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
           )}
           <div className="px-6 py-4 flex items-center justify-between">
             <div>
-              <div className="font-extrabold text-[16px]">{cartQty} meal{cartQty !== 1 ? "s" : ""} in your box</div>
+              <div className="font-extrabold text-[16px]">{cartQty} item{cartQty !== 1 ? "s" : ""} · ${cartTotal.toFixed(2)}</div>
               <div className="text-[11px] opacity-60">
-                {toFreeDelivery <= 0 ? "🎉 Free delivery unlocked!" : `$${cartTotal.toFixed(2)} — ${toFreeDelivery.toFixed(2)} from free delivery`}
+                {toFreeDelivery <= 0 ? "🎉 Free delivery" : `+ $${DELIVERY_FEE} delivery · Add $${toFreeDelivery.toFixed(2)} for free`}
               </div>
             </div>
             <button
@@ -591,194 +618,6 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         );
       })()}
 
-      {/* ── BUNDLE DETAIL DIALOG ── */}
-      {selectedBundleDetail && (() => {
-        const b = selectedBundleDetail;
-        const bundleMeals = b.mealIds.map((id) => getMealById(id)).filter(Boolean) as typeof MEALS;
-        const uniqueMeals = bundleMeals.filter((m, i, arr) => arr.findIndex((x) => x.id === m.id) === i);
-        const slide = Math.max(0, Math.min(detailSlide, uniqueMeals.length - 1));
-        const current = uniqueMeals[slide];
-        const currentReviews = current ? (MEAL_REVIEWS[current.id] ?? []) : [];
-        const avgRating = currentReviews.length > 0
-          ? (currentReviews.reduce((s, r) => s + r.rating, 0) / currentReviews.length)
-          : 4.8;
-        const individualTotal = uniqueMeals.reduce((s, m) => s + m.price, 0) * (b.meals / uniqueMeals.length);
-        const savings = Math.max(0, individualTotal - b.price);
-        return (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-6">
-            <div className="absolute inset-0 bg-black/88" onClick={() => setSelectedBundleDetail(null)} />
-            <div className="relative bg-[#111] w-full max-w-[680px] max-h-[92vh] overflow-y-auto flex flex-col">
-
-              {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0">
-                <div>
-                  <div className="text-[10px] font-mono tracking-[0.3em] text-[#F5B300] uppercase mb-0.5">Bundle Details</div>
-                  <h2 className="text-[18px] font-extrabold text-white">{b.n} <span className="text-white/30 font-normal text-[14px]">· {b.meals} meals</span></h2>
-                </div>
-                <button onClick={() => setSelectedBundleDetail(null)} className="text-white/30 hover:text-white p-2 transition-colors">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                </button>
-              </div>
-
-              {/* Main meal image */}
-              {current && (
-                <div className="relative bg-[#1A1A1A]">
-                  <div className="h-[220px] overflow-hidden">
-                    <img
-                      src={current.img.includes("?") ? current.img.split("?")[0] + "?w=680&h=220&fit=crop&auto=format" : current.img}
-                      alt={current.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  </div>
-
-                  {/* Prev / Next */}
-                  {uniqueMeals.length > 1 && (
-                    <>
-                      <button onClick={() => setDetailSlide(Math.max(0, slide - 1))} disabled={slide === 0}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/80 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-                      </button>
-                      <button onClick={() => setDetailSlide(Math.min(uniqueMeals.length - 1, slide + 1))} disabled={slide === uniqueMeals.length - 1}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/80 text-white flex items-center justify-center disabled:opacity-20 hover:bg-[#F5B300] hover:text-[#111] transition-colors">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
-                      </button>
-                    </>
-                  )}
-                  <div className="absolute top-3 left-3 bg-black/70 text-white/60 text-[10px] font-mono px-2 py-1">
-                    {slide + 1} / {uniqueMeals.length} meals
-                  </div>
-                </div>
-              )}
-
-              {/* Current meal details */}
-              {current && (
-                <div className="px-6 py-4 border-b border-white/8">
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <div>
-                      <h3 className="font-bold text-[16px] text-white leading-tight">{current.name}</h3>
-                      {/* Star rating + review count */}
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="flex">
-                          {[1,2,3,4,5].map((s) => (
-                            <span key={s} className={`text-[12px] ${s <= Math.round(avgRating) ? "text-[#F5B300]" : "text-white/20"}`}>★</span>
-                          ))}
-                        </div>
-                        <span className="text-[11px] font-mono text-white/40">
-                          {avgRating.toFixed(1)} · {currentReviews.length > 0 ? `${currentReviews.length} reviews` : "Highly rated"}
-                        </span>
-                      </div>
-                    </div>
-                    {/* Individual price + savings */}
-                    <div className="text-right shrink-0">
-                      <div className="text-[11px] text-white/30 line-through font-mono">${current.price.toFixed(2)} individually</div>
-                      <div className="text-[14px] font-extrabold text-[#F5B300] font-mono">${b.ppm.toFixed(2)} in bundle</div>
-                      <div className="text-[10px] text-green-400 font-semibold mt-0.5">
-                        Save ${(current.price - b.ppm).toFixed(2)} per meal
-                      </div>
-                    </div>
-                  </div>
-                  {/* Macros */}
-                  <div className="flex gap-3 mt-2 flex-wrap">
-                    {[
-                      { label: "Protein", val: `${current.protein}g` },
-                      { label: "Carbs", val: `${current.carbs}g` },
-                      { label: "Fat", val: `${current.fat}g` },
-                      { label: "Calories", val: `${current.cal}` },
-                    ].map((m) => (
-                      <div key={m.label} className="bg-white/5 px-3 py-1.5 text-center">
-                        <div className="text-[11px] font-mono font-bold text-white">{m.val}</div>
-                        <div className="text-[9px] text-white/30 uppercase tracking-wide">{m.label}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Customer reviews for this meal */}
-              {currentReviews.length > 0 && (
-                <div className="px-6 py-4 border-b border-white/8">
-                  <p className="text-[10px] font-mono tracking-[0.25em] text-white/30 uppercase mb-3">Customer Reviews</p>
-                  <div className="flex flex-col gap-3">
-                    {currentReviews.slice(0, 2).map((r, i) => (
-                      <div key={i} className="bg-white/4 px-4 py-3">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-[12px] font-semibold text-white">{r.author}</span>
-                            <div className="flex">
-                              {[1,2,3,4,5].map((s) => (
-                                <span key={s} className={`text-[10px] ${s <= r.rating ? "text-[#F5B300]" : "text-white/15"}`}>★</span>
-                              ))}
-                            </div>
-                          </div>
-                          <span className="text-[10px] text-white/25 font-mono">{r.date}</span>
-                        </div>
-                        <p className="text-[12px] text-white/55 leading-relaxed">{r.text}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Thumbnail strip */}
-              <div className="px-4 py-3 border-b border-white/8 overflow-x-auto scrollbar-none shrink-0">
-                <p className="text-[9px] font-mono tracking-[0.25em] text-white/25 uppercase mb-2">All meals in this bundle</p>
-                <div className="flex gap-1.5">
-                  {uniqueMeals.map((m, i) => (
-                    <button key={m.id} onClick={() => setDetailSlide(i)} title={m.name}
-                      className={`shrink-0 w-14 h-14 overflow-hidden border-2 transition-all ${i === slide ? "border-[#F5B300] opacity-100" : "border-transparent opacity-35 hover:opacity-65"}`}>
-                      <img
-                        src={m.img.includes("?") ? m.img.split("?")[0] + "?w=56&h=56&fit=crop&auto=format" : m.img}
-                        alt={m.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bundle price summary + savings + CTA */}
-              <div className="px-6 py-5">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <div className="text-[28px] font-extrabold text-[#F5B300] font-mono leading-none">${b.price}</div>
-                    <div className="text-white/30 text-[12px] mt-0.5">${b.ppm}/meal · {b.meals} meals</div>
-                  </div>
-                  <div className="text-right">
-                    {b.badge && <div className="bg-[#F5B300] text-[#111] text-[9px] font-extrabold tracking-[0.15em] px-3 py-1.5 mb-1 inline-block">{b.badge}</div>}
-                    {savings > 0 && (
-                      <div className="text-green-400 text-[12px] font-semibold">
-                        You save ${savings.toFixed(0)} vs individual
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <p className="text-white/40 text-[13px] mb-4">{b.desc}</p>
-                <button
-                  onClick={() => {
-                    const countMap: Record<number, number> = {};
-                    b.mealIds.forEach((id) => { countMap[id] = (countMap[id] ?? 0) + 1; });
-                    addToCart({
-                      id: 200 + b.meals + (bundleType === "protein" ? 100 : 0),
-                      name: `${b.n} (${b.meals} meals)`,
-                      price: b.price, qty: 1,
-                      img: uniqueMeals[0]?.img ?? "",
-                      type: "box",
-                      mealImgs: uniqueMeals.map((m) => m.img.includes("?") ? m.img.split("?")[0] + "?w=80&h=80&fit=crop&auto=format" : m.img),
-                      mealNames: uniqueMeals.map((m) => m.name.split("&")[0].trim()),
-                      mealCounts: uniqueMeals.map((m) => countMap[m.id] ?? 1),
-                    });
-                    setSelectedBundleDetail(null);
-                  }}
-                  className="w-full bg-[#F5B300] text-[#111] py-4 font-extrabold text-[13px] tracking-[0.2em] uppercase hover:bg-white transition-colors"
-                >
-                  Add to Cart — ${b.price} · Save ${savings.toFixed(0)}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
     </div>
   );
 }

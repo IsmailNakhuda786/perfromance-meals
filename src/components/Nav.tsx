@@ -66,40 +66,84 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   const WALLET_BALANCE = 12.50;
   const REWARD_PTS = 1234;
 
-  const go = (page: Page) => { navigate(page); setMobileOpen(false); };
-  const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); };
+  const [brandOpen, setBrandOpen] = useState(false);
+
+  const go = (page: Page) => { navigate(page); setMobileOpen(false); setBrandOpen(false); };
+  const goWizard = (plan?: string) => { navigateToWizard(plan); setMobileOpen(false); setBrandOpen(false); };
+
+  const BRANDS = [
+    { id: "parent",       label: "Performance Meals", sub: "The Parent Brand",      color: "#F5B300", action: () => go("home") },
+    { id: "meal-plan",    label: "Meal Plan",          sub: "Goal-led programmes",   color: "#E85D04", action: () => go("meal-plan-landing") },
+    { id: "ready-series", label: "Ready Series",       sub: "Ready-to-eat meals",    color: "#F5B300", action: () => go("ready-series") },
+  ];
+  const currentBrandId =
+    currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "meal-plan"
+    : currentPage === "ready-series" || currentPage === "ready-to-go" || currentPage === "build-a-box" || currentPage === "ready-series-product" ? "ready-series"
+    : "parent";
+  const currentBrand = BRANDS.find((b) => b.id === currentBrandId)!;
 
 
   return (
     <>
       {/* Promo bar */}
       <div className="bg-[#F5B300] text-[#1A1A1A] text-center py-2 px-4 text-[10px] sm:text-[11px] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-semibold">
-        Use <strong>SG61</strong> for $6.10 off &nbsp;·&nbsp; Free delivery above $80
+        Use <strong>SG61</strong> for $6.10 off &nbsp;·&nbsp; Free delivery on Ready Series orders $120+
       </div>
 
       <nav className="sticky top-0 z-50 bg-[#1A1A1A] text-white border-b border-white/10">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-[56px] sm:h-[60px] flex items-center justify-between gap-4">
 
-          {/* Logo */}
-          <button onClick={() => go("home")} className="shrink-0 hover:opacity-80 transition-opacity">
-            <PerformanceMealsLogo size="sm" variant="light" />
-          </button>
+          {/* Logo + Current Brand selector */}
+          <div className="flex items-center gap-3 shrink-0">
+            <button onClick={() => go("home")} className="shrink-0 hover:opacity-80 transition-opacity">
+              <PerformanceMealsLogo size="sm" variant="light" />
+            </button>
+            <div className="w-px h-8 bg-white/10 hidden sm:block" />
+            {/* Current Brand dropdown */}
+            <div className="relative hidden sm:block">
+              <button onClick={() => setBrandOpen((v) => !v)}
+                className="flex flex-col items-start gap-0.5 hover:opacity-80 transition-opacity">
+                <span className="text-[8px] font-mono tracking-[0.35em] uppercase text-white/30">Current Brand</span>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: currentBrand.color }} />
+                  <span className="text-[12px] font-semibold tracking-wide">{currentBrand.label}</span>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white/40 mt-0.5">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
+              </button>
+              {brandOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setBrandOpen(false)} />
+                  <div className="absolute top-full left-0 mt-3 w-[230px] bg-[#111] border border-white/12 z-50">
+                    {BRANDS.map((b) => (
+                      <button key={b.id} onClick={b.action}
+                        className={`w-full text-left px-4 py-3.5 flex items-center gap-3 hover:bg-white/5 transition-colors border-b border-white/6 last:border-0 ${currentBrandId === b.id ? "bg-white/5" : ""}`}>
+                        <div className="w-[3px] h-6 shrink-0" style={{ backgroundColor: b.color }} />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-white text-[13px] font-semibold">{b.label}</div>
+                          <div className="text-white/30 text-[10px] mt-0.5">{b.sub}</div>
+                        </div>
+                        {currentBrandId === b.id && (
+                          <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: b.color }} />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
 
-          {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-6 flex-1 justify-center">
-            <button onClick={() => go("ready-series")}
-              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "ready-series" || currentPage === "ready-to-go" || currentPage === "build-a-box" ? "text-[#F5B300]" : "text-white/50 hover:text-[#F5B300]"}`}>
-              Ready Series
+          {/* Desktop right links */}
+          <div className="hidden lg:flex items-center gap-6 flex-1 justify-end mr-4">
+            <button onClick={() => go("home")}
+              className="text-[11px] tracking-[0.2em] uppercase font-semibold text-white/45 hover:text-white transition-colors">
+              Our Brands
             </button>
-            <div className="w-px h-4 bg-white/15" />
-            <button onClick={() => go("meal-plan-landing")}
-              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "text-[#E85D04]" : "text-white/50 hover:text-[#E85D04]"}`}>
-              Meal Plans
-            </button>
-            <div className="w-px h-4 bg-white/15" />
             <button onClick={() => go("about")}
-              className={`text-[11px] tracking-[0.25em] uppercase font-semibold transition-colors ${currentPage === "about" ? "text-[#F5B300]" : "text-white/50 hover:text-white"}`}>
-              About
+              className={`text-[11px] tracking-[0.2em] uppercase font-semibold transition-colors ${currentPage === "about" ? "text-white" : "text-white/45 hover:text-white"}`}>
+              About Us
             </button>
           </div>
 
@@ -169,11 +213,19 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
         {mobileOpen && (
           <div className="lg:hidden bg-[#111] border-t border-white/10 overflow-y-auto max-h-[80vh]">
             <div className="px-5 py-4 space-y-1">
-              <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2">Navigation</div>
+              <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2">Switch Brand</div>
+              {BRANDS.map((b) => (
+                <button key={b.id} onClick={b.action}
+                  className={`w-full text-left py-3 px-3 flex items-center gap-3 text-[15px] hover:bg-white/5 transition-colors border-b border-white/5 ${currentBrandId === b.id ? "text-white" : "text-white/60"}`}>
+                  <div className="w-[3px] h-5 shrink-0" style={{ backgroundColor: b.color }} />
+                  {b.label}
+                  {currentBrandId === b.id && <span className="ml-auto text-[9px] font-mono tracking-widest uppercase text-white/30">Current</span>}
+                </button>
+              ))}
+              <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2 mt-2">More</div>
               {[
-                { label: "Ready Series", action: () => go("ready-series") },
-                { label: "Meal Plans", action: () => go("meal-plan-landing") },
-                { label: "About", action: () => go("about") },
+                { label: "Our Brands", action: () => go("home") },
+                { label: "About Us", action: () => go("about") },
                 { label: "How It Works", action: () => go("how-it-works") },
               ].map((l) => (
                 <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>

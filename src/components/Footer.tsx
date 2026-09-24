@@ -21,7 +21,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
         <nav className="flex flex-wrap gap-x-7 gap-y-2">
           {[
             { label: "Ready Series", action: () => navigate("ready-series") },
-            { label: "Box Subscription", action: () => navigate("build-a-box") },
+            { label: "Ready Series Subscription", action: () => navigate("ready-series") },
             { label: "Meal Plans", action: () => navigate("meal-plan-landing") },
             { label: "Cut Plan", action: () => navigateToWizard("CUT") },
             { label: "Maintain Plan", action: () => navigateToWizard("MAINTAIN") },
