@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BUNDLES, CartItem, MEALS, Page } from "@/data";
-import { PerformanceMealsLogo } from "@/components/Logos";
+import { PerformanceMealsLogo, MealPlanLogo, ReadySeriesLogo } from "@/components/Logos";
 
 interface NavProps {
   currentPage: Page;
@@ -97,7 +97,9 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
           <div className="relative shrink-0">
             <button onClick={() => setBrandOpen((v) => !v)}
               className="flex items-center gap-3 hover:opacity-80 transition-opacity group">
-              <PerformanceMealsLogo size="sm" variant="light" />
+              {currentBrandId === "meal-plan"    && <MealPlanLogo    size="sm" variant="dark" />}
+              {currentBrandId === "ready-series" && <ReadySeriesLogo  size="sm" variant="dark" />}
+              {currentBrandId === "parent"       && <PerformanceMealsLogo size="sm" variant="light" />}
               <div className="hidden sm:flex flex-col items-start leading-none border-l border-white/10 pl-3">
                 <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-white/30 mb-1">Current Brand</span>
                 <div className="flex items-center gap-1.5">
