@@ -206,7 +206,6 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
   const [addedId, setAddedId] = useState<number | null>(null);
   const [reviewMealId, setReviewMealId] = useState<number | null>(null);
   const [carouselOffsets, setCarouselOffsets] = useState<Record<string, number>>({});
-  const [expandedSub, setExpandedSub] = useState<string | null>(null);
 
   const scrollCarousel = (bundleName: string, dir: 1 | -1) => {
     setCarouselOffsets((prev) => {
@@ -524,10 +523,25 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                 const pricePerMeal = price / (sub.items * subTerm);
                 const savingsPct = details ? Math.round((details.alaCarteAvg - pricePerMeal) / details.alaCarteAvg * 100) : 0;
                 const isSelected = selectedSub === sub.sku;
-                const isExpanded = expandedSub === sub.sku;
-                const uniqueMealIds = details ? [...new Set(details.meals.map((m) => m.id)) ] : [];
+                const uniqueMealIds = details ? [...new Set(details.meals.map((m) => m.id))] : [];
                 const previewMeals = uniqueMealIds.slice(0, 3).map((id) => MEALS.find((m) => m.id === id)).filter(Boolean) as typeof MEALS;
                 const accentColor = details?.accentColor ?? "#F5B300";
+                const subMealNames = details
+                  ? Array.from({ length: subTerm }).flatMap(() =>
+                      details.meals.flatMap(({ id, qty }) => {
+                        const meal = MEALS.find((m) => m.id === id);
+                        return meal ? Array(qty).fill(meal.name) : [];
+                      })
+                    )
+                  : [];
+                const subMealImgs = details
+                  ? Array.from({ length: subTerm }).flatMap(() =>
+                      details.meals.flatMap(({ id, qty }) => {
+                        const meal = MEALS.find((m) => m.id === id);
+                        return meal ? Array(qty).fill(meal.img) : [];
+                      })
+                    )
+                  : [];
 
                 return (
                   <div key={sub.sku}
@@ -597,34 +611,26 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                         )}
                       </div>
 
-                      {/* Expand: what's in the box */}
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setExpandedSub(isExpanded ? null : sub.sku); }}
-                        className="flex items-center justify-between text-[10px] font-mono tracking-widest uppercase text-white/30 hover:text-white/60 transition-colors border-t border-white/8 pt-3"
-                      >
-                        <span>What&apos;s in your box ({sub.items} meals)</span>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                          style={{ transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
-                          <path d="M6 9l6 6 6-6" />
-                        </svg>
-                      </button>
-
-                      {isExpanded && details && (
-                        <div className="flex flex-col gap-2">
+                      {/* Meals in box — always visible */}
+                      {details && (
+                        <div className="border-t border-white/8 pt-3 flex flex-col gap-1.5">
+                          <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-1" style={{ color: accentColor }}>
+                            Monthly box · {sub.items} meals
+                          </div>
                           {details.meals.map(({ id, qty }) => {
                             const meal = MEALS.find((m) => m.id === id);
                             if (!meal) return null;
                             return (
-                              <div key={id} className="flex items-start gap-2 text-[11px]">
-                                <div className="w-1.5 h-1.5 shrink-0 mt-1.5 rounded-full" style={{ background: accentColor }} />
-                                <span className="text-white/65 flex-1 leading-snug">{meal.name}</span>
-                                <span className="font-mono text-white/25 shrink-0 text-[10px]">×{qty}</span>
+                              <div key={id} className="flex items-center gap-2 text-[11px]">
+                                <div className="w-1 h-1 shrink-0 rounded-full" style={{ background: accentColor }} />
+                                <span className="text-white/60 flex-1 leading-snug">{meal.name}</span>
+                                <span className="font-mono text-white/30 shrink-0 text-[10px]">×{qty}</span>
                               </div>
                             );
                           })}
-                          <div className="mt-2 pt-2 border-t border-white/8 flex flex-col gap-1.5">
+                          <div className="mt-1.5 pt-2 border-t border-white/8 flex flex-col gap-1">
                             {details.highlights.map((h) => (
-                              <div key={h} className="flex items-center gap-2 text-[10px] text-white/40">
+                              <div key={h} className="flex items-center gap-1.5 text-[10px] text-white/35">
                                 <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                                   <path d="M20 6L9 17l-5-5" />
                                 </svg>
@@ -659,6 +665,8 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                             qty: 1,
                             img: previewMeals[0]?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
                             type: "box",
+                            mealNames: subMealNames,
+                            mealImgs: subMealImgs,
                           });
                         }}
                         className="w-full py-3.5 text-[11px] font-extrabold tracking-[0.2em] uppercase transition-all duration-200 hover:opacity-90"

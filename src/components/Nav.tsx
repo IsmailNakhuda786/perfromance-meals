@@ -535,7 +535,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex-1 min-w-0">
                                 <p className="text-[12px] font-bold leading-tight text-white">{item.name}</p>
-                                <p className="text-[10px] text-[#F5B300] mt-0.5">${(item.price / (parseInt(item.name.match(/\d+/)?.[0] ?? "1") || 1)).toFixed(2)}/meal</p>
+                                <p className="text-[10px] text-[#F5B300] mt-0.5">${boxNames.length > 0 ? (item.price / boxNames.length).toFixed(2) : item.price.toFixed(2)}/meal</p>
                               </div>
                               <div className="flex items-center gap-1.5 shrink-0">
                                 <span className="font-mono text-[13px] text-[#F5B300] font-bold">${(item.price * item.qty).toFixed(2)}</span>
