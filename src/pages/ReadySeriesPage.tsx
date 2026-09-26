@@ -7,6 +7,7 @@ interface Props {
   addToCart: (item: CartItem) => void;
   cart: CartItem[];
   onSelectMeal: (id: number) => void;
+  setCartOpen: (v: boolean) => void;
 }
 
 const MEALS = [
@@ -111,7 +112,7 @@ const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: strin
   ],
 };
 
-export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal }: Props) {
+export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen }: Props) {
   const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
   const [subTerm, setSubTerm] = useState<3 | 6>(3);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
@@ -535,10 +536,10 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               </div>
             </div>
             <button
-              onClick={() => navigate("checkout")}
+              onClick={() => setCartOpen(true)}
               className="bg-[#111] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-[#111] transition-colors"
             >
-              Checkout →
+              View Cart →
             </button>
           </div>
         </div>

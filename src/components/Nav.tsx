@@ -523,8 +523,10 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                 <div className="flex-1 p-4 space-y-3">
                   {cart.map((item) => {
                     const isBox = item.type === "box";
-                    const boxImgs = item.mealImgs ?? (isBox ? BUNDLES.find((b) => b.id === item.id)?.mealIds.slice(0, 6).map((mid) => MEALS.find((m) => m.id === mid)?.img).filter(Boolean) as string[] ?? [] : []);
-                    const boxNames = item.mealNames ?? [];
+                    const bundleDef = isBox ? BUNDLES.find((b) => b.id === item.id) : undefined;
+                    const bundleMealIds = bundleDef?.mealIds ?? [];
+                    const boxImgs = item.mealImgs ?? bundleMealIds.slice(0, 6).map((mid) => MEALS.find((m) => m.id === mid)?.img).filter(Boolean) as string[];
+                    const boxNames = item.mealNames ?? bundleMealIds.map((mid) => MEALS.find((m) => m.id === mid)?.name ?? "").filter(Boolean);
                     return (
                       <div key={`${item.id}-${item.type}`} className="bg-[#1A1A1A] p-3">
                         {isBox ? (
@@ -568,27 +570,31 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                               </svg>
                               {expandedBundles.has(`${item.id}-${item.type}`) ? "Hide meals" : "See all meals"}
                             </button>
-                            {/* Expanded meal list */}
-                            {expandedBundles.has(`${item.id}-${item.type}`) && boxNames.length > 0 && (
-                              <div className="mt-2 border-t border-white/8 pt-2 flex flex-col gap-1.5">
-                                {boxNames.map((n, i) => {
-                                  const count = item.mealCounts?.[i] ?? 1;
-                                  return (
-                                    <div key={i} className="flex items-center gap-2">
-                                      {boxImgs[i] ? (
+                            {/* Expanded meal list — deduplicated with counts */}
+                            {expandedBundles.has(`${item.id}-${item.type}`) && boxNames.length > 0 && (() => {
+                              const seen = new Map<string, { name: string; img: string; count: number }>();
+                              boxNames.forEach((n, i) => {
+                                if (seen.has(n)) seen.get(n)!.count++;
+                                else seen.set(n, { name: n, img: boxImgs[i] ?? "", count: 1 });
+                              });
+                              return (
+                                <div className="mt-2 border-t border-white/8 pt-2 flex flex-col gap-1.5">
+                                  {Array.from(seen.values()).map(({ name, img, count }) => (
+                                    <div key={name} className="flex items-center gap-2">
+                                      {img ? (
                                         <div className="w-8 h-8 overflow-hidden shrink-0">
-                                          <img src={boxImgs[i]} alt="" className="w-full h-full object-cover" />
+                                          <img src={img} alt="" className="w-full h-full object-cover" />
                                         </div>
-                                      ) : null}
-                                      <span className="text-[11px] text-white/45 leading-tight flex-1 truncate">{n}</span>
+                                      ) : <div className="w-8 h-8 bg-white/5 shrink-0" />}
+                                      <span className="text-[11px] text-white/55 leading-tight flex-1 truncate">{name}</span>
                                       <span className="shrink-0 text-[10px] font-mono font-bold text-[#F5B300] bg-[#F5B300]/10 px-1.5 py-0.5 leading-none">
                                         ×{count}
                                       </span>
                                     </div>
-                                  );
-                                })}
-                              </div>
-                            )}
+                                  ))}
+                                </div>
+                              );
+                            })()}
                           </div>
                         ) : (
                           /* Regular cart item */
