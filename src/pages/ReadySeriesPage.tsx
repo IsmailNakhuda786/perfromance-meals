@@ -100,6 +100,74 @@ const SUBSCRIPTION_PRODUCTS = [
   { sku: "HCMIXSUB02", name: "High Carb + Just Protein", variant: "Beef",     items: 15, price3m: 354.56, price6m: 693.90, badge: null },
 ];
 
+const SUB_MEAL_DETAILS: Record<string, {
+  meals: { id: number; qty: number }[];
+  alaCarteAvg: number;
+  accentColor: string;
+  highlights: string[];
+}> = {
+  JPSUB01: {
+    meals: [{ id: 101, qty: 4 }, { id: 104, qty: 4 }, { id: 106, qty: 3 }, { id: 108, qty: 3 }],
+    alaCarteAvg: 14.65,
+    accentColor: "#F5B300",
+    highlights: ["44–46g protein per meal", "Zero rice or bread fillers", "Premium salmon & chicken"],
+  },
+  JPSUB02: {
+    meals: [{ id: 101, qty: 5 }, { id: 106, qty: 5 }, { id: 108, qty: 4 }],
+    alaCarteAvg: 14.23,
+    accentColor: "#F5B300",
+    highlights: ["46g protein per meal", "Chicken & salmon rotation", "Lean, high-output fuel"],
+  },
+  LCSUB01: {
+    meals: [{ id: 103, qty: 2 }, { id: 104, qty: 2 }, { id: 106, qty: 2 }, { id: 108, qty: 2 }, { id: 109, qty: 2 }],
+    alaCarteAvg: 13.54,
+    accentColor: "#34D399",
+    highlights: ["Under 14g net carbs per meal", "No beef — lighter proteins", "Cut-phase friendly"],
+  },
+  LCSUB02: {
+    meals: [{ id: 102, qty: 5 }, { id: 110, qty: 5 }],
+    alaCarteAvg: 14.20,
+    accentColor: "#34D399",
+    highlights: ["Gochujang beef & rendang", "Under 12g net carbs", "Satiety on a deficit"],
+  },
+  HCSUB01: {
+    meals: [{ id: 107, qty: 2 }, { id: 109, qty: 2 }, { id: 111, qty: 2 }, { id: 112, qty: 2 }, { id: 105, qty: 2 }],
+    alaCarteAvg: 11.34,
+    accentColor: "#60A5FA",
+    highlights: ["52–62g carbs per meal", "Ideal for training days", "Rice, oats & bowl variety"],
+  },
+  HCSUB02: {
+    meals: [{ id: 105, qty: 4 }, { id: 112, qty: 3 }, { id: 111, qty: 3 }],
+    alaCarteAvg: 12.77,
+    accentColor: "#60A5FA",
+    highlights: ["Beef & prawn variety", "58–62g carbs per meal", "Fuel for heavy lift days"],
+  },
+  LCMIXSUB01: {
+    meals: [{ id: 103, qty: 2 }, { id: 104, qty: 2 }, { id: 106, qty: 2 }, { id: 109, qty: 2 }, { id: 101, qty: 4 }, { id: 108, qty: 3 }],
+    alaCarteAvg: 14.10,
+    accentColor: "#A78BFA",
+    highlights: ["7 Low Carb + 8 Just Protein", "Best savings per meal in range", "Split for cut & muscle-hold days"],
+  },
+  LCMIXSUB02: {
+    meals: [{ id: 102, qty: 3 }, { id: 110, qty: 4 }, { id: 101, qty: 4 }, { id: 106, qty: 2 }, { id: 108, qty: 2 }],
+    alaCarteAvg: 14.22,
+    accentColor: "#A78BFA",
+    highlights: ["Beef cuts + JP rotation", "Low carb + high protein split", "Serious cut protocol"],
+  },
+  HCMIXSUB01: {
+    meals: [{ id: 107, qty: 2 }, { id: 111, qty: 2 }, { id: 112, qty: 2 }, { id: 101, qty: 3 }, { id: 104, qty: 3 }, { id: 106, qty: 3 }],
+    alaCarteAvg: 12.99,
+    accentColor: "#FB923C",
+    highlights: ["8 High Carb + 7 Just Protein", "Fuel heavy sessions & recover fast", "Best of carbs + protein"],
+  },
+  HCMIXSUB02: {
+    meals: [{ id: 105, qty: 3 }, { id: 112, qty: 3 }, { id: 111, qty: 2 }, { id: 101, qty: 3 }, { id: 106, qty: 2 }, { id: 108, qty: 2 }],
+    alaCarteAvg: 13.50,
+    accentColor: "#FB923C",
+    highlights: ["Beef + prawn + JP rotation", "Performance carb-loading", "Best of both worlds"],
+  },
+};
+
 const FREE_DELIVERY_THRESHOLD = 120;
 const DELIVERY_FEE = 10;
 
@@ -138,6 +206,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
   const [addedId, setAddedId] = useState<number | null>(null);
   const [reviewMealId, setReviewMealId] = useState<number | null>(null);
   const [carouselOffsets, setCarouselOffsets] = useState<Record<string, number>>({});
+  const [expandedSub, setExpandedSub] = useState<string | null>(null);
 
   const scrollCarousel = (bundleName: string, dir: 1 | -1) => {
     setCarouselOffsets((prev) => {
@@ -394,69 +463,254 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
       {/* ── SUBSCRIPTION TAB ── */}
       {purchaseMode === "subscription" && (
-      <section className="py-14 px-6 sm:px-8 bg-[#1A1A1A]">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="mb-8">
-            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Ready Series Subscription</div>
-            <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Choose your subscription<span className="text-[#F5B300]">.</span></h2>
-            <p className="text-white/40 text-[13px] mt-2">10 predefined subscription options. Select a term, then subscribe.</p>
-          </div>
-
-          {/* Term selector */}
-          <div className="flex gap-0 mb-8 border border-white/10 p-1 bg-white/4 inline-flex">
-            {([3, 6] as const).map((t) => (
-              <button key={t} onClick={() => setSubTerm(t)}
-                className={`px-8 py-3 text-[12px] font-bold tracking-wide transition-all ${subTerm === t ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white"}`}>
-                {t} Months
-                <div className={`text-[10px] font-normal mt-0.5 ${subTerm === t ? "text-[#111]/60" : "text-white/25"}`}>
-                  {t === 3 ? "Renews after 3 months" : "Renews after 6 months"}
-                </div>
-              </button>
+      <div className="bg-[#0D0D0D]">
+        {/* Trust bar */}
+        <div className="bg-[#F5B300] py-2.5 px-6">
+          <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-1 text-[#111] text-[10px] font-extrabold tracking-[0.15em] uppercase">
+            {[
+              { icon: "🚚", text: "Free delivery on all subscriptions" },
+              { icon: "↩", text: "Pause or cancel anytime" },
+              { icon: "🔄", text: "Monthly meal rotation" },
+              { icon: "⭐", text: "10,000+ active subscribers" },
+            ].map((t) => (
+              <div key={t.text} className="flex items-center gap-2">
+                <span>{t.icon}</span>
+                <span>{t.text}</span>
+              </div>
             ))}
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {SUBSCRIPTION_PRODUCTS.map((sub) => {
-              const price = subTerm === 3 ? sub.price3m : sub.price6m;
-              const isSelected = selectedSub === sub.sku;
-              return (
-                <div key={sub.sku}
-                  onClick={() => setSelectedSub(isSelected ? null : sub.sku)}
-                  className={`cursor-pointer border p-5 flex flex-col gap-4 transition-all ${isSelected ? "border-[#F5B300] bg-[#F5B300]/5" : "border-white/8 bg-[#111] hover:border-white/20"}`}>
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <div className="text-[13px] font-semibold leading-snug">{sub.name}</div>
-                      <div className="text-[10px] font-mono tracking-widest uppercase text-white/30 mt-1">{sub.variant}</div>
-                    </div>
-                    {sub.badge && (
-                      <span className="bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-0.5 shrink-0">{sub.badge}</span>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 text-[11px] text-white/30">
-                    <span className="font-mono">{sub.items} items</span>
-                    <span>·</span>
-                    <span className="font-mono text-[9px] text-white/20">{sub.sku}</span>
-                  </div>
-                  <div className="mt-auto">
-                    <div className="font-mono text-[24px] font-extrabold text-[#F5B300]">${price.toFixed(2)}</div>
-                    <div className="text-[10px] text-white/30 mt-0.5">for {subTerm} months · renews after</div>
-                  </div>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); addToCart({ id: sub.sku.split("").reduce((a, c) => a + c.charCodeAt(0), 0), name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`, price, qty: 1, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format", type: "box" }); }}
-                    className={`w-full py-3 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${isSelected ? "bg-[#F5B300] text-[#111] hover:bg-white" : "bg-white/8 text-white/50 hover:bg-[#F5B300] hover:text-[#111] border border-white/10 hover:border-[#F5B300]"}`}>
-                    Subscribe →
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="mt-8 p-4 border border-white/8 bg-white/3 text-[11px] text-white/30 leading-relaxed">
-            Ready Series Subscription delivers {subTerm === 3 ? "3" : "6"} times over your selected term and renews after {subTerm} months.
-            Delivery dates are assigned after subscription is confirmed. Cancel or manage your subscription from your account.
-          </div>
         </div>
-      </section>
+
+        <section className="py-14 px-6 sm:px-8">
+          <div className="max-w-[1200px] mx-auto">
+            {/* Header */}
+            <div className="mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+              <div>
+                <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.4em] uppercase mb-3">Ready Series Subscription</div>
+                <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.92]">
+                  Your freezer,<br />always stocked<span className="text-[#F5B300]">.</span>
+                </h2>
+                <p className="text-white/40 text-[14px] mt-4 max-w-[480px] leading-relaxed">
+                  Subscribe and save up to 59% versus individual purchases. One delivery per month — we handle the rest.
+                </p>
+              </div>
+              {/* Term toggle */}
+              <div className="shrink-0">
+                <div className="text-[10px] text-white/30 font-mono tracking-widest uppercase mb-2">Subscription term</div>
+                <div className="flex border border-white/10 overflow-hidden">
+                  {([3, 6] as const).map((t) => (
+                    <button key={t} onClick={() => setSubTerm(t)}
+                      className={`relative px-7 py-3.5 text-[12px] font-bold tracking-wide transition-all ${subTerm === t ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white bg-white/3"}`}>
+                      {t} months
+                      {t === 6 && (
+                        <span className={`absolute -top-2.5 -right-2 text-[8px] font-extrabold px-1.5 py-0.5 ${subTerm === 6 ? "bg-[#1A1A1A] text-[#F5B300]" : "bg-[#F5B300] text-[#111]"}`}>
+                          BEST VALUE
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <div className={`text-[10px] mt-2 font-mono transition-colors ${subTerm === 6 ? "text-[#F5B300]" : "text-white/25"}`}>
+                  {subTerm === 6 ? "↑ Extra 5% off vs 3-month plan" : "Upgrade to 6 months for extra savings"}
+                </div>
+              </div>
+            </div>
+
+            {/* Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {SUBSCRIPTION_PRODUCTS.map((sub) => {
+                const details = SUB_MEAL_DETAILS[sub.sku];
+                const price = subTerm === 3 ? sub.price3m : sub.price6m;
+                const pricePerMeal = price / (sub.items * subTerm);
+                const savingsPct = details ? Math.round((details.alaCarteAvg - pricePerMeal) / details.alaCarteAvg * 100) : 0;
+                const isSelected = selectedSub === sub.sku;
+                const isExpanded = expandedSub === sub.sku;
+                const uniqueMealIds = details ? [...new Set(details.meals.map((m) => m.id)) ] : [];
+                const previewMeals = uniqueMealIds.slice(0, 3).map((id) => MEALS.find((m) => m.id === id)).filter(Boolean) as typeof MEALS;
+                const accentColor = details?.accentColor ?? "#F5B300";
+
+                return (
+                  <div key={sub.sku}
+                    className={`flex flex-col border transition-all duration-300 relative overflow-hidden bg-[#111] ${
+                      isSelected
+                        ? "border-[#F5B300]"
+                        : sub.badge
+                          ? "border-[#F5B300]/30 hover:border-[#F5B300]/70"
+                          : "border-white/8 hover:border-white/20"
+                    }`}
+                    style={isSelected ? { boxShadow: `0 0 0 1px ${accentColor}, 0 8px 32px rgba(0,0,0,0.5)` } : {}}>
+
+                    {/* Badge */}
+                    {sub.badge && (
+                      <div className="absolute top-3 right-3 z-10">
+                        <span className="bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.2em] uppercase px-2 py-1 block">
+                          {sub.badge}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Category color strip */}
+                    <div className="h-[3px] w-full shrink-0" style={{ background: accentColor }} />
+
+                    {/* Meal photo strip */}
+                    <div className="flex h-24 overflow-hidden bg-[#0D0D0D] shrink-0">
+                      {previewMeals.map((m, pi) => (
+                        <div key={pi} className="flex-1 overflow-hidden relative">
+                          <img
+                            src={`${m.img.split("?")[0]}?w=200&h=150&fit=crop&auto=format&q=75`}
+                            alt={m.name}
+                            className="w-full h-full object-cover opacity-75"
+                          />
+                          {pi < previewMeals.length - 1 && (
+                            <div className="absolute right-0 top-0 bottom-0 w-px bg-[#0D0D0D]/60" />
+                          )}
+                        </div>
+                      ))}
+                      {uniqueMealIds.length > 3 && (
+                        <div className="w-11 shrink-0 bg-[#1A1A1A] flex items-center justify-center">
+                          <span className="text-[9px] font-bold text-white/35">+{uniqueMealIds.length - 3}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Body */}
+                    <div className="p-5 flex flex-col gap-3 flex-1">
+                      {/* Name + variant */}
+                      <div>
+                        <div className="text-[13px] font-extrabold text-white leading-snug pr-12">{sub.name}</div>
+                        <div className="text-[9px] font-mono tracking-[0.2em] uppercase mt-1" style={{ color: accentColor }}>
+                          {sub.variant} · {sub.items} meals/month
+                        </div>
+                      </div>
+
+                      {/* Per-meal price — hero number */}
+                      <div className="flex items-end gap-2 mt-1">
+                        <div className="font-display text-[38px] font-extrabold leading-none text-white">
+                          ${pricePerMeal.toFixed(2)}
+                        </div>
+                        <div className="text-[10px] text-white/30 pb-1.5 font-mono leading-none">per<br />meal</div>
+                        {savingsPct > 0 && (
+                          <div className="ml-auto shrink-0 px-2 py-1 text-[9px] font-extrabold tracking-[0.1em]"
+                            style={{ backgroundColor: `${accentColor}1A`, color: accentColor, border: `1px solid ${accentColor}44` }}>
+                            {savingsPct}% OFF
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Expand: what's in the box */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setExpandedSub(isExpanded ? null : sub.sku); }}
+                        className="flex items-center justify-between text-[10px] font-mono tracking-widest uppercase text-white/30 hover:text-white/60 transition-colors border-t border-white/8 pt-3"
+                      >
+                        <span>What&apos;s in your box ({sub.items} meals)</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                          style={{ transform: isExpanded ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
+                      </button>
+
+                      {isExpanded && details && (
+                        <div className="flex flex-col gap-2">
+                          {details.meals.map(({ id, qty }) => {
+                            const meal = MEALS.find((m) => m.id === id);
+                            if (!meal) return null;
+                            return (
+                              <div key={id} className="flex items-start gap-2 text-[11px]">
+                                <div className="w-1.5 h-1.5 shrink-0 mt-1.5 rounded-full" style={{ background: accentColor }} />
+                                <span className="text-white/65 flex-1 leading-snug">{meal.name}</span>
+                                <span className="font-mono text-white/25 shrink-0 text-[10px]">×{qty}</span>
+                              </div>
+                            );
+                          })}
+                          <div className="mt-2 pt-2 border-t border-white/8 flex flex-col gap-1.5">
+                            {details.highlights.map((h) => (
+                              <div key={h} className="flex items-center gap-2 text-[10px] text-white/40">
+                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                                  <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                                {h}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Pricing breakdown */}
+                      <div className="mt-auto pt-3 border-t border-white/8">
+                        <div className="flex items-center justify-between text-[11px] mb-1.5">
+                          <span className="text-white/35">{subTerm} monthly deliveries</span>
+                          <span className="text-white/35">${(price / subTerm).toFixed(2)}/delivery</span>
+                        </div>
+                        <div className="flex items-baseline justify-between">
+                          <span className="text-[22px] font-display font-extrabold text-white">${price.toFixed(2)}</span>
+                          <span className="text-[10px] text-white/25 font-mono">total · {subTerm}mo</span>
+                        </div>
+                      </div>
+
+                      {/* CTA */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedSub(sub.sku);
+                          addToCart({
+                            id: sub.sku.split("").reduce((a, c) => a + c.charCodeAt(0), 0),
+                            name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
+                            price,
+                            qty: 1,
+                            img: previewMeals[0]?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                            type: "box",
+                          });
+                        }}
+                        className="w-full py-3.5 text-[11px] font-extrabold tracking-[0.2em] uppercase transition-all duration-200 hover:opacity-90"
+                        style={{
+                          backgroundColor: isSelected ? accentColor : "transparent",
+                          color: isSelected ? "#111" : accentColor,
+                          border: `1px solid ${accentColor}`,
+                        }}
+                      >
+                        {isSelected ? "✓ Added to cart" : "Subscribe →"}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Reassurance */}
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-px bg-white/5">
+              {[
+                {
+                  icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>),
+                  title: "Free delivery, every time",
+                  desc: "All subscription orders ship free — no minimum, no exceptions. Delivery dates confirmed after sign-up.",
+                },
+                {
+                  icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>),
+                  title: "Pause or cancel anytime",
+                  desc: "Life happens. Pause, skip, or cancel your subscription from your account — no hoops, no fees.",
+                },
+                {
+                  icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>),
+                  title: "Monthly meal rotation",
+                  desc: "Meals refresh every month to keep variety high. You get the best of the season, automatically.",
+                },
+              ].map((r, i) => (
+                <div key={i} className="bg-[#111] px-7 py-8 flex gap-5">
+                  <div className="text-[#F5B300] shrink-0 mt-0.5">{r.icon}</div>
+                  <div>
+                    <div className="font-bold text-white text-[14px] mb-1.5">{r.title}</div>
+                    <div className="text-white/35 text-[12px] leading-relaxed">{r.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 text-[10px] text-white/20 leading-relaxed font-mono">
+              Subscription delivers once per month over your selected term and renews automatically. Pricing locked for the term. Cancel or pause anytime from your account dashboard.
+            </div>
+          </div>
+        </section>
+      </div>
       )}
 
       {/* ── PRODUCT GRID (single purchase) ── */}
