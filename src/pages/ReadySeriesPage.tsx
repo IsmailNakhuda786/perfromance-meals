@@ -27,43 +27,61 @@ const MEALS = [
 
 const CATS = ["A-la-carte", "Low Carb", "High Carb", "Just Protein"];
 
-// Predefined bundles — prices sourced from bundle builder spreadsheets (3–7% pre-applied discount)
+// Non-beef Low Carb: 103 Herb Chicken, 104 Salmon Quinoa, 106 Miso Salmon, 108 Greek Chicken, 109 Egg White Avocado
+// Beef Low Carb: 102 Spicy Korean Beef, 110 Beef Rendang
+// High Carb Non-Beef: 107 Overnight Oats, 109 Egg White Avocado, 111 Chicken Burrito, 112 Prawn Fried Rice, 105 Thai Basil Pork
+// High Carb Beef: 105 Thai Basil Pork, 112 Prawn Fried Rice, 111 Chicken Burrito
+// Just Protein: 101 Teriyaki Chicken, 104 Salmon Quinoa, 106 Miso Salmon, 108 Greek Chicken
+
 const PREDEFINED_BUNDLES = [
   {
     category: "Low Carb Meals",
     color: "#F5B300",
     items: [
-      { name: "Signature 5 — Non-Beef", variant: "Non-Beef", desc: "Our most-loved low carb flavours, curated for you. 3% bundle discount applied.", badge: "POPULAR", price: 48.99, meals: 5 },
-      { name: "Signature 5 — Beef",     variant: "Beef",     desc: "Best-selling beef low carb options in one bundle. 3% bundle discount applied.", badge: null,      price: 48.99, meals: 5 },
-      { name: "9 Flavours of the Month",variant: null,       desc: "9 rotating seasonal low carb meals, refreshed monthly. 5% bundle discount applied.", badge: "NEW", price: 86.55, meals: 9 },
-      { name: "Essential 10 — Non-Beef",variant: "Non-Beef", desc: "Top up your fridge with essential low carb staples. 7% bundle discount applied.", badge: null,     price: 93.00, meals: 10 },
-      { name: "Essential 10 — Beef",    variant: "Beef",     desc: "Beef-based essentials to keep your macros on track. 7% bundle discount applied.", badge: null,     price: 93.00, meals: 10 },
+      { name: "Signature 5 — Non-Beef", variant: "Non-Beef", desc: "Our most-loved low carb flavours, curated for you. 3% bundle discount applied.", badge: "POPULAR", price: 48.99, meals: 5,
+        mealIds: [103, 104, 106, 108, 109] },
+      { name: "Signature 5 — Beef",     variant: "Beef",     desc: "Best-selling beef low carb options in one bundle. 3% bundle discount applied.", badge: null, price: 48.99, meals: 5,
+        mealIds: [102, 110, 102, 110, 102] },
+      { name: "9 Flavours of the Month",variant: null,       desc: "9 rotating seasonal low carb meals, refreshed monthly. 5% bundle discount applied.", badge: "NEW", price: 86.55, meals: 9,
+        mealIds: [103, 104, 106, 108, 109, 102, 110, 103, 106] },
+      { name: "Essential 10 — Non-Beef",variant: "Non-Beef", desc: "Top up your fridge with essential low carb staples. 7% bundle discount applied.", badge: null, price: 93.00, meals: 10,
+        mealIds: [103, 104, 106, 108, 109, 103, 104, 106, 108, 109] },
+      { name: "Essential 10 — Beef",    variant: "Beef",     desc: "Beef-based essentials to keep your macros on track. 7% bundle discount applied.", badge: null, price: 93.00, meals: 10,
+        mealIds: [102, 110, 102, 110, 102, 110, 102, 110, 102, 110] },
     ],
   },
   {
     category: "High Carb Meals",
     color: "#F5B300",
     items: [
-      { name: "Signature 5 — Non-Beef", variant: "Non-Beef", desc: "High carb performance meals for fuel-heavy days. 3% bundle discount applied.", badge: "POPULAR", price: 48.99, meals: 5 },
-      { name: "Signature 5 — Beef",     variant: "Beef",     desc: "Beef-based high carb signatures for sustained energy. 3% bundle discount applied.", badge: null,  price: 48.99, meals: 5 },
-      { name: "9 Flavours of the Month",variant: null,       desc: "9 rotating seasonal high carb meals, refreshed monthly. 5% bundle discount applied.", badge: "NEW", price: 88.45, meals: 9 },
-      { name: "Essential 10 — Non-Beef",variant: "Non-Beef", desc: "Restock your week with non-beef high carb essentials. 7% bundle discount applied.", badge: null,   price: 93.00, meals: 10 },
-      { name: "Essential 10 — Beef",    variant: "Beef",     desc: "Beef high carb top-up for active weeks. 7% bundle discount applied.", badge: null,                  price: 93.00, meals: 10 },
+      { name: "Signature 5 — Non-Beef", variant: "Non-Beef", desc: "High carb performance meals for fuel-heavy days. 3% bundle discount applied.", badge: "POPULAR", price: 48.99, meals: 5,
+        mealIds: [107, 109, 111, 112, 105] },
+      { name: "Signature 5 — Beef",     variant: "Beef",     desc: "Beef-based high carb signatures for sustained energy. 3% bundle discount applied.", badge: null, price: 48.99, meals: 5,
+        mealIds: [105, 112, 111, 105, 112] },
+      { name: "9 Flavours of the Month",variant: null,       desc: "9 rotating seasonal high carb meals, refreshed monthly. 5% bundle discount applied.", badge: "NEW", price: 88.45, meals: 9,
+        mealIds: [107, 109, 111, 112, 105, 107, 111, 112, 109] },
+      { name: "Essential 10 — Non-Beef",variant: "Non-Beef", desc: "Restock your week with non-beef high carb essentials. 7% bundle discount applied.", badge: null, price: 93.00, meals: 10,
+        mealIds: [107, 109, 111, 112, 105, 107, 109, 111, 112, 105] },
+      { name: "Essential 10 — Beef",    variant: "Beef",     desc: "Beef high carb top-up for active weeks. 7% bundle discount applied.", badge: null, price: 93.00, meals: 10,
+        mealIds: [105, 112, 111, 105, 112, 111, 105, 112, 111, 105] },
     ],
   },
   {
     category: "Just Protein",
     color: "#F5B300",
     items: [
-      { name: "JP Variety Bundle of 10", variant: null, desc: "10-meal variety of high-protein just protein serves. 3% bundle discount applied.", badge: "BESTSELLER", price: 55.10, meals: 10 },
+      { name: "JP Variety Bundle of 10", variant: null, desc: "10-meal variety of high-protein just protein serves. 3% bundle discount applied.", badge: "BESTSELLER", price: 55.10, meals: 10,
+        mealIds: [101, 104, 106, 108, 101, 104, 106, 108, 101, 104] },
     ],
   },
   {
     category: "Mixed Bundle",
     color: "#F5B300",
     items: [
-      { name: "7 Low Carb + 7 Just Protein",  variant: "Non-Beef", desc: "14-meal mixed bundle: 7 low carb + 7 just protein serves. 7% bundle discount applied.", badge: "BEST VALUE", price: 118.30, meals: 14 },
-      { name: "7 High Carb + 7 Just Protein", variant: "Non-Beef", desc: "14-meal mixed bundle: 7 high carb + 7 just protein serves. 7% bundle discount applied.", badge: null,         price: 117.37, meals: 14 },
+      { name: "7 Low Carb + 7 Just Protein",  variant: "Non-Beef", desc: "14-meal mixed bundle: 7 low carb + 7 just protein serves. 7% bundle discount applied.", badge: "BEST VALUE", price: 118.30, meals: 14,
+        mealIds: [103, 104, 106, 108, 109, 103, 106, 101, 104, 106, 108, 101, 104, 106] },
+      { name: "7 High Carb + 7 Just Protein", variant: "Non-Beef", desc: "14-meal mixed bundle: 7 high carb + 7 just protein serves. 7% bundle discount applied.", badge: null, price: 117.37, meals: 14,
+        mealIds: [107, 109, 111, 112, 105, 107, 109, 101, 104, 106, 108, 101, 104, 108] },
     ],
   },
 ];
@@ -277,56 +295,98 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
       {/* ── BUNDLES TAB ── */}
       {purchaseMode === "bundles" && (
-      <section className="py-14 px-6 sm:px-8 bg-[#1A1A1A]">
+      <section className="py-16 px-6 sm:px-8 bg-[#FAF9F6]">
         <div className="max-w-[1200px] mx-auto">
-          <div className="mb-10">
-            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">Predefined Bundles</div>
-            <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">Choose your bundle<span className="text-[#F5B300]">.</span></h2>
-            <p className="text-white/40 text-[13px] mt-2">All bundles are predefined — select the category and variant that suits you.</p>
+          <div className="mb-12">
+            <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#E85D04] mb-3">Predefined Bundles</p>
+            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-[#1A1A1A] leading-[0.92]">Choose your bundle<span className="text-[#F5B300]">.</span></h2>
+            <p className="text-[#888] text-[15px] mt-3 max-w-[500px]">All bundles are curated and ready to go — pick the category and size that suits your week.</p>
           </div>
 
-          <div className="space-y-10">
+          <div className="space-y-14">
             {PREDEFINED_BUNDLES.map((group) => (
               <div key={group.category}>
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="text-[11px] font-mono tracking-[0.3em] uppercase text-[#F5B300]">{group.category}</div>
-                  <div className="flex-1 h-px bg-white/8" />
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#1A1A1A] font-bold">{group.category}</div>
+                  <div className="flex-1 h-px bg-[#E8E4DC]" />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {group.items.map((item) => (
-                    <div key={item.name} className="bg-[#111] border border-white/8 p-5 flex flex-col gap-3 hover:border-[#F5B300]/30 transition-colors">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <div className="text-[13px] font-semibold leading-snug">{item.name}</div>
-                          {item.variant && (
-                            <div className="text-[10px] font-mono tracking-widest uppercase text-white/30 mt-1">{item.variant}</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {group.items.map((item) => {
+                    const previewMeals = item.mealIds
+                      .filter((id, idx, arr) => arr.indexOf(id) === idx)
+                      .slice(0, 3)
+                      .map((id) => MEALS.find((m) => m.id === id))
+                      .filter(Boolean) as typeof MEALS;
+                    return (
+                    <div key={item.name} className="bg-white border border-[#E8E4DC] flex flex-col hover:border-[#F5B300] hover:shadow-lg transition-all duration-300 group overflow-hidden">
+                      {/* Meal image strip */}
+                      <div className="flex h-28 overflow-hidden">
+                        {previewMeals.map((m, pi) => (
+                          <div key={pi} className="flex-1 overflow-hidden">
+                            <img src={m.img} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                          </div>
+                        ))}
+                        {previewMeals.length === 0 && <div className="flex-1 bg-[#F5F2EC]" />}
+                      </div>
+
+                      <div className="p-5 flex flex-col gap-3 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="text-[14px] font-extrabold text-[#1A1A1A] leading-snug">{item.name}</div>
+                            {item.variant && (
+                              <div className="text-[10px] font-mono tracking-widest uppercase text-[#999] mt-1">{item.variant}</div>
+                            )}
+                          </div>
+                          {item.badge && (
+                            <span className="bg-[#F5B300] text-[#1A1A1A] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-1 shrink-0">{item.badge}</span>
                           )}
                         </div>
-                        {item.badge && (
-                          <span className="bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-0.5 shrink-0">{item.badge}</span>
-                        )}
-                      </div>
-                      <p className="text-[12px] text-white/40 leading-relaxed flex-1">{item.desc}</p>
-                      <div className="flex items-center justify-between mt-1">
-                        <div>
-                          <span className="font-mono text-[18px] font-extrabold text-[#F5B300]">${item.price.toFixed(2)}</span>
-                          <span className="text-[10px] text-white/30 ml-1">{item.meals} meals · ${(item.price / item.meals).toFixed(2)}/meal</span>
+                        <p className="text-[12px] text-[#888] leading-relaxed flex-1">{item.desc}</p>
+
+                        {/* Meal name pills */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {previewMeals.map((m) => (
+                            <span key={m.id} className="text-[10px] bg-[#FAF9F6] border border-[#E8E4DC] text-[#555] px-2 py-0.5 leading-snug">{m.name}</span>
+                          ))}
+                          {item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length > 3 && (
+                            <span className="text-[10px] bg-[#F5B300]/10 border border-[#F5B300]/30 text-[#E85D04] px-2 py-0.5 font-semibold">+{item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length - 3} more</span>
+                          )}
                         </div>
-                      </div>
+
+                        <div className="flex items-end justify-between pt-2 border-t border-[#F0EDE8]">
+                          <div>
+                            <span className="font-display text-[22px] font-extrabold text-[#1A1A1A]">${item.price.toFixed(2)}</span>
+                            <span className="text-[11px] text-[#aaa] ml-1.5">{item.meals} meals · ${(item.price / item.meals).toFixed(2)}/meal</span>
+                          </div>
+                        </div>
                       <button
-                        onClick={() => addToCart({ id: Math.floor(Math.random() * 9000 + 1000), name: item.name, price: item.price, qty: 1, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format", type: "box" })}
-                        className="w-full py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase bg-white/8 text-white/60 hover:bg-[#F5B300] hover:text-[#111] transition-colors border border-white/10 hover:border-[#F5B300]">
+                        onClick={() => {
+                          const bundleMeals = item.mealIds.map((id) => MEALS.find((m) => m.id === id)).filter(Boolean) as typeof MEALS;
+                          addToCart({
+                            id: parseInt(`${group.category.charCodeAt(0)}${item.name.charCodeAt(0)}${item.price * 100}`),
+                            name: item.name,
+                            price: item.price,
+                            qty: 1,
+                            img: bundleMeals[0]?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                            type: "box",
+                            mealNames: bundleMeals.map((m) => m.name),
+                            mealImgs: bundleMeals.map((m) => m.img),
+                          });
+                        }}
+                        className="w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase bg-[#1A1A1A] text-white hover:bg-[#F5B300] hover:text-[#1A1A1A] transition-colors">
                         Add to Cart →
                       </button>
-                    </div>
-                  ))}
+                      </div>{/* p-5 */}
+                    </div>/* card */
+                    );
+                  })}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-8 p-4 border border-white/8 bg-white/3 text-[11px] text-white/30">
-            Free delivery on orders $120 and above · $10 delivery fee below $120
+          <div className="mt-10 p-5 bg-[#FFF8E1] border border-[#F5B300]/30 text-[12px] text-[#888]">
+            🚚 Free delivery on orders $120 and above · $10 delivery fee below $120
           </div>
         </div>
       </section>
@@ -528,20 +588,20 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               <span className="text-[11px] text-white/60 shrink-0">Add ${toFreeDelivery.toFixed(2)} for free delivery</span>
             </div>
           )}
-          <div className="px-6 py-4 flex items-center justify-between">
-            <div>
+          <button
+            className="w-full px-6 py-4 flex items-center justify-between hover:brightness-95 transition-all cursor-pointer"
+            onClick={() => setCartOpen(true)}
+          >
+            <div className="text-left">
               <div className="font-extrabold text-[16px]">{cartQty} item{cartQty !== 1 ? "s" : ""} · ${cartTotal.toFixed(2)}</div>
               <div className="text-[11px] opacity-60">
                 {purchaseMode === "subscription" ? "Delivery arranged after confirmation" : toFreeDelivery <= 0 ? "🎉 Free delivery" : `+ $${DELIVERY_FEE} delivery · Add $${toFreeDelivery.toFixed(2)} for free`}
               </div>
             </div>
-            <button
-              onClick={() => setCartOpen(true)}
-              className="bg-[#111] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-3 hover:bg-white hover:text-[#111] transition-colors"
-            >
+            <div className="bg-[#111] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-3">
               View Cart →
-            </button>
-          </div>
+            </div>
+          </button>
         </div>
       )}
 
