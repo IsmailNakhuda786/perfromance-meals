@@ -174,21 +174,74 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className="py-16 px-6 sm:px-8 border-y border-[#E8E4DC]">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="mb-10">
-            <p className="text-[11px] font-semibold tracking-[0.25em] uppercase mb-2" style={{ color: ORANGE }}>The process</p>
-            <h2 className="font-display text-[32px] sm:text-[40px] font-semibold text-[#1A1A1A]">Exceptional meal prep, thoughtfully supported.</h2>
+      {/* ── THE PROCESS ── */}
+      <section className="relative overflow-hidden bg-[#1A1A1A]">
+
+        {/* Section header */}
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 pt-20 pb-0 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div>
+            <p className="text-[11px] font-mono tracking-[0.45em] uppercase mb-4" style={{ color: ORANGE }}>The Process</p>
+            <h2 className="font-display text-[44px] sm:text-[60px] font-extrabold text-white leading-[0.9]">
+              Four steps.<br /><span style={{ color: ORANGE }}>Real results.</span>
+            </h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {HOW_IT_WORKS.map((s) => (
-              <div key={s.n}>
-                <div className="font-display text-[13px] font-bold mb-3 tabular-nums" style={{ color: ORANGE }}>{s.n}</div>
-                <div className="font-display text-[18px] font-semibold text-[#1A1A1A] mb-2">{s.label}</div>
-                <p className="text-[#666] text-[13px] leading-relaxed">{s.desc}</p>
+          <p className="text-white/40 text-[15px] leading-relaxed max-w-[300px] lg:mb-2">
+            From setting your goal to your first delivery — here's exactly how it works.
+          </p>
+        </div>
+
+        {/* Steps */}
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-10 pt-14 pb-20">
+          {HOW_IT_WORKS.map((s, i) => {
+            const isEven = i % 2 === 0;
+            return (
+              <div key={s.n} className={`relative flex flex-col lg:flex-row items-stretch gap-0 mb-0 ${i < HOW_IT_WORKS.length - 1 ? "border-b border-white/6" : ""}`}>
+
+                {/* Number column */}
+                <div className={`shrink-0 lg:w-[220px] flex items-center justify-center py-10 lg:py-14 border-b lg:border-b-0 ${isEven ? "lg:border-r border-white/6" : "lg:border-r border-white/6 lg:order-last"}`}>
+                  <span
+                    className="font-display font-extrabold select-none leading-none"
+                    style={{ fontSize: "clamp(72px, 10vw, 110px)", color: i === 0 ? ORANGE : "rgba(255,255,255,0.06)" }}
+                  >
+                    {s.n}
+                  </span>
+                </div>
+
+                {/* Content column */}
+                <div className={`flex-1 px-0 lg:px-14 py-10 lg:py-14 flex flex-col justify-center ${!isEven ? "lg:order-first" : ""}`}>
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="w-8 h-[2px]" style={{ backgroundColor: ORANGE }} />
+                    <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-white/30">Step {s.n}</span>
+                  </div>
+                  <h3 className="font-display text-[26px] sm:text-[32px] font-extrabold text-white leading-tight mb-4">
+                    {s.label}
+                  </h3>
+                  <p className="text-white/50 text-[15px] leading-relaxed max-w-[520px]">{s.desc}</p>
+                </div>
+
+                {/* Right accent — only on even rows (large decorative icon) */}
+                {isEven && (
+                  <div className="hidden lg:flex shrink-0 w-[140px] items-center justify-center opacity-20">
+                    {i === 0 && <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>}
+                    {i === 2 && <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="1.5"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>}
+                  </div>
+                )}
               </div>
-            ))}
+            );
+          })}
+        </div>
+
+        {/* Bottom CTA bar */}
+        <div className="border-t border-white/8 px-6 sm:px-10 py-8">
+          <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
+            <p className="text-white/40 text-[13px] font-mono">Ready to start? The whole process takes under 5 minutes.</p>
+            <button
+              onClick={() => navigateToWizard(selectedGoal)}
+              className="inline-flex items-center gap-3 px-8 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase text-[#1A1A1A] hover:opacity-90 transition-opacity shrink-0"
+              style={{ backgroundColor: ORANGE }}>
+              Begin My Plan
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
           </div>
         </div>
       </section>
