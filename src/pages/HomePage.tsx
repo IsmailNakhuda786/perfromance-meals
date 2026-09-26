@@ -60,6 +60,134 @@ const TESTIMONIALS = [
   { name: "Ravi S.",     role: "Ready-Series customer",       text: "I travel a lot. Stocking the freezer with Ready-Series means I never fall off when life gets chaotic.", stars: 5 },
 ];
 
+/* ─── Testimonials ───────────────────────────────────────── */
+const ALL_TESTIMONIALS = [
+  { name: "Jonathan C.", role: "6by60 programme · 12 weeks", text: "Down 9kg. The check-ins made the difference — it felt like having a coach, not just a meal service.", stars: 5, tag: "Meal Plan" },
+  { name: "Mei Lin T.",  role: "Meal Plan · 6 months",       text: "Finally stopped guessing what to eat. The meals fit my training schedule and I actually look forward to them.", stars: 5, tag: "Meal Plan" },
+  { name: "Ravi S.",     role: "Ready-Series customer",       text: "I travel a lot. Stocking the freezer with Ready-Series means I never fall off when life gets chaotic.", stars: 5, tag: "Ready-Series" },
+  { name: "Priya K.",    role: "Meal Plan · 3 months",        text: "Lost 6kg and actually kept it off. The food is genuinely delicious — I was shocked.", stars: 5, tag: "Meal Plan" },
+  { name: "Marcus T.",   role: "Ready-Series · 1 year",       text: "My whole family eats these now. Macro-tracked meals that actually taste like real food.", stars: 5, tag: "Ready-Series" },
+];
+
+function TestimonialsSection({ sectionRef, visible }: { sectionRef: React.RefObject<HTMLDivElement | null>; visible: boolean }) {
+  const [active, setActive] = useState(0);
+
+  const next = () => setActive((v) => (v + 1) % ALL_TESTIMONIALS.length);
+  const prev = () => setActive((v) => (v - 1 + ALL_TESTIMONIALS.length) % ALL_TESTIMONIALS.length);
+
+  const t = ALL_TESTIMONIALS[active];
+
+  return (
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#1A1A1A]">
+
+      {/* Big decorative quote mark */}
+      <div className="absolute top-0 left-0 font-display font-extrabold text-white select-none pointer-events-none leading-none"
+        style={{ fontSize: "clamp(200px, 30vw, 380px)", opacity: 0.03, lineHeight: 1, marginLeft: "-0.05em", marginTop: "-0.1em" }}>
+        "
+      </div>
+
+      {/* Yellow vertical stripe */}
+      <div className="absolute left-0 top-0 bottom-0 w-[5px] bg-[#F5B300]" />
+
+      <div className="max-w-[1200px] mx-auto px-6 sm:px-10 lg:px-16 py-20 sm:py-28">
+
+        {/* Top row — label + rating strip */}
+        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-16 transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div>
+            <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-3">Real results</p>
+            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.9]">
+              8,400+ people.<br /><span className="text-[#F5B300]">Real stories.</span>
+            </h2>
+          </div>
+          {/* Aggregate rating badge */}
+          <div className="shrink-0 border border-white/10 px-7 py-5 flex flex-col items-center gap-1">
+            <div className="font-display text-[42px] font-extrabold text-[#F5B300] leading-none">4.9</div>
+            <div className="flex gap-0.5 mt-1">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#F5B300"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              ))}
+            </div>
+            <div className="text-white/35 text-[10px] font-mono tracking-wider mt-1">AVG RATING</div>
+          </div>
+        </div>
+
+        {/* Main featured quote */}
+        <div className={`transition-all duration-700 delay-150 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+
+          {/* Tag */}
+          <div className="inline-flex items-center gap-2 mb-8">
+            <div className="h-px w-6 bg-[#F5B300]" />
+            <span className="text-[#F5B300] text-[10px] font-mono tracking-[0.4em] uppercase">{t.tag}</span>
+          </div>
+
+          {/* Quote text — large */}
+          <blockquote
+            key={active}
+            className="font-display text-[clamp(22px,3.5vw,40px)] font-extrabold text-white leading-[1.15] mb-10 max-w-[820px]"
+            style={{ animation: "fadeUp 0.45s cubic-bezier(0.22,1,0.36,1) forwards" }}
+          >
+            "{t.text}"
+          </blockquote>
+
+          {/* Author row */}
+          <div className="flex items-center justify-between flex-wrap gap-6">
+            <div className="flex items-center gap-5">
+              {/* Avatar initials */}
+              <div className="w-12 h-12 bg-[#F5B300] flex items-center justify-center shrink-0">
+                <span className="font-display font-extrabold text-[#1A1A1A] text-[15px]">
+                  {t.name.split(" ").map(n => n[0]).join("")}
+                </span>
+              </div>
+              <div>
+                <div className="text-white font-semibold text-[15px]">{t.name}</div>
+                <div className="text-white/35 text-[11px] font-mono mt-0.5">{t.role}</div>
+              </div>
+            </div>
+
+            {/* Nav controls */}
+            <div className="flex items-center gap-4">
+              {/* Dot indicators */}
+              <div className="flex gap-2 mr-2">
+                {ALL_TESTIMONIALS.map((_, i) => (
+                  <button key={i} onClick={() => setActive(i)}
+                    className="transition-all duration-300"
+                    style={{ width: i === active ? "24px" : "8px", height: "8px", backgroundColor: i === active ? "#F5B300" : "rgba(255,255,255,0.2)" }}
+                  />
+                ))}
+              </div>
+              <button onClick={prev}
+                className="w-11 h-11 border border-white/15 flex items-center justify-center text-white/50 hover:border-[#F5B300] hover:text-[#F5B300] transition-all">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+              <button onClick={next}
+                className="w-11 h-11 border border-white/15 flex items-center justify-center text-white/50 hover:border-[#F5B300] hover:text-[#F5B300] transition-all">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom mini-cards — other testimonials */}
+        <div className="mt-16 pt-10 border-t border-white/8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {ALL_TESTIMONIALS.filter((_, i) => i !== active).slice(0, 4).map((ot, i) => (
+            <button key={i} onClick={() => setActive(ALL_TESTIMONIALS.indexOf(ot))}
+              className="text-left p-5 border border-white/8 hover:border-[#F5B300]/40 hover:bg-white/4 transition-all duration-300 group">
+              <div className="flex gap-0.5 mb-3">
+                {[...Array(ot.stars)].map((_, j) => (
+                  <svg key={j} width="10" height="10" viewBox="0 0 24 24" fill="#F5B300"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                ))}
+              </div>
+              <p className="text-white/45 text-[12px] leading-relaxed line-clamp-2 group-hover:text-white/70 transition-colors">"{ot.text}"</p>
+              <div className="text-white/25 text-[10px] font-mono mt-3 group-hover:text-[#F5B300] transition-colors">{ot.name}</div>
+            </button>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
 /* ─── Brand Family accordion ─────────────────────────────── */
 interface BrandFamilyProps {
   brandsRef: React.RefObject<HTMLDivElement | null>;
@@ -493,28 +621,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section ref={testimonialsSection.ref} className="py-20 sm:py-28 bg-[#FAF9F6] border-t border-[#E8E4DC]">
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
-          <div className={`mb-12 transition-all duration-700 ${testimonialsSection.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-3">Real results</p>
-            <h2 className="font-display text-[38px] font-extrabold text-[#1A1A1A] leading-tight">What our customers say.</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i}
-                className={`bg-white border border-[#E8E4DC] p-8 hover:border-[#F5B300]/50 transition-all duration-500 ${testimonialsSection.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-                style={{ transitionDelay: testimonialsSection.visible ? `${i * 120}ms` : "0ms" }}>
-                <div className="flex mb-4">
-                  {[...Array(t.stars)].map((_, j) => <span key={j} className="text-[#F5B300] text-[14px]">★</span>)}
-                </div>
-                <p className="text-[#555] text-[14px] leading-relaxed italic mb-6">"{t.text}"</p>
-                <div className="font-semibold text-[#1A1A1A] text-[13px]">{t.name}</div>
-                <div className="text-[#1A1A1A]/35 text-[11px] mt-0.5 font-mono">{t.role}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection sectionRef={testimonialsSection.ref} visible={testimonialsSection.visible} />
 
 
 {/* ── FOOTER STRIP ── */}
