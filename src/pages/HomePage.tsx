@@ -60,6 +60,198 @@ const TESTIMONIALS = [
   { name: "Ravi S.",     role: "Ready-Series customer",       text: "I travel a lot. Stocking the freezer with Ready-Series means I never fall off when life gets chaotic.", stars: 5 },
 ];
 
+/* ─── Brand Family accordion ─────────────────────────────── */
+interface BrandFamilyProps {
+  brandsRef: React.RefObject<HTMLDivElement | null>;
+  brandsVisible: boolean;
+  navigate: (page: Page) => void;
+}
+
+function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyProps) {
+  const [active, setActive] = useState<number | null>(null);
+
+  const brands = [
+    {
+      num: "01",
+      tag: "The Parent Brand",
+      logo: <PerformanceMealsLogo size="md" variant="dark" />,
+      headline: ["Credible.", "Caring.", "Principled."],
+      body: "Performance Meals sets the purpose, standards, and shared quality foundation that both brand experiences are built on. Every meal, every customer interaction begins here.",
+      stat: { v: "Est. 2019", l: "Singapore" },
+      cta: "Our Story",
+      onCta: () => navigate("about"),
+      bg: "#F5F2EC",
+      accent: "#F5B300",
+      textDim: "rgba(26,26,26,0.45)",
+      numColor: "rgba(26,26,26,0.05)",
+      ctaStyle: "border-b-2 border-[#1A1A1A]/30 text-[#1A1A1A] hover:border-[#F5B300] hover:text-[#F5B300]",
+      barColor: "#F5B300",
+    },
+    {
+      num: "02",
+      tag: "Boutique Progress",
+      logo: <MealPlanLogo size="md" variant="light" />,
+      headline: ["Fresh structure", "for your", "personal goal."],
+      body: "Tailored support, real check-ins, and meaningful results. Designed for people who want more than a generic routine — built around your goal, delivered fresh daily.",
+      stat: { v: "6–12 wks", l: "Avg transformation" },
+      cta: "Discover Meal Plan",
+      onCta: () => navigate("meal-plan-landing"),
+      bg: "#E85D04",
+      accent: "#FFFFFF",
+      textDim: "rgba(255,255,255,0.55)",
+      numColor: "rgba(255,255,255,0.05)",
+      ctaStyle: "bg-white text-[#E85D04] hover:bg-[#1A1A1A] hover:text-white px-6 py-3.5",
+      barColor: "rgba(255,255,255,0.3)",
+    },
+    {
+      num: "03",
+      tag: "Everyday Momentum",
+      logo: <ReadySeriesLogo size="md" variant="light" />,
+      headline: ["Ready for", "real life."],
+      body: "Fast, enjoyable frozen meals built to keep your week moving without locking you in. Dependable, repeat-friendly, and zero compromise on nutrition.",
+      stat: { v: "40+", l: "Macro-tracked meals" },
+      cta: "Shop Ready-Series",
+      onCta: () => navigate("ready-series"),
+      bg: "#F5B300",
+      accent: "#1A1A1A",
+      textDim: "rgba(26,26,26,0.50)",
+      numColor: "rgba(26,26,26,0.05)",
+      ctaStyle: "bg-[#1A1A1A] text-white hover:bg-white hover:text-[#1A1A1A] px-6 py-3.5",
+      barColor: "rgba(26,26,26,0.25)",
+    },
+  ];
+
+  return (
+    <section ref={brandsRef} className="overflow-hidden">
+
+      {/* Section header */}
+      <div className={`bg-white px-6 sm:px-10 pt-20 pb-10 transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+        <div className="max-w-[1200px] mx-auto">
+          <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-5">Our brand family</p>
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            <h2 className="font-display text-[52px] sm:text-[72px] font-extrabold text-[#1A1A1A] leading-[0.88]">
+              One Standard.<br /><span className="text-[#F5B300]">Two Experiences.</span>
+            </h2>
+            <p className="text-[#888] text-[15px] leading-relaxed max-w-[320px] lg:mb-2">
+              Hover each brand to explore its story — all built on the same trusted kitchen.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Accordion panels */}
+      <div className="flex flex-col lg:flex-row" style={{ minHeight: "600px" }}>
+        {brands.map((b, i) => {
+          const isActive = active === i;
+          const isInactive = active !== null && !isActive;
+          return (
+            <div
+              key={i}
+              onMouseEnter={() => setActive(i)}
+              onMouseLeave={() => setActive(null)}
+              onClick={b.onCta}
+              className="relative overflow-hidden flex flex-col justify-between cursor-pointer"
+              style={{
+                backgroundColor: b.bg,
+                flex: isActive ? "2.4" : isInactive ? "0.7" : "1",
+                transition: "flex 0.55s cubic-bezier(0.4,0,0.2,1), background-color 0.3s ease",
+                minHeight: "520px",
+                padding: "48px 44px",
+              }}
+            >
+              {/* Giant decorative number */}
+              <div
+                className="absolute -bottom-6 -right-4 font-display font-extrabold select-none pointer-events-none leading-none"
+                style={{
+                  fontSize: "clamp(120px, 18vw, 220px)",
+                  color: b.numColor,
+                  lineHeight: 0.85,
+                  transition: "opacity 0.4s ease",
+                  opacity: isInactive ? 0 : 1,
+                }}
+              >
+                {b.num}
+              </div>
+
+              {/* Top: tag + accent bar */}
+              <div>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="h-[2px] w-8 transition-all duration-500" style={{ backgroundColor: b.barColor, width: isActive ? "48px" : "32px" }} />
+                  <p className="font-mono text-[10px] tracking-[0.4em] uppercase" style={{ color: b.textDim }}>{b.tag}</p>
+                </div>
+                <div style={{ opacity: isInactive ? 0.5 : 1, transition: "opacity 0.4s ease" }}>
+                  {b.logo}
+                </div>
+              </div>
+
+              {/* Bottom: headline + body + cta */}
+              <div>
+                <h3
+                  className="font-display font-extrabold leading-tight mb-4"
+                  style={{
+                    color: b.accent,
+                    fontSize: isActive ? "clamp(28px, 3vw, 40px)" : "clamp(22px, 2.2vw, 30px)",
+                    transition: "font-size 0.4s ease",
+                  }}
+                >
+                  {b.headline.map((line, j) => <span key={j}>{line}<br /></span>)}
+                </h3>
+
+                {/* Body — only fully visible when active */}
+                <div style={{
+                  maxHeight: isActive ? "200px" : "0px",
+                  opacity: isActive ? 1 : 0,
+                  overflow: "hidden",
+                  transition: "max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease",
+                }}>
+                  <p className="text-[14px] leading-relaxed mb-6" style={{ color: b.textDim.replace("0.45", "0.70").replace("0.55", "0.80").replace("0.50", "0.70") }}>
+                    {b.body}
+                  </p>
+                  <div className="flex items-center gap-6 mb-7">
+                    <div>
+                      <div className="font-display font-extrabold text-[22px] leading-none" style={{ color: b.accent }}>{b.stat.v}</div>
+                      <div className="font-mono text-[9px] tracking-widest uppercase mt-1" style={{ color: b.textDim }}>{b.stat.l}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={(e) => { e.stopPropagation(); b.onCta(); }}
+                  className={`inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.18em] uppercase transition-all duration-300 ${b.ctaStyle}`}
+                  style={{ opacity: isActive ? 1 : 0, transform: isActive ? "translateY(0)" : "translateY(8px)", transition: "opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s" }}
+                >
+                  {b.cta}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Bottom bar */}
+      <div className="bg-[#1A1A1A] px-6 sm:px-10 py-5">
+        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <p className="text-white/45 text-[12px] leading-relaxed">
+            <span className="text-[#F5B300] font-semibold">One trusted kitchen.</span>{" "}
+            A personalised fresh-plan or a fast, flexible frozen-meal experience.
+          </p>
+          <div className="flex gap-6">
+            {["about", "meal-plan-landing", "ready-series"].map((p, i) => (
+              <button key={p} onClick={() => navigate(p as Page)}
+                className="text-white/25 text-[10px] font-mono tracking-widest uppercase hover:text-white/60 transition-colors">
+                {["PM", "Meal Plan", "Ready"][i]}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function HomePage({ navigate, navigateToWizard }: Props) {
   const [activeMilestone, setActiveMilestone] = useState(3);
   const [heroVisible, setHeroVisible] = useState(false);
@@ -231,104 +423,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
 
 
       {/* ── BRAND FAMILY ── */}
-      <section ref={brandsRef} className="bg-white text-[#1A1A1A] py-20 sm:py-28">
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
-
-          {/* Section header */}
-          <div className={`mb-4 transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-4">Our brand family</p>
-            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-[#1A1A1A] leading-[0.93] mb-4">
-              One Standard.<br />Two Distinct Experiences.
-            </h2>
-            <p className="text-[#666] text-[16px] leading-relaxed max-w-[600px]">
-              Performance Meals sets the quality and performance standard. Meal Plan and Ready-Series then serve two different customer needs — one the same trusted kitchen.
-            </p>
-          </div>
-
-          {/* Thin yellow rule */}
-          <div className="h-px bg-[#F5B300] w-24 mb-14 mt-8" />
-
-          {/* Three brand cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-[#E8E4DC]">
-
-            {/* Performance Meals — parent */}
-            <div className={`p-10 border-b lg:border-b-0 lg:border-r border-[#E8E4DC] transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ transitionDelay: "100ms" }}>
-              <div className="mb-8">
-                <PerformanceMealsLogo size="md" variant="dark" />
-              </div>
-              <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-3">The Parent Brand</p>
-              <h3 className="font-display text-[22px] font-semibold text-[#1A1A1A] leading-snug mb-4">
-                Credible, caring, principled.
-              </h3>
-              <p className="text-[#666] text-[14px] leading-relaxed mb-8">
-                Performance Meals sets the purpose, standards, and shared quality foundation. Every meal, every experience, every customer interaction begins here.
-              </p>
-              <button onClick={() => navigate("about")}
-                className="group inline-flex items-center gap-3 text-[#1A1A1A] text-[11px] font-bold tracking-[0.2em] uppercase border-b border-[#1A1A1A] pb-0.5 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
-                About Performance Meals
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
-                  className="transition-transform group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-            </div>
-
-            {/* Meal Plan */}
-            <div className={`p-10 border-b lg:border-b-0 lg:border-r border-[#E8E4DC] transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ transitionDelay: "200ms" }}>
-              {/* Orange top accent */}
-              <div className="h-[3px] bg-[#E85D04] -mx-10 -mt-10 mb-10" />
-              <div className="mb-8">
-                <MealPlanLogo size="md" variant="dark" />
-              </div>
-              <p className="text-[10px] font-mono tracking-[0.4em] uppercase mb-3" style={{ color: "#E85D04" }}>Boutique Progress</p>
-              <h3 className="font-display text-[22px] font-semibold text-[#1A1A1A] leading-snug mb-4">
-                Fresh structure for a personal goal.
-              </h3>
-              <p className="text-[#666] text-[14px] leading-relaxed mb-8">
-                Tailored support, structure, confidence, and meaningful results. Designed for people who want more than a generic healthy-food routine — built around your goal, delivered fresh.
-              </p>
-              <button onClick={() => navigate("meal-plan-landing")}
-                className="group inline-flex items-center gap-3 text-white text-[11px] font-bold tracking-[0.2em] uppercase px-6 py-3.5 hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: "#E85D04" }}>
-                Discover Meal Plan
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
-                  className="transition-transform group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-            </div>
-
-            {/* Ready-Series */}
-            <div className={`p-10 bg-[#FFFBEA] transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ transitionDelay: "300ms" }}>
-              {/* Yellow top accent */}
-              <div className="h-[3px] bg-[#F5B300] -mx-10 -mt-10 mb-10" />
-              <div className="mb-8">
-                <ReadySeriesLogo size="md" variant="light" />
-              </div>
-              <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-3">Everyday Momentum</p>
-              <h3 className="font-display text-[22px] font-extrabold text-[#1A1A1A] leading-snug mb-4">
-                READY FOR REAL LIFE.
-              </h3>
-              <p className="text-[#1A1A1A]/55 text-[14px] leading-relaxed mb-8">
-                Fast, enjoyable frozen meals that are ready when life gets busy. Dependable, repeat-friendly, and built to keep your week moving — without locking you in.
-              </p>
-              <button onClick={() => navigate("ready-series")}
-                className="group inline-flex items-center gap-3 bg-[#1A1A1A] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-6 py-3.5 hover:bg-[#F5B300] hover:text-[#1A1A1A] transition-colors">
-                Shop Ready-Series
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
-                  className="transition-transform group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </button>
-            </div>
-
-          </div>
-
-          {/* Relationship line */}
-          <div className="mt-6 px-6 py-5 bg-[#FFF8E1] border border-[#F5B300]/30">
-            <p className="text-[#1A1A1A]/60 text-[13px] leading-relaxed font-body">
-              <span className="text-[#E85D04] font-semibold">One trusted standard</span> — delivered through a <strong className="text-[#1A1A1A]">personalised fresh-plan experience</strong> or a <strong className="text-[#1A1A1A]">fast, flexible frozen-meal experience.</strong>
-            </p>
-          </div>
-        </div>
-      </section>
+      <BrandFamilySection brandsRef={brandsRef} brandsVisible={brandsVisible} navigate={navigate} />
 
       {/* ── WHO WE ARE ── */}
       <section ref={storySection.ref} className="bg-[#FAF9F6] text-[#1A1A1A] py-20 sm:py-28 border-t border-[#E8E4DC]">
