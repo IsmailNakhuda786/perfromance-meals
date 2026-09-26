@@ -67,59 +67,62 @@ interface BrandFamilyProps {
   navigate: (page: Page) => void;
 }
 
+const BRAND_DATA = [
+  {
+    num: "01",
+    tag: "The Parent Brand",
+    logoVariant: "pm" as const,
+    headline: ["Credible.", "Caring.", "Principled."],
+    body: "Performance Meals sets the purpose, standards, and shared quality foundation that both brand experiences are built on. Every meal, every customer interaction begins here.",
+    stat: { v: "Est. 2019", l: "Singapore" },
+    cta: "Our Story",
+    page: "about" as Page,
+    bg: "#F5F2EC",
+    accent: "#1A1A1A",
+    accentHighlight: "#F5B300",
+    textDim: "rgba(26,26,26,0.50)",
+    numColor: "rgba(26,26,26,0.05)",
+    ctaStyle: "border-b-2 border-[#1A1A1A]/30 text-[#1A1A1A] hover:border-[#F5B300] hover:text-[#F5B300]",
+    barColor: "#F5B300",
+  },
+  {
+    num: "02",
+    tag: "Boutique Progress",
+    logoVariant: "mp" as const,
+    headline: ["Fresh structure", "for your", "personal goal."],
+    body: "Tailored support, real check-ins, and meaningful results. Designed for people who want more than a generic routine — built around your goal, delivered fresh daily.",
+    stat: { v: "6–12 wks", l: "Avg transformation" },
+    cta: "Discover Meal Plan",
+    page: "meal-plan-landing" as Page,
+    bg: "#E85D04",
+    accent: "#FFFFFF",
+    accentHighlight: "#FFFFFF",
+    textDim: "rgba(255,255,255,0.60)",
+    numColor: "rgba(255,255,255,0.05)",
+    ctaStyle: "bg-white text-[#E85D04] hover:bg-[#1A1A1A] hover:text-white px-6 py-3.5",
+    barColor: "rgba(255,255,255,0.35)",
+  },
+  {
+    num: "03",
+    tag: "Everyday Momentum",
+    logoVariant: "rs" as const,
+    headline: ["Ready for", "real life."],
+    body: "Fast, enjoyable frozen meals built to keep your week moving without locking you in. Dependable, repeat-friendly, and zero compromise on nutrition.",
+    stat: { v: "40+", l: "Macro-tracked meals" },
+    cta: "Shop Ready-Series",
+    page: "ready-series" as Page,
+    bg: "#F5B300",
+    accent: "#1A1A1A",
+    accentHighlight: "#1A1A1A",
+    textDim: "rgba(26,26,26,0.52)",
+    numColor: "rgba(26,26,26,0.05)",
+    ctaStyle: "bg-[#1A1A1A] text-white hover:bg-white hover:text-[#1A1A1A] px-6 py-3.5",
+    barColor: "rgba(26,26,26,0.25)",
+  },
+];
+
 function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyProps) {
   const [active, setActive] = useState<number | null>(null);
-
-  const brands = [
-    {
-      num: "01",
-      tag: "The Parent Brand",
-      logo: <PerformanceMealsLogo size="md" variant="dark" />,
-      headline: ["Credible.", "Caring.", "Principled."],
-      body: "Performance Meals sets the purpose, standards, and shared quality foundation that both brand experiences are built on. Every meal, every customer interaction begins here.",
-      stat: { v: "Est. 2019", l: "Singapore" },
-      cta: "Our Story",
-      onCta: () => navigate("about"),
-      bg: "#F5F2EC",
-      accent: "#F5B300",
-      textDim: "rgba(26,26,26,0.45)",
-      numColor: "rgba(26,26,26,0.05)",
-      ctaStyle: "border-b-2 border-[#1A1A1A]/30 text-[#1A1A1A] hover:border-[#F5B300] hover:text-[#F5B300]",
-      barColor: "#F5B300",
-    },
-    {
-      num: "02",
-      tag: "Boutique Progress",
-      logo: <MealPlanLogo size="md" variant="light" />,
-      headline: ["Fresh structure", "for your", "personal goal."],
-      body: "Tailored support, real check-ins, and meaningful results. Designed for people who want more than a generic routine — built around your goal, delivered fresh daily.",
-      stat: { v: "6–12 wks", l: "Avg transformation" },
-      cta: "Discover Meal Plan",
-      onCta: () => navigate("meal-plan-landing"),
-      bg: "#E85D04",
-      accent: "#FFFFFF",
-      textDim: "rgba(255,255,255,0.55)",
-      numColor: "rgba(255,255,255,0.05)",
-      ctaStyle: "bg-white text-[#E85D04] hover:bg-[#1A1A1A] hover:text-white px-6 py-3.5",
-      barColor: "rgba(255,255,255,0.3)",
-    },
-    {
-      num: "03",
-      tag: "Everyday Momentum",
-      logo: <ReadySeriesLogo size="md" variant="light" />,
-      headline: ["Ready for", "real life."],
-      body: "Fast, enjoyable frozen meals built to keep your week moving without locking you in. Dependable, repeat-friendly, and zero compromise on nutrition.",
-      stat: { v: "40+", l: "Macro-tracked meals" },
-      cta: "Shop Ready-Series",
-      onCta: () => navigate("ready-series"),
-      bg: "#F5B300",
-      accent: "#1A1A1A",
-      textDim: "rgba(26,26,26,0.50)",
-      numColor: "rgba(26,26,26,0.05)",
-      ctaStyle: "bg-[#1A1A1A] text-white hover:bg-white hover:text-[#1A1A1A] px-6 py-3.5",
-      barColor: "rgba(26,26,26,0.25)",
-    },
-  ];
 
   return (
     <section ref={brandsRef} className="overflow-hidden">
@@ -141,27 +144,32 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
 
       {/* Accordion panels */}
       <div className="flex flex-col lg:flex-row" style={{ minHeight: "600px" }}>
-        {brands.map((b, i) => {
+        {BRAND_DATA.map((b, i) => {
           const isActive = active === i;
           const isInactive = active !== null && !isActive;
+          const logo = b.logoVariant === "pm"
+            ? <PerformanceMealsLogo size="md" variant="dark" />
+            : b.logoVariant === "mp"
+              ? <MealPlanLogo size="md" variant="light" />
+              : <ReadySeriesLogo size="md" variant="light" />;
           return (
             <div
               key={i}
               onMouseEnter={() => setActive(i)}
               onMouseLeave={() => setActive(null)}
-              onClick={b.onCta}
+              onClick={() => navigate(b.page)}
               className="relative overflow-hidden flex flex-col justify-between cursor-pointer"
               style={{
                 backgroundColor: b.bg,
                 flex: isActive ? "2.4" : isInactive ? "0.7" : "1",
-                transition: "flex 0.55s cubic-bezier(0.4,0,0.2,1), background-color 0.3s ease",
+                transition: "flex 0.55s cubic-bezier(0.4,0,0.2,1)",
                 minHeight: "520px",
                 padding: "48px 44px",
               }}
             >
               {/* Giant decorative number */}
               <div
-                className="absolute -bottom-6 -right-4 font-display font-extrabold select-none pointer-events-none leading-none"
+                className="absolute -bottom-6 -right-4 font-display font-extrabold select-none pointer-events-none"
                 style={{
                   fontSize: "clamp(120px, 18vw, 220px)",
                   color: b.numColor,
@@ -173,14 +181,17 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
                 {b.num}
               </div>
 
-              {/* Top: tag + accent bar */}
+              {/* Top: tag + accent bar + logo */}
               <div>
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="h-[2px] w-8 transition-all duration-500" style={{ backgroundColor: b.barColor, width: isActive ? "48px" : "32px" }} />
+                  <div
+                    className="h-[2px] transition-all duration-500"
+                    style={{ backgroundColor: b.barColor, width: isActive ? "48px" : "32px" }}
+                  />
                   <p className="font-mono text-[10px] tracking-[0.4em] uppercase" style={{ color: b.textDim }}>{b.tag}</p>
                 </div>
                 <div style={{ opacity: isInactive ? 0.5 : 1, transition: "opacity 0.4s ease" }}>
-                  {b.logo}
+                  {logo}
                 </div>
               </div>
 
@@ -197,27 +208,25 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
                   {b.headline.map((line, j) => <span key={j}>{line}<br /></span>)}
                 </h3>
 
-                {/* Body — only fully visible when active */}
+                {/* Body — slides in when active */}
                 <div style={{
                   maxHeight: isActive ? "200px" : "0px",
                   opacity: isActive ? 1 : 0,
                   overflow: "hidden",
                   transition: "max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease",
                 }}>
-                  <p className="text-[14px] leading-relaxed mb-6" style={{ color: b.textDim.replace("0.45", "0.70").replace("0.55", "0.80").replace("0.50", "0.70") }}>
+                  <p className="text-[14px] leading-relaxed mb-6" style={{ color: b.textDim }}>
                     {b.body}
                   </p>
-                  <div className="flex items-center gap-6 mb-7">
-                    <div>
-                      <div className="font-display font-extrabold text-[22px] leading-none" style={{ color: b.accent }}>{b.stat.v}</div>
-                      <div className="font-mono text-[9px] tracking-widest uppercase mt-1" style={{ color: b.textDim }}>{b.stat.l}</div>
-                    </div>
+                  <div className="mb-7">
+                    <div className="font-display font-extrabold text-[22px] leading-none" style={{ color: b.accentHighlight }}>{b.stat.v}</div>
+                    <div className="font-mono text-[9px] tracking-widest uppercase mt-1" style={{ color: b.textDim }}>{b.stat.l}</div>
                   </div>
                 </div>
 
                 <button
-                  onClick={(e) => { e.stopPropagation(); b.onCta(); }}
-                  className={`inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.18em] uppercase transition-all duration-300 ${b.ctaStyle}`}
+                  onClick={(e) => { e.stopPropagation(); navigate(b.page); }}
+                  className={`inline-flex items-center gap-3 text-[11px] font-bold tracking-[0.18em] uppercase transition-colors ${b.ctaStyle}`}
                   style={{ opacity: isActive ? 1 : 0, transform: isActive ? "translateY(0)" : "translateY(8px)", transition: "opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s" }}
                 >
                   {b.cta}
