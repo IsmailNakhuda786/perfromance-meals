@@ -200,8 +200,9 @@ const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: strin
 
 export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen }: Props) {
   const [theme, setTheme] = useState<"dark" | "warm" | "espresso">("dark");
-  const th = <T,>(d: T, w: T, e: T): T =>
-    theme === "dark" ? d : theme === "warm" ? w : e;
+  const th = <T,>(d: T, w: T, e: T): T => (
+    theme === "dark" ? d : theme === "warm" ? w : e
+  );
   const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
   const [subTerm, setSubTerm] = useState<3 | 6>(3);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
