@@ -128,13 +128,13 @@ export default function App() {
       {showPromo && <PromoPopup onClose={() => setShowPromo(false)} navigate={navigate} />}
 
       {/* Download banner */}
-      <div className="bg-[#1A1A1A] text-white flex items-center justify-between px-4 py-3 gap-3 flex-wrap">
+      <div className="bg-[#F5B300] flex items-center justify-between px-4 py-3 gap-3 flex-wrap">
         <div>
-          <div className="text-[13px] font-semibold text-white">Download Prototype</div>
-          <div className="text-[11px] text-white/50">Single HTML file — open in any browser, no setup needed</div>
+          <div className="text-[13px] font-semibold text-[#1A1A1A]">Download Prototype</div>
+          <div className="text-[11px] text-[#1A1A1A]/60">Single HTML file — open in any browser, no setup needed</div>
         </div>
         <button onClick={downloadHTML}
-          className="bg-[#F5B300] text-[#1A1A1A] text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-white transition-colors whitespace-nowrap shrink-0">
+          className="bg-[#1A1A1A] text-white text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-[#E85D04] transition-colors whitespace-nowrap shrink-0">
           ↓ Download performance-meals-prototype.html
         </button>
       </div>
