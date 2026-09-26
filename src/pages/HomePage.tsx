@@ -278,7 +278,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
               {/* Orange top accent */}
               <div className="h-[3px] bg-[#E85D04] -mx-10 -mt-10 mb-10" />
               <div className="mb-8">
-                <MealPlanLogo size="md" variant="light" />
+                <MealPlanLogo size="md" variant="dark" />
               </div>
               <p className="text-[10px] font-mono tracking-[0.4em] uppercase mb-3" style={{ color: "#E85D04" }}>Boutique Progress</p>
               <h3 className="font-display text-[22px] font-semibold text-[#1A1A1A] leading-snug mb-4">
@@ -297,22 +297,22 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             </div>
 
             {/* Ready-Series */}
-            <div className={`p-10 bg-[#1A1A1A] text-white transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            <div className={`p-10 bg-[#FFFBEA] transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ transitionDelay: "300ms" }}>
               {/* Yellow top accent */}
               <div className="h-[3px] bg-[#F5B300] -mx-10 -mt-10 mb-10" />
               <div className="mb-8">
-                <ReadySeriesLogo size="md" variant="dark" />
+                <ReadySeriesLogo size="md" variant="light" />
               </div>
               <p className="text-[10px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-3">Everyday Momentum</p>
-              <h3 className="font-display text-[22px] font-extrabold text-white leading-snug mb-4">
+              <h3 className="font-display text-[22px] font-extrabold text-[#1A1A1A] leading-snug mb-4">
                 READY FOR REAL LIFE.
               </h3>
-              <p className="text-white/55 text-[14px] leading-relaxed mb-8">
+              <p className="text-[#1A1A1A]/55 text-[14px] leading-relaxed mb-8">
                 Fast, enjoyable frozen meals that are ready when life gets busy. Dependable, repeat-friendly, and built to keep your week moving — without locking you in.
               </p>
               <button onClick={() => navigate("ready-series")}
-                className="group inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] text-[11px] font-extrabold tracking-[0.2em] uppercase px-6 py-3.5 hover:bg-white transition-colors">
+                className="group inline-flex items-center gap-3 bg-[#1A1A1A] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-6 py-3.5 hover:bg-[#F5B300] hover:text-[#1A1A1A] transition-colors">
                 Shop Ready-Series
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
                   className="transition-transform group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -322,9 +322,9 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
           </div>
 
           {/* Relationship line */}
-          <div className="mt-6 px-6 py-5 bg-[#1A1A1A]">
-            <p className="text-white/55 text-[13px] leading-relaxed font-body">
-              <span className="text-[#F5B300] font-semibold">One trusted standard</span> — delivered through a <strong className="text-white">personalised fresh-plan experience</strong> or a <strong className="text-white">fast, flexible frozen-meal experience.</strong>
+          <div className="mt-6 px-6 py-5 bg-[#FFF8E1] border border-[#F5B300]/30">
+            <p className="text-[#1A1A1A]/60 text-[13px] leading-relaxed font-body">
+              <span className="text-[#E85D04] font-semibold">One trusted standard</span> — delivered through a <strong className="text-[#1A1A1A]">personalised fresh-plan experience</strong> or a <strong className="text-[#1A1A1A]">fast, flexible frozen-meal experience.</strong>
             </p>
           </div>
         </div>
