@@ -199,6 +199,8 @@ const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: strin
 };
 
 export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen }: Props) {
+  const [theme, setTheme] = useState<"dark" | "warm">("dark");
+  const dk = theme === "dark";
   const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
   const [subTerm, setSubTerm] = useState<3 | 6>(3);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
@@ -342,8 +344,31 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         </div>
       )}
 
+      {/* ── THEME PREVIEW TOGGLE ── */}
+      <div className="bg-[#F5B300] px-6 py-3">
+        <div className="max-w-[1200px] mx-auto flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <span className="text-[#111] text-[11px] font-extrabold tracking-[0.2em] uppercase">Preview Mode</span>
+            <span className="text-[#111]/50 text-[11px]">—</span>
+            <span className="text-[#111]/60 text-[11px]">Toggle between two design directions and pick what feels right</span>
+          </div>
+          <div className="flex border border-[#111]/20 overflow-hidden shrink-0">
+            <button
+              onClick={() => setTheme("dark")}
+              className={`px-5 py-2 text-[11px] font-extrabold tracking-[0.15em] uppercase transition-all ${dk ? "bg-[#1A1A1A] text-[#F5B300]" : "text-[#111]/50 hover:text-[#111]"}`}>
+              🌑 Dark — Athletic
+            </button>
+            <button
+              onClick={() => setTheme("warm")}
+              className={`px-5 py-2 text-[11px] font-extrabold tracking-[0.15em] uppercase transition-all ${!dk ? "bg-[#1A1A1A] text-[#F5B300]" : "text-[#111]/50 hover:text-[#111]"}`}>
+              ☀️ Warm — Food-First
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* ── PURCHASE MODE TABS ── */}
-      <div id="rs-shop" className="bg-[#111] border-b border-white/8">
+      <div id="rs-shop" className={`border-b ${dk ? "bg-[#111] border-white/8" : "bg-white border-black/8"}`}>
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="flex">
             {([
@@ -352,9 +377,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               { key: "subscription" as const,  label: "Subscription",    sub: "3 or 6 months" },
             ]).map((m) => (
               <button key={m.key} onClick={() => setPurchaseMode(m.key)}
-                className={`px-6 py-4 text-left transition-all border-b-2 ${purchaseMode === m.key ? "border-[#F5B300] text-white" : "border-transparent text-white/35 hover:text-white/70"}`}>
+                className={`px-6 py-4 text-left transition-all border-b-2 ${purchaseMode === m.key ? "border-[#F5B300]" : "border-transparent"} ${purchaseMode === m.key ? (dk ? "text-white" : "text-[#1A1A1A]") : (dk ? "text-white/35 hover:text-white/70" : "text-black/30 hover:text-black/60")}`}>
                 <div className="text-[12px] font-bold tracking-wide">{m.label}</div>
-                <div className="text-[10px] mt-0.5 text-white/30">{m.sub}</div>
+                <div className={`text-[10px] mt-0.5 ${dk ? "text-white/30" : "text-black/30"}`}>{m.sub}</div>
               </button>
             ))}
           </div>
@@ -363,20 +388,20 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
       {/* ── BUNDLES TAB ── */}
       {purchaseMode === "bundles" && (
-      <section className="py-16 px-6 sm:px-8 bg-[#111]">
+      <section className={`py-16 px-6 sm:px-8 ${dk ? "bg-[#111]" : "bg-[#FAF8F4]"}`}>
         <div className="max-w-[1200px] mx-auto">
           <div className="mb-12">
-            <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-3">Predefined Bundles</p>
-            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.92]">Choose your bundle<span className="text-[#F5B300]">.</span></h2>
-            <p className="text-white/40 text-[15px] mt-3 max-w-[500px]">All bundles are curated and ready to go — pick the category and size that suits your week.</p>
+            <p className={`text-[11px] font-mono tracking-[0.4em] uppercase mb-3 ${dk ? "text-[#F5B300]" : "text-[#C8860A]"}`}>Predefined Bundles</p>
+            <h2 className={`font-display text-[38px] sm:text-[52px] font-extrabold leading-[0.92] ${dk ? "text-white" : "text-[#1A1A1A]"}`}>Choose your bundle<span className="text-[#F5B300]">.</span></h2>
+            <p className={`text-[15px] mt-3 max-w-[500px] ${dk ? "text-white/40" : "text-[#555]"}`}>All bundles are curated and ready to go — pick the category and size that suits your week.</p>
           </div>
 
           <div className="space-y-14">
             {PREDEFINED_BUNDLES.map((group) => (
               <div key={group.category}>
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="text-[11px] font-mono tracking-[0.4em] uppercase text-white/50 font-bold">{group.category}</div>
-                  <div className="flex-1 h-px bg-white/8" />
+                  <div className={`text-[11px] font-mono tracking-[0.4em] uppercase font-bold ${dk ? "text-white/50" : "text-[#1A1A1A]/60"}`}>{group.category}</div>
+                  <div className={`flex-1 h-px ${dk ? "bg-white/8" : "bg-black/10"}`} />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {group.items.map((item) => {
@@ -386,45 +411,45 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       .map((id) => MEALS.find((m) => m.id === id))
                       .filter(Boolean) as typeof MEALS;
                     return (
-                    <div key={item.name} className="bg-[#1A1A1A] border border-white/8 flex flex-col hover:border-[#F5B300]/60 transition-all duration-300 group overflow-hidden">
+                    <div key={item.name} className={`flex flex-col hover:border-[#F5B300]/60 transition-all duration-300 group overflow-hidden border ${dk ? "bg-[#1A1A1A] border-white/8" : "bg-white border-[#E8E2D9] shadow-sm hover:shadow-md"}`}>
                       {/* Meal image strip */}
                       <div className="flex h-28 overflow-hidden">
                         {previewMeals.map((m, pi) => (
                           <div key={pi} className="flex-1 overflow-hidden">
-                            <img src={m.img} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100" />
+                            <img src={m.img} alt={m.name} className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${dk ? "opacity-80 group-hover:opacity-100" : ""}`} />
                           </div>
                         ))}
-                        {previewMeals.length === 0 && <div className="flex-1 bg-[#222]" />}
+                        {previewMeals.length === 0 && <div className={`flex-1 ${dk ? "bg-[#222]" : "bg-[#F0EBE3]"}`} />}
                       </div>
 
                       <div className="p-5 flex flex-col gap-3 flex-1">
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <div className="text-[14px] font-extrabold text-white leading-snug">{item.name}</div>
+                            <div className={`text-[14px] font-extrabold leading-snug ${dk ? "text-white" : "text-[#1A1A1A]"}`}>{item.name}</div>
                             {item.variant && (
-                              <div className="text-[10px] font-mono tracking-widest uppercase text-white/30 mt-1">{item.variant}</div>
+                              <div className={`text-[10px] font-mono tracking-widest uppercase mt-1 ${dk ? "text-white/30" : "text-[#999]"}`}>{item.variant}</div>
                             )}
                           </div>
                           {item.badge && (
                             <span className="bg-[#F5B300] text-[#1A1A1A] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-1 shrink-0">{item.badge}</span>
                           )}
                         </div>
-                        <p className="text-[12px] text-white/40 leading-relaxed flex-1">{item.desc}</p>
+                        <p className={`text-[12px] leading-relaxed flex-1 ${dk ? "text-white/40" : "text-[#666]"}`}>{item.desc}</p>
 
                         {/* Meal name pills */}
                         <div className="flex flex-wrap gap-1.5">
                           {previewMeals.map((m) => (
-                            <span key={m.id} className="text-[10px] bg-white/5 border border-white/10 text-white/50 px-2 py-0.5 leading-snug">{m.name}</span>
+                            <span key={m.id} className={`text-[10px] px-2 py-0.5 leading-snug border ${dk ? "bg-white/5 border-white/10 text-white/50" : "bg-[#FAF8F4] border-[#E0D9CE] text-[#555]"}`}>{m.name}</span>
                           ))}
                           {item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length > 3 && (
-                            <span className="text-[10px] bg-[#F5B300]/10 border border-[#F5B300]/25 text-[#F5B300] px-2 py-0.5 font-semibold">+{item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length - 3} more</span>
+                            <span className={`text-[10px] px-2 py-0.5 font-semibold border ${dk ? "bg-[#F5B300]/10 border-[#F5B300]/25 text-[#F5B300]" : "bg-[#FFF3CC] border-[#F5B300]/40 text-[#C8860A]"}`}>+{item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length - 3} more</span>
                           )}
                         </div>
 
-                        <div className="flex items-end justify-between pt-2 border-t border-white/8">
+                        <div className={`flex items-end justify-between pt-2 border-t ${dk ? "border-white/8" : "border-[#E8E2D9]"}`}>
                           <div>
-                            <span className="font-display text-[22px] font-extrabold text-white">${item.price.toFixed(2)}</span>
-                            <span className="text-[11px] text-white/30 ml-1.5">{item.meals} meals · ${(item.price / item.meals).toFixed(2)}/meal</span>
+                            <span className={`font-display text-[22px] font-extrabold ${dk ? "text-white" : "text-[#1A1A1A]"}`}>${item.price.toFixed(2)}</span>
+                            <span className={`text-[11px] ml-1.5 ${dk ? "text-white/30" : "text-[#999]"}`}>{item.meals} meals · ${(item.price / item.meals).toFixed(2)}/meal</span>
                           </div>
                         </div>
                       <button
@@ -441,7 +466,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                             mealImgs: bundleMeals.map((m) => m.img),
                           });
                         }}
-                        className="w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase bg-[#F5B300] text-[#1A1A1A] hover:bg-white transition-colors">
+                        className={`w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase transition-colors ${dk ? "bg-[#F5B300] text-[#1A1A1A] hover:bg-white" : "bg-[#1A1A1A] text-white hover:bg-[#F5B300] hover:text-[#1A1A1A]"}`}>
                         Add to Cart →
                       </button>
                       </div>{/* p-5 */}
@@ -453,7 +478,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             ))}
           </div>
 
-          <div className="mt-10 p-5 bg-white/3 border border-white/8 text-[12px] text-white/35">
+          <div className={`mt-10 p-5 text-[12px] border ${dk ? "bg-white/3 border-white/8 text-white/35" : "bg-[#FFF8E8] border-[#F5B300]/30 text-[#888]"}`}>
             🚚 Free delivery on orders $120 and above · $10 delivery fee below $120
           </div>
         </div>
@@ -723,12 +748,12 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
       {/* ── PRODUCT GRID (single purchase) ── */}
       {purchaseMode === "single" && (
-      <section className="py-16 px-6 sm:px-8">
+      <section className={`py-16 px-6 sm:px-8 ${dk ? "" : "bg-[#FAF8F4]"}`}>
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
             <div>
-              <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-2">All Meals</div>
-              <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold">
+              <div className={`text-[10px] font-mono tracking-[0.3em] uppercase mb-2 ${dk ? "text-[#F5B300]" : "text-[#C8860A]"}`}>All Meals</div>
+              <h2 className={`font-display text-[32px] sm:text-[40px] font-extrabold ${dk ? "text-white" : "text-[#1A1A1A]"}`}>
                 {filtered.length} meals available<span className="text-[#F5B300]">.</span>
               </h2>
             </div>
@@ -737,7 +762,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                 <button
                   key={c}
                   onClick={() => setActiveCat(c)}
-                  className={`px-4 py-2 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${activeCat === c ? "bg-[#F5B300] text-[#111]" : "border border-white/15 text-white/50 hover:border-[#F5B300]/50 hover:text-[#F5B300]"}`}
+                  className={`px-4 py-2 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${activeCat === c ? "bg-[#F5B300] text-[#111]" : dk ? "border border-white/15 text-white/50 hover:border-[#F5B300]/50 hover:text-[#F5B300]" : "border border-black/15 text-[#555] hover:border-[#F5B300] hover:text-[#C8860A]"}`}
                 >
                   {c}
                 </button>
@@ -745,7 +770,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-white/8">
+          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px ${dk ? "bg-white/8" : "bg-[#E8E2D9]"}`}>
             {filtered.map((meal) => {
               const inCart = cart.find((i) => i.id === meal.id && i.type === "ready");
               const justAdded = addedId === meal.id;
@@ -755,7 +780,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                 : "4.8";
               const reviewCount = mealReviews?.length ?? 0;
               return (
-                <div key={meal.id} className="bg-[#111] flex flex-col">
+                <div key={meal.id} className={`flex flex-col ${dk ? "bg-[#111]" : "bg-white"}`}>
                   <button
                     onClick={() => onSelectMeal(meal.id)}
                     className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A] block w-full group"
@@ -775,30 +800,29 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                     </div>
                   </button>
                   <div className="p-5 flex flex-col gap-3 flex-1">
-                    <button onClick={() => onSelectMeal(meal.id)} className="font-display text-[15px] font-bold text-white leading-snug text-left hover:text-[#F5B300] transition-colors">{meal.name}</button>
-                    <div className="flex gap-3 text-[10px] font-mono text-white/40">
+                    <button onClick={() => onSelectMeal(meal.id)} className={`font-display text-[15px] font-bold leading-snug text-left hover:text-[#F5B300] transition-colors ${dk ? "text-white" : "text-[#1A1A1A]"}`}>{meal.name}</button>
+                    <div className={`flex gap-3 text-[10px] font-mono ${dk ? "text-white/40" : "text-[#888]"}`}>
                       <span>{meal.protein}g protein</span>
                       <span>·</span>
                       <span>{meal.cal} cal</span>
                     </div>
-                    {/* Inline star rating + reviews link */}
                     <button
                       onClick={() => mealReviews && setReviewMealId(meal.id)}
                       className={`flex items-center gap-1.5 text-left ${mealReviews ? "hover:opacity-80" : "cursor-default"} transition-opacity`}
                     >
                       <div className="flex">
                         {[1,2,3,4,5].map((s) => (
-                          <span key={s} className={`text-[11px] ${s <= Math.round(Number(avgRating)) ? "text-[#F5B300]" : "text-white/20"}`}>★</span>
+                          <span key={s} className={`text-[11px] ${s <= Math.round(Number(avgRating)) ? "text-[#F5B300]" : dk ? "text-white/20" : "text-black/15"}`}>★</span>
                         ))}
                       </div>
-                      <span className="text-[11px] text-white/40 font-mono">{avgRating}</span>
-                      {reviewCount > 0 && <span className="text-[10px] text-white/30">({reviewCount} reviews)</span>}
+                      <span className={`text-[11px] font-mono ${dk ? "text-white/40" : "text-[#888]"}`}>{avgRating}</span>
+                      {reviewCount > 0 && <span className={`text-[10px] ${dk ? "text-white/30" : "text-[#aaa]"}`}>({reviewCount} reviews)</span>}
                     </button>
-                    <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-white/8">
-                      <span className="font-display text-[18px] font-extrabold text-white">${meal.price.toFixed(2)}</span>
+                    <div className={`mt-auto flex items-center justify-between gap-2 pt-3 border-t ${dk ? "border-white/8" : "border-[#E8E2D9]"}`}>
+                      <span className={`font-display text-[18px] font-extrabold ${dk ? "text-white" : "text-[#1A1A1A]"}`}>${meal.price.toFixed(2)}</span>
                       <button
                         onClick={() => handleAdd(meal)}
-                        className={`px-4 py-2 text-[10px] font-extrabold tracking-[0.15em] uppercase transition-colors ${justAdded ? "bg-white text-[#1A1A1A]" : inCart ? "bg-[#F5B300]/20 text-[#F5B300] border border-[#F5B300]/30 hover:bg-[#F5B300] hover:text-[#111]" : "bg-[#F5B300] text-[#111] hover:bg-white"}`}
+                        className={`px-4 py-2 text-[10px] font-extrabold tracking-[0.15em] uppercase transition-colors ${justAdded ? (dk ? "bg-white text-[#1A1A1A]" : "bg-[#1A1A1A] text-white") : inCart ? "bg-[#F5B300]/20 text-[#F5B300] border border-[#F5B300]/30 hover:bg-[#F5B300] hover:text-[#111]" : "bg-[#F5B300] text-[#111] hover:bg-[#1A1A1A] hover:text-white"}`}
                       >
                         {justAdded ? "✓ Added" : inCart ? `In Cart (${inCart.qty})` : "+ Add"}
                       </button>
