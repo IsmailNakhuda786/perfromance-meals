@@ -82,18 +82,18 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
   const scrollToBrands = () => brandsRef.current?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <div className="bg-[#1A1A1A] text-white overflow-x-hidden">
+    <div className="bg-white text-[#1A1A1A] overflow-x-hidden">
 
       {/* ── HERO — custom performance brand visual ── */}
-      <section className="relative bg-[#111111] text-white min-h-[92svh] flex items-center overflow-hidden">
+      <section className="relative bg-[#FFFDF7] text-[#1A1A1A] min-h-[92svh] flex items-center overflow-hidden">
 
         {/* Subtle background grid */}
         <div className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage: "linear-gradient(rgba(245,179,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(245,179,0,0.04) 1px,transparent 1px)", backgroundSize: "72px 72px" }} />
+          style={{ backgroundImage: "linear-gradient(rgba(245,179,0,0.10) 1px,transparent 1px),linear-gradient(90deg,rgba(245,179,0,0.10) 1px,transparent 1px)", backgroundSize: "72px 72px" }} />
 
         {/* Yellow glow — bottom right */}
         <div className="absolute bottom-0 right-0 w-[700px] h-[500px] pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 85% 95%, rgba(245,179,0,0.10) 0%, transparent 60%)" }} />
+          style={{ background: "radial-gradient(ellipse at 85% 95%, rgba(245,179,0,0.18) 0%, transparent 60%)" }} />
 
         <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 sm:px-10 py-20 sm:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
@@ -105,14 +105,14 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
 
             <div className="mt-10" style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "120ms" }}>
               <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-5">Singapore · Est. 2019 · Macro-tracked</p>
-              <h1 className="font-display text-[44px] sm:text-[60px] lg:text-[72px] font-extrabold leading-[0.88] mb-8">
+              <h1 className="font-display text-[44px] sm:text-[60px] lg:text-[72px] font-extrabold leading-[0.88] mb-8 text-[#1A1A1A]">
                 Nutrition that works<br />
                 <span className="text-[#F5B300]">as hard as you do.</span>
               </h1>
             </div>
 
             <div style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "260ms" }}>
-              <p className="text-white/50 text-[16px] sm:text-[17px] leading-relaxed max-w-[440px] mb-10">
+              <p className="text-[#1A1A1A]/55 text-[16px] sm:text-[17px] leading-relaxed max-w-[440px] mb-10">
                 40+ macro-tracked meals. Chef-prepared daily in Singapore. One performance standard — two ways to eat well.
               </p>
             </div>
@@ -127,7 +127,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             </div>
 
             {/* Proof stats row */}
-            <div className="mt-12 flex flex-wrap gap-8 border-t border-white/8 pt-10"
+            <div className="mt-12 flex flex-wrap gap-8 border-t border-[#1A1A1A]/10 pt-10"
               style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.8s ease", transitionDelay: "600ms" }}>
               {[
                 { v: "8,400+", l: "Active customers" },
@@ -137,7 +137,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
               ].map((s) => (
                 <div key={s.l}>
                   <div className="font-display text-[22px] font-extrabold text-[#F5B300] leading-none">{s.v}</div>
-                  <div className="text-white/30 text-[10px] font-mono uppercase tracking-wider mt-1">{s.l}</div>
+                  <div className="text-[#1A1A1A]/40 text-[10px] font-mono uppercase tracking-wider mt-1">{s.l}</div>
                 </div>
               ))}
             </div>
@@ -154,25 +154,25 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 <circle cx="230" cy="230" r="218" fill="none" stroke="rgba(245,179,0,0.06)" strokeWidth="1" />
 
                 {/* Main performance arc — yellow, 82% */}
-                <circle cx="230" cy="230" r="200" fill="none" stroke="rgba(245,179,0,0.10)" strokeWidth="12" />
+                <circle cx="230" cy="230" r="200" fill="none" stroke="rgba(245,179,0,0.18)" strokeWidth="12" />
                 <circle cx="230" cy="230" r="200" fill="none" stroke="#F5B300" strokeWidth="12"
                   strokeDasharray={`${2 * Math.PI * 200 * 0.82} ${2 * Math.PI * 200}`}
                   strokeLinecap="round" transform="rotate(-100 230 230)" />
 
                 {/* Secondary inner ring — protein track */}
-                <circle cx="230" cy="230" r="170" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="8" />
+                <circle cx="230" cy="230" r="170" fill="none" stroke="rgba(26,26,26,0.06)" strokeWidth="8" />
                 <circle cx="230" cy="230" r="170" fill="none" stroke="rgba(245,179,0,0.35)" strokeWidth="8"
                   strokeDasharray={`${2 * Math.PI * 170 * 0.68} ${2 * Math.PI * 170}`}
                   strokeLinecap="round" transform="rotate(-90 230 230)" />
 
                 {/* Tertiary ring — carbs */}
-                <circle cx="230" cy="230" r="142" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="6" />
+                <circle cx="230" cy="230" r="142" fill="none" stroke="rgba(26,26,26,0.06)" strokeWidth="6" />
                 <circle cx="230" cy="230" r="142" fill="none" stroke="rgba(245,179,0,0.20)" strokeWidth="6"
                   strokeDasharray={`${2 * Math.PI * 142 * 0.55} ${2 * Math.PI * 142}`}
                   strokeLinecap="round" transform="rotate(-90 230 230)" />
 
                 {/* Centre fill */}
-                <circle cx="230" cy="230" r="118" fill="#0D0D0D" />
+                <circle cx="230" cy="230" r="118" fill="#FFFDF7" />
 
                 {/* Centre brand mark — yellow circle + PM */}
                 <circle cx="230" cy="230" r="62" fill="#F5B300" />
@@ -184,25 +184,25 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 {/* Ring labels */}
                 {/* Protein — top */}
                 <text x="230" y="20" textAnchor="middle" fill="#F5B300" fontSize="10" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="2">PROTEIN</text>
-                <text x="230" y="34" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="8.5" fontFamily="Inter, sans-serif">40g+ per meal</text>
+                <text x="230" y="34" textAnchor="middle" fill="rgba(26,26,26,0.40)" fontSize="8.5" fontFamily="Inter, sans-serif">40g+ per meal</text>
 
                 {/* Fresh — right */}
                 <text x="452" y="218" textAnchor="end" fill="#F5B300" fontSize="10" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="2">FRESH</text>
-                <text x="452" y="232" textAnchor="end" fill="rgba(255,255,255,0.35)" fontSize="8.5" fontFamily="Inter, sans-serif">Daily prep</text>
+                <text x="452" y="232" textAnchor="end" fill="rgba(26,26,26,0.40)" fontSize="8.5" fontFamily="Inter, sans-serif">Daily prep</text>
 
                 {/* Goal-led — bottom */}
                 <text x="230" y="440" textAnchor="middle" fill="#F5B300" fontSize="10" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="2">GOAL-LED</text>
-                <text x="230" y="454" textAnchor="middle" fill="rgba(255,255,255,0.35)" fontSize="8.5" fontFamily="Inter, sans-serif">Structured or flexible</text>
+                <text x="230" y="454" textAnchor="middle" fill="rgba(26,26,26,0.40)" fontSize="8.5" fontFamily="Inter, sans-serif">Structured or flexible</text>
 
                 {/* Macro — left */}
                 <text x="8" y="218" textAnchor="start" fill="#F5B300" fontSize="10" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="2">MACRO</text>
-                <text x="8" y="232" textAnchor="start" fill="rgba(255,255,255,0.35)" fontSize="8.5" fontFamily="Inter, sans-serif">Tracked meals</text>
+                <text x="8" y="232" textAnchor="start" fill="rgba(26,26,26,0.40)" fontSize="8.5" fontFamily="Inter, sans-serif">Tracked meals</text>
               </svg>
 
               {/* Floating data badge — top right */}
-              <div className="absolute -top-2 -right-4 bg-[#1A1A1A] border border-white/10 px-4 py-3 min-w-[110px]">
+              <div className="absolute -top-2 -right-4 bg-[#1A1A1A] border border-[#1A1A1A]/10 px-4 py-3 min-w-[110px]">
                 <div className="text-[#F5B300] font-display font-extrabold text-[22px] leading-none">40+</div>
-                <div className="text-white/40 text-[9px] font-mono uppercase tracking-widest mt-1">Meal options</div>
+                <div className="text-white/55 text-[9px] font-mono uppercase tracking-widest mt-1">Meal options</div>
               </div>
 
               {/* Floating data badge — bottom left */}
@@ -213,8 +213,8 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
 
               {/* Floating brand label — bottom right */}
               <div className="absolute bottom-12 -right-6 flex items-center gap-2">
-                <div className="h-px w-8 bg-[#F5B300]/40" />
-                <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-white/25">Singapore · Est. 2019</span>
+                <div className="h-px w-8 bg-[#F5B300]/60" />
+                <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-[#1A1A1A]/30">Singapore · Est. 2019</span>
               </div>
             </div>
           </div>
@@ -224,8 +224,8 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         {/* Bottom scroll indicator */}
         <div className="absolute bottom-8 left-6 sm:left-10 flex items-center gap-3 z-10"
           style={{ opacity: heroVisible ? 0.4 : 0, transition: "opacity 1.2s ease", transitionDelay: "900ms" }}>
-          <div className="w-px h-10 bg-white/20 animate-pulse" />
-          <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-white/35">Scroll to explore</span>
+          <div className="w-px h-10 bg-[#1A1A1A]/20 animate-pulse" />
+          <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-[#1A1A1A]/35">Scroll to explore</span>
         </div>
       </section>
 
@@ -389,23 +389,23 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section ref={testimonialsSection.ref} className="py-20 sm:py-28 bg-[#1A1A1A]">
+      <section ref={testimonialsSection.ref} className="py-20 sm:py-28 bg-[#FAF9F6] border-t border-[#E8E4DC]">
         <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
           <div className={`mb-12 transition-all duration-700 ${testimonialsSection.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-3">Real results</p>
-            <h2 className="font-display text-[38px] font-extrabold text-white leading-tight">What our customers say.</h2>
+            <h2 className="font-display text-[38px] font-extrabold text-[#1A1A1A] leading-tight">What our customers say.</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {TESTIMONIALS.map((t, i) => (
               <div key={i}
-                className={`bg-[#111] border border-white/8 p-8 hover:border-[#F5B300]/25 transition-all duration-500 ${testimonialsSection.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                className={`bg-white border border-[#E8E4DC] p-8 hover:border-[#F5B300]/50 transition-all duration-500 ${testimonialsSection.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
                 style={{ transitionDelay: testimonialsSection.visible ? `${i * 120}ms` : "0ms" }}>
                 <div className="flex mb-4">
                   {[...Array(t.stars)].map((_, j) => <span key={j} className="text-[#F5B300] text-[14px]">★</span>)}
                 </div>
-                <p className="text-white/55 text-[14px] leading-relaxed italic mb-6">"{t.text}"</p>
-                <div className="font-semibold text-white text-[13px]">{t.name}</div>
-                <div className="text-white/30 text-[11px] mt-0.5 font-mono">{t.role}</div>
+                <p className="text-[#555] text-[14px] leading-relaxed italic mb-6">"{t.text}"</p>
+                <div className="font-semibold text-[#1A1A1A] text-[13px]">{t.name}</div>
+                <div className="text-[#1A1A1A]/35 text-[11px] mt-0.5 font-mono">{t.role}</div>
               </div>
             ))}
           </div>
@@ -414,19 +414,19 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
 
 
 {/* ── FOOTER STRIP ── */}
-      <div className="bg-[#0D0D0D] border-t border-white/6 py-10 px-6 sm:px-10">
+      <div className="bg-[#1A1A1A] border-t border-[#1A1A1A]/10 py-10 px-6 sm:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
           <div className="flex items-center gap-4">
             <PerformanceMealsLogo size="sm" variant="dark" />
-            <span className="text-white/20 text-[11px] font-mono">performancemeals.com.sg</span>
+            <span className="text-white/30 text-[11px] font-mono">performancemeals.com.sg</span>
           </div>
-          <div className="flex gap-5 text-[10px] font-mono tracking-widest uppercase text-white/20">
+          <div className="flex gap-5 text-[10px] font-mono tracking-widest uppercase text-white/30">
             {[
               { l: "About",        p: "about" as Page },
               { l: "Ready-Series", p: "ready-series" as Page },
               { l: "Meal Plan",    p: "meal-plan-landing" as Page },
             ].map((item) => (
-              <button key={item.l} onClick={() => navigate(item.p)} className="hover:text-white/55 transition-colors">{item.l}</button>
+              <button key={item.l} onClick={() => navigate(item.p)} className="hover:text-white/70 transition-colors">{item.l}</button>
             ))}
           </div>
         </div>
