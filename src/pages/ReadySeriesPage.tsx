@@ -363,20 +363,20 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
       {/* ── BUNDLES TAB ── */}
       {purchaseMode === "bundles" && (
-      <section className="py-16 px-6 sm:px-8 bg-[#FAF9F6]">
+      <section className="py-16 px-6 sm:px-8 bg-[#111]">
         <div className="max-w-[1200px] mx-auto">
           <div className="mb-12">
-            <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#E85D04] mb-3">Predefined Bundles</p>
-            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-[#1A1A1A] leading-[0.92]">Choose your bundle<span className="text-[#F5B300]">.</span></h2>
-            <p className="text-[#888] text-[15px] mt-3 max-w-[500px]">All bundles are curated and ready to go — pick the category and size that suits your week.</p>
+            <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-3">Predefined Bundles</p>
+            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.92]">Choose your bundle<span className="text-[#F5B300]">.</span></h2>
+            <p className="text-white/40 text-[15px] mt-3 max-w-[500px]">All bundles are curated and ready to go — pick the category and size that suits your week.</p>
           </div>
 
           <div className="space-y-14">
             {PREDEFINED_BUNDLES.map((group) => (
               <div key={group.category}>
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#1A1A1A] font-bold">{group.category}</div>
-                  <div className="flex-1 h-px bg-[#E8E4DC]" />
+                  <div className="text-[11px] font-mono tracking-[0.4em] uppercase text-white/50 font-bold">{group.category}</div>
+                  <div className="flex-1 h-px bg-white/8" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {group.items.map((item) => {
@@ -386,45 +386,45 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       .map((id) => MEALS.find((m) => m.id === id))
                       .filter(Boolean) as typeof MEALS;
                     return (
-                    <div key={item.name} className="bg-white border border-[#E8E4DC] flex flex-col hover:border-[#F5B300] hover:shadow-lg transition-all duration-300 group overflow-hidden">
+                    <div key={item.name} className="bg-[#1A1A1A] border border-white/8 flex flex-col hover:border-[#F5B300]/60 transition-all duration-300 group overflow-hidden">
                       {/* Meal image strip */}
                       <div className="flex h-28 overflow-hidden">
                         {previewMeals.map((m, pi) => (
                           <div key={pi} className="flex-1 overflow-hidden">
-                            <img src={m.img} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <img src={m.img} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100" />
                           </div>
                         ))}
-                        {previewMeals.length === 0 && <div className="flex-1 bg-[#F5F2EC]" />}
+                        {previewMeals.length === 0 && <div className="flex-1 bg-[#222]" />}
                       </div>
 
                       <div className="p-5 flex flex-col gap-3 flex-1">
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <div className="text-[14px] font-extrabold text-[#1A1A1A] leading-snug">{item.name}</div>
+                            <div className="text-[14px] font-extrabold text-white leading-snug">{item.name}</div>
                             {item.variant && (
-                              <div className="text-[10px] font-mono tracking-widest uppercase text-[#999] mt-1">{item.variant}</div>
+                              <div className="text-[10px] font-mono tracking-widest uppercase text-white/30 mt-1">{item.variant}</div>
                             )}
                           </div>
                           {item.badge && (
                             <span className="bg-[#F5B300] text-[#1A1A1A] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-1 shrink-0">{item.badge}</span>
                           )}
                         </div>
-                        <p className="text-[12px] text-[#888] leading-relaxed flex-1">{item.desc}</p>
+                        <p className="text-[12px] text-white/40 leading-relaxed flex-1">{item.desc}</p>
 
                         {/* Meal name pills */}
                         <div className="flex flex-wrap gap-1.5">
                           {previewMeals.map((m) => (
-                            <span key={m.id} className="text-[10px] bg-[#FAF9F6] border border-[#E8E4DC] text-[#555] px-2 py-0.5 leading-snug">{m.name}</span>
+                            <span key={m.id} className="text-[10px] bg-white/5 border border-white/10 text-white/50 px-2 py-0.5 leading-snug">{m.name}</span>
                           ))}
                           {item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length > 3 && (
-                            <span className="text-[10px] bg-[#F5B300]/10 border border-[#F5B300]/30 text-[#E85D04] px-2 py-0.5 font-semibold">+{item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length - 3} more</span>
+                            <span className="text-[10px] bg-[#F5B300]/10 border border-[#F5B300]/25 text-[#F5B300] px-2 py-0.5 font-semibold">+{item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length - 3} more</span>
                           )}
                         </div>
 
-                        <div className="flex items-end justify-between pt-2 border-t border-[#F0EDE8]">
+                        <div className="flex items-end justify-between pt-2 border-t border-white/8">
                           <div>
-                            <span className="font-display text-[22px] font-extrabold text-[#1A1A1A]">${item.price.toFixed(2)}</span>
-                            <span className="text-[11px] text-[#aaa] ml-1.5">{item.meals} meals · ${(item.price / item.meals).toFixed(2)}/meal</span>
+                            <span className="font-display text-[22px] font-extrabold text-white">${item.price.toFixed(2)}</span>
+                            <span className="text-[11px] text-white/30 ml-1.5">{item.meals} meals · ${(item.price / item.meals).toFixed(2)}/meal</span>
                           </div>
                         </div>
                       <button
@@ -441,7 +441,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                             mealImgs: bundleMeals.map((m) => m.img),
                           });
                         }}
-                        className="w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase bg-[#1A1A1A] text-white hover:bg-[#F5B300] hover:text-[#1A1A1A] transition-colors">
+                        className="w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase bg-[#F5B300] text-[#1A1A1A] hover:bg-white transition-colors">
                         Add to Cart →
                       </button>
                       </div>{/* p-5 */}
@@ -453,7 +453,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             ))}
           </div>
 
-          <div className="mt-10 p-5 bg-[#FFF8E1] border border-[#F5B300]/30 text-[12px] text-[#888]">
+          <div className="mt-10 p-5 bg-white/3 border border-white/8 text-[12px] text-white/35">
             🚚 Free delivery on orders $120 and above · $10 delivery fee below $120
           </div>
         </div>
