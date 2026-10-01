@@ -103,6 +103,26 @@ const WF_ReadyToGo = () => (
   </div>
 );
 
+const WF_ReadySeries = () => (
+  <div className="space-y-1.5">
+    <WNav />
+    <WSection label="Ready Series Hero + promo bar"><WImg h="h-16" /></WSection>
+    <WSection label="Client Theme Picker — Cold / Warm / Espresso">
+      <div className="grid grid-cols-3 gap-1">{[0,1,2].map(i => <WBtn key={i} />)}</div>
+    </WSection>
+    <WSection label="Purchase Mode — Single / Bundles / Subscription">
+      <div className="grid grid-cols-3 gap-1">{[0,1,2].map(i => <WBtn key={i} dark={i === 2} />)}</div>
+    </WSection>
+    <WSection label="Subscription filters + always-visible meal details">
+      <div className="flex gap-1 mb-1">{["Meals","Just Protein","Mixed"].map(l => <div key={l} className="h-6 px-2 bg-[#D8D5CF] rounded-sm text-[8px] flex items-center text-[#888]">{l}</div>)}</div>
+      <div className="grid grid-cols-3 gap-1">
+        {[0,1,2].map(i => <div key={i} className="border border-[#C8C4BC] p-1 space-y-1"><WImg h="h-10" /><WText /><WText w="w-2/3" /><WText /><WText /><WBtn dark /></div>)}
+      </div>
+    </WSection>
+    <WSection label="Account gate modal"><div className="mx-auto w-1/2 border border-[#C8C4BC] p-2 space-y-1"><WText /><WText /><WBtn dark /><WBtn /></div></WSection>
+  </div>
+);
+
 const WF_BuildABox = () => (
   <div className="space-y-1.5">
     <WNav />
@@ -132,7 +152,7 @@ const WF_Wizard = () => (
   <div className="space-y-1.5">
     <div className="h-10 bg-white border border-[#D8D5CF] rounded-sm flex items-center justify-between px-3">
       <div className="h-4 w-16 bg-[#D8D5CF] rounded-full" />
-      <div className="flex gap-2 items-center">{["Goal","Meals","Delivery","Pay"].map((l,i)=>(
+      <div className="flex gap-2 items-center">{["Type","Plan","Menu","Details","Review"].map((l,i)=>(
         <div key={l} className="flex items-center gap-1">
           <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[7px] ${i===0?"bg-[#555] text-white":"bg-[#D8D5CF]"}`}>{i+1}</div>
           <span className="text-[8px] text-[#999]">{l}</span>
@@ -140,20 +160,16 @@ const WF_Wizard = () => (
       ))}</div>
       <div className="h-4 w-8 bg-[#D8D5CF] rounded-full" />
     </div>
-    <WSection label="Step 1 — Choose Goal">
-      <div className="flex gap-1 mb-2"><WText w="w-12" /><div className="w-7 h-3 bg-[#C8C4BC] rounded-full"/><WText w="w-12" /></div>
-      {["CUT","MAINTAIN","BUILD"].map(p=>(
+    <WSection label="Step 1 — Programme Type">
+      {["Biweekly","Monthly","2 Months","6 by 60","6 by 60 Plus"].map(p=>(
         <div key={p} className="flex items-center justify-between border border-[#C8C4BC] p-1.5 rounded-sm mb-1">
           <div className="flex gap-1.5 items-center"><div className="w-2 h-2 rounded-full bg-[#C8C4BC]"/><div className="space-y-0.5"><WText w="w-16"/><WText w="w-24"/></div></div>
           <WText w="w-10" className="h-4"/>
         </div>
       ))}
     </WSection>
-    <WSection label="6in60 Trust Block">
-      <div className="flex gap-2 bg-[#444] p-1.5 rounded-sm">
-        <div className="w-8 h-8 rounded-full bg-[#666] shrink-0"/>
-        <div className="space-y-1 flex-1"><WText className="bg-[#666]"/><WText w="w-5/6" className="bg-[#666]"/></div>
-      </div>
+    <WSection label="Step 3 — Delivery Windows">
+      <div className="grid grid-cols-3 gap-1">{["Mon–Tue","Wed–Thu","Fri"].map(p => <div key={p} className="border border-[#C8C4BC] p-1 space-y-1"><WText /><div className="grid grid-cols-2 gap-1"><WImg h="h-8" /><WImg h="h-8" /></div></div>)}</div>
     </WSection>
     <WBtn dark />
   </div>
@@ -207,7 +223,10 @@ const WF_Account = () => (
       </div>
     </WSection>
     <WSection label="Tab Bar">
-      <div className="flex gap-1">{["Dashboard","Orders","Meal Plans","Wallet","Settings"].map(t=><div key={t} className="h-7 px-2 bg-[#D8D5CF] rounded-sm text-[8px] flex items-center text-[#888] whitespace-nowrap">{t}</div>)}</div>
+      <div className="flex gap-1">{["Dashboard","My Plan","Order History","Wallet & Rewards","Settings"].map(t=><div key={t} className="h-7 px-2 bg-[#D8D5CF] rounded-sm text-[8px] flex items-center text-[#888] whitespace-nowrap">{t}</div>)}</div>
+    </WSection>
+    <WSection label="My Plan Context — Meal Plan / Ready Series">
+      <div className="flex gap-1"><WBtn dark /><WBtn /></div>
     </WSection>
     <div className="grid grid-cols-3 gap-1.5">
       <WSection label="Active Plan"><div className="space-y-1"><WText/><WText w="w-2/3"/><WBtn/></div></WSection>
@@ -315,14 +334,19 @@ const WF_Confirmation = () => (
 
 const SCREENS = [
   { id: "home",         label: "01 — Home",               WF: WF_Home,         page: "home" as Page },
-  { id: "ready-to-go",  label: "02 — Ready-to-Go",        WF: WF_ReadyToGo,    page: "ready-to-go" as Page },
-  { id: "build-a-box",  label: "03 — Build-A-Box",        WF: WF_BuildABox,    page: "build-a-box" as Page },
-  { id: "wizard",       label: "04 — Meal Plan Wizard",   WF: WF_Wizard,       page: "meal-plan-wizard" as Page },
-  { id: "checkout",     label: "05 — Checkout",           WF: WF_Checkout,     page: "checkout" as Page },
-  { id: "account",      label: "06 — My Account",         WF: WF_Account,      page: "account" as Page },
-  { id: "gift-card",    label: "07 — Gift Card",          WF: WF_GiftCard,     page: "gift-card" as Page },
-  { id: "how-it-works", label: "08 — How It Works",       WF: WF_HowItWorks,   page: "how-it-works" as Page },
+  { id: "ready-series", label: "02 — Ready Series",        WF: WF_ReadySeries,  page: "ready-series" as Page },
+  { id: "ready-product",label: "03 — Product Detail",      WF: WF_ReadyToGo,    page: "ready-series-product" as Page },
+  { id: "ready-to-go",  label: "04 — Ready-to-Go",        WF: WF_ReadyToGo,    page: "ready-to-go" as Page },
+  { id: "build-a-box",  label: "05 — Build-A-Box",        WF: WF_BuildABox,    page: "build-a-box" as Page },
+  { id: "meal-landing", label: "06 — Meal Plan Landing",  WF: WF_Home,         page: "meal-plan-landing" as Page },
+  { id: "wizard",       label: "07 — Meal Plan Wizard",   WF: WF_Wizard,       page: "meal-plan-wizard" as Page },
+  { id: "checkout",     label: "08 — Checkout",           WF: WF_Checkout,     page: "checkout" as Page },
   { id: "confirm",      label: "09 — Confirmation",       WF: WF_Confirmation, page: "confirmation" as Page },
+  { id: "account",      label: "10 — My Account",         WF: WF_Account,      page: "account" as Page },
+  { id: "how-it-works", label: "11 — How It Works",       WF: WF_HowItWorks,   page: "how-it-works" as Page },
+  { id: "gift-card",    label: "12 — Gift Card",          WF: WF_GiftCard,     page: "gift-card" as Page },
+  { id: "rewards",      label: "13 — Rewards",            WF: WF_Account,      page: "rewards" as Page },
+  { id: "about",        label: "14 — About",              WF: WF_Home,         page: "about" as Page },
 ];
 
 export default function WireframePage({ navigate }: Props) {
@@ -335,7 +359,7 @@ export default function WireframePage({ navigate }: Props) {
       {/* Header */}
       <div className="bg-white border-b border-[#D8D5CF] px-6 py-4 flex items-center justify-between sticky top-0 z-20">
         <div>
-          <div className="text-[9px] font-mono tracking-[0.4em] text-[#999] uppercase">Fresher · UX Blueprint</div>
+          <div className="text-[9px] font-mono tracking-[0.4em] text-[#999] uppercase">Performance Meals · UX Blueprint · October 2026</div>
           <div className="font-bold text-[18px] mt-0.5">Wireframes <span className="text-[#999] font-normal text-[14px]">— {SCREENS.length} screens</span></div>
         </div>
         <div className="flex gap-2">

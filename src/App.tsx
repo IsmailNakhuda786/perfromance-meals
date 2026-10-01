@@ -1,5 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
-import HTML_EXPORT from "@/htmlExport";
+import { useState, useEffect } from "react";
 import { CartItem, Page } from "@/data";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -113,16 +112,6 @@ export default function App() {
 
   const showFooter = !NO_FOOTER_PAGES.includes(page);
 
-  const downloadHTML = useCallback(() => {
-    const blob = new Blob([HTML_EXPORT], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "performance-meals-prototype.html";
-    a.click();
-    URL.revokeObjectURL(url);
-  }, []);
-
   return (
     <div className="min-h-screen font-body">
       {showPromo && <PromoPopup onClose={() => setShowPromo(false)} navigate={navigate} />}
@@ -141,10 +130,12 @@ export default function App() {
           >
             ↓ Download Screens PDF
           </a>
-          <button onClick={downloadHTML}
+          <a
+            href="/performance-meals-prototype.html"
+            download="performance-meals-prototype.html"
             className="bg-[#F5B300] text-[#1A1A1A] text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-white transition-colors whitespace-nowrap shrink-0">
             ↓ Download performance-meals-prototype.html
-          </button>
+          </a>
         </div>
       </div>
 

@@ -1,6 +1,5 @@
 import { Page } from "@/data";
 import { PerformanceMealsLogo } from "@/components/Logos";
-import { downloadHandoffPDF } from "@/HandoffPDF";
 
 interface FooterProps {
   navigate: (page: Page) => void;
@@ -44,7 +43,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
       {/* Legal row */}
       <div className="border-t border-white/5">
         <div className="max-w-[1440px] mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/30">
-          <span>© 2025 Performance Meals Pte. Ltd. · UEN 202512345A</span>
+          <span>© 2026 Performance Meals Pte. Ltd. · UEN 202512345A</span>
           <div className="flex gap-5 items-center">
             {["Privacy", "Terms", "Refunds"].map((l) => (
               <a key={l} href="#" className="hover:text-white/70 transition-colors">{l}</a>
@@ -68,10 +67,10 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
               {label}
             </button>
           ))}
-          <button onClick={() => downloadHandoffPDF()}
+          <a href="/Performance-Meals-Current-QA-Handoff.pdf" download="Performance-Meals-Current-QA-Handoff.pdf"
             className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
             QA PDF
-          </button>
+          </a>
           <a href="/PerformanceMeals-Shopify-Theme.zip" download="PerformanceMeals-Shopify-Theme.zip"
             className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
             Shopify Theme

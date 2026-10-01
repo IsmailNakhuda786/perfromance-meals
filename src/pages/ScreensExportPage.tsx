@@ -1,26 +1,10 @@
-import { useState } from "react";
 import { Page } from "@/data";
-import { downloadFresherPDF } from "@/FresherPDF";
 
 interface Props {
   navigate: (page: Page) => void;
 }
 
 export default function ScreensExportPage({ navigate }: Props) {
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
-
-  const handleDownload = async () => {
-    setLoading(true);
-    setDone(false);
-    try {
-      await downloadFresherPDF();
-      setDone(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#111] flex flex-col items-center justify-center gap-8 px-6">
       {/* Back */}
@@ -35,25 +19,19 @@ export default function ScreensExportPage({ navigate }: Props) {
           PDF Export
         </div>
         <h1 className="font-display text-4xl font-bold text-white mb-3">
-          All 14 Screens<span className="text-[#CDFF3A]">.</span>
+          All 47 UI States<span className="text-[#CDFF3A]">.</span>
         </h1>
         <p className="text-white/40 text-[14px] leading-relaxed mb-8">
-          Professional vector PDF — Cover page, screen index, and all 14 annotated prototype screens with brand colours, wireframes, and feature notes.
+          Current 49-page screen inventory — cover, index, every customer-facing page, modal, dropdown, theme, subscription gate, checkout state, and account view.
         </p>
 
-        <button
-          onClick={handleDownload}
-          disabled={loading}
-          className="bg-[#CDFF3A] text-[#111] font-bold text-[13px] tracking-[0.15em] uppercase px-10 py-4 hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full"
+        <a
+          href="/Performance-Meals-Complete-Prototype-Screens.pdf"
+          download="Performance-Meals-Complete-Prototype-Screens.pdf"
+          className="block bg-[#CDFF3A] text-[#111] font-bold text-[13px] tracking-[0.15em] uppercase px-10 py-4 hover:bg-white transition-colors w-full"
         >
-          {loading ? "Generating PDF…" : done ? "✓ Downloaded!" : "↓ Download PDF — All Screens"}
-        </button>
-
-        {done && (
-          <p className="text-[#7EE8B0] text-[12px] mt-3">
-            PDF downloaded — check your Downloads folder.
-          </p>
-        )}
+          ↓ Download Current Screens PDF
+        </a>
       </div>
 
       {/* Contents list */}
@@ -61,22 +39,14 @@ export default function ScreensExportPage({ navigate }: Props) {
         <p className="text-[10px] font-bold text-white/30 tracking-[0.15em] uppercase mb-4">What's inside</p>
         <div className="grid grid-cols-2 gap-2">
           {[
-            ["Cover", "Brand + palette + stats"],
-            ["Index", "Screen table of contents"],
-            ["01", "Home Page"],
-            ["02", "Ready-to-Go — All Meals"],
-            ["03", "Ready-to-Go — Promotions"],
-            ["04", "Useful Bundles"],
-            ["05", "Product Detail Modal"],
-            ["06", "Build-A-Box"],
-            ["07", "Meal Plan Wizard"],
-            ["08", "Checkout — Auth Gate"],
-            ["09", "Checkout — Payment"],
-            ["10", "Order Confirmation"],
-            ["11", "Account — Dashboard"],
-            ["12", "Account — Subscription"],
-            ["13", "Account — Order History"],
-            ["14", "Account — Wallet & Rewards"],
+            ["01–08", "Home + global overlays"],
+            ["09–18", "Ready Series + themes"],
+            ["19–24", "Ready-to-Go + Build-A-Box"],
+            ["25–30", "Meal Plan + wizard"],
+            ["31–34", "Checkout + confirmation"],
+            ["35–43", "Account + management states"],
+            ["44–47", "Education + brand pages"],
+            ["PDF", "49 pages including cover + index"],
           ].map(([n, t]) => (
             <div key={n} className="flex items-center gap-2">
               <span className="bg-[#CDFF3A] text-[#111] text-[8px] font-bold px-1.5 py-0.5 shrink-0 min-w-[28px] text-center">{n}</span>

@@ -8,8 +8,18 @@ interface Props {
 const SCREENS = [
   {
     id: "home", label: "Home", tag: "Landing", color: "#CDFF3A",
-    desc: "Split-panel hero (Ready-to-Go / Meal Plans), 6in60 Promise Bar, stats, plan cards with hover animation, testimonials, rewards, gift card banner, newsletter.",
-    flows: ["→ Ready-to-Go", "→ Meal Plan Wizard", "→ How It Works", "→ Gift Card"],
+    desc: "Parent-brand entry point with brand-family routing, trust signals, story, testimonials, and two clear product paths.",
+    flows: ["→ Ready Series", "→ Meal Plan", "→ About", "→ How It Works"],
+  },
+  {
+    id: "ready-series", label: "Ready Series", tag: "Shop + Subscription", color: "#F5B300",
+    desc: "Single meals, predefined bundles, and account-gated 3/6-month subscriptions. Includes Meals / Just Protein / Mixed filters, always-visible meal details, per-meal pricing, savings badges, and three client-review themes.",
+    flows: ["→ Product Detail", "→ Cart", "→ Subscription Account Gate"],
+  },
+  {
+    id: "ready-series-product", label: "Ready Series Product", tag: "Product", color: "#F5B300",
+    desc: "Full meal detail with preparation, verified nutrition facts, reviews, and related meals.",
+    flows: ["→ Ready Series", "→ Cart"],
   },
   {
     id: "ready-to-go", label: "Ready-to-Go", tag: "Shop", color: "#CDFF3A",
@@ -23,7 +33,7 @@ const SCREENS = [
   },
   {
     id: "meal-plan-wizard", label: "Meal Plan Wizard", tag: "Conversion", color: "#F2C94C",
-    desc: "4-step wizard: Goal selection (Cut/Maintain/Build) + billing toggle → Pick Meals (plan-specific, recommended badges) → Delivery (days, timeslot, address) → Payment (card fields, PayNow, auto-charge consent, 6in60 guarantee). No cart — direct checkout.",
+    desc: "5-step account-gated subscription flow: programme type → plan and meal frequency → menu grouped by Mon–Tue / Wed–Thu / Fri delivery windows → details → review and account authentication.",
     flows: ["→ Confirmation (plan)"],
   },
   {
@@ -38,18 +48,28 @@ const SCREENS = [
   },
   {
     id: "account", label: "My Account", tag: "Retention", color: "#A78BFA",
-    desc: "5 tabs: Dashboard (stats + active plan shortcuts + orders) · My Plan (edit plan/days/time/qty, swap meals modal, billing, pause/cancel) · Order History (reorder + review modal) · Wallet & Rewards (redemption slider) · Settings (personal, addresses, notifications, saved cards, referral/Invite & Earn).",
+    desc: "5 tabs with a Meal Plan / Ready Series context toggle inside My Plan. Plan management focuses on schedule, menu, billing, pause/cancel, and subscription controls; macro content is intentionally excluded.",
     flows: ["→ Meal Plan Wizard", "→ Ready-to-Go"],
   },
   {
     id: "how-it-works", label: "How It Works", tag: "Education", color: "#F2C94C",
-    desc: "4-step process grid. FAQ accordion. CTA banner to start wizard.",
+    desc: "Side-by-side explanation of the guided Meal Plan journey and the transactional Ready Series journey, plus FAQs and conversion CTAs.",
     flows: ["→ Meal Plan Wizard"],
   },
   {
     id: "gift-card", label: "Gift Card", tag: "Revenue", color: "#F2C94C",
     desc: "3-step flow: Configure (amount $25/$50/$100/$150, recipient details, message, delivery method email/physical) → Payment (card + PayNow) → Confirmation (gift card preview + code).",
     flows: ["→ Home"],
+  },
+  {
+    id: "rewards", label: "Rewards", tag: "Loyalty", color: "#7EE8B0",
+    desc: "Points earning, voucher tiers, membership levels, FAQs, and links into account wallet and referral management.",
+    flows: ["→ Account Wallet", "→ Account Settings"],
+  },
+  {
+    id: "about", label: "About", tag: "Brand", color: "#F5B300",
+    desc: "Performance Meals company story, values, proof points, and links into the product journeys.",
+    flows: ["→ Ready Series", "→ Meal Plan"],
   },
 ];
 
@@ -90,14 +110,19 @@ const COMPONENTS = [
 
 const FLOWS = [
   {
-    name: "Ready-to-Go Purchase",
+    name: "Ready Series Transaction",
     color: "#CDFF3A",
     steps: ["Home → Ready-to-Go", "Browse / filter meals", "Add to cart (qty badge updates)", "Cart drawer opens", "Checkout → Delivery details", "Checkout → Payment", "Confirmation (ready type)"],
   },
   {
     name: "Meal Plan Subscription",
     color: "#F2C94C",
-    steps: ["Home → 6in60 Promise Bar CTA OR Plan card → Wizard", "Step 1: Choose goal + billing", "Step 2: Pick meals (plan-filtered)", "Step 3: Set delivery days/time + address", "Step 4: Card details + auto-charge consent", "Confirmation (plan type) → Customize CTA"],
+    steps: ["Meal Plan landing → Wizard", "Step 1: Choose recurring or fixed programme", "Step 2: Select plan and meals/day", "Step 3: Fill Mon–Tue, Wed–Thu, and Fri delivery windows", "Step 4: Delivery and contact details", "Step 5: Review → required account authentication", "Confirmation → Account"],
+  },
+  {
+    name: "Ready Series Subscription",
+    color: "#F5B300",
+    steps: ["Ready Series → Subscription", "Choose Meals / Just Protein / Mixed", "Compare visible meal contents, per-meal price, and savings", "Choose 3 or 6 months", "Sign in or create account", "Subscription added to cart", "Manage in Account → My Plan → Ready Series"],
   },
   {
     name: "Build-A-Box",
@@ -131,10 +156,10 @@ export default function HandoffPage({ navigate, navigateToWizard }: Props) {
             <div>
               <div className="font-mono text-[10px] tracking-[0.4em] text-[#CDFF3A] uppercase mb-3">Developer Handoff · Figma Make Prototype</div>
               <h1 className="font-display text-[48px] font-bold leading-tight mb-2">
-                FRESHER<span className="text-[#CDFF3A]">.</span> Prototype
+                PERFORMANCE MEALS<span className="text-[#CDFF3A]">.</span> Prototype
               </h1>
               <p className="text-white/45 text-[15px] max-w-xl">
-                Complete clickable prototype for the Fresher Performance Meals Shopify redesign. All screens, user flows, design tokens, and component inventory documented below.
+                Current clickable prototype for Performance Meals. All customer-facing routes, subscription rules, user flows, design tokens, and component inventory are documented below.
               </p>
             </div>
             <div className="flex flex-col gap-3 text-right">
@@ -142,7 +167,7 @@ export default function HandoffPage({ navigate, navigateToWizard }: Props) {
               <div className="font-mono text-[12px] text-white/60 space-y-1">
                 <div>React 19 + TypeScript 5.7</div>
                 <div>Vite 8 + Tailwind CSS v4</div>
-                <div>Figma Make · fresher.com.sg</div>
+                <div>Figma Make · performancemeals.com.sg</div>
               </div>
             </div>
           </div>
@@ -302,7 +327,7 @@ export default function HandoffPage({ navigate, navigateToWizard }: Props) {
                 icon: "📦",
                 items: [
                   "Use Recharge or Bold Subscriptions app",
-                  "Plan types: CUT / MAINTAIN / BUILD as subscription tags",
+                  "Meal Plan programme type, meal plan, and delivery-window selections stored as subscription metadata",
                   "Meal selection: custom app block storing meal IDs",
                   "Auto-charge consent captured at checkout (required field)",
                 ],
@@ -368,7 +393,7 @@ export default function HandoffPage({ navigate, navigateToWizard }: Props) {
 
         {/* ── FOOTER ── */}
         <div className="border-t border-[#E5E2DA] pt-8 pb-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-[#aaa]">
-          <span>Fresher Performance Meals · Shopify Prototype · Figma Make · 2025</span>
+          <span>Performance Meals · Shopify Prototype · Figma Make · October 2026</span>
           <button onClick={() => navigate("home")} className="bg-[#111] text-white px-6 py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-[#CDFF3A] hover:text-[#111] transition-colors">
             ← Back to Prototype
           </button>

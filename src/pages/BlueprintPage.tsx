@@ -18,26 +18,36 @@ const COLORS = [
 
 const SCREENS: { title: string; label: string; desc: string; color: string; accent: string; page: Page | null; wizard?: string }[] = [
   { title: "01", label: "Home", desc: "Hero split, promise bar, plan cards, rewards, newsletter", color: "#111", accent: "#CDFF3A", page: "home" },
-  { title: "02", label: "Ready-to-Go", desc: "Meal grid with filters, quick-add to cart, meal detail modal", color: "#1A1A1A", accent: "#CDFF3A", page: "ready-to-go" },
-  { title: "03", label: "Build-A-Box", desc: "3-step selector: box size → meals → checkout", color: "#222", accent: "#CDFF3A", page: "build-a-box" },
-  { title: "04", label: "Meal Plan Wizard", desc: "4-step: goal → meals → delivery → payment", color: "#14100A", accent: "#F2C94C", page: "meal-plan-wizard" },
-  { title: "05", label: "Checkout", desc: "2-step: delivery address + date → payment + wallet", color: "#1A1A1A", accent: "#CDFF3A", page: "checkout" },
-  { title: "06", label: "Confirmation", desc: "Order confirmed, loyalty points earned, next steps", color: "#0D1F0F", accent: "#7EE8B0", page: "confirmation" },
-  { title: "07", label: "My Account", desc: "Dashboard, orders, referrals, wallet, settings tabs", color: "#111", accent: "#CDFF3A", page: "account" },
-  { title: "08", label: "How It Works", desc: "4-step process, 6in60 promise, FAQ", color: "#1A3324", accent: "#CDFF3A", page: "how-it-works" },
-  { title: "09", label: "Gift Cards", desc: "3-step: configure → payment → confirmation", color: "#111", accent: "#F2C94C", page: "gift-card" },
+  { title: "02", label: "Ready Series", desc: "Meals, bundles, account-gated subscriptions, three review themes", color: "#1A1A1A", accent: "#F5B300", page: "ready-series" },
+  { title: "03", label: "Ready Series Product", desc: "Meal details, preparation, nutrition, reviews, related meals", color: "#1A1A1A", accent: "#F5B300", page: "ready-series-product" },
+  { title: "04", label: "Ready-to-Go", desc: "Transactional meal grid, filters, quick-add, detail modal", color: "#1A1A1A", accent: "#F5B300", page: "ready-to-go" },
+  { title: "05", label: "Build-A-Box", desc: "3-step selector: box size → meals → review", color: "#222", accent: "#F5B300", page: "build-a-box" },
+  { title: "06", label: "Meal Plan Landing", desc: "Goal selection, process, frequency, proof, conversion CTAs", color: "#14100A", accent: "#E85D04", page: "meal-plan-landing" },
+  { title: "07", label: "Meal Plan Wizard", desc: "5-step account-gated flow with grouped delivery windows", color: "#14100A", accent: "#E85D04", page: "meal-plan-wizard" },
+  { title: "08", label: "Checkout", desc: "Auth choice, delivery, payment, wallet, promo", color: "#1A1A1A", accent: "#F5B300", page: "checkout" },
+  { title: "09", label: "Confirmation", desc: "Order confirmed, loyalty points earned, next steps", color: "#0D1F0F", accent: "#7EE8B0", page: "confirmation" },
+  { title: "10", label: "My Account", desc: "Dashboard plus Meal Plan / Ready Series management contexts", color: "#111", accent: "#F5B300", page: "account" },
+  { title: "11", label: "How It Works", desc: "Guided Meal Plan and transactional Ready Series journeys", color: "#1A3324", accent: "#F5B300", page: "how-it-works" },
+  { title: "12", label: "Gift Cards", desc: "Configure → payment → confirmation", color: "#111", accent: "#F2C94C", page: "gift-card" },
+  { title: "13", label: "Rewards", desc: "Points, vouchers, membership tiers, FAQ", color: "#111", accent: "#7EE8B0", page: "rewards" },
+  { title: "14", label: "About", desc: "Brand story, values, proof, and product paths", color: "#111", accent: "#F5B300", page: "about" },
 ];
 
 const FLOWS = [
   {
-    title: "Ready-to-Go Purchase",
+    title: "Ready Series Transaction",
     color: "#CDFF3A",
     steps: ["Home", "Ready-to-Go", "Cart", "Checkout", "Confirmation"],
   },
   {
     title: "Meal Plan Subscription",
-    color: "#F2C94C",
-    steps: ["Home / Nav", "Meal Plan Wizard", "Goal → Meals → Delivery → Pay", "Confirmation"],
+    color: "#E85D04",
+    steps: ["Meal Plan Landing", "Type", "Plan & Meals", "Mon–Tue / Wed–Thu / Fri Menu", "Details", "Review + Account", "Confirmation"],
+  },
+  {
+    title: "Ready Series Subscription",
+    color: "#F5B300",
+    steps: ["Ready Series", "Subscription", "Meals / Just Protein / Mixed", "3 or 6 Months", "Account Gate", "Cart", "Account Management"],
   },
   {
     title: "Build-A-Box",
@@ -62,7 +72,7 @@ const FLOWS = [
 ];
 
 const FONTS = [
-  { name: "Fraunces", role: "Display / Headings", weight: "700–900", sample: "FRESHER.", size: "text-[32px]" },
+  { name: "Fraunces", role: "Display / Headings", weight: "700–800", sample: "PERFORMANCE.", size: "text-[32px]" },
   { name: "Outfit", role: "Body / UI", weight: "400–600", sample: "Chef-prepared. Macro-precise.", size: "text-[18px]" },
   { name: "JetBrains Mono", role: "Data / Labels", weight: "400–700", sample: "PRO 42g · CARB 55g", size: "text-[15px] font-mono" },
 ];
@@ -78,14 +88,14 @@ export default function BlueprintPage({ navigate, navigateToWizard }: Props) {
             <div>
               <div className="text-[10px] font-mono tracking-[0.4em] text-white/30 uppercase mb-3">Client Blueprint · v1.0</div>
               <h1 className="font-display text-[40px] sm:text-[56px] font-bold leading-none">
-                FRESHER<span className="text-[#CDFF3A]">.</span>
+                PERFORMANCE MEALS<span className="text-[#CDFF3A]">.</span>
               </h1>
               <p className="text-white/50 text-[15px] mt-2">Shopify Prototype — Design & Flow Documentation</p>
             </div>
             <div className="grid grid-cols-3 gap-6 text-center">
               {[
-                { n: "9", l: "Screens" },
-                { n: "6", l: "User Flows" },
+                { n: "14", l: "Screens" },
+                { n: "7", l: "User Flows" },
                 { n: "100%", l: "Mobile Ready" },
               ].map((s) => (
                 <div key={s.l}>
@@ -99,8 +109,8 @@ export default function BlueprintPage({ navigate, navigateToWizard }: Props) {
           {/* Brand promise */}
           <div className="mt-8 border-t border-white/10 pt-6 flex flex-col sm:flex-row gap-6 sm:gap-12 text-[13px]">
             {[
-              { l: "Brand", v: "Fresher Performance Meals" },
-              { l: "Market", v: "Singapore · fresher.com.sg" },
+              { l: "Brand", v: "Performance Meals" },
+              { l: "Market", v: "Singapore · performancemeals.com.sg" },
               { l: "Platform", v: "Shopify (to be built)" },
               { l: "Promise", v: "Lose 6kg in 60 days — guaranteed" },
             ].map((i) => (
@@ -220,7 +230,7 @@ export default function BlueprintPage({ navigate, navigateToWizard }: Props) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               { icon: "🛒", title: "Cart & Checkout", desc: "Persistent cart drawer, wallet credit, PayNow + card, address save, auto-charge consent" },
-              { icon: "📦", title: "Subscription Plans", desc: "3 meal plans (CUT/MAINTAIN/BUILD), weekly & monthly billing, 4-step wizard flow" },
+              { icon: "📦", title: "Subscription Plans", desc: "Meal Plan and Ready Series subscriptions, account-gated checkout, grouped delivery windows, and separate account management contexts" },
               { icon: "🎁", title: "Gift Cards", desc: "Configurable amounts, digital delivery via email, 3-step checkout" },
               { icon: "🏆", title: "Rewards & Wallet", desc: "Points per order, referral system, wallet balance applied at checkout" },
               { icon: "👤", title: "Account Portal", desc: "Order history, active plans, wallet, referral link, address book, saved cards" },
@@ -240,7 +250,7 @@ export default function BlueprintPage({ navigate, navigateToWizard }: Props) {
 
         {/* ── FOOTER NAV ── */}
         <div className="border-t border-[#E5E2DA] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-[12px] text-[#999]">Fresher Performance Meals · Prototype Blueprint v1.0 · Confidential</div>
+          <div className="text-[12px] text-[#999]">Performance Meals · Prototype Blueprint v2.0 · October 2026 · Confidential</div>
           <div className="flex gap-3 flex-wrap justify-center">
             <button onClick={() => navigate("home")}
               className="border border-[#D0CCC4] px-4 py-2 text-[11px] tracking-[0.15em] uppercase text-[#555] hover:border-[#111] hover:text-[#111] transition-colors">
