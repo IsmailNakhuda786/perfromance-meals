@@ -206,6 +206,12 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
   const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
   const [subTerm, setSubTerm] = useState<3 | 6>(3);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
+  // Subscription type filter: Meals / Just Protein / Mixed
+  const [subTypeFilter, setSubTypeFilter] = useState<"meals" | "protein" | "mixed">("meals");
+  // Auth state for RS subscriptions (account-gated)
+  const [rsSignedIn, setRsSignedIn] = useState(false);
+  const [showRsAuthGate, setShowRsAuthGate] = useState(false);
+  const [pendingSubSku, setPendingSubSku] = useState<string | null>(null);
   const [activeCat, setActiveCat] = useState("A-la-carte");
   const [addedId, setAddedId] = useState<number | null>(null);
   const [reviewMealId, setReviewMealId] = useState<number | null>(null);
@@ -541,7 +547,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         <section className="py-14 px-6 sm:px-8">
           <div className="max-w-[1200px] mx-auto">
             {/* Header */}
-            <div className="mb-10 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
               <div>
                 <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.4em] uppercase mb-3">Ready Series Subscription</div>
                 <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.92]">
@@ -573,9 +579,49 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
               </div>
             </div>
 
+            {/* Subscription type filter — 3-way toggle */}
+            <div className="flex items-center gap-4 mb-8 flex-wrap">
+              <div className="text-[10px] text-white/30 font-mono tracking-widest uppercase shrink-0">Category</div>
+              <div className="flex border border-white/15 overflow-hidden">
+                {([
+                  { key: "meals"   as const, label: "Meals",        sub: "Low Carb & High Carb" },
+                  { key: "protein" as const, label: "Just Protein",  sub: "High-protein, minimal carbs" },
+                  { key: "mixed"   as const, label: "Mixed",         sub: "Carbs + Protein combo" },
+                ]).map(({ key, label, sub }) => (
+                  <button key={key} onClick={() => setSubTypeFilter(key)}
+                    title={sub}
+                    className={`px-5 py-2.5 text-[11px] font-bold tracking-wide transition-all border-r border-white/8 last:border-r-0
+                      ${subTypeFilter === key ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white bg-white/3 hover:bg-white/8"}`}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {rsSignedIn && (
+                <div className="ml-auto flex items-center gap-2 text-[11px] text-[#34D399] font-mono">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                  Signed in
+                </div>
+              )}
+            </div>
+
+            {/* Auth notice for subscription (account-gated) */}
+            {!rsSignedIn && (
+              <div className="flex items-center gap-4 mb-6 bg-white/4 border border-white/10 px-5 py-3.5">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5B300" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <div className="flex-1">
+                  <span className="text-[12px] text-white/60">Subscriptions require an account. </span>
+                  <span className="text-[12px] text-white/30">Sign in or create one when you subscribe — takes 30 seconds.</span>
+                </div>
+              </div>
+            )}
+
             {/* Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {SUBSCRIPTION_PRODUCTS.map((sub) => {
+              {SUBSCRIPTION_PRODUCTS.filter((sub) => {
+                if (subTypeFilter === "protein") return sub.sku.startsWith("JP");
+                if (subTypeFilter === "mixed")   return sub.sku.includes("MIX");
+                return !sub.sku.startsWith("JP") && !sub.sku.includes("MIX");
+              }).map((sub) => {
                 const details = SUB_MEAL_DETAILS[sub.sku];
                 const price = subTerm === 3 ? sub.price3m : sub.price6m;
                 const pricePerMeal = price / (sub.items * subTerm);
@@ -715,6 +761,11 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
+                          if (!rsSignedIn) {
+                            setPendingSubSku(sub.sku);
+                            setShowRsAuthGate(true);
+                            return;
+                          }
                           setSelectedSub(sub.sku);
                           addToCart({
                             id: sub.sku.split("").reduce((a, c) => a + c.charCodeAt(0), 0),
@@ -734,7 +785,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                           border: `1px solid ${accentColor}`,
                         }}
                       >
-                        {isSelected ? "✓ Added to cart" : "Subscribe →"}
+                        {isSelected ? "✓ Added to cart" : rsSignedIn ? "Subscribe →" : "Sign In & Subscribe →"}
                       </button>
                     </div>
                   </div>
@@ -776,6 +827,81 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             </div>
           </div>
         </section>
+
+        {/* ── RS Auth Gate Modal ── */}
+        {showRsAuthGate && (
+          <div className="fixed inset-0 bg-black/85 z-[500] flex items-center justify-center p-6" onClick={() => setShowRsAuthGate(false)}>
+            <div className="bg-[#0D0D0D] border border-white/12 max-w-[440px] w-full p-8" onClick={(e) => e.stopPropagation()}>
+              <div className="text-[#F5B300] text-[9px] font-mono tracking-[0.4em] uppercase mb-4">Account Required</div>
+              <h3 className="font-display text-[26px] font-extrabold text-white leading-tight mb-2">
+                Subscribe with<br />confidence.
+              </h3>
+              <p className="text-white/40 text-[13px] mb-7 leading-relaxed">
+                Ready Series subscriptions are managed through your account — pause, skip deliveries, or cancel anytime. No guest checkout for subscriptions.
+              </p>
+              <div className="space-y-3 mb-5">
+                <button
+                  onClick={() => {
+                    setRsSignedIn(true);
+                    setShowRsAuthGate(false);
+                    // Auto-add the pending subscription
+                    if (pendingSubSku) {
+                      const sub = SUBSCRIPTION_PRODUCTS.find((s) => s.sku === pendingSubSku);
+                      const details = SUB_MEAL_DETAILS[pendingSubSku];
+                      if (sub && details) {
+                        const price = subTerm === 3 ? sub.price3m : sub.price6m;
+                        const uniqueIds = [...new Set(details.meals.map((m) => m.id))];
+                        const firstMeal = MEALS.find((m) => m.id === uniqueIds[0]);
+                        const subMealNames = Array.from({ length: subTerm }).flatMap(() =>
+                          details.meals.flatMap(({ id, qty }) => {
+                            const meal = MEALS.find((m) => m.id === id);
+                            return meal ? Array(qty).fill(meal.name) : [];
+                          })
+                        );
+                        const subMealImgs = Array.from({ length: subTerm }).flatMap(() =>
+                          details.meals.flatMap(({ id, qty }) => {
+                            const meal = MEALS.find((m) => m.id === id);
+                            return meal ? Array(qty).fill(meal.img) : [];
+                          })
+                        );
+                        setSelectedSub(pendingSubSku);
+                        addToCart({
+                          id: pendingSubSku.split("").reduce((a, c) => a + c.charCodeAt(0), 0),
+                          name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
+                          price,
+                          qty: 1,
+                          img: firstMeal?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                          type: "box",
+                          mealNames: subMealNames,
+                          mealImgs: subMealImgs,
+                        });
+                      }
+                      setPendingSubSku(null);
+                    }
+                  }}
+                  className="w-full bg-[#F5B300] text-[#111] py-4 font-extrabold text-[13px] tracking-[0.15em] uppercase hover:bg-white transition-colors">
+                  Sign In & Subscribe
+                </button>
+                <button
+                  onClick={() => {
+                    setRsSignedIn(true);
+                    setShowRsAuthGate(false);
+                    setPendingSubSku(null);
+                  }}
+                  className="w-full border border-white/20 text-white py-4 font-bold text-[13px] tracking-wide hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
+                  Create Account
+                </button>
+              </div>
+              <button onClick={() => { setShowRsAuthGate(false); setPendingSubSku(null); }}
+                className="w-full text-center text-[12px] text-white/25 hover:text-white/50 transition-colors">
+                Cancel
+              </button>
+              <p className="text-white/15 text-[9px] font-mono mt-5 text-center uppercase tracking-widest">
+                Guest checkout not available for subscriptions
+              </p>
+            </div>
+          </div>
+        )}
       </div>
       )}
 

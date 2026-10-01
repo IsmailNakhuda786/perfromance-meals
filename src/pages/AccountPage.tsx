@@ -164,6 +164,9 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
   const [menuMode, setMenuMode] = useState<"browse" | "review">("review");
   const [activeWeek, setActiveWeek] = useState(0);
 
+  // My Plan context toggle: Meal Plan vs Ready Series subscription
+  const [myPlanContext, setMyPlanContext] = useState<"mealplan" | "readyseries">("mealplan");
+
   const plan = PLANS.find((p) => p.name === activePlan) || PLANS[1];
 
   const toggleDay = (day: string) => {
@@ -362,29 +365,57 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
         {tab === "subscription" && (
           <div className="space-y-5">
             <div className="flex items-center justify-between flex-wrap gap-3">
-              <h2 className="font-display text-[28px] font-bold">My Plan</h2>
-              <div className="flex items-center gap-3 text-[12px] text-[#666] bg-white border border-[#E5E2DA] px-4 py-2">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5B300" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                <span>Next billing cycle:</span>
-                <strong className="text-[#111]">{(() => { const d = new Date(); billing === "biweekly" ? d.setDate(d.getDate() + 14) : d.setMonth(d.getMonth() + 1); return d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }); })()}</strong>
+              <div>
+                <h2 className="font-display text-[28px] font-bold">My Plan</h2>
+                {/* Context toggle */}
+                <div className="flex border border-[#E5E2DA] overflow-hidden mt-3 w-fit">
+                  {([
+                    { key: "mealplan"    as const, label: "Meal Plan"    },
+                    { key: "readyseries" as const, label: "Ready Series" },
+                  ]).map(({ key, label }) => (
+                    <button key={key} onClick={() => setMyPlanContext(key)}
+                      className={`px-5 py-2 text-[11px] font-bold tracking-wide transition-all border-r border-[#E5E2DA] last:border-r-0
+                        ${myPlanContext === key ? "bg-[#1A1A1A] text-white" : "text-[#888] hover:text-[#1A1A1A] bg-white"}`}>
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            {subPaused ? (
-                <button onClick={() => setSubPaused(false)} className="bg-[#F5B300] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-[#F5B300] transition-colors">
-                  Resume Subscription
-                </button>
-              ) : (
-                <button onClick={() => setShowPauseModal(true)} className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
-                  ⏸ Pause Plan
-                </button>
+              {myPlanContext === "mealplan" && (
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-center gap-3 text-[12px] text-[#666] bg-white border border-[#E5E2DA] px-4 py-2">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5B300" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="1"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    <span>Next billing:</span>
+                    <strong className="text-[#111]">{(() => { const d = new Date(); billing === "biweekly" ? d.setDate(d.getDate() + 14) : d.setMonth(d.getMonth() + 1); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}</strong>
+                  </div>
+                  {subPaused ? (
+                    <button onClick={() => setSubPaused(false)} className="bg-[#F5B300] text-[#111] px-5 py-2.5 text-[12px] font-bold tracking-widest uppercase hover:bg-[#111] hover:text-[#F5B300] transition-colors">
+                      Resume Subscription
+                    </button>
+                  ) : (
+                    <button onClick={() => setShowPauseModal(true)} className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
+                      ⏸ Pause Plan
+                    </button>
+                  )}
+                </div>
               )}
             </div>
 
+            {/* ── READY SERIES context ── */}
+            {myPlanContext === "readyseries" && (
+              <div className="space-y-5">
+                <BoxSubscriptionCard navigate={navigate} save={save} />
+              </div>
+            )}
+
+            {/* ── MEAL PLAN context ── */}
+            {myPlanContext === "mealplan" && <>
             {subPaused && (
               <div className="bg-amber-50 border border-amber-200 p-4 flex items-center gap-3">
                 <span className="text-[20px]">⏸</span>
                 <div>
                   <div className="font-medium text-amber-800">Plan paused for {pauseWeeks} week{pauseWeeks > 1 ? "s" : ""}</div>
-                  <div className="text-amber-600 text-[13px]">No deliveries or charges until {(() => { const d = new Date(); d.setDate(d.getDate() + pauseWeeks * 7); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}. You can still edit your plan settings below.</div>
+                  <div className="text-amber-600 text-[13px]">No deliveries or charges until {(() => { const d = new Date(); d.setDate(d.getDate() + pauseWeeks * 7); return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }); })()}.</div>
                 </div>
               </div>
             )}
@@ -393,34 +424,40 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             <div className="bg-white border border-[#E5E2DA]">
               <div className="p-5 border-b border-[#E5E2DA]">
                 <h3 className="font-medium text-[15px]">Plan Type</h3>
-                <p className="text-[#888] text-[12px] mt-0.5">Your caloric target and macro split</p>
+                <p className="text-[#888] text-[12px] mt-0.5">Your current meal programme and billing cycle</p>
               </div>
               <div className="p-5">
-                <div className="flex items-center gap-6 flex-wrap">
-                  <div>
-                    <span className="font-mono text-[10px] tracking-[0.3em]" style={{ color: plan.accent }}>{activePlan}</span>
-                    <div className="font-display text-[32px] font-bold">{plan.cal} <span className="text-[18px] font-normal text-[#888]">kcal/day</span></div>
+                <div className="flex items-center gap-4 flex-wrap mb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-[9px] tracking-[0.3em] uppercase px-2 py-1 border" style={{ color: plan.accent, borderColor: plan.accent + "44" }}>{activePlan}</span>
+                    <div className="text-[18px] font-bold text-[#1A1A1A]">{plan.desc}</div>
                   </div>
-                  <div className="flex gap-4">
-                    {[{ l: "Protein", v: `${plan.protein}g` }, { l: "Carbs", v: `${plan.carbs}g` }, { l: "Fat", v: `${plan.fat}g` }].map((m) => (
-                      <div key={m.l} className="text-center bg-[#F7F5F0] px-5 py-3">
-                        <div className="font-mono text-[14px] font-medium">{m.v}</div>
-                        <div className="text-[#999] text-[10px] uppercase tracking-wider mt-0.5">{m.l}</div>
-                      </div>
+                  <div className="ml-auto">
+                    <div className="text-[11px] text-[#888]">Billing: <strong className="text-[#1A1A1A]">{billing === "biweekly" ? "Biweekly" : "Monthly"}</strong></div>
+                  </div>
+                  {!editingPlan ? (
+                    <button onClick={() => setEditingPlan(true)} className="border border-[#D0CCC4] px-4 py-2 text-[11px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
+                      Change Plan
+                    </button>
+                  ) : (
+                    <button onClick={() => { setEditingPlan(false); save("Plan type updated"); }} className="bg-[#111] text-white px-4 py-2 text-[11px] font-medium hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                      Save
+                    </button>
+                  )}
+                </div>
+                {editingPlan && (
+                  <div className="border-t border-[#F0EDE8] pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {PLANS.map((p) => (
+                      <button key={p.name} onClick={() => setActivePlan(p.name)}
+                        className={`p-3 border text-left transition-all ${activePlan === p.name ? "border-[#111] bg-[#F7F5F0]" : "border-[#E5E2DA] text-[#888] hover:border-[#999]"}`}>
+                        <div className="font-mono text-[10px] tracking-[0.25em] mb-1" style={{ color: p.accent }}>{p.name}</div>
+                        <div className="text-[12px] leading-relaxed">{p.desc}</div>
+                      </button>
                     ))}
                   </div>
-                </div>
-                <div className="mt-4 border-t border-[#F0EDE8] pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {PLANS.map((p) => (
-                    <div key={p.name} className={`p-3 border text-[13px] ${activePlan === p.name ? "border-[#111] bg-[#F7F5F0]" : "border-[#E5E2DA] text-[#888]"}`}>
-                      <div className="font-mono text-[10px] tracking-[0.25em] mb-1" style={{ color: p.accent }}>{p.name} — {p.cal} kcal</div>
-                      <div className="text-[12px] leading-relaxed">{p.desc}</div>
-                    </div>
-                  ))}
-                </div>
+                )}
               </div>
             </div>
-
 
             {/* ── 5. MENU REVIEW ── */}
             {(() => {
@@ -644,10 +681,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               );
             })()}
 
-            {/* ── 7. BOX SUBSCRIPTION ── */}
-            <BoxSubscriptionCard navigate={navigate} save={save} />
-
-            {/* ── 8. PAUSE / CANCEL ── */}
+            {/* ── 7. PAUSE / CANCEL ── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white border border-[#E5E2DA] p-5">
                 <h3 className="font-medium text-[15px] mb-1">{subPaused ? "Resume Plan" : "Pause Plan"}</h3>
@@ -692,6 +726,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 )}
               </div>
             </div>
+            </>}
           </div>
         )}
 

@@ -81,9 +81,6 @@ function buildWeeks() {
 }
 const WEEKS = buildWeeks();
 
-const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-const WEEKDAY_SHORT = ["MON", "TUE", "WED", "THU", "FRI"];
-
 const WEEK_MENUS: Array<{ lunch: number[]; dinner: number[] }> = [
   { lunch: [1, 7],  dinner: [4, 9] },
   { lunch: [2, 5],  dinner: [6, 4] },
@@ -93,7 +90,15 @@ const WEEK_MENUS: Array<{ lunch: number[]; dinner: number[] }> = [
 
 function getMeal(id: number) { return MEALS.find((m) => m.id === id) ?? MEALS[0]; }
 
-type MenuSelections = Record<number, Record<string, { lunch: number | null; dinner: number | null }>>;
+// Delivery windows — Mon-Tue, Wed-Thu, Fri
+const DELIVERY_WINDOWS = [
+  { key: "mon-tue", label: "Mon – Tue", days: "Monday & Tuesday",      dayCount: 2 },
+  { key: "wed-thu", label: "Wed – Thu", days: "Wednesday & Thursday",   dayCount: 2 },
+  { key: "fri",     label: "Fri",       days: "Friday",                 dayCount: 1 },
+];
+
+// WindowSelections[weekIdx][windowKey] = array of selected meal IDs (can repeat)
+type WindowSelections = Record<number, Record<string, number[]>>;
 
 // ── Reusable selection card ──────────────────────────────────────────────────
 function SelectCard({
@@ -131,33 +136,29 @@ function SelectCard({
   );
 }
 
-// ── Meal image card for menu step ────────────────────────────────────────────
-function MealCard({ meal, selected, onClick, slotColor }: {
-  meal: typeof MEALS[0]; selected: boolean; onClick: () => void; slotColor: string;
+// ── Meal selection card for delivery window ───────────────────────────────────
+function WindowMealCard({ meal, count, onClick, atMax }: {
+  meal: typeof MEALS[0]; count: number; onClick: () => void; atMax: boolean;
 }) {
+  const selected = count > 0;
   return (
     <button onClick={onClick}
       className={`relative w-full text-left overflow-hidden border-2 transition-all duration-150 group
-        ${selected ? "border-[#E85D04]" : "border-[#E8E4DC] hover:border-[#C0BAB0]"}`}
+        ${selected ? "border-[#E85D04]" : atMax ? "border-[#E8E4DC] opacity-50" : "border-[#E8E4DC] hover:border-[#C0BAB0]"}`}
       style={selected ? { boxShadow: "0 0 0 3px #E85D0422" } : undefined}>
-      <div className="relative h-32 overflow-hidden">
+      <div className="relative h-28 overflow-hidden">
         <img src={meal.img} alt={meal.name} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
         {selected && (
-          <div className="absolute top-2 right-2 w-7 h-7 bg-[#E85D04] rounded-full flex items-center justify-center">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5"><path d="M20 6 9 17l-5-5"/></svg>
+          <div className="absolute top-2 right-2 w-7 h-7 bg-[#E85D04] rounded-full flex items-center justify-center font-bold text-white text-[13px]">
+            {count}
           </div>
         )}
-        <div className="absolute bottom-2 left-2">
-          <span className="text-[9px] font-extrabold tracking-[0.15em] uppercase px-1.5 py-0.5 text-white" style={{ backgroundColor: slotColor }}>
-            {slotColor === "#F5B300" ? "LUNCH" : "DINNER"}
-          </span>
-        </div>
       </div>
-      <div className="p-3 bg-white">
-        <div className="font-semibold text-[12px] leading-tight text-[#1A1A1A]">{meal.name}</div>
-        <div className="flex gap-2 mt-1 text-[10px] text-[#888]">
-          <span>{meal.cal} kcal</span><span>·</span><span>P {meal.protein}g</span><span>·</span><span>C {meal.carbs}g</span>
+      <div className="p-2.5 bg-white">
+        <div className="font-semibold text-[11px] leading-tight text-[#1A1A1A]">{meal.name}</div>
+        <div className="flex gap-1.5 mt-0.5 text-[9px] text-[#888]">
+          <span>{meal.cal} kcal</span><span>·</span><span>P {meal.protein}g</span>
         </div>
       </div>
     </button>
@@ -190,8 +191,8 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
   const [mealPlan, setMealPlan] = useState<MealPlanType>(defaults.mealPlan);
   const [mealCount, setMealCount] = useState<MealCount>("lunch-dinner");
   const [selectedWeek, setSelectedWeek] = useState(0);
-  const [openDay, setOpenDay] = useState<string | null>("Monday");
-  const [menuSelections, setMenuSelections] = useState<MenuSelections>({});
+  const [openWindow, setOpenWindow] = useState<string | null>("mon-tue");
+  const [menuSelections, setMenuSelections] = useState<WindowSelections>({});
   const [details, setDetails] = useState({ name: "", phone: "", email: "", street: "", city: "", postcode: "", notes: "" });
 
   // Auth (Meal Plan requires account — no guest)
@@ -231,30 +232,35 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
   };
 
   const slotsPerDay = effectiveMealCount === "lunch-dinner" ? 2 : 1;
-  const totalSlots = WEEKDAYS.length * slotsPerDay;
   const weekSels = menuSelections[selectedWeek] || {};
-  const filledSlots = WEEKDAYS.reduce((acc, day) => {
-    const d = weekSels[day];
-    if (!d) return acc;
-    return acc + (d.lunch ? 1 : 0) + (effectiveMealCount === "lunch-dinner" && d.dinner ? 1 : 0);
-  }, 0);
+
+  // Window-based slot accounting: Mon-Tue = 2 days, Wed-Thu = 2 days, Fri = 1 day
+  const windowEntitlement = (w: typeof DELIVERY_WINDOWS[0]) => w.dayCount * slotsPerDay;
+  const totalSlots = DELIVERY_WINDOWS.reduce((s, w) => s + windowEntitlement(w), 0);
+  const filledSlots = DELIVERY_WINDOWS.reduce((s, w) => s + (weekSels[w.key] || []).length, 0);
+  const windowDoneMap = DELIVERY_WINDOWS.map((w) => (weekSels[w.key] || []).length >= windowEntitlement(w));
 
   const completionPct = useMemo(() => {
     if (step === 3) return Math.min(40 + Math.round((filledSlots / totalSlots) * 20), 59);
     return Math.min((step - 1) * 20, 100);
   }, [step, filledSlots, totalSlots]);
 
-  const selectMeal = (day: string, slot: "lunch" | "dinner", id: number) => {
-    setMenuSelections((prev) => ({
-      ...prev,
-      [selectedWeek]: {
-        ...(prev[selectedWeek] || {}),
-        [day]: { lunch: prev[selectedWeek]?.[day]?.lunch ?? null, dinner: prev[selectedWeek]?.[day]?.dinner ?? null, [slot]: id },
-      },
-    }));
+  const selectWindowMeal = (windowKey: string, mealId: number, entitlement: number) => {
+    setMenuSelections((prev) => {
+      const wk = prev[selectedWeek] || {};
+      const wSel = wk[windowKey] || [];
+      let next: number[];
+      const lastIdx = wSel.lastIndexOf(mealId);
+      if (lastIdx >= 0) {
+        next = [...wSel.slice(0, lastIdx), ...wSel.slice(lastIdx + 1)];
+      } else if (wSel.length < entitlement) {
+        next = [...wSel, mealId];
+      } else {
+        return prev;
+      }
+      return { ...prev, [selectedWeek]: { ...wk, [windowKey]: next } };
+    });
   };
-
-  const getMealById = (id: number | null) => id ? MEALS.find((m) => m.id === id) : null;
   // Next upcoming Sunday (first delivery day)
   const startDate = (() => {
     const d = new Date();
@@ -272,14 +278,9 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
   const goBack = () => step === 1 ? navigate("meal-plan-landing") : setStep((s) => (s - 1) as Step);
   const goNext = () => setStep((s) => Math.min(s + 1, 5) as Step);
 
+  // Meal pool for current week (combined lunch + dinner options, deduplicated)
   const weekPool = WEEK_MENUS[selectedWeek] ?? WEEK_MENUS[0];
-  const lunchOpts = weekPool.lunch.map(getMeal);
-  const dinnerOpts = weekPool.dinner.map(getMeal);
-
-  const dayDoneMap = WEEKDAYS.map((day) => {
-    const d = (menuSelections[selectedWeek] || {})[day] || { lunch: null, dinner: null };
-    return (d.lunch ? 1 : 0) + (effectiveMealCount === "lunch-dinner" && d.dinner ? 1 : 0) === slotsPerDay;
-  });
+  const mealPool = [...new Set([...weekPool.lunch, ...weekPool.dinner])].map(getMeal);
 
   // ── Nav buttons shared across steps ──────────────────────────────────────
   const NavButtons = ({ onNext, nextLabel = "Continue", nextDisabled = false }: {
@@ -526,7 +527,7 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
               {/* Week tabs — biweekly shows 2 weeks, monthly/2-months shows 4 weeks */}
               <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
                 {WEEKS.slice(0, progInfo.menuWeeks).map((w, i) => (
-                  <button key={i} onClick={() => { setSelectedWeek(i); setOpenDay("Monday"); }}
+                  <button key={i} onClick={() => { setSelectedWeek(i); setOpenWindow("mon-tue"); }}
                     className={`flex flex-col items-center px-5 py-3 border-2 shrink-0 transition-all font-semibold
                       ${selectedWeek === i ? "border-[#E85D04] bg-[#E85D04] text-white" : "border-[#E8E4DC] bg-white text-[#888] hover:border-[#C0BAB0]"}`}>
                     <span className="text-[13px]">{w.label}</span>
@@ -535,21 +536,28 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                 ))}
               </div>
 
-              {/* Completion dots row */}
-              <div className="bg-white border border-[#E8E4DC] px-5 py-3.5 mb-4 flex items-center gap-3">
-                <div className="flex gap-2 flex-1">
-                  {WEEKDAYS.map((day, i) => (
-                    <div key={day} className="flex flex-col items-center gap-1">
-                      <button onClick={() => setOpenDay(openDay === day ? null : day)}
-                        className={`w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-extrabold transition-all border-2
-                          ${dayDoneMap[i] ? "bg-[#E85D04] border-[#E85D04] text-white"
-                            : openDay === day ? "border-[#E85D04] text-[#E85D04] bg-white"
-                            : "border-[#E8E4DC] text-[#C0BAB0] bg-white hover:border-[#aaa]"}`}>
-                        {dayDoneMap[i] ? "✓" : WEEKDAY_SHORT[i].slice(0, 1)}
+              {/* Window progress summary bar */}
+              <div className="bg-white border border-[#E8E4DC] px-5 py-3.5 mb-4 flex items-center gap-4">
+                <div className="flex gap-3 flex-1">
+                  {DELIVERY_WINDOWS.map((w, i) => {
+                    const done = windowDoneMap[i];
+                    const ent = windowEntitlement(w);
+                    const filled = (weekSels[w.key] || []).length;
+                    return (
+                      <button key={w.key} onClick={() => setOpenWindow(openWindow === w.key ? null : w.key)}
+                        className={`flex flex-col items-center gap-1 px-3 py-2 border-2 transition-all text-center
+                          ${done ? "border-[#E85D04] bg-[#FFF9F5]"
+                            : openWindow === w.key ? "border-[#E85D04] bg-white"
+                            : "border-[#E8E4DC] bg-white hover:border-[#C0BAB0]"}`}>
+                        <span className={`text-[11px] font-extrabold ${done ? "text-[#E85D04]" : openWindow === w.key ? "text-[#E85D04]" : "text-[#C0BAB0]"}`}>
+                          {w.label}
+                        </span>
+                        <span className="text-[9px] font-mono text-[#aaa]">
+                          {done ? "✓ done" : `${filled}/${ent}`}
+                        </span>
                       </button>
-                      <span className="text-[8px] text-[#aaa] font-bold">{WEEKDAY_SHORT[i]}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="text-right shrink-0 border-l border-[#E8E4DC] pl-4">
                   <div className="text-[18px] font-extrabold text-[#1A1A1A]">{filledSlots}<span className="text-[#C0BAB0] font-normal text-[14px]">/{totalSlots}</span></div>
@@ -563,36 +571,38 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                   <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
                 </svg>
                 <p className="text-[12px] text-[#666] leading-relaxed">
-                  <strong className="text-[#1A1A1A]">Select your meals for each delivery day.</strong> Lunch and Dinner slots are shown per day — choose one meal per slot to complete your week.
+                  <strong className="text-[#1A1A1A]">Select meals by delivery window.</strong> Tap a meal to add it — you can pick the same meal multiple times to fill your allocation. Tap again to remove.
                 </p>
               </div>
 
-              {/* Day accordion */}
+              {/* Delivery window accordions */}
               <div className="space-y-2 mb-6">
-                {WEEKDAYS.map((day, di) => {
-                  const isOpen = openDay === day;
-                  const dayData = (menuSelections[selectedWeek] || {})[day] || { lunch: null, dinner: null };
-                  const lm = getMealById(dayData.lunch); const dm = getMealById(dayData.dinner);
-                  const done = dayDoneMap[di];
+                {DELIVERY_WINDOWS.map((w, wi) => {
+                  const isOpen = openWindow === w.key;
+                  const ent = windowEntitlement(w);
+                  const wSel = weekSels[w.key] || [];
+                  const done = windowDoneMap[wi];
                   return (
-                    <div key={day} className={`border-2 transition-all duration-200 bg-white ${isOpen ? "border-[#E85D04]" : "border-[#E8E4DC] hover:border-[#C0BAB0]"}`}>
-                      <button onClick={() => setOpenDay(isOpen ? null : day)}
+                    <div key={w.key} className={`border-2 transition-all duration-200 bg-white ${isOpen ? "border-[#E85D04]" : "border-[#E8E4DC] hover:border-[#C0BAB0]"}`}>
+                      <button onClick={() => setOpenWindow(isOpen ? null : w.key)}
                         className="w-full flex items-center gap-4 px-5 py-4 text-left">
                         <div className={`w-9 h-9 rounded-full shrink-0 flex items-center justify-center text-[11px] font-extrabold transition-all border-2
                           ${done ? "bg-[#E85D04] border-[#E85D04] text-white" : isOpen ? "border-[#E85D04] text-[#E85D04]" : "border-[#E8E4DC] text-[#C0BAB0]"}`}>
-                          {done ? "✓" : WEEKDAY_SHORT[di].slice(0, 1)}
+                          {done ? "✓" : wi + 1}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-[15px]">{day}</span>
-                            {!done && !isOpen && <span className="text-[11px] text-[#aaa]">Tap to pick meals</span>}
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-[15px]">{w.days}</span>
                             {done && !isOpen && <span className="text-[11px] text-[#E85D04] font-semibold">Complete ✓</span>}
                           </div>
-                          {!isOpen && (lm || dm) && (
-                            <div className="text-[11px] text-[#888] mt-0.5 truncate">
-                              {lm && `L: ${lm.name}`}{lm && dm && " · "}{dm && `D: ${dm.name}`}
-                            </div>
-                          )}
+                          <div className="text-[11px] text-[#aaa] mt-0.5">
+                            {done ? wSel.map((id) => getMeal(id).name).join(" · ") : `${wSel.length} of ${ent} meals chosen`}
+                          </div>
+                        </div>
+                        <div className="shrink-0 text-right">
+                          <span className={`text-[10px] font-mono font-bold px-2 py-1 ${done ? "bg-[#E85D04]/10 text-[#E85D04]" : "bg-[#F4F2EE] text-[#aaa]"}`}>
+                            {wSel.length}/{ent}
+                          </span>
                         </div>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2"
                           className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
@@ -601,31 +611,29 @@ export default function MealPlanWizardPage({ navigate, initialPlan, onCheckoutCo
                       </button>
                       {isOpen && (
                         <div className="px-5 pb-5 border-t border-[#F4F2EE]">
-                          <p className="text-[10px] font-extrabold tracking-[0.25em] uppercase text-[#888] mt-4 mb-3">Lunch — choose 1</p>
-                          <div className="grid grid-cols-2 gap-3 mb-5">
-                            {lunchOpts.map((meal) => (
-                              <MealCard key={meal.id} meal={meal} selected={dayData.lunch === meal.id}
-                                onClick={() => selectMeal(day, "lunch", meal.id)} slotColor="#F5B300" />
-                            ))}
+                          <div className="flex items-center justify-between mt-4 mb-3">
+                            <p className="text-[10px] font-extrabold tracking-[0.25em] uppercase text-[#888]">
+                              Choose {ent} meal{ent !== 1 ? "s" : ""} — can repeat
+                            </p>
+                            <span className="text-[10px] font-mono text-[#E85D04] font-bold">{wSel.length}/{ent} selected</span>
                           </div>
-                          {effectiveMealCount === "lunch-dinner" && (
-                            <>
-                              <p className="text-[10px] font-extrabold tracking-[0.25em] uppercase text-[#888] mb-3">Dinner — choose 1</p>
-                              <div className="grid grid-cols-2 gap-3">
-                                {dinnerOpts.map((meal) => (
-                                  <MealCard key={meal.id} meal={meal} selected={dayData.dinner === meal.id}
-                                    onClick={() => selectMeal(day, "dinner", meal.id)} slotColor="#E85D04" />
-                                ))}
-                              </div>
-                            </>
-                          )}
+                          <div className="grid grid-cols-2 gap-3">
+                            {mealPool.map((meal) => {
+                              const count = wSel.filter((id) => id === meal.id).length;
+                              const atMax = wSel.length >= ent && count === 0;
+                              return (
+                                <WindowMealCard key={meal.id} meal={meal} count={count} atMax={atMax}
+                                  onClick={() => selectWindowMeal(w.key, meal.id, ent)} />
+                              );
+                            })}
+                          </div>
                         </div>
                       )}
                     </div>
                   );
                 })}
               </div>
-              <NavButtons />
+              <NavButtons nextDisabled={!windowDoneMap.every(Boolean)} />
             </div>
           )}
 
