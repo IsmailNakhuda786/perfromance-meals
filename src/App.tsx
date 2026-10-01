@@ -133,10 +133,19 @@ export default function App() {
           <div className="text-[13px] font-semibold text-white">Download Prototype</div>
           <div className="text-[11px] text-white/50">Single HTML file — open in any browser, no setup needed</div>
         </div>
-        <button onClick={downloadHTML}
-          className="bg-[#F5B300] text-[#1A1A1A] text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-white transition-colors whitespace-nowrap shrink-0">
-          ↓ Download performance-meals-prototype.html
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <a
+            href="/Performance-Meals-Complete-Prototype-Screens.pdf"
+            download="Performance-Meals-Complete-Prototype-Screens.pdf"
+            className="border border-[#F5B300] text-[#F5B300] text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-[#F5B300] hover:text-[#1A1A1A] transition-colors whitespace-nowrap shrink-0"
+          >
+            ↓ Download Screens PDF
+          </a>
+          <button onClick={downloadHTML}
+            className="bg-[#F5B300] text-[#1A1A1A] text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-white transition-colors whitespace-nowrap shrink-0">
+            ↓ Download performance-meals-prototype.html
+          </button>
+        </div>
       </div>
 
       <Nav
