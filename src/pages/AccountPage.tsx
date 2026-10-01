@@ -130,6 +130,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
   const [editingTime, setEditingTime] = useState(false);
   const [editingQty, setEditingQty] = useState(false);
   const [editingPlan, setEditingPlan] = useState(false);
+  const [showCheaperPlanHint, setShowCheaperPlanHint] = useState(false);
 
   // Cancel subscription flow
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -188,6 +189,24 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
   const save = (msg: string) => {
     setSavedMsg(msg);
     setTimeout(() => setSavedMsg(""), 2500);
+  };
+
+  const openCheaperPlanOptions = () => {
+    const hasCheaperPlan = PLANS.some((candidate) => candidate.priceWeek < plan.priceWeek);
+    setShowCancelModal(false);
+
+    if (!hasCheaperPlan) {
+      save("You're already on the lowest-cost plan");
+      return;
+    }
+
+    setTab("subscription");
+    setMyPlanContext("mealplan");
+    setShowCheaperPlanHint(true);
+    setEditingPlan(true);
+    setTimeout(() => {
+      document.getElementById("plan-type-section")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
   };
 
   const TABS: { key: Tab; label: string }[] = [
@@ -421,7 +440,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
             )}
 
             {/* ── 1. PLAN TYPE ── */}
-            <div className="bg-white border border-[#E5E2DA]">
+            <div id="plan-type-section" className="bg-white border border-[#E5E2DA]">
               <div className="p-5 border-b border-[#E5E2DA]">
                 <h3 className="font-medium text-[15px]">Plan Type</h3>
                 <p className="text-[#888] text-[12px] mt-0.5">Your current meal programme and billing cycle</p>
@@ -436,24 +455,33 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     <div className="text-[11px] text-[#888]">Billing: <strong className="text-[#1A1A1A]">{billing === "biweekly" ? "Biweekly" : "Monthly"}</strong></div>
                   </div>
                   {!editingPlan ? (
-                    <button onClick={() => setEditingPlan(true)} className="border border-[#D0CCC4] px-4 py-2 text-[11px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
+                    <button onClick={() => { setShowCheaperPlanHint(false); setEditingPlan(true); }} className="border border-[#D0CCC4] px-4 py-2 text-[11px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
                       Change Plan
                     </button>
                   ) : (
-                    <button onClick={() => { setEditingPlan(false); save("Plan type updated"); }} className="bg-[#111] text-white px-4 py-2 text-[11px] font-medium hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                    <button onClick={() => { setEditingPlan(false); setShowCheaperPlanHint(false); save(`Plan changed to ${activePlan}`); }} className="bg-[#111] text-white px-4 py-2 text-[11px] font-medium hover:bg-[#F5B300] hover:text-[#111] transition-colors">
                       Save
                     </button>
                   )}
                 </div>
                 {editingPlan && (
-                  <div className="border-t border-[#F0EDE8] pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {PLANS.map((p) => (
+                  <div className="border-t border-[#F0EDE8] pt-4">
+                    {showCheaperPlanHint && (
+                      <div className="bg-[#FFF9E8] border border-[#F5B300]/40 px-4 py-3 mb-4">
+                        <div className="text-[12px] font-semibold text-[#1A1A1A]">Lower-cost plans</div>
+                        <div className="text-[11px] text-[#777] mt-0.5">Select an option below, then choose Save. Your next billing cycle will use the new price.</div>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {PLANS.filter((candidate) => !showCheaperPlanHint || candidate.priceWeek < plan.priceWeek).map((p) => (
                       <button key={p.name} onClick={() => setActivePlan(p.name)}
                         className={`p-3 border text-left transition-all ${activePlan === p.name ? "border-[#111] bg-[#F7F5F0]" : "border-[#E5E2DA] text-[#888] hover:border-[#999]"}`}>
                         <div className="font-mono text-[10px] tracking-[0.25em] mb-1" style={{ color: p.accent }}>{p.name}</div>
                         <div className="text-[12px] leading-relaxed">{p.desc}</div>
+                        <div className="text-[12px] font-bold text-[#1A1A1A] mt-2">${p.priceWeek} / 2 weeks</div>
                       </button>
                     ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -1133,7 +1161,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                     <div className="font-medium text-[14px]">⏸ Pause instead — keep my plan</div>
                     <div className="text-[#888] text-[12px] mt-0.5">No charges while paused. Your plan and meals are preserved.</div>
                   </button>
-                  <button onClick={() => { setShowCancelModal(false); setTab("subscription"); setEditingPlan(true); }}
+                  <button onClick={openCheaperPlanOptions}
                     className="w-full text-left border border-[#E5E2DA] p-4 hover:border-[#111] transition-colors">
                     <div className="font-medium text-[14px]">💰 Switch to a cheaper plan</div>
                     <div className="text-[#888] text-[12px] mt-0.5">Change your caloric target to reduce your weekly cost.</div>
