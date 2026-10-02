@@ -240,21 +240,32 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
 /* ─── Main ───────────────────────────────────────────────── */
 export default function HomePage({ navigate, navigateToWizard }: Props) {
   const [slide, setSlide] = useState(0);
+  const [prevSlide, setPrevSlide] = useState<number | null>(null);
+  const [transitioning, setTransitioning] = useState(false);
   const [heroVisible, setHeroVisible] = useState(false);
-  const [slideAnim, setSlideAnim] = useState(true);
   const brandsRef = useRef<HTMLDivElement>(null);
   const [brandsVisible, setBrandsVisible] = useState(false);
 
   useEffect(() => { const t = setTimeout(() => setHeroVisible(true), 80); return () => clearTimeout(t); }, []);
 
+  const changeSlide = (next: number) => {
+    if (transitioning) return;
+    setPrevSlide(slide);
+    setTransitioning(true);
+    setSlide(next);
+    setTimeout(() => { setPrevSlide(null); setTransitioning(false); }, 700);
+  };
+
   /* Auto-advance carousel */
   useEffect(() => {
     const t = setInterval(() => {
-      setSlideAnim(false);
-      setTimeout(() => {
-        setSlide((s) => (s + 1) % SLIDES.length);
-        setSlideAnim(true);
-      }, 50);
+      setSlide((s) => {
+        const next = (s + 1) % SLIDES.length;
+        setPrevSlide(s);
+        setTransitioning(true);
+        setTimeout(() => { setPrevSlide(null); setTransitioning(false); }, 700);
+        return next;
+      });
     }, 5000);
     return () => clearInterval(t);
   }, []);
@@ -267,8 +278,8 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
     return () => obs.disconnect();
   }, []);
 
-  const goPrev = () => { setSlideAnim(false); setTimeout(() => { setSlide((s) => (s - 1 + SLIDES.length) % SLIDES.length); setSlideAnim(true); }, 50); };
-  const goNext = () => { setSlideAnim(false); setTimeout(() => { setSlide((s) => (s + 1) % SLIDES.length); setSlideAnim(true); }, 50); };
+  const goPrev = () => changeSlide((slide - 1 + SLIDES.length) % SLIDES.length);
+  const goNext = () => changeSlide((slide + 1) % SLIDES.length);
 
   const s = SLIDES[slide];
 
@@ -277,18 +288,27 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
 
       {/* ── CAROUSEL HERO ── */}
       <section className="relative bg-white overflow-hidden" style={{ minHeight: "670px" }}>
-        <div className="absolute inset-y-0 right-0 w-[47%] transition-opacity duration-500" style={{ opacity: slideAnim ? 1 : 0 }}>
-          <img key={slide} src={s.img} alt="" className="w-full h-full object-cover" />
+
+        {/* Outgoing image — fades out */}
+        {prevSlide !== null && (
+          <div className="absolute inset-y-0 right-0 w-[47%]" style={{ opacity: 0, transition: "opacity 0.7s ease" }}>
+            <img src={SLIDES[prevSlide].img} alt="" className="w-full h-full object-cover" />
+          </div>
+        )}
+        {/* Incoming image — fades in */}
+        <div className="absolute inset-y-0 right-0 w-[47%]" style={{ opacity: transitioning ? 0 : 1, transition: "opacity 0.7s ease" }}>
+          <img src={s.img} alt="" className="w-full h-full object-cover" />
         </div>
+
         <div className="absolute inset-y-0 right-[47%] w-5 bg-[#F5B300] z-10" />
         <div className="relative z-10 max-w-none px-14 sm:px-16 py-14 sm:py-20 flex flex-col justify-between" style={{ minHeight: "670px", maxWidth: "53%" }}>
           <div>
-            <p className="text-[#1A1A1A] text-[12px] font-medium tracking-[0.06em] mb-10" style={{ opacity: heroVisible ? 1 : 0, fontFamily: "Inter, sans-serif" }}>{s.eyebrow}</p>
-            <h1 className="font-display font-bold leading-[0.84] mb-8" style={{ fontSize: "clamp(48px, 6.5vw, 84px)", letterSpacing: "-0.03em", color: "#1A1A1A", opacity: slideAnim ? 1 : 0, transform: slideAnim ? "none" : "translateY(12px)", transition: "opacity 0.5s ease, transform 0.5s ease" }}>
+            <p className="text-[#1A1A1A] text-[12px] font-medium tracking-[0.06em] mb-10" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.6s ease", fontFamily: "Inter, sans-serif" }}>{s.eyebrow}</p>
+            <h1 className="font-display font-bold leading-[0.84] mb-8" style={{ fontSize: "clamp(48px, 6.5vw, 84px)", letterSpacing: "-0.03em", color: "#1A1A1A", opacity: transitioning ? 0 : 1, transform: transitioning ? "translateY(10px)" : "none", transition: "opacity 0.6s ease, transform 0.6s ease" }}>
               {s.headline.map((line, i) => <span key={i} className="block">{line}</span>)}
             </h1>
-            <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: slideAnim ? 1 : 0, transition: "opacity 0.5s ease 0.1s" }}>{s.sub}</p>
-            <div className="flex flex-wrap gap-6 pl-16" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
+            <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: transitioning ? 0 : 1, transition: "opacity 0.6s ease 0.08s" }}>{s.sub}</p>
+            <div className="flex flex-wrap gap-6 pl-16" style={{ opacity: heroVisible && !transitioning ? 1 : heroVisible ? 0.6 : 0, transition: "opacity 0.6s ease 0.15s" }}>
               <button
                 onClick={() => s.ctaPrimary.action === "ready-series" ? navigate("ready-series") : navigateToWizard?.()}
                 className="group relative h-14 px-9 bg-[#1A1A1A] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(26,26,26,0.35)]"
