@@ -11,38 +11,52 @@ const imgMeal    = "/98c55.png";
 /* ─── Shatter image grid ─────────────────────────────────── */
 const COLS = 5;
 const ROWS = 4;
-const CELL_COUNT = COLS * ROWS;
 
-// Pre-compute stable scatter vectors for each cell (deterministic, not random per render)
-const CELL_CONFIGS = Array.from({ length: CELL_COUNT }, (_, i) => {
+const CELL_CONFIGS = Array.from({ length: COLS * ROWS }, (_, i) => {
   const col = i % COLS;
   const row = Math.floor(i / COLS);
   const cx = (COLS - 1) / 2;
   const cy = (ROWS - 1) / 2;
-  const dx = (col - cx) * 90 + (i % 3 === 0 ? 30 : -20);
-  const dy = (row - cy) * 80 + (i % 2 === 0 ? 20 : -25);
+  const dx = (col - cx) * 100 + (i % 3 === 0 ? 40 : -30);
+  const dy = (row - cy) * 90 + (i % 2 === 0 ? 25 : -30);
   const rot = ((i * 37) % 40) - 20;
-  const delay = (col + row) * 28;
-  const enterDelay = ((COLS - 1 - col) + (ROWS - 1 - row)) * 22;
-  return { col, row, dx, dy, rot, delay, enterDelay };
+  const exitDelay  = (col + row) * 28;
+  const enterDelay = ((COLS - 1 - col) + (ROWS - 1 - row)) * 24;
+  return { col, row, dx, dy, rot, exitDelay, enterDelay };
 });
 
-function ShatterImage({ src, phase }: { src: string; phase: "idle" | "exit" | "enter" }) {
+type ShatterPhase = "idle" | "exit" | "enter-init" | "enter";
+
+function ShatterImage({ src, phase }: { src: string; phase: ShatterPhase }) {
   return (
     <div className="absolute inset-0" style={{ display: "grid", gridTemplateColumns: `repeat(${COLS}, 1fr)`, gridTemplateRows: `repeat(${ROWS}, 1fr)` }}>
-      {CELL_CONFIGS.map(({ col, row, dx, dy, rot, delay, enterDelay }, i) => {
-        const isExit  = phase === "exit";
-        const isEnter = phase === "enter";
-        const transDelay = isExit ? delay : isEnter ? enterDelay : 0;
-        const transform = isExit
-          ? `translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(0.6)`
-          : isEnter
-          ? `translate(${-dx * 0.7}px, ${-dy * 0.7}px) rotate(${-rot * 0.6}deg) scale(0.75)`
-          : "translate(0,0) rotate(0deg) scale(1)";
-        const opacity = (isExit || isEnter) ? 0 : 1;
+      {CELL_CONFIGS.map(({ col, row, dx, dy, rot, exitDelay, enterDelay }, i) => {
+        let transform: string;
+        let opacity: number;
+        let transition: string;
+
+        if (phase === "exit") {
+          transform  = `translate(${dx}px,${dy}px) rotate(${rot}deg) scale(0.5)`;
+          opacity    = 0;
+          transition = `transform 480ms ease-in ${exitDelay}ms, opacity 360ms ease-in ${exitDelay}ms`;
+        } else if (phase === "enter-init") {
+          // Snap to scatter with NO transition — browser paints this before animating
+          transform  = `translate(${-dx * 0.8}px,${-dy * 0.8}px) rotate(${-rot * 0.5}deg) scale(0.7)`;
+          opacity    = 0;
+          transition = "none";
+        } else if (phase === "enter") {
+          transform  = "translate(0,0) rotate(0deg) scale(1)";
+          opacity    = 1;
+          transition = `transform 500ms cubic-bezier(0.16,1,0.3,1) ${enterDelay}ms, opacity 350ms ease-out ${enterDelay}ms`;
+        } else {
+          // idle — no transition, fully visible
+          transform  = "translate(0,0) rotate(0deg) scale(1)";
+          opacity    = 1;
+          transition = "none";
+        }
 
         return (
-          <div key={i} style={{ overflow: "hidden", transform, opacity, transition: `transform 520ms cubic-bezier(0.4,0,0.2,1) ${transDelay}ms, opacity 420ms ease ${transDelay}ms` }}>
+          <div key={i} style={{ overflow: "hidden", transform, opacity, transition }}>
             <div style={{
               width: `${COLS * 100}%`,
               height: `${ROWS * 100}%`,
@@ -291,8 +305,7 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
 /* ─── Main ───────────────────────────────────────────────── */
 export default function HomePage({ navigate, navigateToWizard }: Props) {
   const [slide, setSlide] = useState(0);
-  const [nextSlide, setNextSlide] = useState<number | null>(null);
-  const [phase, setPhase] = useState<"idle" | "exit" | "enter">("idle");
+  const [phase, setPhase] = useState<ShatterPhase>("idle");
   const [heroVisible, setHeroVisible] = useState(false);
   const brandsRef = useRef<HTMLDivElement>(null);
   const [brandsVisible, setBrandsVisible] = useState(false);
@@ -303,27 +316,29 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
   const changeSlide = (next: number) => {
     if (busy.current) return;
     busy.current = true;
-    setNextSlide(next);
-    setPhase("exit");                          // shatter current image out
+    // 1. Shatter current image out
+    setPhase("exit");
     setTimeout(() => {
+      // 2. Swap slide + snap new image tiles to scatter (no transition)
       setSlide(next);
-      setNextSlide(null);
-      setPhase("enter");                       // new image assembles in
-      setTimeout(() => {
-        setPhase("idle");
-        busy.current = false;
-      }, 700);
-    }, 520);                                   // wait for exit to finish
+      setPhase("enter-init");
+      // 3. Double RAF guarantees browser paints the scatter state before animating
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setPhase("enter");
+          setTimeout(() => {
+            setPhase("idle");
+            busy.current = false;
+          }, 650);
+        });
+      });
+    }, 500);
   };
 
   /* Auto-advance carousel */
   useEffect(() => {
     const t = setInterval(() => {
-      setSlide((s) => {
-        const next = (s + 1) % SLIDES.length;
-        changeSlide(next);
-        return s;
-      });
+      setSlide((s) => { changeSlide((s + 1) % SLIDES.length); return s; });
     }, 5000);
     return () => clearInterval(t);
   }, []);
