@@ -23,7 +23,6 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             { label: "Ready Series Subscription", action: () => navigate("ready-series") },
             { label: "Meal Plans", action: () => navigate("meal-plan-landing") },
             { label: "About Us", action: () => navigate("about") },
-            { label: "How It Works", action: () => navigate("how-it-works") },
             { label: "My Account", action: () => navigate("account") },
           ].map((l) => (
             <button key={l.label} onClick={l.action}
