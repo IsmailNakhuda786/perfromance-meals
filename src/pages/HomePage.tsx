@@ -282,9 +282,9 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
               {s.headline.map((line, i) => <span key={i} className="block">{line}</span>)}
             </h1>
             <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: slideAnim ? 1 : 0, transition: "opacity 0.5s ease 0.1s" }}>{s.sub}</p>
-            <div className="flex flex-wrap gap-3" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
-              <button onClick={() => navigate("ready-series")} className="h-12 px-7 bg-[#1A1A1A] text-white text-[12px] font-medium tracking-[0.01em] rounded-full hover:bg-[#333] transition-colors" style={{ fontFamily: "Inter, sans-serif" }}>BROWSE READY SERIES</button>
-              <button onClick={() => navigateToWizard?.()} className="h-12 px-7 bg-[#E85D04] text-white text-[12px] font-medium tracking-[0.01em] rounded-full hover:bg-[#c94e00] transition-colors" style={{ fontFamily: "Inter, sans-serif" }}>EXPLORE MEAL PLAN</button>
+            <div className="flex flex-wrap gap-4 pl-10" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
+              <button onClick={() => navigate("ready-series")} className="h-14 px-9 bg-[#1A1A1A] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full hover:bg-[#333] transition-colors shadow-md" style={{ fontFamily: "Inter, sans-serif" }}>BROWSE READY SERIES</button>
+              <button onClick={() => navigateToWizard?.()} className="h-14 px-9 bg-[#E85D04] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full hover:bg-[#c94e00] transition-colors shadow-md" style={{ fontFamily: "Inter, sans-serif" }}>EXPLORE MEAL PLAN</button>
             </div>
           </div>
           <div className="mt-14 flex flex-col gap-4" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.8s ease 0.6s" }}>
