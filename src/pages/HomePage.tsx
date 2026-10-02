@@ -255,7 +255,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         setSlide((s) => (s + 1) % SLIDES.length);
         setSlideAnim(true);
       }, 50);
-    }, 7000);
+    }, 5000);
     return () => clearInterval(t);
   }, []);
 
@@ -316,7 +316,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 <div className="absolute left-0 top-0 h-full bg-[#F5B300] rounded-full transition-all duration-300" style={{ width: `${((slide + 1) / SLIDES.length) * 100}%` }} />
               </div>
               <span className="text-[#7A7A75] text-[12px] font-medium" style={{ fontFamily: "Inter, sans-serif" }}>0{slide + 1} / 0{SLIDES.length}</span>
-              <span className="text-[#7A7A75] text-[11px]" style={{ fontFamily: "Inter, sans-serif" }}>AUTO 07s</span>
+              <span className="text-[#7A7A75] text-[11px]" style={{ fontFamily: "Inter, sans-serif" }}>AUTO 05s</span>
             </div>
           </div>
         </div>
