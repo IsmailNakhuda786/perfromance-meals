@@ -295,10 +295,6 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
               </div>
               <span className="text-[#7A7A75] text-[12px] font-medium" style={{ fontFamily: "Inter, sans-serif" }}>0{slide + 1} / 0{SLIDES.length}</span>
               <span className="text-[#7A7A75] text-[11px]" style={{ fontFamily: "Inter, sans-serif" }}>AUTO 07s</span>
-              <div className="flex gap-2 ml-auto">
-                <button onClick={goPrev} className="w-11 h-11 bg-white/90 rounded-full flex items-center justify-center text-[#1A1A1A] hover:bg-white transition-colors shadow-sm">←</button>
-                <button onClick={goNext} className="w-11 h-11 bg-[#F5B300] rounded-full flex items-center justify-center text-[#1A1A1A] hover:bg-[#e5a800] transition-colors">→</button>
-              </div>
             </div>
           </div>
         </div>
