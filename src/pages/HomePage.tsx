@@ -355,10 +355,13 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 </div>
                 <button
                   onClick={() => navigate("ready-series")}
-                  className="text-white text-[12px] font-medium tracking-[0.012em] text-left hover:text-[#F5B300] transition-colors"
+                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-white transition-all duration-300"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
-                  EXPLORE READY SERIES  →
+                  <span className="relative pb-[3px] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-[#F5B300] after:transition-all after:duration-300 group-hover:after:w-full group-hover:text-[#F5B300]">
+                    EXPLORE READY SERIES
+                  </span>
+                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#F5B300]">→</span>
                 </button>
               </div>
             </div>
@@ -382,10 +385,13 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 </div>
                 <button
                   onClick={() => navigateToWizard?.()}
-                  className="text-[#1A1A1A] text-[12px] font-medium tracking-[0.012em] text-left hover:text-[#E85D04] transition-colors"
+                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-[#1A1A1A] transition-all duration-300"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
-                  EXPLORE MEAL PLAN  →
+                  <span className="relative pb-[3px] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-[#E85D04] after:transition-all after:duration-300 group-hover:after:w-full group-hover:text-[#E85D04]">
+                    EXPLORE MEAL PLAN
+                  </span>
+                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#E85D04]">→</span>
                 </button>
               </div>
             </div>
