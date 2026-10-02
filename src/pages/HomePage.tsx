@@ -266,7 +266,62 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
   return (
     <div className="bg-white text-[#1A1A1A] overflow-x-hidden">
 
-      {/* ── 01 CAROUSEL HERO ── */}
+      {/* ── 01 THE STANDARD BEHIND EVERY MEAL ── */}
+      <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "590px" }}>
+        <div className="flex flex-col lg:flex-row" style={{ minHeight: "590px" }}>
+
+          {/* Left text */}
+          <div className="flex-1 px-14 sm:px-16 py-16 sm:py-20 flex flex-col justify-between">
+            <div>
+              {/* Number + tag row */}
+              <div className="flex items-baseline gap-10 mb-10">
+                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
+                <span className="text-[#F5B300] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>THE PARENT BRAND</span>
+              </div>
+
+              {/* Headline */}
+              <h2 className="font-display font-bold text-white mb-8" style={{ fontSize: "clamp(40px, 5vw, 63px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
+                <span className="block">THE STANDARD</span>
+                <span className="block">BEHIND EVERY</span>
+                <span className="block">MEAL.</span>
+              </h2>
+
+              {/* Body */}
+              <p className="text-white leading-[1.48] mb-8 max-w-[480px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
+                Performance Meals sets the purpose, quality standard and experience behind everything we offer.
+              </p>
+
+              <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em]" style={{ fontFamily: "Inter, sans-serif" }}>
+                PRINCIPLED  •  GROUNDED
+              </p>
+            </div>
+          </div>
+
+          {/* Right image + pillars */}
+          <div className="relative lg:w-[55%] flex-shrink-0" style={{ minHeight: "400px" }}>
+            <img src={imgChef} alt="Chef preparing meals" className="w-full h-full object-cover" style={{ minHeight: "400px" }} />
+
+            {/* Dark overlay band */}
+            <div className="absolute bottom-0 left-0 right-0 bg-[rgba(26,26,26,0.90)] px-8 py-8">
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { num: "01", title: "CHEF-LED RECIPES", sub: "Craft-led food." },
+                  { num: "02", title: "CLEAR NUTRITION", sub: "Visible macros & ingredients." },
+                  { num: "03", title: "QUALITY CONTROL", sub: "Kitchen to doorstep." },
+                ].map((p) => (
+                  <div key={p.num}>
+                    <p className="text-[#F5B300] text-[10px] tracking-[0.01em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>{p.num}</p>
+                    <p className="text-white text-[13px] font-medium leading-[1.1] mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>{p.title}</p>
+                    <p className="text-[#C2C2BA] text-[11px] leading-[1.35]" style={{ fontFamily: "Inter, sans-serif" }}>{p.sub}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 02 CAROUSEL HERO ── */}
       <section className="relative bg-white overflow-hidden" style={{ minHeight: "670px" }}>
         {/* Right: food image */}
         <div className="absolute inset-y-0 right-0 w-[47%] transition-opacity duration-500" style={{ opacity: slideAnim ? 1 : 0 }}>
@@ -347,7 +402,6 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
               ONE TRUSTED STANDARD. TWO CLEAR OFFERS.
             </p>
             <div className="flex items-center gap-4">
-              {/* Progress track */}
               <div className="relative h-[2px] w-[240px] bg-[#1A1A1A]/15 rounded-full overflow-hidden">
                 <div
                   className="absolute left-0 top-0 h-full bg-[#F5B300] rounded-full transition-all duration-300"
@@ -358,8 +412,6 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 0{slide + 1} / 0{SLIDES.length}
               </span>
               <span className="text-[#7A7A75] text-[11px]" style={{ fontFamily: "Inter, sans-serif" }}>AUTO 07s</span>
-
-              {/* Nav buttons — placed at bottom-right of the hero (absolute) */}
               <div className="flex gap-2 ml-auto">
                 <button
                   onClick={goPrev}
@@ -373,61 +425,6 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 >
                   →
                 </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 02 THE STANDARD BEHIND EVERY MEAL ── */}
-      <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "590px" }}>
-        <div className="flex flex-col lg:flex-row" style={{ minHeight: "590px" }}>
-
-          {/* Left text */}
-          <div className="flex-1 px-14 sm:px-16 py-16 sm:py-20 flex flex-col justify-between">
-            <div>
-              {/* Number + tag row */}
-              <div className="flex items-baseline gap-10 mb-10">
-                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
-                <span className="text-[#F5B300] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>THE PARENT BRAND</span>
-              </div>
-
-              {/* Headline */}
-              <h2 className="font-display font-bold text-white mb-8" style={{ fontSize: "clamp(40px, 5vw, 63px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
-                <span className="block">THE STANDARD</span>
-                <span className="block">BEHIND EVERY</span>
-                <span className="block">MEAL.</span>
-              </h2>
-
-              {/* Body */}
-              <p className="text-white leading-[1.48] mb-8 max-w-[480px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
-                Performance Meals sets the purpose, quality standard and experience behind everything we offer.
-              </p>
-
-              <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em]" style={{ fontFamily: "Inter, sans-serif" }}>
-                PRINCIPLED  •  GROUNDED
-              </p>
-            </div>
-          </div>
-
-          {/* Right image + pillars */}
-          <div className="relative lg:w-[55%] flex-shrink-0" style={{ minHeight: "400px" }}>
-            <img src={imgChef} alt="Chef preparing meals" className="w-full h-full object-cover" style={{ minHeight: "400px" }} />
-
-            {/* Dark overlay band */}
-            <div className="absolute bottom-0 left-0 right-0 bg-[rgba(26,26,26,0.90)] px-8 py-8">
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { num: "01", title: "CHEF-LED RECIPES", sub: "Craft-led food." },
-                  { num: "02", title: "CLEAR NUTRITION", sub: "Visible macros & ingredients." },
-                  { num: "03", title: "QUALITY CONTROL", sub: "Kitchen to doorstep." },
-                ].map((p) => (
-                  <div key={p.num}>
-                    <p className="text-[#F5B300] text-[10px] tracking-[0.01em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>{p.num}</p>
-                    <p className="text-white text-[13px] font-medium leading-[1.1] mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>{p.title}</p>
-                    <p className="text-[#C2C2BA] text-[11px] leading-[1.35]" style={{ fontFamily: "Inter, sans-serif" }}>{p.sub}</p>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
