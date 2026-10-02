@@ -282,7 +282,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
               {s.headline.map((line, i) => <span key={i} className="block">{line}</span>)}
             </h1>
             <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: slideAnim ? 1 : 0, transition: "opacity 0.5s ease 0.1s" }}>{s.sub}</p>
-            <div className="flex flex-wrap gap-4 pl-10" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
+            <div className="flex flex-wrap gap-6 pl-16" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
               <button
                 onClick={() => navigate("ready-series")}
                 className="group relative h-14 px-9 bg-[#1A1A1A] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(26,26,26,0.35)]"
