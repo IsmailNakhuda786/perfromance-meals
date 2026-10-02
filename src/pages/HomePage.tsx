@@ -283,8 +283,22 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             </h1>
             <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: slideAnim ? 1 : 0, transition: "opacity 0.5s ease 0.1s" }}>{s.sub}</p>
             <div className="flex flex-wrap gap-4 pl-10" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
-              <button onClick={() => navigate("ready-series")} className="h-14 px-9 bg-[#1A1A1A] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full hover:bg-[#333] transition-colors shadow-md" style={{ fontFamily: "Inter, sans-serif" }}>BROWSE READY SERIES</button>
-              <button onClick={() => navigateToWizard?.()} className="h-14 px-9 bg-[#E85D04] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full hover:bg-[#c94e00] transition-colors shadow-md" style={{ fontFamily: "Inter, sans-serif" }}>EXPLORE MEAL PLAN</button>
+              <button
+                onClick={() => navigate("ready-series")}
+                className="group relative h-14 px-9 bg-[#1A1A1A] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(26,26,26,0.35)]"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                <span className="relative">BROWSE READY SERIES</span>
+              </button>
+              <button
+                onClick={() => navigateToWizard?.()}
+                className="group relative h-14 px-9 bg-[#E85D04] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(232,93,4,0.45)]"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                <span className="relative">EXPLORE MEAL PLAN</span>
+              </button>
             </div>
           </div>
           <div className="mt-14 flex flex-col gap-4" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.8s ease 0.6s" }}>
