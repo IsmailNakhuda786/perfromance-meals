@@ -103,7 +103,7 @@ function useCountUp(target: number, active: boolean, duration = 1200) {
 }
 
 function StatItem({ target, suffix, label, active, delay }: { target: number; suffix: string; label: string; active: boolean; delay: number }) {
-  const val = useCountUp(target, active, 1400);
+  const val = useCountUp(target, active, 1800);
   const display = target >= 1000 ? val.toLocaleString() : String(val);
   return (
     <div
@@ -119,16 +119,22 @@ function StatItem({ target, suffix, label, active, delay }: { target: number; su
 }
 
 function StatsBridge() {
+  const [cycle, setCycle] = useState(0);
   const [active, setActive] = useState(false);
   useEffect(() => {
-    const id = setTimeout(() => setActive(true), 300);
-    return () => clearTimeout(id);
-  }, []);
+    setActive(false);
+    const onId = setTimeout(() => setActive(true), 120);
+    const offId = setTimeout(() => {
+      setActive(false);
+      setTimeout(() => setCycle(c => c + 1), 400);
+    }, 5000);
+    return () => { clearTimeout(onId); clearTimeout(offId); };
+  }, [cycle]);
   return (
     <div className="bg-[#F5B300] py-10 px-8 sm:px-16">
       <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0">
         {STATS.map((s, i) => (
-          <StatItem key={i} {...s} active={active} delay={i * 110} />
+          <StatItem key={`${cycle}-${i}`} {...s} active={active} delay={i * 130} />
         ))}
       </div>
     </div>
