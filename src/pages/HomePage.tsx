@@ -8,6 +8,57 @@ const imgChef = "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=
 const imgReady   = "/d006a.png";
 const imgMeal    = "/98c55.png";
 
+/* ─── Shatter image grid ─────────────────────────────────── */
+const COLS = 5;
+const ROWS = 4;
+const CELL_COUNT = COLS * ROWS;
+
+// Pre-compute stable scatter vectors for each cell (deterministic, not random per render)
+const CELL_CONFIGS = Array.from({ length: CELL_COUNT }, (_, i) => {
+  const col = i % COLS;
+  const row = Math.floor(i / COLS);
+  const cx = (COLS - 1) / 2;
+  const cy = (ROWS - 1) / 2;
+  const dx = (col - cx) * 90 + (i % 3 === 0 ? 30 : -20);
+  const dy = (row - cy) * 80 + (i % 2 === 0 ? 20 : -25);
+  const rot = ((i * 37) % 40) - 20;
+  const delay = (col + row) * 28;
+  const enterDelay = ((COLS - 1 - col) + (ROWS - 1 - row)) * 22;
+  return { col, row, dx, dy, rot, delay, enterDelay };
+});
+
+function ShatterImage({ src, phase }: { src: string; phase: "idle" | "exit" | "enter" }) {
+  return (
+    <div className="absolute inset-0" style={{ display: "grid", gridTemplateColumns: `repeat(${COLS}, 1fr)`, gridTemplateRows: `repeat(${ROWS}, 1fr)` }}>
+      {CELL_CONFIGS.map(({ col, row, dx, dy, rot, delay, enterDelay }, i) => {
+        const isExit  = phase === "exit";
+        const isEnter = phase === "enter";
+        const transDelay = isExit ? delay : isEnter ? enterDelay : 0;
+        const transform = isExit
+          ? `translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(0.6)`
+          : isEnter
+          ? `translate(${-dx * 0.7}px, ${-dy * 0.7}px) rotate(${-rot * 0.6}deg) scale(0.75)`
+          : "translate(0,0) rotate(0deg) scale(1)";
+        const opacity = (isExit || isEnter) ? 0 : 1;
+
+        return (
+          <div key={i} style={{ overflow: "hidden", transform, opacity, transition: `transform 520ms cubic-bezier(0.4,0,0.2,1) ${transDelay}ms, opacity 420ms ease ${transDelay}ms` }}>
+            <div style={{
+              width: `${COLS * 100}%`,
+              height: `${ROWS * 100}%`,
+              marginLeft: `-${col * 100}%`,
+              marginTop:  `-${row * 100}%`,
+              backgroundImage: `url(${src})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 interface Props {
   navigate: (page: Page) => void;
   navigateToWizard?: (plan?: string) => void;
@@ -240,20 +291,29 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
 /* ─── Main ───────────────────────────────────────────────── */
 export default function HomePage({ navigate, navigateToWizard }: Props) {
   const [slide, setSlide] = useState(0);
-  const [prevSlide, setPrevSlide] = useState<number | null>(null);
-  const [transitioning, setTransitioning] = useState(false);
+  const [nextSlide, setNextSlide] = useState<number | null>(null);
+  const [phase, setPhase] = useState<"idle" | "exit" | "enter">("idle");
   const [heroVisible, setHeroVisible] = useState(false);
   const brandsRef = useRef<HTMLDivElement>(null);
   const [brandsVisible, setBrandsVisible] = useState(false);
+  const busy = useRef(false);
 
   useEffect(() => { const t = setTimeout(() => setHeroVisible(true), 80); return () => clearTimeout(t); }, []);
 
   const changeSlide = (next: number) => {
-    if (transitioning) return;
-    setPrevSlide(slide);
-    setTransitioning(true);
-    setSlide(next);
-    setTimeout(() => { setPrevSlide(null); setTransitioning(false); }, 700);
+    if (busy.current) return;
+    busy.current = true;
+    setNextSlide(next);
+    setPhase("exit");                          // shatter current image out
+    setTimeout(() => {
+      setSlide(next);
+      setNextSlide(null);
+      setPhase("enter");                       // new image assembles in
+      setTimeout(() => {
+        setPhase("idle");
+        busy.current = false;
+      }, 700);
+    }, 520);                                   // wait for exit to finish
   };
 
   /* Auto-advance carousel */
@@ -261,10 +321,8 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
     const t = setInterval(() => {
       setSlide((s) => {
         const next = (s + 1) % SLIDES.length;
-        setPrevSlide(s);
-        setTransitioning(true);
-        setTimeout(() => { setPrevSlide(null); setTransitioning(false); }, 700);
-        return next;
+        changeSlide(next);
+        return s;
       });
     }, 5000);
     return () => clearInterval(t);
@@ -289,26 +347,20 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       {/* ── CAROUSEL HERO ── */}
       <section className="relative bg-white overflow-hidden" style={{ minHeight: "670px" }}>
 
-        {/* Outgoing image — fades out */}
-        {prevSlide !== null && (
-          <div className="absolute inset-y-0 right-0 w-[47%]" style={{ opacity: 0, transition: "opacity 0.7s ease" }}>
-            <img src={SLIDES[prevSlide].img} alt="" className="w-full h-full object-cover" />
-          </div>
-        )}
-        {/* Incoming image — fades in */}
-        <div className="absolute inset-y-0 right-0 w-[47%]" style={{ opacity: transitioning ? 0 : 1, transition: "opacity 0.7s ease" }}>
-          <img src={s.img} alt="" className="w-full h-full object-cover" />
+        {/* Shatter image panel */}
+        <div className="absolute inset-y-0 right-0 w-[47%] overflow-hidden">
+          <ShatterImage src={s.img} phase={phase} />
         </div>
 
         <div className="absolute inset-y-0 right-[47%] w-5 bg-[#F5B300] z-10" />
         <div className="relative z-10 max-w-none px-14 sm:px-16 py-14 sm:py-20 flex flex-col justify-between" style={{ minHeight: "670px", maxWidth: "53%" }}>
           <div>
             <p className="text-[#1A1A1A] text-[12px] font-medium tracking-[0.06em] mb-10" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.6s ease", fontFamily: "Inter, sans-serif" }}>{s.eyebrow}</p>
-            <h1 className="font-display font-bold leading-[0.84] mb-8" style={{ fontSize: "clamp(48px, 6.5vw, 84px)", letterSpacing: "-0.03em", color: "#1A1A1A", opacity: transitioning ? 0 : 1, transform: transitioning ? "translateY(10px)" : "none", transition: "opacity 0.6s ease, transform 0.6s ease" }}>
+            <h1 className="font-display font-bold leading-[0.84] mb-8" style={{ fontSize: "clamp(48px, 6.5vw, 84px)", letterSpacing: "-0.03em", color: "#1A1A1A", opacity: phase === "exit" ? 0 : 1, transform: phase === "exit" ? "translateY(10px)" : "none", transition: "opacity 0.5s ease, transform 0.5s ease" }}>
               {s.headline.map((line, i) => <span key={i} className="block">{line}</span>)}
             </h1>
-            <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: transitioning ? 0 : 1, transition: "opacity 0.6s ease 0.08s" }}>{s.sub}</p>
-            <div className="flex flex-wrap gap-6 pl-16" style={{ opacity: heroVisible && !transitioning ? 1 : heroVisible ? 0.6 : 0, transition: "opacity 0.6s ease 0.15s" }}>
+            <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: phase === "exit" ? 0 : 1, transition: "opacity 0.5s ease 0.08s" }}>{s.sub}</p>
+            <div className="flex flex-wrap gap-6 pl-16" style={{ opacity: heroVisible ? (phase === "exit" ? 0.4 : 1) : 0, transition: "opacity 0.5s ease 0.15s" }}>
               <button
                 onClick={() => s.ctaPrimary.action === "ready-series" ? navigate("ready-series") : navigateToWizard?.()}
                 className="group relative h-14 px-9 bg-[#1A1A1A] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(26,26,26,0.35)]"
