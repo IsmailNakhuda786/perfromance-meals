@@ -544,25 +544,25 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
             {/* Ready Series card */}
-            <div className="bg-[#1A1A1A] overflow-hidden flex" style={{ minHeight: "264px" }}>
-              <div className="w-[270px] flex-shrink-0 relative">
-                <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover" style={{ minHeight: "264px" }} />
+            <div className="bg-[#1A1A1A] overflow-hidden flex" style={{ minHeight: "420px" }}>
+              <div className="w-[42%] flex-shrink-0 relative">
+                <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover absolute inset-0" />
               </div>
-              <div className="w-2 flex-shrink-0 bg-[#F5B300]" />
-              <div className="flex-1 px-8 py-8 flex flex-col justify-between">
+              <div className="w-[3px] flex-shrink-0 bg-[#F5B300]" />
+              <div className="flex-1 px-10 py-10 flex flex-col justify-between">
                 <div>
-                  <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>READY SERIES</p>
-                  <h3 className="font-display font-bold text-white mb-4" style={{ fontSize: "30px", lineHeight: 0.95, letterSpacing: "-0.012em" }}>
+                  <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.06em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>READY SERIES</p>
+                  <h3 className="font-display font-bold text-white mb-5" style={{ fontSize: "clamp(34px, 3.2vw, 48px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
                     <span className="block">EVERYDAY</span>
                     <span className="block">MOMENTUM.</span>
                   </h3>
-                  <p className="text-white leading-[1.42]" style={{ fontSize: "13px", fontFamily: "Inter, sans-serif" }}>
+                  <p className="text-white/70 leading-[1.5]" style={{ fontSize: "15px", fontFamily: "Inter, sans-serif" }}>
                     Frozen convenience for changing schedules. Fast, flexible and dependable.
                   </p>
                 </div>
                 <button
                   onClick={() => navigate("ready-series")}
-                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-white transition-all duration-300 mt-6 pt-5 border-t border-white/15"
+                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-white transition-all duration-300 pt-6 border-t border-white/15"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   <span className="relative pb-[3px] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-[#F5B300] after:transition-all after:duration-300 group-hover:after:w-full group-hover:text-[#F5B300]">
@@ -574,25 +574,25 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             </div>
 
             {/* Meal Plan card */}
-            <div className="bg-white overflow-hidden flex" style={{ minHeight: "264px" }}>
-              <div className="w-[286px] flex-shrink-0 relative">
-                <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover" style={{ minHeight: "264px" }} />
+            <div className="bg-white overflow-hidden flex" style={{ minHeight: "420px" }}>
+              <div className="w-[42%] flex-shrink-0 relative">
+                <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover absolute inset-0" />
               </div>
-              <div className="w-2 flex-shrink-0 bg-[#E85D04]" />
-              <div className="flex-1 px-8 py-8 flex flex-col justify-between">
+              <div className="w-[3px] flex-shrink-0 bg-[#E85D04]" />
+              <div className="flex-1 px-10 py-10 flex flex-col justify-between">
                 <div>
-                  <p className="text-[#E85D04] text-[11px] font-medium tracking-[0.04em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>MEAL PLAN</p>
-                  <h3 className="font-display font-bold text-[#1A1A1A] mb-4" style={{ fontSize: "30px", lineHeight: 0.95, letterSpacing: "-0.012em" }}>
+                  <p className="text-[#E85D04] text-[11px] font-medium tracking-[0.06em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>MEAL PLAN</p>
+                  <h3 className="font-display font-bold text-[#1A1A1A] mb-5" style={{ fontSize: "clamp(34px, 3.2vw, 48px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
                     <span className="block">BOUTIQUE</span>
                     <span className="block">PROGRESS.</span>
                   </h3>
-                  <p className="text-[#1A1A1A] leading-[1.42]" style={{ fontSize: "13px", fontFamily: "Inter, sans-serif" }}>
+                  <p className="text-[#1A1A1A]/60 leading-[1.5]" style={{ fontSize: "15px", fontFamily: "Inter, sans-serif" }}>
                     Fresh structure, personal guidance and support around a clear goal.
                   </p>
                 </div>
                 <button
                   onClick={() => navigateToWizard?.()}
-                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-[#1A1A1A] transition-all duration-300 mt-6 pt-5 border-t border-[#1A1A1A]/12"
+                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-[#1A1A1A] transition-all duration-300 pt-6 border-t border-[#1A1A1A]/12"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   <span className="relative pb-[3px] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-[#E85D04] after:transition-all after:duration-300 group-hover:after:w-full group-hover:text-[#E85D04]">
