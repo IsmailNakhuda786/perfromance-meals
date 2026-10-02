@@ -20,10 +20,8 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
         <nav className="flex flex-wrap gap-x-7 gap-y-2">
           {[
             { label: "Ready Series", action: () => navigate("ready-series") },
-            { label: "Ready Series Subscription", action: () => navigate("ready-series") },
             { label: "Meal Plans", action: () => navigate("meal-plan-landing") },
             { label: "About Us", action: () => navigate("about") },
-            { label: "My Account", action: () => navigate("account") },
           ].map((l) => (
             <button key={l.label} onClick={l.action}
               className="text-[11px] sm:text-[12px] text-white/60 hover:text-[#F5B300] transition-colors tracking-wide whitespace-nowrap">
