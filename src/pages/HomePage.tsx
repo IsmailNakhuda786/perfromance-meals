@@ -342,7 +342,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover" style={{ minHeight: "264px" }} />
               </div>
               <div className="w-2 flex-shrink-0 bg-[#F5B300]" />
-              <div className="flex-1 px-8 py-6 flex flex-col justify-between">
+              <div className="flex-1 px-8 py-8 flex flex-col justify-between">
                 <div>
                   <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>READY SERIES</p>
                   <h3 className="font-display font-bold text-white mb-4" style={{ fontSize: "30px", lineHeight: 0.95, letterSpacing: "-0.012em" }}>
@@ -355,7 +355,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 </div>
                 <button
                   onClick={() => navigate("ready-series")}
-                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-white transition-all duration-300"
+                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-white transition-all duration-300 mt-6 pt-5 border-t border-white/15"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   <span className="relative pb-[3px] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-[#F5B300] after:transition-all after:duration-300 group-hover:after:w-full group-hover:text-[#F5B300]">
@@ -372,7 +372,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover" style={{ minHeight: "264px" }} />
               </div>
               <div className="w-2 flex-shrink-0 bg-[#E85D04]" />
-              <div className="flex-1 px-8 py-6 flex flex-col justify-between">
+              <div className="flex-1 px-8 py-8 flex flex-col justify-between">
                 <div>
                   <p className="text-[#E85D04] text-[11px] font-medium tracking-[0.04em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>MEAL PLAN</p>
                   <h3 className="font-display font-bold text-[#1A1A1A] mb-4" style={{ fontSize: "30px", lineHeight: 0.95, letterSpacing: "-0.012em" }}>
@@ -385,7 +385,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
                 </div>
                 <button
                   onClick={() => navigateToWizard?.()}
-                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-[#1A1A1A] transition-all duration-300"
+                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-[#1A1A1A] transition-all duration-300 mt-6 pt-5 border-t border-[#1A1A1A]/12"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   <span className="relative pb-[3px] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-[#E85D04] after:transition-all after:duration-300 group-hover:after:w-full group-hover:text-[#E85D04]">
