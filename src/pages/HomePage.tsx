@@ -75,6 +75,69 @@ function ShatterImage({ src, phase }: { src: string; phase: ShatterPhase }) {
   );
 }
 
+/* ─── Stats bridge ───────────────────────────────────────── */
+const STATS = [
+  { target: 8400, suffix: "+", label: "ACTIVE CUSTOMERS" },
+  { target: 40,   suffix: "+", label: "READY MEALS" },
+  { target: 3,    suffix: " min", label: "READY TO EAT" },
+  { target: 2,    suffix: "",   label: "MAIN JOURNEYS" },
+];
+
+function useCountUp(target: number, active: boolean, duration = 1200) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    const start = performance.now();
+    let raf: number;
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      setVal(Math.round(ease * target));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [active, target, duration]);
+  return val;
+}
+
+function StatItem({ target, suffix, label, active, delay }: { target: number; suffix: string; label: string; active: boolean; delay: number }) {
+  const val = useCountUp(target, active, 1400);
+  const display = target >= 1000 ? val.toLocaleString() : String(val);
+  return (
+    <div
+      className="flex flex-col gap-1 md:border-l md:first:border-l-0 border-[#1A1A1A]/15 md:pl-10 md:first:pl-0"
+      style={{ opacity: active ? 1 : 0, transform: active ? "translateY(0)" : "translateY(18px)", transition: `opacity 0.55s ease ${delay}ms, transform 0.55s ease ${delay}ms` }}
+    >
+      <span className="font-display font-extrabold text-[#1A1A1A] leading-none tabular-nums" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
+        {display}{suffix}
+      </span>
+      <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#1A1A1A]/60">{label}</span>
+    </div>
+  );
+}
+
+function StatsBridge() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setActive(true); obs.disconnect(); } }, { threshold: 0.3 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className="bg-[#F5B300] py-10 px-8 sm:px-16">
+      <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0">
+        {STATS.map((s, i) => (
+          <StatItem key={i} {...s} active={active} delay={i * 90} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 interface Props {
   navigate: (page: Page) => void;
   navigateToWizard?: (plan?: string) => void;
@@ -412,21 +475,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       </section>
 
       {/* ── STATS BRIDGE ── */}
-      <div className="bg-[#F5B300] py-10 px-8 sm:px-16">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0">
-          {[
-            { v: "8,400+", l: "ACTIVE CUSTOMERS" },
-            { v: "40+",    l: "READY MEALS" },
-            { v: "3 min",  l: "READY TO EAT" },
-            { v: "2",      l: "MAIN JOURNEYS" },
-          ].map(({ v, l }, i) => (
-            <div key={i} className="flex flex-col gap-1 md:border-l md:first:border-l-0 border-[#1A1A1A]/15 md:pl-10 md:first:pl-0">
-              <span className="font-display font-extrabold text-[#1A1A1A] leading-none" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>{v}</span>
-              <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#1A1A1A]/60">{l}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <StatsBridge />
 
       {/* ── 01 THE STANDARD BEHIND EVERY MEAL ── */}
       <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "590px" }}>
