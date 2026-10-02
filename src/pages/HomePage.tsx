@@ -110,7 +110,7 @@ function StatItem({ target, suffix, label, active, delay }: { target: number; su
       className="flex flex-col gap-1 md:border-l md:first:border-l-0 border-[#1A1A1A]/15 md:pl-10 md:first:pl-0"
       style={{ opacity: active ? 1 : 0, transform: active ? "translateY(0)" : "translateY(18px)", transition: `opacity 0.55s ease ${delay}ms, transform 0.55s ease ${delay}ms` }}
     >
-      <span className="font-display font-extrabold text-[#1A1A1A] leading-none tabular-nums" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>
+      <span className="font-display font-extrabold text-[#1A1A1A] leading-none tabular-nums" style={{ fontSize: "clamp(24px, 2.8vw, 38px)" }}>
         {display}{suffix}
       </span>
       <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#1A1A1A]/60">{label}</span>
@@ -131,7 +131,7 @@ function StatsBridge() {
     return () => { clearTimeout(onId); clearTimeout(offId); };
   }, [cycle]);
   return (
-    <div className="bg-[#F5B300] py-10 px-8 sm:px-16">
+    <div className="bg-[#F5B300] py-8 px-8 sm:px-16">
       <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0">
         {STATS.map((s, i) => (
           <StatItem key={`${cycle}-${i}`} {...s} active={active} delay={i * 130} />
@@ -428,7 +428,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
     <div className="bg-white text-[#1A1A1A] overflow-x-hidden">
 
       {/* ── CAROUSEL HERO ── */}
-      <section className="relative bg-white overflow-hidden" style={{ minHeight: "670px" }}>
+      <section className="relative bg-white overflow-hidden" style={{ minHeight: "560px" }}>
 
         {/* Shatter image panel */}
         <div className="absolute inset-y-0 right-0 w-[47%] overflow-hidden">
@@ -436,13 +436,13 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         </div>
 
         <div className="absolute inset-y-0 right-[47%] w-5 bg-[#F5B300] z-10" />
-        <div className="relative z-10 max-w-none px-14 sm:px-16 py-14 sm:py-20 flex flex-col justify-between" style={{ minHeight: "670px", maxWidth: "53%" }}>
+        <div className="relative z-10 max-w-none px-14 sm:px-16 py-10 sm:py-14 flex flex-col justify-between" style={{ minHeight: "560px", maxWidth: "53%" }}>
           <div>
             <p className="text-[#1A1A1A] text-[12px] font-medium tracking-[0.06em] mb-10" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.6s ease", fontFamily: "Inter, sans-serif" }}>{s.eyebrow}</p>
-            <h1 className="font-display font-bold leading-[0.84] mb-8" style={{ fontSize: "clamp(48px, 6.5vw, 84px)", letterSpacing: "-0.03em", color: "#1A1A1A", opacity: phase === "exit" ? 0 : 1, transform: phase === "exit" ? "translateY(10px)" : "none", transition: "opacity 0.5s ease, transform 0.5s ease" }}>
+            <h1 className="font-display font-bold leading-[0.84] mb-6" style={{ fontSize: "clamp(36px, 4.8vw, 64px)", letterSpacing: "-0.03em", color: "#1A1A1A", opacity: phase === "exit" ? 0 : 1, transform: phase === "exit" ? "translateY(10px)" : "none", transition: "opacity 0.5s ease, transform 0.5s ease" }}>
               {s.headline.map((line, i) => <span key={i} className="block">{line}</span>)}
             </h1>
-            <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: phase === "exit" ? 0 : 1, transition: "opacity 0.5s ease 0.08s" }}>{s.sub}</p>
+            <p className="text-[#1A1A1A] leading-[1.45] mb-8 max-w-[440px]" style={{ fontSize: "clamp(14px, 1.1vw, 16px)", fontFamily: "Inter, sans-serif", opacity: phase === "exit" ? 0 : 1, transition: "opacity 0.5s ease 0.08s" }}>{s.sub}</p>
             <div className="flex flex-wrap gap-6 pl-16" style={{ opacity: heroVisible ? (phase === "exit" ? 0.4 : 1) : 0, transition: "opacity 0.5s ease 0.15s" }}>
               <button
                 onClick={() => s.ctaPrimary.action === "ready-series" ? navigate("ready-series") : navigateToWizard?.()}
@@ -481,20 +481,20 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       <StatsBridge />
 
       {/* ── 01 THE STANDARD BEHIND EVERY MEAL ── */}
-      <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "590px" }}>
-        <div className="flex flex-col lg:flex-row" style={{ minHeight: "590px" }}>
-          <div className="flex-1 px-14 sm:px-16 py-16 sm:py-20 flex flex-col justify-between">
+      <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "480px" }}>
+        <div className="flex flex-col lg:flex-row" style={{ minHeight: "480px" }}>
+          <div className="flex-1 px-10 sm:px-14 py-12 sm:py-16 flex flex-col justify-between">
             <div>
-              <div className="flex items-baseline gap-10 mb-10">
-                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
+              <div className="flex items-baseline gap-8 mb-8">
+                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "52px", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
                 <span className="text-[#F5B300] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>THE PARENT BRAND</span>
               </div>
-              <h2 className="font-display font-bold text-white mb-8" style={{ fontSize: "clamp(40px, 5vw, 63px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
+              <h2 className="font-display font-bold text-white mb-6" style={{ fontSize: "clamp(30px, 3.6vw, 48px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
                 <span className="block">THE STANDARD</span>
                 <span className="block">BEHIND EVERY</span>
                 <span className="block">MEAL.</span>
               </h2>
-              <p className="text-white leading-[1.48] mb-8 max-w-[480px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
+              <p className="text-white leading-[1.48] mb-6 max-w-[420px]" style={{ fontSize: "14px", fontFamily: "Inter, sans-serif" }}>
                 Performance Meals sets the purpose, quality standard and experience behind everything we offer.
               </p>
               <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em]" style={{ fontFamily: "Inter, sans-serif" }}>PRINCIPLED  •  GROUNDED</p>
@@ -522,21 +522,21 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       </section>
 
       {/* ── 02 CHOOSE HOW PERFORMANCE MEALS WORKS FOR YOU ── */}
-      <section className="bg-[#F7F4EB] overflow-hidden py-16 sm:py-20 px-6 sm:px-10 lg:px-16">
+      <section className="bg-[#F7F4EB] overflow-hidden py-12 sm:py-16 px-6 sm:px-10 lg:px-16">
         <div className="max-w-[1380px] mx-auto">
           {/* Header */}
-          <div className="flex items-baseline gap-10 mb-6">
-            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>02</span>
+          <div className="flex items-baseline gap-8 mb-5">
+            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "52px", lineHeight: 1, letterSpacing: "-0.03em" }}>02</span>
             <span className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>ONE STANDARD. TWO DISTINCT EXPERIENCES.</span>
           </div>
 
-          <h2 className="font-display font-bold text-[#1A1A1A] mb-5" style={{ fontSize: "clamp(36px, 4.5vw, 57px)", lineHeight: 0.92, letterSpacing: "-0.021em" }}>
+          <h2 className="font-display font-bold text-[#1A1A1A] mb-4" style={{ fontSize: "clamp(28px, 3.2vw, 42px)", lineHeight: 0.92, letterSpacing: "-0.021em" }}>
             <span className="block">CHOOSE HOW</span>
             <span className="block">PERFORMANCE MEALS</span>
             <span className="block">WORKS FOR YOU.</span>
           </h2>
 
-          <p className="text-[#7A7A75] leading-[1.45] mb-12 max-w-[500px]" style={{ fontSize: "16px", fontFamily: "Inter, sans-serif" }}>
+          <p className="text-[#7A7A75] leading-[1.45] mb-8 max-w-[440px]" style={{ fontSize: "14px", fontFamily: "Inter, sans-serif" }}>
             Same belief. Same quality standard. Different jobs for different routines.
           </p>
 
@@ -544,15 +544,15 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {/* Ready Series card */}
-            <div className="group bg-[#1A1A1A] overflow-hidden flex cursor-pointer" style={{ minHeight: "420px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.28)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
+            <div className="group bg-[#1A1A1A] overflow-hidden flex cursor-pointer" style={{ minHeight: "340px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.28)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
               <div className="w-[42%] flex-shrink-0 relative overflow-hidden">
                 <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
               </div>
               <div className="flex-shrink-0 bg-[#F5B300] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
-              <div className="flex-1 px-10 py-10 flex flex-col justify-between">
+              <div className="flex-1 px-8 py-8 flex flex-col justify-between">
                 <div>
                   <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.06em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>READY SERIES</p>
-                  <h3 className="font-display font-bold text-white mb-5" style={{ fontSize: "clamp(34px, 3.2vw, 48px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
+                  <h3 className="font-display font-bold text-white mb-5" style={{ fontSize: "clamp(26px, 2.4vw, 36px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
                     <span className="block">EVERYDAY</span>
                     <span className="block">MOMENTUM.</span>
                   </h3>
@@ -574,15 +574,15 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             </div>
 
             {/* Meal Plan card */}
-            <div className="group bg-white overflow-hidden flex cursor-pointer" style={{ minHeight: "420px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.14)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
+            <div className="group bg-white overflow-hidden flex cursor-pointer" style={{ minHeight: "340px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.14)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
               <div className="w-[42%] flex-shrink-0 relative overflow-hidden">
                 <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
               </div>
               <div className="flex-shrink-0 bg-[#E85D04] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
-              <div className="flex-1 px-10 py-10 flex flex-col justify-between">
+              <div className="flex-1 px-8 py-8 flex flex-col justify-between">
                 <div>
                   <p className="text-[#E85D04] text-[11px] font-medium tracking-[0.06em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>MEAL PLAN</p>
-                  <h3 className="font-display font-bold text-[#1A1A1A] mb-5" style={{ fontSize: "clamp(34px, 3.2vw, 48px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
+                  <h3 className="font-display font-bold text-[#1A1A1A] mb-5" style={{ fontSize: "clamp(26px, 2.4vw, 36px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
                     <span className="block">BOUTIQUE</span>
                     <span className="block">PROGRESS.</span>
                   </h3>
