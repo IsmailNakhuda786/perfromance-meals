@@ -103,7 +103,10 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
     <section ref={brandsRef} className="overflow-hidden">
       <div className={`bg-white px-6 sm:px-10 pt-20 pb-10 transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
         <div className="max-w-[1200px] mx-auto">
-          <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-5">Our brand family</p>
+          <div className="flex items-baseline gap-10 mb-6">
+            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>03</span>
+            <span className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>OUR BRAND FAMILY</span>
+          </div>
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
             <h2 className="font-display text-[52px] sm:text-[72px] font-extrabold text-[#1A1A1A] leading-[0.88]">
               One Standard.<br /><span className="text-[#F5B300]">Two Experiences.</span>
