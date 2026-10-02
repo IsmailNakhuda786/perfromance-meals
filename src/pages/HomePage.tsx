@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import type { Page } from "@/data";
+
 import { PerformanceMealsLogo, MealPlanLogo, ReadySeriesLogo } from "@/components/Logos";
 
 const imgHero    = "/19606.png";
