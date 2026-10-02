@@ -541,7 +541,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
           </p>
 
           {/* Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {/* Ready Series card */}
             <div className="bg-[#1A1A1A] overflow-hidden flex" style={{ minHeight: "420px" }}>
