@@ -411,6 +411,23 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         </div>
       </section>
 
+      {/* ── STATS BRIDGE ── */}
+      <div className="bg-[#F5B300] py-10 px-8 sm:px-16">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0">
+          {[
+            { v: "8,400+", l: "ACTIVE CUSTOMERS" },
+            { v: "40+",    l: "READY MEALS" },
+            { v: "3 min",  l: "READY TO EAT" },
+            { v: "2",      l: "MAIN JOURNEYS" },
+          ].map(({ v, l }, i) => (
+            <div key={i} className="flex flex-col gap-1 md:border-l md:first:border-l-0 border-[#1A1A1A]/15 md:pl-10 md:first:pl-0">
+              <span className="font-display font-extrabold text-[#1A1A1A] leading-none" style={{ fontSize: "clamp(32px, 4vw, 52px)" }}>{v}</span>
+              <span className="font-mono text-[10px] tracking-[0.28em] uppercase text-[#1A1A1A]/60">{l}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── 01 THE STANDARD BEHIND EVERY MEAL ── */}
       <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "590px" }}>
         <div className="flex flex-col lg:flex-row" style={{ minHeight: "590px" }}>
