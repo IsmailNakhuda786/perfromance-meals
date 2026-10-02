@@ -4,6 +4,7 @@ import { PerformanceMealsLogo, MealPlanLogo, ReadySeriesLogo } from "@/component
 
 const imgHero    = "/19606.png";
 const imgKitchen = "/13da6.png";
+const imgChef = "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1200&h=590&fit=crop&auto=format";
 const imgReady   = "/d006a.png";
 const imgMeal    = "/98c55.png";
 
@@ -411,7 +412,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
 
           {/* Right image + pillars */}
           <div className="relative lg:w-[55%] flex-shrink-0" style={{ minHeight: "400px" }}>
-            <img src={imgKitchen} alt="Kitchen craft" className="w-full h-full object-cover" style={{ minHeight: "400px" }} />
+            <img src={imgChef} alt="Chef preparing meals" className="w-full h-full object-cover" style={{ minHeight: "400px" }} />
 
             {/* Dark overlay band */}
             <div className="absolute bottom-0 left-0 right-0 bg-[rgba(26,26,26,0.90)] px-8 py-8">
