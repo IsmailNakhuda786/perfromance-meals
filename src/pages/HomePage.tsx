@@ -58,20 +58,16 @@ function ShatterImage({ src, phase }: { src: string; phase: ShatterPhase }) {
         // background-size/position trick: scale image to span all cells, offset per cell
         return (
           <div key={i} style={{ overflow: "hidden", position: "relative", transform, opacity, transition }}>
-            <img
-              src={src}
-              alt=""
-              style={{
-                position: "absolute",
-                width: `${COLS * 100}%`,
-                height: `${ROWS * 100}%`,
-                left: `-${col * 100}%`,
-                top: `-${row * 100}%`,
-                objectFit: "cover",
-                objectPosition: "center",
-                display: "block",
-              }}
-            />
+            <div style={{
+              position: "absolute",
+              width: `${COLS * 100}%`,
+              height: `${ROWS * 100}%`,
+              left: `-${col * 100}%`,
+              top: `-${row * 100}%`,
+              backgroundImage: `url(${src})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }} />
           </div>
         );
       })}
