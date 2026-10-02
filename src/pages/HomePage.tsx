@@ -119,20 +119,16 @@ function StatItem({ target, suffix, label, active, delay }: { target: number; su
 }
 
 function StatsBridge() {
-  const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setActive(true); obs.disconnect(); } }, { threshold: 0.3 });
-    obs.observe(el);
-    return () => obs.disconnect();
+    const id = setTimeout(() => setActive(true), 300);
+    return () => clearTimeout(id);
   }, []);
   return (
-    <div ref={ref} className="bg-[#F5B300] py-10 px-8 sm:px-16">
+    <div className="bg-[#F5B300] py-10 px-8 sm:px-16">
       <div className="max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0">
         {STATS.map((s, i) => (
-          <StatItem key={i} {...s} active={active} delay={i * 90} />
+          <StatItem key={i} {...s} active={active} delay={i * 110} />
         ))}
       </div>
     </div>
