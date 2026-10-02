@@ -20,18 +20,24 @@ const SLIDES = [
     headline: ["NUTRITION", "THAT WORKS", "AS HARD", "AS YOU DO."],
     sub: "Exceptional meals and thoughtful support that make healthy eating easier every day.",
     img: imgHero,
+    ctaPrimary: { label: "BROWSE READY SERIES", action: "ready-series" as const },
+    ctaSecondary: { label: "EXPLORE MEAL PLAN", action: "meal-plan" as const },
   },
   {
     eyebrow: "PERFORMANCE MEALS / MEAL PLAN",
     headline: ["FRESH STRUCTURE,", "PERSONAL", "GUIDANCE,", "REAL RESULTS."],
     sub: "A structured fresh-meal plan with real check-ins and support around your goal.",
     img: imgMeal,
+    ctaPrimary: { label: "EXPLORE MEAL PLAN", action: "meal-plan" as const },
+    ctaSecondary: null,
   },
   {
     eyebrow: "PERFORMANCE MEALS / READY-SERIES",
     headline: ["FROZEN.", "MACRO-TRACKED.", "ZERO", "COMPROMISE."],
     sub: "40+ chef-prepared frozen meals for busy weeks. Fast, flexible, and dependable.",
     img: imgReady,
+    ctaPrimary: { label: "EXPLORE READY SERIES", action: "ready-series" as const },
+    ctaSecondary: null,
   },
 ];
 
@@ -284,21 +290,23 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             <p className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]" style={{ fontSize: "clamp(16px, 1.4vw, 20px)", fontFamily: "Inter, sans-serif", opacity: slideAnim ? 1 : 0, transition: "opacity 0.5s ease 0.1s" }}>{s.sub}</p>
             <div className="flex flex-wrap gap-6 pl-16" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
               <button
-                onClick={() => navigate("ready-series")}
+                onClick={() => s.ctaPrimary.action === "ready-series" ? navigate("ready-series") : navigateToWizard?.()}
                 className="group relative h-14 px-9 bg-[#1A1A1A] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(26,26,26,0.35)]"
                 style={{ fontFamily: "Inter, sans-serif" }}
               >
                 <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-                <span className="relative">BROWSE READY SERIES</span>
+                <span className="relative">{s.ctaPrimary.label}</span>
               </button>
-              <button
-                onClick={() => navigateToWizard?.()}
-                className="group relative h-14 px-9 bg-[#E85D04] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(232,93,4,0.45)]"
-                style={{ fontFamily: "Inter, sans-serif" }}
-              >
-                <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-                <span className="relative">EXPLORE MEAL PLAN</span>
-              </button>
+              {s.ctaSecondary && (
+                <button
+                  onClick={() => s.ctaSecondary!.action === "meal-plan" ? navigateToWizard?.() : navigate("ready-series")}
+                  className="group relative h-14 px-9 bg-[#E85D04] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(232,93,4,0.45)]"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                  <span className="relative">{s.ctaSecondary.label}</span>
+                </button>
+              )}
             </div>
           </div>
           <div className="mt-14 flex flex-col gap-4" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.8s ease 0.6s" }}>
@@ -314,12 +322,53 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         </div>
       </section>
 
-      {/* ── 01 CHOOSE HOW PERFORMANCE MEALS WORKS FOR YOU ── */}
+      {/* ── 01 THE STANDARD BEHIND EVERY MEAL ── */}
+      <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "590px" }}>
+        <div className="flex flex-col lg:flex-row" style={{ minHeight: "590px" }}>
+          <div className="flex-1 px-14 sm:px-16 py-16 sm:py-20 flex flex-col justify-between">
+            <div>
+              <div className="flex items-baseline gap-10 mb-10">
+                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
+                <span className="text-[#F5B300] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>THE PARENT BRAND</span>
+              </div>
+              <h2 className="font-display font-bold text-white mb-8" style={{ fontSize: "clamp(40px, 5vw, 63px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
+                <span className="block">THE STANDARD</span>
+                <span className="block">BEHIND EVERY</span>
+                <span className="block">MEAL.</span>
+              </h2>
+              <p className="text-white leading-[1.48] mb-8 max-w-[480px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
+                Performance Meals sets the purpose, quality standard and experience behind everything we offer.
+              </p>
+              <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em]" style={{ fontFamily: "Inter, sans-serif" }}>PRINCIPLED  •  GROUNDED</p>
+            </div>
+          </div>
+          <div className="relative lg:w-[55%] flex-shrink-0" style={{ minHeight: "400px" }}>
+            <img src={imgChef} alt="Chef preparing meals" className="w-full h-full object-cover" style={{ minHeight: "400px" }} />
+            <div className="absolute bottom-0 left-0 right-0 bg-[rgba(26,26,26,0.90)] px-8 py-8">
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { num: "01", title: "CHEF-LED RECIPES", sub: "Craft-led food." },
+                  { num: "02", title: "CLEAR NUTRITION", sub: "Visible macros & ingredients." },
+                  { num: "03", title: "QUALITY CONTROL", sub: "Kitchen to doorstep." },
+                ].map((p) => (
+                  <div key={p.num}>
+                    <p className="text-[#F5B300] text-[10px] tracking-[0.01em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>{p.num}</p>
+                    <p className="text-white text-[13px] font-medium leading-[1.1] mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>{p.title}</p>
+                    <p className="text-[#C2C2BA] text-[11px] leading-[1.35]" style={{ fontFamily: "Inter, sans-serif" }}>{p.sub}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 02 CHOOSE HOW PERFORMANCE MEALS WORKS FOR YOU ── */}
       <section className="bg-[#F7F4EB] overflow-hidden py-16 sm:py-20 px-6 sm:px-10 lg:px-16">
         <div className="max-w-[1380px] mx-auto">
           {/* Header */}
           <div className="flex items-baseline gap-10 mb-6">
-            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
+            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>02</span>
             <span className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>ONE STANDARD. TWO DISTINCT EXPERIENCES.</span>
           </div>
 
@@ -400,48 +449,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         </div>
       </section>
 
-      {/* ── 02 THE STANDARD BEHIND EVERY MEAL ── */}
-      <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "590px" }}>
-        <div className="flex flex-col lg:flex-row" style={{ minHeight: "590px" }}>
-          <div className="flex-1 px-14 sm:px-16 py-16 sm:py-20 flex flex-col justify-between">
-            <div>
-              <div className="flex items-baseline gap-10 mb-10">
-                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>02</span>
-                <span className="text-[#F5B300] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>THE PARENT BRAND</span>
-              </div>
-              <h2 className="font-display font-bold text-white mb-8" style={{ fontSize: "clamp(40px, 5vw, 63px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
-                <span className="block">THE STANDARD</span>
-                <span className="block">BEHIND EVERY</span>
-                <span className="block">MEAL.</span>
-              </h2>
-              <p className="text-white leading-[1.48] mb-8 max-w-[480px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
-                Performance Meals sets the purpose, quality standard and experience behind everything we offer.
-              </p>
-              <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em]" style={{ fontFamily: "Inter, sans-serif" }}>PRINCIPLED  •  GROUNDED</p>
-            </div>
-          </div>
-          <div className="relative lg:w-[55%] flex-shrink-0" style={{ minHeight: "400px" }}>
-            <img src={imgChef} alt="Chef preparing meals" className="w-full h-full object-cover" style={{ minHeight: "400px" }} />
-            <div className="absolute bottom-0 left-0 right-0 bg-[rgba(26,26,26,0.90)] px-8 py-8">
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { num: "01", title: "CHEF-LED RECIPES", sub: "Craft-led food." },
-                  { num: "02", title: "CLEAR NUTRITION", sub: "Visible macros & ingredients." },
-                  { num: "03", title: "QUALITY CONTROL", sub: "Kitchen to doorstep." },
-                ].map((p) => (
-                  <div key={p.num}>
-                    <p className="text-[#F5B300] text-[10px] tracking-[0.01em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>{p.num}</p>
-                    <p className="text-white text-[13px] font-medium leading-[1.1] mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>{p.title}</p>
-                    <p className="text-[#C2C2BA] text-[11px] leading-[1.35]" style={{ fontFamily: "Inter, sans-serif" }}>{p.sub}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── 03 BRAND FAMILY (unchanged) ── */}
+      {/* ── 03 BRAND FAMILY ── */}
       <BrandFamilySection brandsRef={brandsRef} brandsVisible={brandsVisible} navigate={navigate} />
 
       {/* ── 05 CONVENIENCE WITHOUT COMPROMISE ── */}

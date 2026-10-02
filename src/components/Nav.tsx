@@ -225,7 +225,6 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
               {[
                 { label: "Our Brands", action: () => go("home") },
                 { label: "About Us", action: () => go("about") },
-                { label: "How It Works", action: () => go("how-it-works") },
               ].map((l) => (
                 <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
               ))}
