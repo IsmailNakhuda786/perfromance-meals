@@ -544,11 +544,11 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {/* Ready Series card */}
-            <div className="bg-[#1A1A1A] overflow-hidden flex" style={{ minHeight: "420px" }}>
-              <div className="w-[42%] flex-shrink-0 relative">
-                <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover absolute inset-0" />
+            <div className="group bg-[#1A1A1A] overflow-hidden flex cursor-pointer" style={{ minHeight: "420px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.28)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
+              <div className="w-[42%] flex-shrink-0 relative overflow-hidden">
+                <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
               </div>
-              <div className="w-[3px] flex-shrink-0 bg-[#F5B300]" />
+              <div className="flex-shrink-0 bg-[#F5B300] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
               <div className="flex-1 px-10 py-10 flex flex-col justify-between">
                 <div>
                   <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.06em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>READY SERIES</p>
@@ -574,11 +574,11 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             </div>
 
             {/* Meal Plan card */}
-            <div className="bg-white overflow-hidden flex" style={{ minHeight: "420px" }}>
-              <div className="w-[42%] flex-shrink-0 relative">
-                <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover absolute inset-0" />
+            <div className="group bg-white overflow-hidden flex cursor-pointer" style={{ minHeight: "420px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.14)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
+              <div className="w-[42%] flex-shrink-0 relative overflow-hidden">
+                <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
               </div>
-              <div className="w-[3px] flex-shrink-0 bg-[#E85D04]" />
+              <div className="flex-shrink-0 bg-[#E85D04] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
               <div className="flex-1 px-10 py-10 flex flex-col justify-between">
                 <div>
                   <p className="text-[#E85D04] text-[11px] font-medium tracking-[0.06em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>MEAL PLAN</p>
