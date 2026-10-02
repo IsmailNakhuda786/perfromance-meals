@@ -2,191 +2,37 @@ import { useState, useEffect, useRef } from "react";
 import { Page } from "@/data";
 import { PerformanceMealsLogo, MealPlanLogo, ReadySeriesLogo } from "@/components/Logos";
 
+const imgHero    = "/19606.png";
+const imgKitchen = "/13da6.png";
+const imgReady   = "/d006a.png";
+const imgMeal    = "/98c55.png";
+
 interface Props {
   navigate: (page: Page) => void;
   navigateToWizard?: (plan?: string) => void;
 }
 
-function useReveal(threshold = 0.15) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); observer.disconnect(); } },
-      { threshold }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
-
-function useCounter(target: number, duration = 1400, active = false) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!active) return;
-    let start: number | null = null;
-    const step = (ts: number) => {
-      if (!start) start = ts;
-      const pct = Math.min((ts - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - pct, 3);
-      setCount(Math.floor(eased * target));
-      if (pct < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [active, target, duration]);
-  return count;
-}
-
-const MILESTONES = [
-  { year: "2019", short: "Founded", event: "Started by athletes who could not find food that supported how they trained. Built the kitchen they wished existed." },
-  { year: "2021", short: "Meal Plan launch", event: "Launched Singapore's first goal-led meal subscription with real personal check-ins — not just macros, but genuine support." },
-  { year: "2022", short: "Ready-Series", event: "Ready-Series launched for customers who wanted the same quality without a subscription. Zero compromise on the food." },
-  { year: "2024", short: "8,400+ customers", event: "Over 8,400 active customers. 40+ macro-tracked meals on the menu. Still made fresh daily. Still answering messages personally." },
+/* ─── Carousel slides ─────────────────────────────────────── */
+const SLIDES = [
+  {
+    eyebrow: "PERFORMANCE MEALS / SINGAPORE",
+    headline: ["NUTRITION", "THAT WORKS", "AS HARD", "AS YOU DO."],
+    sub: "Exceptional meals and thoughtful support that make healthy eating easier every day.",
+    img: imgHero,
+  },
+  {
+    eyebrow: "PERFORMANCE MEALS / MEAL PLAN",
+    headline: ["FRESH STRUCTURE,", "PERSONAL", "GUIDANCE,", "REAL RESULTS."],
+    sub: "A structured fresh-meal plan with real check-ins and support around your goal.",
+    img: imgMeal,
+  },
+  {
+    eyebrow: "PERFORMANCE MEALS / READY-SERIES",
+    headline: ["FROZEN.", "MACRO-TRACKED.", "ZERO", "COMPROMISE."],
+    sub: "40+ chef-prepared frozen meals for busy weeks. Fast, flexible, and dependable.",
+    img: imgReady,
+  },
 ];
-
-const STATS = [
-  { value: 8400, label: "Active customers" },
-  { value: 49,   label: "Avg rating",        display: "4.9 / 5" },
-  { value: 40,   label: "Macro-tracked meals" },
-  { value: 5,    label: "Years serving Singapore" },
-];
-
-const TESTIMONIALS = [
-  { name: "Jonathan C.", role: "6by60 programme · 12 weeks", text: "Down 9kg. The check-ins made the difference — it felt like having a coach, not just a meal service.", stars: 5 },
-  { name: "Mei Lin T.",  role: "Meal Plan · 6 months",       text: "Finally stopped guessing what to eat. The meals fit my training schedule and I actually look forward to them.", stars: 5 },
-  { name: "Ravi S.",     role: "Ready-Series customer",       text: "I travel a lot. Stocking the freezer with Ready-Series means I never fall off when life gets chaotic.", stars: 5 },
-];
-
-/* ─── Testimonials ───────────────────────────────────────── */
-const ALL_TESTIMONIALS = [
-  { name: "Jonathan C.", role: "6by60 programme · 12 weeks", text: "Down 9kg. The check-ins made the difference — it felt like having a coach, not just a meal service.", stars: 5, tag: "Meal Plan" },
-  { name: "Mei Lin T.",  role: "Meal Plan · 6 months",       text: "Finally stopped guessing what to eat. The meals fit my training schedule and I actually look forward to them.", stars: 5, tag: "Meal Plan" },
-  { name: "Ravi S.",     role: "Ready-Series customer",       text: "I travel a lot. Stocking the freezer with Ready-Series means I never fall off when life gets chaotic.", stars: 5, tag: "Ready-Series" },
-  { name: "Priya K.",    role: "Meal Plan · 3 months",        text: "Lost 6kg and actually kept it off. The food is genuinely delicious — I was shocked.", stars: 5, tag: "Meal Plan" },
-  { name: "Marcus T.",   role: "Ready-Series · 1 year",       text: "My whole family eats these now. Macro-tracked meals that actually taste like real food.", stars: 5, tag: "Ready-Series" },
-];
-
-function TestimonialsSection({ sectionRef, visible }: { sectionRef: React.RefObject<HTMLDivElement | null>; visible: boolean }) {
-  const [active, setActive] = useState(0);
-
-  const next = () => setActive((v) => (v + 1) % ALL_TESTIMONIALS.length);
-  const prev = () => setActive((v) => (v - 1 + ALL_TESTIMONIALS.length) % ALL_TESTIMONIALS.length);
-
-  const t = ALL_TESTIMONIALS[active];
-
-  return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-[#1A1A1A]">
-
-      {/* Big decorative quote mark */}
-      <div className="absolute top-0 left-0 font-display font-extrabold text-white select-none pointer-events-none leading-none"
-        style={{ fontSize: "clamp(200px, 30vw, 380px)", opacity: 0.03, lineHeight: 1, marginLeft: "-0.05em", marginTop: "-0.1em" }}>
-        "
-      </div>
-
-      {/* Yellow vertical stripe */}
-      <div className="absolute left-0 top-0 bottom-0 w-[5px] bg-[#F5B300]" />
-
-      <div className="max-w-[1200px] mx-auto px-6 sm:px-10 lg:px-16 py-20 sm:py-28">
-
-        {/* Top row — label + rating strip */}
-        <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-16 transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <div>
-            <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-3">Real results</p>
-            <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.9]">
-              8,400+ people.<br /><span className="text-[#F5B300]">Real stories.</span>
-            </h2>
-          </div>
-          {/* Aggregate rating badge */}
-          <div className="shrink-0 border border-white/10 px-7 py-5 flex flex-col items-center gap-1">
-            <div className="font-display text-[42px] font-extrabold text-[#F5B300] leading-none">4.9</div>
-            <div className="flex gap-0.5 mt-1">
-              {[...Array(5)].map((_, i) => (
-                <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#F5B300"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              ))}
-            </div>
-            <div className="text-white/35 text-[10px] font-mono tracking-wider mt-1">AVG RATING</div>
-          </div>
-        </div>
-
-        {/* Main featured quote */}
-        <div className={`transition-all duration-700 delay-150 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-
-          {/* Tag */}
-          <div className="inline-flex items-center gap-2 mb-8">
-            <div className="h-px w-6 bg-[#F5B300]" />
-            <span className="text-[#F5B300] text-[10px] font-mono tracking-[0.4em] uppercase">{t.tag}</span>
-          </div>
-
-          {/* Quote text — large */}
-          <blockquote
-            key={active}
-            className="font-display text-[clamp(22px,3.5vw,40px)] font-extrabold text-white leading-[1.15] mb-10 max-w-[820px]"
-            style={{ animation: "fadeUp 0.45s cubic-bezier(0.22,1,0.36,1) forwards" }}
-          >
-            "{t.text}"
-          </blockquote>
-
-          {/* Author row */}
-          <div className="flex items-center justify-between flex-wrap gap-6">
-            <div className="flex items-center gap-5">
-              {/* Avatar initials */}
-              <div className="w-12 h-12 bg-[#F5B300] flex items-center justify-center shrink-0">
-                <span className="font-display font-extrabold text-[#1A1A1A] text-[15px]">
-                  {t.name.split(" ").map(n => n[0]).join("")}
-                </span>
-              </div>
-              <div>
-                <div className="text-white font-semibold text-[15px]">{t.name}</div>
-                <div className="text-white/35 text-[11px] font-mono mt-0.5">{t.role}</div>
-              </div>
-            </div>
-
-            {/* Nav controls */}
-            <div className="flex items-center gap-4">
-              {/* Dot indicators */}
-              <div className="flex gap-2 mr-2">
-                {ALL_TESTIMONIALS.map((_, i) => (
-                  <button key={i} onClick={() => setActive(i)}
-                    className="transition-all duration-300"
-                    style={{ width: i === active ? "24px" : "8px", height: "8px", backgroundColor: i === active ? "#F5B300" : "rgba(255,255,255,0.2)" }}
-                  />
-                ))}
-              </div>
-              <button onClick={prev}
-                className="w-11 h-11 border border-white/15 flex items-center justify-center text-white/50 hover:border-[#F5B300] hover:text-[#F5B300] transition-all">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-              </button>
-              <button onClick={next}
-                className="w-11 h-11 border border-white/15 flex items-center justify-center text-white/50 hover:border-[#F5B300] hover:text-[#F5B300] transition-all">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom mini-cards — other testimonials */}
-        <div className="mt-16 pt-10 border-t border-white/8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {ALL_TESTIMONIALS.filter((_, i) => i !== active).slice(0, 4).map((ot, i) => (
-            <button key={i} onClick={() => setActive(ALL_TESTIMONIALS.indexOf(ot))}
-              className="text-left p-5 border border-white/8 hover:border-[#F5B300]/40 hover:bg-white/4 transition-all duration-300 group">
-              <div className="flex gap-0.5 mb-3">
-                {[...Array(ot.stars)].map((_, j) => (
-                  <svg key={j} width="10" height="10" viewBox="0 0 24 24" fill="#F5B300"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                ))}
-              </div>
-              <p className="text-white/45 text-[12px] leading-relaxed line-clamp-2 group-hover:text-white/70 transition-colors">"{ot.text}"</p>
-              <div className="text-white/25 text-[10px] font-mono mt-3 group-hover:text-[#F5B300] transition-colors">{ot.name}</div>
-            </button>
-          ))}
-        </div>
-
-      </div>
-    </section>
-  );
-}
 
 /* ─── Brand Family accordion ─────────────────────────────── */
 interface BrandFamilyProps {
@@ -254,8 +100,6 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
 
   return (
     <section ref={brandsRef} className="overflow-hidden">
-
-      {/* Section header */}
       <div className={`bg-white px-6 sm:px-10 pt-20 pb-10 transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
         <div className="max-w-[1200px] mx-auto">
           <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-5">Our brand family</p>
@@ -270,7 +114,6 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
         </div>
       </div>
 
-      {/* Accordion panels */}
       <div className="flex flex-col lg:flex-row" style={{ minHeight: "600px" }}>
         {BRAND_DATA.map((b, i) => {
           const isActive = active === i;
@@ -295,7 +138,6 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
                 padding: "48px 44px",
               }}
             >
-              {/* Giant decorative number */}
               <div
                 className="absolute -bottom-6 -right-4 font-display font-extrabold select-none pointer-events-none"
                 style={{
@@ -309,7 +151,6 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
                 {b.num}
               </div>
 
-              {/* Top: tag + accent bar + logo */}
               <div>
                 <div className="flex items-center gap-3 mb-8">
                   <div
@@ -323,7 +164,6 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
                 </div>
               </div>
 
-              {/* Bottom: headline + body + cta */}
               <div>
                 <h3
                   className="font-display font-extrabold leading-tight mb-4"
@@ -336,7 +176,6 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
                   {b.headline.map((line, j) => <span key={j}>{line}<br /></span>)}
                 </h3>
 
-                {/* Body — slides in when active */}
                 <div style={{
                   maxHeight: isActive ? "200px" : "0px",
                   opacity: isActive ? 1 : 0,
@@ -368,7 +207,6 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
         })}
       </div>
 
-      {/* Bottom bar */}
       <div className="bg-[#1A1A1A] px-6 sm:px-10 py-5">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <p className="text-white/45 text-[12px] leading-relaxed">
@@ -389,14 +227,28 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
   );
 }
 
+/* ─── Main ───────────────────────────────────────────────── */
 export default function HomePage({ navigate, navigateToWizard }: Props) {
-  const [activeMilestone, setActiveMilestone] = useState(3);
+  const [slide, setSlide] = useState(0);
   const [heroVisible, setHeroVisible] = useState(false);
+  const [slideAnim, setSlideAnim] = useState(true);
   const brandsRef = useRef<HTMLDivElement>(null);
+  const [brandsVisible, setBrandsVisible] = useState(false);
 
   useEffect(() => { const t = setTimeout(() => setHeroVisible(true), 80); return () => clearTimeout(t); }, []);
 
-  const [brandsVisible, setBrandsVisible] = useState(false);
+  /* Auto-advance carousel */
+  useEffect(() => {
+    const t = setInterval(() => {
+      setSlideAnim(false);
+      setTimeout(() => {
+        setSlide((s) => (s + 1) % SLIDES.length);
+        setSlideAnim(true);
+      }, 50);
+    }, 7000);
+    return () => clearInterval(t);
+  }, []);
+
   useEffect(() => {
     const el = brandsRef.current;
     if (!el) return;
@@ -405,214 +257,175 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
     return () => obs.disconnect();
   }, []);
 
-  const storySection        = useReveal();
-  const testimonialsSection = useReveal();
+  const goPrev = () => { setSlideAnim(false); setTimeout(() => { setSlide((s) => (s - 1 + SLIDES.length) % SLIDES.length); setSlideAnim(true); }, 50); };
+  const goNext = () => { setSlideAnim(false); setTimeout(() => { setSlide((s) => (s + 1) % SLIDES.length); setSlideAnim(true); }, 50); };
 
-  const scrollToBrands = () => brandsRef.current?.scrollIntoView({ behavior: "smooth" });
+  const s = SLIDES[slide];
 
   return (
     <div className="bg-white text-[#1A1A1A] overflow-x-hidden">
 
-      {/* ── HERO — custom performance brand visual ── */}
-      <section className="relative bg-[#FFFDF7] text-[#1A1A1A] min-h-[92svh] flex items-center overflow-hidden">
-
-        {/* Subtle background grid */}
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ backgroundImage: "linear-gradient(rgba(245,179,0,0.10) 1px,transparent 1px),linear-gradient(90deg,rgba(245,179,0,0.10) 1px,transparent 1px)", backgroundSize: "72px 72px" }} />
-
-        {/* Yellow glow — bottom right */}
-        <div className="absolute bottom-0 right-0 w-[700px] h-[500px] pointer-events-none"
-          style={{ background: "radial-gradient(ellipse at 85% 95%, rgba(245,179,0,0.18) 0%, transparent 60%)" }} />
-
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 sm:px-10 py-20 sm:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-
-          {/* ── LEFT — brand text ── */}
-          <div>
-            <div style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(20px)", transition: "opacity 0.7s ease, transform 0.7s ease" }}>
-              <PerformanceMealsLogo size="lg" variant="dark" />
-            </div>
-
-            <div className="mt-10" style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "120ms" }}>
-              <p className="text-[11px] font-mono tracking-[0.45em] uppercase text-[#F5B300] mb-5">Singapore · Est. 2019 · Macro-tracked</p>
-              <h1 className="font-display text-[44px] sm:text-[60px] lg:text-[72px] font-extrabold leading-[0.88] mb-8 text-[#1A1A1A]">
-                Nutrition that works<br />
-                <span className="text-[#F5B300]">as hard as you do.</span>
-              </h1>
-            </div>
-
-            <div style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "260ms" }}>
-              <p className="text-[#1A1A1A]/55 text-[16px] sm:text-[17px] leading-relaxed max-w-[440px] mb-10">
-                40+ macro-tracked meals. Chef-prepared daily in Singapore. One performance standard — two ways to eat well.
-              </p>
-            </div>
-
-            <div style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateY(24px)", transition: "opacity 0.7s ease, transform 0.7s ease", transitionDelay: "380ms" }}>
-              <button onClick={scrollToBrands}
-                className="group inline-flex items-center gap-4 px-8 py-5 bg-[#F5B300] text-[#1A1A1A] font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors">
-                Explore Our Brands
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
-                  className="transition-transform group-hover:translate-y-1"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-              </button>
-            </div>
-
-            {/* Proof stats row */}
-            <div className="mt-12 flex flex-wrap gap-8 border-t border-[#1A1A1A]/10 pt-10"
-              style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.8s ease", transitionDelay: "600ms" }}>
-              {[
-                { v: "8,400+", l: "Active customers" },
-                { v: "4.9★",   l: "Average rating" },
-                { v: "40+",    l: "Macro meals" },
-                { v: "5 yrs",  l: "Serving Singapore" },
-              ].map((s) => (
-                <div key={s.l}>
-                  <div className="font-display text-[22px] font-extrabold text-[#F5B300] leading-none">{s.v}</div>
-                  <div className="text-[#1A1A1A]/40 text-[10px] font-mono uppercase tracking-wider mt-1">{s.l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── RIGHT — custom performance brand graphic ── */}
-          <div className="hidden lg:flex items-center justify-center"
-            style={{ opacity: heroVisible ? 1 : 0, transform: heroVisible ? "none" : "translateX(20px)", transition: "opacity 1s ease, transform 1s ease", transitionDelay: "450ms" }}>
-            <div className="relative w-[460px] h-[460px]">
-
-              {/* Central SVG performance ring graphic */}
-              <svg viewBox="0 0 460 460" className="absolute inset-0 w-full h-full" aria-hidden="true">
-                {/* Outermost decorative ring */}
-                <circle cx="230" cy="230" r="218" fill="none" stroke="rgba(245,179,0,0.06)" strokeWidth="1" />
-
-                {/* Main performance arc — yellow, 82% */}
-                <circle cx="230" cy="230" r="200" fill="none" stroke="rgba(245,179,0,0.18)" strokeWidth="12" />
-                <circle cx="230" cy="230" r="200" fill="none" stroke="#F5B300" strokeWidth="12"
-                  strokeDasharray={`${2 * Math.PI * 200 * 0.82} ${2 * Math.PI * 200}`}
-                  strokeLinecap="round" transform="rotate(-100 230 230)" />
-
-                {/* Secondary inner ring — protein track */}
-                <circle cx="230" cy="230" r="170" fill="none" stroke="rgba(26,26,26,0.06)" strokeWidth="8" />
-                <circle cx="230" cy="230" r="170" fill="none" stroke="rgba(245,179,0,0.35)" strokeWidth="8"
-                  strokeDasharray={`${2 * Math.PI * 170 * 0.68} ${2 * Math.PI * 170}`}
-                  strokeLinecap="round" transform="rotate(-90 230 230)" />
-
-                {/* Tertiary ring — carbs */}
-                <circle cx="230" cy="230" r="142" fill="none" stroke="rgba(26,26,26,0.06)" strokeWidth="6" />
-                <circle cx="230" cy="230" r="142" fill="none" stroke="rgba(245,179,0,0.20)" strokeWidth="6"
-                  strokeDasharray={`${2 * Math.PI * 142 * 0.55} ${2 * Math.PI * 142}`}
-                  strokeLinecap="round" transform="rotate(-90 230 230)" />
-
-                {/* Centre fill */}
-                <circle cx="230" cy="230" r="118" fill="#FFFDF7" />
-
-                {/* Centre brand mark — yellow circle + PM */}
-                <circle cx="230" cy="230" r="62" fill="#F5B300" />
-                <circle cx="230" cy="230" r="55" fill="none" stroke="#1A1A1A" strokeWidth="2" strokeOpacity="0.15" />
-                <text x="230" y="218" textAnchor="middle" fill="#1A1A1A" fontSize="22" fontWeight="900" fontFamily="Outfit, sans-serif" letterSpacing="-1">PM</text>
-                <text x="230" y="237" textAnchor="middle" fill="rgba(26,26,26,0.55)" fontSize="8.5" fontFamily="Inter, sans-serif" letterSpacing="3">PERFORMANCE</text>
-                <text x="230" y="250" textAnchor="middle" fill="rgba(26,26,26,0.55)" fontSize="8.5" fontFamily="Inter, sans-serif" letterSpacing="3">MEALS</text>
-
-                {/* Ring labels */}
-                {/* Protein — top */}
-                <text x="230" y="20" textAnchor="middle" fill="#F5B300" fontSize="10" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="2">PROTEIN</text>
-                <text x="230" y="34" textAnchor="middle" fill="rgba(26,26,26,0.40)" fontSize="8.5" fontFamily="Inter, sans-serif">40g+ per meal</text>
-
-                {/* Fresh — right */}
-                <text x="452" y="218" textAnchor="end" fill="#F5B300" fontSize="10" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="2">FRESH</text>
-                <text x="452" y="232" textAnchor="end" fill="rgba(26,26,26,0.40)" fontSize="8.5" fontFamily="Inter, sans-serif">Daily prep</text>
-
-                {/* Goal-led — bottom */}
-                <text x="230" y="440" textAnchor="middle" fill="#F5B300" fontSize="10" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="2">GOAL-LED</text>
-                <text x="230" y="454" textAnchor="middle" fill="rgba(26,26,26,0.40)" fontSize="8.5" fontFamily="Inter, sans-serif">Structured or flexible</text>
-
-                {/* Macro — left */}
-                <text x="8" y="218" textAnchor="start" fill="#F5B300" fontSize="10" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="2">MACRO</text>
-                <text x="8" y="232" textAnchor="start" fill="rgba(26,26,26,0.40)" fontSize="8.5" fontFamily="Inter, sans-serif">Tracked meals</text>
-              </svg>
-
-              {/* Floating data badge — top right */}
-              <div className="absolute -top-2 -right-4 bg-[#1A1A1A] border border-[#1A1A1A]/10 px-4 py-3 min-w-[110px]">
-                <div className="text-[#F5B300] font-display font-extrabold text-[22px] leading-none">40+</div>
-                <div className="text-white/55 text-[9px] font-mono uppercase tracking-widest mt-1">Meal options</div>
-              </div>
-
-              {/* Floating data badge — bottom left */}
-              <div className="absolute -bottom-2 -left-4 bg-[#F5B300] px-4 py-3 min-w-[120px]">
-                <div className="text-[#1A1A1A] font-display font-extrabold text-[22px] leading-none">8,400+</div>
-                <div className="text-[#1A1A1A]/60 text-[9px] font-mono uppercase tracking-widest mt-1 font-bold">Active customers</div>
-              </div>
-
-              {/* Floating brand label — bottom right */}
-              <div className="absolute bottom-12 -right-6 flex items-center gap-2">
-                <div className="h-px w-8 bg-[#F5B300]/60" />
-                <span className="text-[9px] font-mono tracking-[0.3em] uppercase text-[#1A1A1A]/30">Singapore · Est. 2019</span>
-              </div>
-            </div>
-          </div>
-
+      {/* ── 01 CAROUSEL HERO ── */}
+      <section className="relative bg-white overflow-hidden" style={{ minHeight: "670px" }}>
+        {/* Right: food image */}
+        <div className="absolute inset-y-0 right-0 w-[47%] transition-opacity duration-500" style={{ opacity: slideAnim ? 1 : 0 }}>
+          <img
+            key={slide}
+            src={s.img}
+            alt=""
+            className="w-full h-full object-cover"
+          />
         </div>
 
-        {/* Bottom scroll indicator */}
-        <div className="absolute bottom-8 left-6 sm:left-10 flex items-center gap-3 z-10"
-          style={{ opacity: heroVisible ? 0.4 : 0, transition: "opacity 1.2s ease", transitionDelay: "900ms" }}>
-          <div className="w-px h-10 bg-[#1A1A1A]/20 animate-pulse" />
-          <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-[#1A1A1A]/35">Scroll to explore</span>
+        {/* Yellow spine */}
+        <div className="absolute inset-y-0 right-[47%] w-5 bg-[#F5B300] z-10" />
+
+        {/* Left: content */}
+        <div className="relative z-10 max-w-none px-14 sm:px-16 py-14 sm:py-20 flex flex-col justify-between" style={{ minHeight: "670px", maxWidth: "53%" }}>
+          <div>
+            {/* Eyebrow */}
+            <p
+              className="text-[#1A1A1A] text-[12px] font-medium tracking-[0.06em] mb-10 transition-all duration-500"
+              style={{ opacity: heroVisible ? 1 : 0, fontFamily: "Inter, sans-serif" }}
+            >
+              {s.eyebrow}
+            </p>
+
+            {/* Headline */}
+            <h1
+              className="font-display font-bold leading-[0.84] mb-8 transition-all duration-500"
+              style={{
+                fontSize: "clamp(48px, 6.5vw, 84px)",
+                letterSpacing: "-0.03em",
+                color: "#1A1A1A",
+                opacity: slideAnim ? 1 : 0,
+                transform: slideAnim ? "none" : "translateY(12px)",
+                transition: "opacity 0.5s ease, transform 0.5s ease",
+              }}
+            >
+              {s.headline.map((line, i) => (
+                <span key={i} className="block">{line}</span>
+              ))}
+            </h1>
+
+            {/* Subtext */}
+            <p
+              className="text-[#1A1A1A] leading-[1.45] mb-12 max-w-[480px]"
+              style={{
+                fontSize: "clamp(16px, 1.4vw, 20px)",
+                fontFamily: "Inter, sans-serif",
+                opacity: slideAnim ? 1 : 0,
+                transition: "opacity 0.5s ease 0.1s",
+              }}
+            >
+              {s.sub}
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-3" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.7s ease 0.3s" }}>
+              <button
+                onClick={() => navigate("ready-series")}
+                className="h-12 px-7 bg-[#1A1A1A] text-white text-[12px] font-medium tracking-[0.01em] rounded-full hover:bg-[#333] transition-colors"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                BROWSE READY SERIES
+              </button>
+              <button
+                onClick={() => navigateToWizard?.()}
+                className="h-12 px-7 bg-[#E85D04] text-white text-[12px] font-medium tracking-[0.01em] rounded-full hover:bg-[#c94e00] transition-colors"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                EXPLORE MEAL PLAN
+              </button>
+            </div>
+          </div>
+
+          {/* Bottom bar: tagline + progress + controls */}
+          <div className="mt-14 flex flex-col gap-4" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.8s ease 0.6s" }}>
+            <p className="text-[#7A7A75] text-[11px] font-medium tracking-[0.034em]" style={{ fontFamily: "Inter, sans-serif" }}>
+              ONE TRUSTED STANDARD. TWO CLEAR OFFERS.
+            </p>
+            <div className="flex items-center gap-4">
+              {/* Progress track */}
+              <div className="relative h-[2px] w-[240px] bg-[#1A1A1A]/15 rounded-full overflow-hidden">
+                <div
+                  className="absolute left-0 top-0 h-full bg-[#F5B300] rounded-full transition-all duration-300"
+                  style={{ width: `${((slide + 1) / SLIDES.length) * 100}%` }}
+                />
+              </div>
+              <span className="text-[#7A7A75] text-[12px] font-medium" style={{ fontFamily: "Inter, sans-serif" }}>
+                0{slide + 1} / 0{SLIDES.length}
+              </span>
+              <span className="text-[#7A7A75] text-[11px]" style={{ fontFamily: "Inter, sans-serif" }}>AUTO 07s</span>
+
+              {/* Nav buttons — placed at bottom-right of the hero (absolute) */}
+              <div className="flex gap-2 ml-auto">
+                <button
+                  onClick={goPrev}
+                  className="w-11 h-11 bg-white/90 rounded-full flex items-center justify-center text-[#1A1A1A] hover:bg-white transition-colors shadow-sm"
+                >
+                  ←
+                </button>
+                <button
+                  onClick={goNext}
+                  className="w-11 h-11 bg-[#F5B300] rounded-full flex items-center justify-center text-[#1A1A1A] hover:bg-[#e5a800] transition-colors"
+                >
+                  →
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* ── 02 THE STANDARD BEHIND EVERY MEAL ── */}
+      <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "590px" }}>
+        <div className="flex flex-col lg:flex-row" style={{ minHeight: "590px" }}>
 
-      {/* ── BRAND FAMILY ── */}
-      <BrandFamilySection brandsRef={brandsRef} brandsVisible={brandsVisible} navigate={navigate} />
-
-      {/* ── WHO WE ARE ── */}
-      <section ref={storySection.ref} className="bg-[#FAF9F6] text-[#1A1A1A] py-20 sm:py-28 border-t border-[#E8E4DC]">
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-10">
-          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-start transition-all duration-700 ${storySection.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          {/* Left text */}
+          <div className="flex-1 px-14 sm:px-16 py-16 sm:py-20 flex flex-col justify-between">
             <div>
-              <p className="text-[11px] font-mono tracking-[0.35em] uppercase text-[#F5B300] mb-4">Who we are</p>
-              <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold leading-[0.93] text-[#1A1A1A] mb-8">
-                We built the food<br />we could not find.
+              {/* Number + tag row */}
+              <div className="flex items-baseline gap-10 mb-10">
+                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
+                <span className="text-[#F5B300] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>THE PARENT BRAND</span>
+              </div>
+
+              {/* Headline */}
+              <h2 className="font-display font-bold text-white mb-8" style={{ fontSize: "clamp(40px, 5vw, 63px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
+                <span className="block">THE STANDARD</span>
+                <span className="block">BEHIND EVERY</span>
+                <span className="block">MEAL.</span>
               </h2>
-              <div className="space-y-5 text-[#555] text-[15px] leading-relaxed mb-8">
-                <p>Performance Meals started because the founders — competitive athletes training in Singapore — could not find food that actually supported what they were doing. Everything was either too expensive, nutritionally vague, or genuinely unenjoyable.</p>
-                <p>So they built it themselves. A kitchen focused entirely on performance nutrition — fresh, macro-tracked, chef-prepared meals made for people who take their health seriously but still have a life to live.</p>
-                <p>Today we serve over 8,400 active customers across two distinct brand experiences. We have stayed close to our original promise: honest food, personal service, real results.</p>
-              </div>
 
-              {/* Purpose block */}
-              <div className="border-l-[3px] border-[#F5B300] pl-5 py-2 mb-4">
-                <p className="text-[10px] font-mono tracking-[0.35em] uppercase text-[#aaa] mb-2">Parent Purpose</p>
-                <p className="text-[#1A1A1A] text-[16px] leading-relaxed font-medium">
-                  To make exceptional meal prep accessible to every customer, with care in every experience.
-                </p>
-              </div>
-              <div className="border-l-[3px] border-[#E8E4DC] pl-5 py-2">
-                <p className="text-[10px] font-mono tracking-[0.35em] uppercase text-[#aaa] mb-2">Mission</p>
-                <p className="text-[#555] text-[14px] leading-relaxed">
-                  To deliver exceptional meals and thoughtful support that make healthy eating easier every day.
-                </p>
-              </div>
+              {/* Body */}
+              <p className="text-white leading-[1.48] mb-8 max-w-[480px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
+                Performance Meals sets the purpose, quality standard and experience behind everything we offer.
+              </p>
+
+              <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em]" style={{ fontFamily: "Inter, sans-serif" }}>
+                PRINCIPLED  •  GROUNDED
+              </p>
             </div>
+          </div>
 
-            {/* Interactive timeline */}
-            <div>
-              <div className="text-[10px] font-mono tracking-[0.35em] uppercase text-[#aaa] mb-6">Our story</div>
-              <div className="space-y-0">
-                {MILESTONES.map((m, i) => (
-                  <button key={i} onClick={() => setActiveMilestone(activeMilestone === i ? -1 : i)}
-                    className={`w-full text-left border-l-[3px] pl-6 pr-4 py-4 transition-all duration-300 ${activeMilestone === i ? "border-[#F5B300] bg-white" : "border-[#E8E4DC] hover:border-[#F5B300]/50 hover:bg-white/60"}`}>
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <span className="font-mono text-[12px] font-bold text-[#F5B300]">{m.year}</span>
-                        <span className={`ml-3 text-[13px] font-semibold ${activeMilestone === i ? "text-[#1A1A1A]" : "text-[#888]"}`}>{m.short}</span>
-                      </div>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
-                        className={`shrink-0 text-[#888] transition-transform duration-300 ${activeMilestone === i ? "rotate-180 text-[#F5B300]" : ""}`}>
-                        <path d="M6 9l6 6 6-6"/>
-                      </svg>
-                    </div>
-                    <div className={`overflow-hidden transition-all duration-400 ${activeMilestone === i ? "max-h-32 mt-3 opacity-100" : "max-h-0 opacity-0"}`}>
-                      <p className="text-[13px] text-[#666] leading-relaxed">{m.event}</p>
-                    </div>
-                  </button>
+          {/* Right image + pillars */}
+          <div className="relative lg:w-[55%] flex-shrink-0" style={{ minHeight: "400px" }}>
+            <img src={imgKitchen} alt="Kitchen craft" className="w-full h-full object-cover" style={{ minHeight: "400px" }} />
+
+            {/* Dark overlay band */}
+            <div className="absolute bottom-0 left-0 right-0 bg-[rgba(26,26,26,0.90)] px-8 py-8">
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { num: "01", title: "CHEF-LED RECIPES", sub: "Craft-led food." },
+                  { num: "02", title: "CLEAR NUTRITION", sub: "Visible macros & ingredients." },
+                  { num: "03", title: "QUALITY CONTROL", sub: "Kitchen to doorstep." },
+                ].map((p) => (
+                  <div key={p.num}>
+                    <p className="text-[#F5B300] text-[10px] tracking-[0.01em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>{p.num}</p>
+                    <p className="text-white text-[13px] font-medium leading-[1.1] mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>{p.title}</p>
+                    <p className="text-[#C2C2BA] text-[11px] leading-[1.35]" style={{ fontFamily: "Inter, sans-serif" }}>{p.sub}</p>
+                  </div>
                 ))}
               </div>
             </div>
@@ -620,11 +433,182 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
-      <TestimonialsSection sectionRef={testimonialsSection.ref} visible={testimonialsSection.visible} />
+      {/* ── 03 CHOOSE HOW PERFORMANCE MEALS WORKS FOR YOU ── */}
+      <section className="bg-[#F7F4EB] overflow-hidden py-16 sm:py-20 px-6 sm:px-10 lg:px-16">
+        <div className="max-w-[1380px] mx-auto">
+          {/* Header */}
+          <div className="flex items-baseline gap-10 mb-6">
+            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>02</span>
+            <span className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>ONE STANDARD. TWO DISTINCT EXPERIENCES.</span>
+          </div>
 
+          <h2 className="font-display font-bold text-[#1A1A1A] mb-5" style={{ fontSize: "clamp(36px, 4.5vw, 57px)", lineHeight: 0.92, letterSpacing: "-0.021em" }}>
+            <span className="block">CHOOSE HOW</span>
+            <span className="block">PERFORMANCE MEALS</span>
+            <span className="block">WORKS FOR YOU.</span>
+          </h2>
 
-{/* ── FOOTER STRIP ── */}
+          <p className="text-[#7A7A75] leading-[1.45] mb-12 max-w-[500px]" style={{ fontSize: "16px", fontFamily: "Inter, sans-serif" }}>
+            Same belief. Same quality standard. Different jobs for different routines.
+          </p>
+
+          {/* Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+            {/* Ready Series card */}
+            <div className="bg-[#1A1A1A] overflow-hidden flex" style={{ minHeight: "264px" }}>
+              <div className="w-[270px] flex-shrink-0 relative">
+                <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover" style={{ minHeight: "264px" }} />
+              </div>
+              <div className="w-2 flex-shrink-0 bg-[#F5B300]" />
+              <div className="flex-1 px-8 py-6 flex flex-col justify-between">
+                <div>
+                  <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>READY SERIES</p>
+                  <h3 className="font-display font-bold text-white mb-4" style={{ fontSize: "30px", lineHeight: 0.95, letterSpacing: "-0.012em" }}>
+                    <span className="block">EVERYDAY</span>
+                    <span className="block">MOMENTUM.</span>
+                  </h3>
+                  <p className="text-white leading-[1.42]" style={{ fontSize: "13px", fontFamily: "Inter, sans-serif" }}>
+                    Frozen convenience for changing schedules. Fast, flexible and dependable.
+                  </p>
+                </div>
+                <button
+                  onClick={() => navigate("ready-series")}
+                  className="text-white text-[12px] font-medium tracking-[0.012em] text-left hover:text-[#F5B300] transition-colors"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  EXPLORE READY SERIES  →
+                </button>
+              </div>
+            </div>
+
+            {/* Meal Plan card */}
+            <div className="bg-white overflow-hidden flex" style={{ minHeight: "264px" }}>
+              <div className="w-[286px] flex-shrink-0 relative">
+                <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover" style={{ minHeight: "264px" }} />
+              </div>
+              <div className="w-2 flex-shrink-0 bg-[#E85D04]" />
+              <div className="flex-1 px-8 py-6 flex flex-col justify-between">
+                <div>
+                  <p className="text-[#E85D04] text-[11px] font-medium tracking-[0.04em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>MEAL PLAN</p>
+                  <h3 className="font-display font-bold text-[#1A1A1A] mb-4" style={{ fontSize: "30px", lineHeight: 0.95, letterSpacing: "-0.012em" }}>
+                    <span className="block">BOUTIQUE</span>
+                    <span className="block">PROGRESS.</span>
+                  </h3>
+                  <p className="text-[#1A1A1A] leading-[1.42]" style={{ fontSize: "13px", fontFamily: "Inter, sans-serif" }}>
+                    Fresh structure, personal guidance and support around a clear goal.
+                  </p>
+                </div>
+                <button
+                  onClick={() => navigateToWizard?.()}
+                  className="text-[#1A1A1A] text-[12px] font-medium tracking-[0.012em] text-left hover:text-[#E85D04] transition-colors"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  EXPLORE MEAL PLAN  →
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ── 04 BRAND FAMILY (unchanged) ── */}
+      <BrandFamilySection brandsRef={brandsRef} brandsVisible={brandsVisible} navigate={navigate} />
+
+      {/* ── 05 CONVENIENCE WITHOUT COMPROMISE ── */}
+      <section className="bg-white overflow-hidden" style={{ minHeight: "690px" }}>
+        <div className="flex flex-col lg:flex-row" style={{ minHeight: "690px" }}>
+
+          {/* Left: image */}
+          <div className="lg:w-[47%] flex-shrink-0 relative" style={{ minHeight: "360px" }}>
+            <img src={imgKitchen} alt="Performance Meals food" className="w-full h-full object-cover" style={{ minHeight: "360px" }} />
+          </div>
+
+          {/* Yellow spine */}
+          <div className="hidden lg:block w-5 flex-shrink-0 bg-[#F5B300]" />
+
+          {/* Right: text */}
+          <div className="flex-1 px-12 sm:px-16 py-16 sm:py-20 flex flex-col justify-center">
+            {/* Number + tag */}
+            <div className="flex items-baseline gap-8 mb-8">
+              <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>04</span>
+              <span className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>FOOD FIRST. PERFORMANCE FOLLOWS.</span>
+            </div>
+
+            {/* Headline */}
+            <h2 className="font-display font-bold text-[#1A1A1A] mb-8" style={{ fontSize: "clamp(36px, 4.5vw, 56px)", lineHeight: 0.92, letterSpacing: "-0.022em" }}>
+              <span className="block">CONVENIENCE</span>
+              <span className="block">WITHOUT</span>
+              <span className="block">COMPROMISE.</span>
+            </h2>
+
+            {/* Body */}
+            <p className="text-[#7A7A75] leading-[1.5] mb-10 max-w-[500px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
+              Convenient food should still respect the ingredients, the craft and the person eating it. That principle shapes every Performance Meals experience.
+            </p>
+
+            {/* Rule */}
+            <div className="h-px bg-[#1A1A1A]/13 w-full max-w-[510px] mb-8" />
+
+            {/* Mission */}
+            <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em] mb-4" style={{ fontFamily: "Inter, sans-serif" }}>OUR MISSION</p>
+            <p className="text-[#1A1A1A] leading-[1.3] max-w-[500px]" style={{ fontSize: "20px", fontFamily: "Outfit, sans-serif", fontWeight: 500, letterSpacing: "-0.003em" }}>
+              To deliver exceptional meals and thoughtful support that make healthy eating easier every day.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 06 CLOSING CTA ── */}
+      <section className="bg-[#F5B300] overflow-hidden px-16 py-16 sm:py-20 relative" style={{ minHeight: "442px" }}>
+        <div className="max-w-[1380px] mx-auto flex flex-col lg:flex-row lg:items-start lg:justify-between gap-12">
+
+          {/* Left */}
+          <div className="max-w-[700px]">
+            <p className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>
+              PERFORMANCE MEALS
+            </p>
+            <h2 className="font-display font-bold text-[#1A1A1A] mb-6" style={{ fontSize: "clamp(36px, 4vw, 55px)", lineHeight: 0.92, letterSpacing: "-0.021em" }}>
+              <span className="block">ONE TRUSTED STANDARD.</span>
+              <span className="block">TWO WAYS TO LIVE IT.</span>
+            </h2>
+            <p className="text-[#1A1A1A] leading-[1.45] mb-10 max-w-[460px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
+              Choose the experience that fits the way you want to eat.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => navigate("ready-series")}
+                className="h-12 px-7 bg-[#1A1A1A] text-white text-[12px] font-medium tracking-[0.01em] rounded-full hover:bg-[#333] transition-colors"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                BROWSE READY SERIES
+              </button>
+              <button
+                onClick={() => navigateToWizard?.()}
+                className="h-12 px-7 bg-[#E85D04] text-white text-[12px] font-medium tracking-[0.01em] rounded-full hover:bg-[#c94e00] transition-colors"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                EXPLORE MEAL PLAN
+              </button>
+            </div>
+          </div>
+
+          {/* Right: large wordmark */}
+          <div className="lg:text-right">
+            <p className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.04em] mb-4 lg:text-right" style={{ fontFamily: "Inter, sans-serif" }}>
+              PRINCIPLED  •  GROUNDED
+            </p>
+            <div className="font-display font-bold text-[#1A1A1A] leading-[0.87]" style={{ fontSize: "clamp(36px, 4vw, 50px)", letterSpacing: "-0.02em" }}>
+              <span className="block">PERFORMANCE</span>
+              <span className="block">MEALS</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── FOOTER STRIP (keep as-is) ── */}
       <div className="bg-[#1A1A1A] border-t border-[#1A1A1A]/10 py-10 px-6 sm:px-10">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
           <div className="flex items-center gap-4">
