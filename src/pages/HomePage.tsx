@@ -544,25 +544,6 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         </div>
       </section>
 
-      {/* ── FOOTER STRIP (keep as-is) ── */}
-      <div className="bg-[#1A1A1A] border-t border-[#1A1A1A]/10 py-10 px-6 sm:px-10">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
-          <div className="flex items-center gap-4">
-            <PerformanceMealsLogo size="sm" variant="dark" />
-            <span className="text-white/30 text-[11px] font-mono">performancemeals.com.sg</span>
-          </div>
-          <div className="flex gap-5 text-[10px] font-mono tracking-widest uppercase text-white/30">
-            {[
-              { l: "About",        p: "about" as Page },
-              { l: "Ready-Series", p: "ready-series" as Page },
-              { l: "Meal Plan",    p: "meal-plan-landing" as Page },
-            ].map((item) => (
-              <button key={item.l} onClick={() => navigate(item.p)} className="hover:text-white/70 transition-colors">{item.l}</button>
-            ))}
-          </div>
-        </div>
-      </div>
-
     </div>
   );
 }
