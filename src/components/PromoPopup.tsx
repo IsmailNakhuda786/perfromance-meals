@@ -1,22 +1,38 @@
 import { useState } from "react";
-import { Page } from "@/data";
+import type { Page } from "@/data";
 
 interface Props {
   onClose: () => void;
   navigate: (page: Page) => void;
+  navigateToWizard?: (plan?: string) => void;
 }
 
-const BUNDLES = [
-  { name: "Starter Bundle", desc: "5 chef meals — perfect intro", original: 62, sale: 49, tag: "21% OFF" },
-  { name: "Power Duo", desc: "Herb Chicken + Cajun Salmon ×3 each", original: 74.40, sale: 59, tag: "Best Value" },
-];
+type Tab = "promo" | "sub";
 
-export default function PromoPopup({ onClose, navigate }: Props) {
+function ArrowRight() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  );
+}
+
+function XIcon({ onClick }: { onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="shrink-0 text-white/60 hover:text-white transition-colors" aria-label="Close">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <path d="M18 6 6 18M6 6l12 12" />
+      </svg>
+    </button>
+  );
+}
+
+export default function PromoPopup({ onClose, navigate, navigateToWizard }: Props) {
+  const [tab, setTab] = useState<Tab>("promo");
   const [copied, setCopied] = useState(false);
-  const [tab, setTab] = useState<"code" | "bundle">("code");
 
   const copyCode = () => {
-    navigator.clipboard.writeText("SG61").then(() => {
+    navigator.clipboard.writeText("READY20").then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -25,88 +41,162 @@ export default function PromoPopup({ onClose, navigate }: Props) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/66" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative bg-[#1A1A1A] text-white w-full max-w-[480px] overflow-hidden border border-white/10">
-
-        {/* Top yellow strip */}
-        <div className="bg-[#F5B300] h-1 w-full" />
-
-        {/* Close */}
-        <button onClick={onClose} className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors z-10">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M18 6 6 18M6 6l12 12" />
-          </svg>
-        </button>
-
+      <div
+        className="relative flex flex-col overflow-hidden"
+        style={{
+          background: "#191919",
+          border: "1px solid #f5b800",
+          width: "min(760px, 96vw)",
+        }}
+      >
         {/* Header */}
-        <div className="px-6 pt-6 pb-4 text-center">
-          <div className="text-[10px] font-mono tracking-[0.45em] text-[#F5B300] uppercase mb-2">Performance Meals</div>
-          <h2 className="font-display text-[28px] font-bold leading-tight">
-            Stock up.<br />Stay on track.
-          </h2>
-          <p className="text-white/50 text-[13px] mt-2">Exclusive offer — today only</p>
+        <div className="flex items-center justify-between px-7 py-5" style={{ borderBottom: "none" }}>
+          <span className="font-bold text-[#f5b800] text-[11px] tracking-[0.08em] uppercase" style={{ fontFamily: "Inter, sans-serif" }}>
+            {tab === "promo" ? "THIS WEEK ONLY" : "READY-SERIES SUBSCRIPTION"}
+          </span>
+          <XIcon onClick={onClose} />
         </div>
 
-        {/* Tab toggle */}
-        <div className="flex mx-6 mb-4 border border-white/10 rounded-sm overflow-hidden">
-          <button onClick={() => setTab("code")}
-            className={`flex-1 py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${tab === "code" ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white"}`}>
-            Promo Code
+        {/* Tabs */}
+        <div className="flex" style={{ height: "54px" }}>
+          <button
+            onClick={() => setTab("promo")}
+            className="flex flex-1 items-center justify-center font-bold text-[13px] tracking-[0.04em] transition-colors"
+            style={{
+              fontFamily: "Inter, sans-serif",
+              background: tab === "promo" ? "#f5b800" : "#242424",
+              color: tab === "promo" ? "#191919" : "#fff",
+              borderBottom: tab === "promo" ? "3px solid #f5b800" : "none",
+            }}
+          >
+            PROMOTIONAL OFFER
           </button>
-          <button onClick={() => setTab("bundle")}
-            className={`flex-1 py-2.5 text-[11px] font-bold tracking-[0.15em] uppercase transition-colors ${tab === "bundle" ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white"}`}>
-            Bundle Deal
+          <button
+            onClick={() => setTab("sub")}
+            className="flex flex-1 items-center justify-center font-bold text-[13px] tracking-[0.04em] transition-colors"
+            style={{
+              fontFamily: "Inter, sans-serif",
+              background: tab === "sub" ? "#f5b800" : "#242424",
+              color: tab === "sub" ? "#191919" : "#fff",
+              borderBottom: tab === "sub" ? "3px solid #f5b800" : "none",
+            }}
+          >
+            SUBSCRIPTION DEAL
           </button>
         </div>
 
-        {/* Promo code tab */}
-        {tab === "code" && (
-          <div className="px-6 pb-6">
-            <div className="bg-white/5 border border-white/10 p-5 text-center mb-4">
-              <div className="text-[12px] text-white/40 mb-2">Use code at checkout</div>
-              <div className="font-display text-[42px] font-bold text-[#F5B300] tracking-widest leading-none mb-1">SG61</div>
-              <div className="text-[13px] text-white/50">$6.10 off your first order</div>
+        {/* ── PROMOTIONAL OFFER content ── */}
+        {tab === "promo" && (
+          <div className="flex flex-col gap-6 p-[42px]">
+            <p
+              className="font-bold leading-none text-white"
+              style={{ fontFamily: "Outfit, sans-serif", fontSize: "clamp(28px, 4vw, 48px)" }}
+            >
+              20% OFF THE MEALS THAT KEEP UP.
+            </p>
+            <p className="leading-[1.55] text-[#d6d4ce] text-[16px]" style={{ fontFamily: "Inter, sans-serif" }}>
+              Save on selected Ready Series meals. Stock the freezer once and move through Singapore's busiest days without missing dinner.
+            </p>
+
+            {/* Promo code box */}
+            <div className="bg-white flex items-center justify-between px-5" style={{ height: "68px" }}>
+              <div className="flex flex-col gap-1">
+                <span className="font-bold text-[#6c6a66] text-[10px] tracking-[0.08em]" style={{ fontFamily: "Inter, sans-serif" }}>PROMO CODE</span>
+                <span className="font-bold text-black text-[26px] leading-none" style={{ fontFamily: "Outfit, sans-serif" }}>READY20</span>
+              </div>
+              <button
+                onClick={copyCode}
+                className="flex items-center gap-2.5 font-bold text-[#191919] text-[14px] transition-opacity hover:opacity-80"
+                style={{ fontFamily: "Inter, sans-serif", background: "#f5b800", height: "48px", padding: "0 20px" }}
+              >
+                {copied ? "Copied!" : "Copy code"}
+                <ArrowRight />
+              </button>
             </div>
-            <button onClick={copyCode}
-              className={`w-full py-3.5 text-[12px] font-bold tracking-[0.18em] uppercase transition-all mb-3 ${copied ? "bg-white text-[#111]" : "bg-[#F5B300] text-[#111] hover:bg-white"}`}>
-              {copied ? "✓ Copied!" : "Copy Code"}
+
+            <p className="text-[#b9b7b0] text-[11px] leading-[1.55]" style={{ fontFamily: "Inter, sans-serif" }}>
+              Valid until 11:59pm SGT, 18 October 2026. Selected meals only. One use per customer. Cannot be combined with subscription pricing or wallet vouchers.
+            </p>
+
+            {/* Shop CTA */}
+            <button
+              onClick={() => { navigate("ready-series"); onClose(); }}
+              className="flex items-center justify-center gap-2.5 w-full font-bold text-[#191919] text-[14px] transition-opacity hover:opacity-85"
+              style={{ fontFamily: "Inter, sans-serif", background: "#f5b800", height: "48px" }}
+            >
+              Shop selected meals
+              <ArrowRight />
             </button>
-            <p className="text-[11px] text-white/25 text-center">Valid on first order · Min. spend $40 · Expires 30 Sep 2025</p>
           </div>
         )}
 
-        {/* Bundle deal tab */}
-        {tab === "bundle" && (
-          <div className="px-6 pb-6 space-y-3">
-            {BUNDLES.map((b) => (
-              <div key={b.name} className="border border-white/10 bg-white/5 p-4 flex items-center justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="font-semibold text-[14px]">{b.name}</span>
-                    <span className="bg-[#F5B300] text-[#111] text-[9px] font-bold tracking-wider px-1.5 py-0.5">{b.tag}</span>
-                  </div>
-                  <div className="text-[12px] text-white/40">{b.desc}</div>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <span className="font-mono font-bold text-[16px] text-[#F5B300]">${b.sale}</span>
-                    <span className="font-mono text-[13px] text-white/25 line-through">${b.original}</span>
-                  </div>
+        {/* ── SUBSCRIPTION DEAL content ── */}
+        {tab === "sub" && (
+          <div className="flex flex-col gap-6 p-[38px]">
+            {/* Heading */}
+            <div className="flex flex-col gap-2">
+              <p className="font-bold text-white leading-tight" style={{ fontFamily: "Outfit, sans-serif", fontSize: "clamp(24px, 3vw, 38px)" }}>
+                SET THE FREEZER. SAVE EVERY CYCLE.
+              </p>
+              <p className="text-[#d6d4ce] text-[14px] leading-[1.5]" style={{ fontFamily: "Inter, sans-serif" }}>
+                Choose a curated package now. Pause, skip or cancel from your account.
+              </p>
+            </div>
+
+            {/* Packages */}
+            <div className="grid grid-cols-2 gap-3.5">
+              {/* Everyday 12 */}
+              <div
+                className="flex flex-col justify-between p-6"
+                style={{ background: "#fff", border: "1px solid #d8d6d0", minHeight: "250px" }}
+              >
+                <div className="flex flex-col gap-2">
+                  <p className="font-bold text-black text-[26px] leading-tight" style={{ fontFamily: "Outfit, sans-serif" }}>Everyday 12</p>
+                  <p className="text-[#6c6a66] text-[13px]" style={{ fontFamily: "Inter, sans-serif" }}>12 meals · every 4 weeks</p>
+                  <p className="font-bold text-black text-[22px]" style={{ fontFamily: "Outfit, sans-serif" }}>$10.90 / meal</p>
+                  <p className="font-bold text-[#187a4d] text-[12px]" style={{ fontFamily: "Inter, sans-serif" }}>Save $96 over 3 months</p>
                 </div>
-                <button onClick={() => { navigate("ready-to-go"); onClose(); }}
-                  className="shrink-0 bg-white/10 hover:bg-[#F5B300] hover:text-[#111] text-white px-4 py-2 text-[11px] font-bold tracking-wider uppercase transition-colors">
-                  Grab It
+                <button
+                  onClick={() => { navigateToWizard?.("everyday-12"); onClose(); }}
+                  className="flex items-center justify-center gap-2.5 w-full font-bold text-[#191919] text-[14px] hover:opacity-85 transition-opacity"
+                  style={{ fontFamily: "Inter, sans-serif", background: "#f5b800", height: "48px" }}
+                >
+                  Select Everyday 12 <ArrowRight />
                 </button>
               </div>
-            ))}
-            <p className="text-[11px] text-white/25 text-center">Limited stock · Auto-added to cart</p>
+
+              {/* Momentum 18 — most popular */}
+              <div
+                className="flex flex-col justify-between p-6"
+                style={{ background: "#fff3cc", border: "2px solid #f5b800", minHeight: "250px" }}
+              >
+                <div className="flex flex-col gap-2">
+                  <div className="inline-flex px-2.5 py-1.5" style={{ background: "#fff3cc" }}>
+                    <span className="font-bold text-[#f5b800] text-[10px] tracking-[0.06em] uppercase" style={{ fontFamily: "Inter, sans-serif" }}>Most popular</span>
+                  </div>
+                  <p className="font-bold text-black text-[26px] leading-tight" style={{ fontFamily: "Outfit, sans-serif" }}>Momentum 18</p>
+                  <p className="text-[#6c6a66] text-[13px]" style={{ fontFamily: "Inter, sans-serif" }}>18 meals · every 4 weeks</p>
+                  <p className="font-bold text-black text-[22px]" style={{ fontFamily: "Outfit, sans-serif" }}>$9.90 / meal</p>
+                  <p className="font-bold text-[#187a4d] text-[12px]" style={{ fontFamily: "Inter, sans-serif" }}>Save $216 over 6 months</p>
+                </div>
+                <button
+                  onClick={() => { navigateToWizard?.("momentum-18"); onClose(); }}
+                  className="flex items-center justify-center gap-2.5 w-full font-bold text-[#191919] text-[14px] hover:opacity-85 transition-opacity"
+                  style={{ fontFamily: "Inter, sans-serif", background: "#f5b800", height: "48px" }}
+                >
+                  Select Momentum 18 <ArrowRight />
+                </button>
+              </div>
+            </div>
+
+            <p className="text-[#b9b7b0] text-[11px] text-center" style={{ fontFamily: "Inter, sans-serif" }}>
+              Account required · Free delivery · Monthly menu rotation
+            </p>
           </div>
         )}
-
-        {/* Skip */}
-        <button onClick={onClose} className="w-full py-3 text-[11px] text-white/20 hover:text-white/50 transition-colors border-t border-white/5 tracking-wider">
-          No thanks, continue browsing
-        </button>
       </div>
     </div>
   );

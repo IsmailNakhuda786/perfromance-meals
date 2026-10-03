@@ -114,7 +114,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen font-body">
-      {showPromo && <PromoPopup onClose={() => setShowPromo(false)} navigate={navigate} />}
+      {showPromo && <PromoPopup onClose={() => setShowPromo(false)} navigate={navigate} navigateToWizard={navigateToWizard} />}
 
       {/* Download banner */}
       <div className="bg-[#1A1A1A] text-white flex items-center justify-between px-4 py-3 gap-3 flex-wrap">
