@@ -95,7 +95,7 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
 
           <div className="max-w-[520px]">
             <p className="text-[11px] font-mono tracking-[0.4em] uppercase mb-5" style={{ color: ORANGE }}>Boutique Progress</p>
-            <h1 className="font-display text-[44px] sm:text-[58px] font-semibold leading-[1.0] mb-7 text-white">
+            <h1 className="font-display text-[32px] sm:text-[44px] lg:text-[58px] font-semibold leading-[1.0] mb-7 text-white">
               Fresh structure.<br />
               <span style={{ color: ORANGE }}>Personal support.</span>
             </h1>

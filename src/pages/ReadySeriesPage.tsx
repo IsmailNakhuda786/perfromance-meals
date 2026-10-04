@@ -27,12 +27,6 @@ const MEALS = [
 
 const CATS = ["A-la-carte", "Low Carb", "High Carb", "Just Protein"];
 
-// Non-beef Low Carb: 103 Herb Chicken, 104 Salmon Quinoa, 106 Miso Salmon, 108 Greek Chicken, 109 Egg White Avocado
-// Beef Low Carb: 102 Spicy Korean Beef, 110 Beef Rendang
-// High Carb Non-Beef: 107 Overnight Oats, 109 Egg White Avocado, 111 Chicken Burrito, 112 Prawn Fried Rice, 105 Thai Basil Pork
-// High Carb Beef: 105 Thai Basil Pork, 112 Prawn Fried Rice, 111 Chicken Burrito
-// Just Protein: 101 Teriyaki Chicken, 104 Salmon Quinoa, 106 Miso Salmon, 108 Greek Chicken
-
 const PREDEFINED_BUNDLES = [
   {
     category: "Low Carb Meals",
@@ -86,7 +80,6 @@ const PREDEFINED_BUNDLES = [
   },
 ];
 
-// 10 predefined subscription products
 const SUBSCRIPTION_PRODUCTS = [
   { sku: "JPSUB01", name: "Just Protein",         variant: "Non-Beef", items: 14, price3m: 252.90, price6m: 480.50, badge: null },
   { sku: "JPSUB02", name: "Just Protein",         variant: "Beef",     items: 14, price3m: 252.90, price6m: 480.50, badge: null },
@@ -177,7 +170,6 @@ const promos = [
   { code: "FREEZER5", desc: "$5 off orders of 10+ meals", expires: "15 Oct 2026" },
 ];
 
-// Per-meal reviews for the reviews section
 const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: string; date: string }[]> = {
   101: [
     { author: "Marcus T.", rating: 5, text: "Best meal prep chicken I have ever had. The teriyaki glaze is spot-on and the brown rice keeps me full till 5pm.", date: "12 Sep" },
@@ -206,9 +198,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
   const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
   const [subTerm, setSubTerm] = useState<3 | 6>(3);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
-  // Subscription type filter: Meals / Just Protein / Mixed
   const [subTypeFilter, setSubTypeFilter] = useState<"meals" | "protein" | "mixed">("meals");
-  // Auth state for RS subscriptions (account-gated)
   const [rsSignedIn, setRsSignedIn] = useState(false);
   const [showRsAuthGate, setShowRsAuthGate] = useState(false);
   const [pendingSubSku, setPendingSubSku] = useState<string | null>(null);
@@ -283,7 +273,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
               <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-5">Everyday Momentum</p>
-              <h1 className="font-display text-[52px] sm:text-[68px] font-extrabold leading-[0.88] mb-6">
+              <h1 className="font-display text-[36px] sm:text-[52px] lg:text-[68px] font-extrabold leading-[0.88] mb-6">
                 FROZEN AT PEAK.<br /><span className="text-[#F5B300]">READY ON DEMAND.</span>
               </h1>
               <p className="text-white/50 text-[15px] leading-relaxed max-w-[420px] mb-8">

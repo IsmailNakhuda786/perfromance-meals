@@ -175,7 +175,7 @@ export default function BuildABoxPage({ navigate, addToCart, onProceedToCheckout
             )}
           </div>
 
-          <div className="border border-white/10 p-3 sm:p-6 mb-10 grid grid-cols-3 gap-6 text-center">
+          <div className="border border-white/10 p-3 sm:p-6 mb-10 grid grid-cols-3 gap-3 sm:gap-6 text-center">
             <div>
               <div className="font-mono text-[11px] text-white/30 mb-1">Price per meal</div>
               <div className="font-display text-[22px] sm:text-[28px] font-bold text-[#F5B300]">${effectivePPM.toFixed(2)}</div>

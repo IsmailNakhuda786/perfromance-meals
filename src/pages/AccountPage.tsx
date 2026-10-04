@@ -109,7 +109,6 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
     }
   }, [initialSection]);
 
-  // Subscription state — all editable
   const [subPaused, setSubPaused] = useState(false);
   const [pauseWeeks, setPauseWeeks] = useState(1);
   const [showPauseModal, setShowPauseModal] = useState(false);
@@ -1245,7 +1244,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 {/* Amount selector */}
                 <div className="mb-5">
                   <label className="block text-[10px] font-mono tracking-[0.2em] uppercase text-[#888] mb-2">Select amount</label>
-                  <div className="grid grid-cols-4 gap-2 mb-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
                     {PRESET_AMOUNTS.map((a) => (
                       <button key={a} onClick={() => setTopUpAmount(a)}
                         className={`py-2.5 border text-[13px] font-bold transition-colors ${topUpAmount === a ? "bg-[#111] text-white border-[#111]" : "border-[#D0CCC4] text-[#111] hover:border-[#111]"}`}>

@@ -156,7 +156,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
             <p className="text-white/50 text-[15px] leading-relaxed mb-5">{meal.desc}</p>
 
             {/* Macros */}
-            <div className="grid grid-cols-4 gap-px bg-white/8 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-white/8 mb-6">
               {[
                 { val: `${meal.protein}g`, label: "Protein" },
                 { val: `${meal.carbs}g`, label: "Carbs" },
