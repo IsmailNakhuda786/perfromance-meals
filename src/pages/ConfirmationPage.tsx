@@ -201,7 +201,7 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
             </button>
           )}
           {orderType === "plan" ? (
-            <button onClick={() => navigate("ready-to-go")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
+            <button onClick={() => navigate("ready-series")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
               Browse Ready-to-Go Meals
             </button>
           ) : (

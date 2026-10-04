@@ -79,7 +79,7 @@ export default function CheckoutPage({ navigate, cart, savedAddress, requireAcco
             </div>
           ))}
         </div>
-        <button onClick={() => step > 1 ? setStep(1) : navigate("ready-to-go")} className="text-[#aaa] hover:text-[#111] text-[13px] transition-colors">
+        <button onClick={() => step > 1 ? setStep(1) : navigate("ready-series")} className="text-[#aaa] hover:text-[#111] text-[13px] transition-colors">
           {step > 1 ? "← Back" : "✕"}
         </button>
       </div>

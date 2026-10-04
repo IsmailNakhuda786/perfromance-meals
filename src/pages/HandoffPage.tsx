@@ -22,29 +22,19 @@ const SCREENS = [
     flows: ["→ Ready Series", "→ Cart"],
   },
   {
-    id: "ready-to-go", label: "Ready-to-Go", tag: "Shop", color: "#CDFF3A",
-    desc: "Product grid with category filter + sort. Qty badges. Add to cart with stepper. Product detail modal. Build-A-Box upsell CTA.",
-    flows: ["→ Cart drawer", "→ Checkout", "→ Build-A-Box"],
-  },
-  {
-    id: "build-a-box", label: "Build-A-Box", tag: "Shop", color: "#CDFF3A",
-    desc: "Box size selector (5/10/15/20 meals). Meal selection grid. Running total sidebar. Add to cart.",
-    flows: ["→ Cart drawer", "→ Checkout"],
-  },
-  {
     id: "meal-plan-wizard", label: "Meal Plan Wizard", tag: "Conversion", color: "#F2C94C",
     desc: "5-step account-gated subscription flow: programme type → plan and meal frequency → menu grouped by Mon–Tue / Wed–Thu / Fri delivery windows → details → review and account authentication.",
     flows: ["→ Confirmation (plan)"],
   },
   {
     id: "checkout", label: "Checkout", tag: "Conversion", color: "#CDFF3A",
-    desc: "Ready-to-Go / Build-A-Box checkout. 2 steps: Delivery (pre-filled from wizard if available) → Payment (card + PayNow + save card). Order summary sidebar.",
+    desc: "Ready Series checkout. 2 steps: Delivery (pre-filled from wizard if available) → Payment (card + PayNow + save card). Order summary sidebar.",
     flows: ["→ Confirmation (ready)"],
   },
   {
     id: "confirmation", label: "Order Confirmation", tag: "Post-purchase", color: "#7EE8B0",
     desc: "Confetti + success state. Live delivery timeline (5 steps). Order details. Points earned widget. Meal Plan CTA (plan orders only). Buttons differ by order type.",
-    flows: ["→ Account", "→ Home / Ready-to-Go"],
+    flows: ["→ Account", "→ Home / Ready Series"],
   },
   {
     id: "account", label: "My Account", tag: "Retention", color: "#A78BFA",

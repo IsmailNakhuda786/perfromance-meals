@@ -1,7 +1,6 @@
 export type Page =
   | "home"
   | "ready-series"
-  | "ready-to-go"
   | "meal-plan-landing"
   | "meal-plan-wizard"
   | "checkout"

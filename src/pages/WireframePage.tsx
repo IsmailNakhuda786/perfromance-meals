@@ -123,30 +123,6 @@ const WF_ReadySeries = () => (
   </div>
 );
 
-const WF_BuildABox = () => (
-  <div className="space-y-1.5">
-    <WNav />
-    <WSection label="Step Tabs — 3 steps">
-      <div className="flex gap-1">{["1 · Box Size","2 · Pick Meals","3 · Review"].map(l=><div key={l} className="h-7 px-2 bg-[#D8D5CF] rounded-sm text-[8px] flex items-center text-[#888]">{l}</div>)}</div>
-    </WSection>
-    <WSection label="Step 1 — Box size selector">
-      <div className="grid grid-cols-4 gap-1">
-        {["5 Meals","10 Meals","15 Meals","20 Meals"].map(l=>(
-          <div key={l} className="border border-[#C8C4BC] p-1.5 rounded-sm text-center space-y-1">
-            <WText w="w-3/4 mx-auto" className="h-3" />
-            <WText w="w-1/2 mx-auto" />
-          </div>
-        ))}
-      </div>
-    </WSection>
-    <WSection label="Sticky summary bar">
-      <div className="flex items-center justify-between bg-[#444] rounded-sm px-2 py-1.5">
-        <WText w="w-1/3" className="bg-[#666]" />
-        <WBtn dark w="w-20" />
-      </div>
-    </WSection>
-  </div>
-);
 
 const WF_Wizard = () => (
   <div className="space-y-1.5">
@@ -336,8 +312,6 @@ const SCREENS = [
   { id: "home",         label: "01 — Home",               WF: WF_Home,         page: "home" as Page },
   { id: "ready-series", label: "02 — Ready Series",        WF: WF_ReadySeries,  page: "ready-series" as Page },
   { id: "ready-product",label: "03 — Product Detail",      WF: WF_ReadyToGo,    page: "ready-series-product" as Page },
-  { id: "ready-to-go",  label: "04 — Ready-to-Go",        WF: WF_ReadyToGo,    page: "ready-to-go" as Page },
-  { id: "build-a-box",  label: "05 — Build-A-Box",        WF: WF_BuildABox,    page: "build-a-box" as Page },
   { id: "meal-landing", label: "06 — Meal Plan Landing",  WF: WF_Home,         page: "meal-plan-landing" as Page },
   { id: "wizard",       label: "07 — Meal Plan Wizard",   WF: WF_Wizard,       page: "meal-plan-wizard" as Page },
   { id: "checkout",     label: "08 — Checkout",           WF: WF_Checkout,     page: "checkout" as Page },

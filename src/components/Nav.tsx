@@ -78,7 +78,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
   ];
   const currentBrandId =
     currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "meal-plan"
-    : currentPage === "ready-series" || currentPage === "ready-to-go" || currentPage === "ready-series-product" ? "ready-series"
+    : currentPage === "ready-series" || currentPage === "ready-series-product" ? "ready-series"
     : "parent";
   const currentBrand = BRANDS.find((b) => b.id === currentBrandId)!;
 

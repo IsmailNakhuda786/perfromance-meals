@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import PromoPopup from "@/components/PromoPopup";
 import HomePage from "@/pages/HomePage";
 import ReadySeriesPage from "@/pages/ReadySeriesPage";
-import ReadyToGoPage from "@/pages/ReadyToGoPage";
 import MealPlanLandingPage from "@/pages/MealPlanLandingPage";
 import MealPlanWizardPage from "@/pages/MealPlanWizardPage";
 import CheckoutPage from "@/pages/CheckoutPage";
@@ -153,7 +152,6 @@ export default function App() {
       {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "ready-series" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} onSelectMeal={(id) => { setSelectedMealId(id); navigate("ready-series-product"); }} setCartOpen={setCartOpen} />}
       {page === "ready-series-product" && <ReadySeriesProductPage mealId={selectedMealId} navigate={navigate} addToCart={addToCart} />}
-      {page === "ready-to-go" && <ReadyToGoPage navigate={navigate} addToCart={addToCart} cart={cart} />}
       {page === "meal-plan-landing" && <MealPlanLandingPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "meal-plan-wizard" && (
         <MealPlanWizardPage
