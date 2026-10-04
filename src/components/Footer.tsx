@@ -56,17 +56,17 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
           {[
             { label: "Wireframes", action: () => navigate("wireframe") },
             { label: "Blueprint",  action: () => navigate("blueprint") },
-            { label: "Dev Handoff", action: () => navigate("handoff") },
-            { label: "Screens Export", action: () => navigate("screens-export") },
+            { label: "QA Handoff", action: () => navigate("handoff") },
+            { label: "Screens", action: () => navigate("screens-export") },
           ].map(({ label, action }) => (
             <button key={label} onClick={action}
               className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
               {label}
             </button>
           ))}
-          <a href="/Performance-Meals-Current-QA-Handoff.pdf" download="Performance-Meals-Current-QA-Handoff.pdf"
+          <a href="/performance-meals-prototype.html" download="performance-meals-prototype.html"
             className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
-            QA PDF
+            ↓ HTML Export
           </a>
           <a href="/PerformanceMeals-Shopify-Theme.zip" download="PerformanceMeals-Shopify-Theme.zip"
             className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
@@ -74,7 +74,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
           </a>
           <a href="/performance-meals-figma-make.tar.gz" download="performance-meals-figma-make.tar.gz"
             className="border border-[#f5b800]/30 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-[#f5b800]/40 hover:text-[#f5b800]/70 hover:border-[#f5b800]/50 transition-colors font-mono">
-            ↓ Source (Figma Make)
+            ↓ Source
           </a>
         </div>
       </div>

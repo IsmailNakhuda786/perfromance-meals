@@ -154,7 +154,7 @@ export default function HandoffPage({ navigate, navigateToWizard }: Props) {
         <div className="max-w-[1200px] mx-auto">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div>
-              <div className="font-mono text-[10px] tracking-[0.4em] text-[#CDFF3A] uppercase mb-3">Developer Handoff · Figma Make Prototype</div>
+              <div className="font-mono text-[10px] tracking-[0.4em] text-[#CDFF3A] uppercase mb-3">Developer Handoff · Figma Make Prototype · Updated October 2026</div>
               <h1 className="font-display text-[48px] font-bold leading-tight mb-2">
                 PERFORMANCE MEALS<span className="text-[#CDFF3A]">.</span> Prototype
               </h1>
