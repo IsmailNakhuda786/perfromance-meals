@@ -82,7 +82,7 @@ const COMPONENTS = [
   { name: "Nav", file: "src/components/Nav.tsx", notes: "Sticky. Promo bar. 01/02 sections. Cart drawer with stepper. 6in60 stamp badge." },
   { name: "Footer", file: "src/components/Footer.tsx", notes: "Compact single-band. Logo + nav links + contact + legal strip." },
   { name: "Cart Drawer", file: "src/components/Nav.tsx", notes: "Slide-in panel. Qty steppers. Plan items show remove-only. Checkout CTA." },
-  { name: "Meal Card (Ready)", file: "src/pages/ReadyToGoPage.tsx", notes: "Image + macros grid + rating + Add/Add more button. Qty badge. Ring on item in cart." },
+  { name: "Meal Card (Ready)", file: "src/pages/ReadySeriesPage.tsx", notes: "Image + macros grid + rating + Add/Add more button. Qty badge. Ring on item in cart." },
   { name: "Meal Card (Wizard)", file: "src/pages/MealPlanWizardPage.tsx", notes: "Large image, Recommended badge, checkmark overlay on select." },
   { name: "Plan Card (Home)", file: "src/pages/HomePage.tsx", notes: "Dark espresso bg, accent top bar, glow on hover, shimmer sweep, Most Popular badge (MAINTAIN)." },
   { name: "Plan Card (Wizard)", file: "src/pages/MealPlanWizardPage.tsx", notes: "Rounded, border select state, radio indicator, macro pills." },

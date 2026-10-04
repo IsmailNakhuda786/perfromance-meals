@@ -298,7 +298,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
               {[
                 { label: "Active Plan", val: activePlan, sub: `${plan.cal} kcal/day`, onClick: () => setTab("subscription") },
                 { label: "Wallet Balance", val: "$12.50", sub: "1,234 reward pts", onClick: () => setTab("wallet") },
@@ -346,7 +346,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
               </div>
               {/* Customize shortcuts */}
               {!subPaused && (
-                <div className="border-t border-white/10 px-6 py-4 grid grid-cols-2 gap-3">
+                <div className="border-t border-white/10 px-6 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
                     { icon: "🔄", label: "Swap meals", desc: "Change upcoming meals" },
                     { icon: "⚖️", label: "Plan type", desc: `${activePlan} · ${plan.cal} kcal` },
@@ -1152,7 +1152,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                 </div>
               </div>
               {/* Referral stats */}
-              <div className="grid grid-cols-3 gap-3 mb-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
                 {[
                   { label: "Friends Referred", value: "3" },
                   { label: "Total Earned", value: "$30.00" },

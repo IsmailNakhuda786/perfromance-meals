@@ -83,7 +83,7 @@ const WF_Home = () => (
   </div>
 );
 
-const WF_ReadyToGo = () => (
+const WF_ProductDetail = () => (
   <div className="space-y-1.5">
     <WNav />
     <WSection label="Hero Banner"><WImg h="h-16" /></WSection>
@@ -277,7 +277,7 @@ const WF_Confirmation = () => (
 const SCREENS = [
   { id: "home",         label: "01 — Home",               WF: WF_Home,         page: "home" as Page },
   { id: "ready-series", label: "02 — Ready Series",        WF: WF_ReadySeries,  page: "ready-series" as Page },
-  { id: "ready-product",label: "03 — Product Detail",      WF: WF_ReadyToGo,    page: "ready-series-product" as Page },
+  { id: "ready-product",label: "03 — Product Detail",      WF: WF_ProductDetail,    page: "ready-series-product" as Page },
   { id: "meal-landing", label: "06 — Meal Plan Landing",  WF: WF_Home,         page: "meal-plan-landing" as Page },
   { id: "wizard",       label: "07 — Meal Plan Wizard",   WF: WF_Wizard,       page: "meal-plan-wizard" as Page },
   { id: "checkout",     label: "08 — Checkout",           WF: WF_Checkout,     page: "checkout" as Page },
