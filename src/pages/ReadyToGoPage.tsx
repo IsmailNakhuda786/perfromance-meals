@@ -48,14 +48,14 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
       </div>
 
       <div className="max-w-[1440px] mx-auto px-6 py-10">
-        {/* Build-A-Box CTA */}
+        {/* Ready Series Subscription CTA */}
         <div className="mb-8 border border-[#F5B300]/20 bg-[#F5B300]/5 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] mb-1 uppercase">Save more</div>
-            <h3 className="font-display text-[22px] font-bold">Box Subscription — from $10.00/meal</h3>
-            <p className="text-white/40 text-[13px] mt-1">Pick your meals, set a cadence. 10% off every delivery. Cancel anytime.</p>
+            <h3 className="font-display text-[22px] font-bold">Ready Series Subscription — from $9.90/meal</h3>
+            <p className="text-white/40 text-[13px] mt-1">Subscribe for 3 or 6 months. Free delivery. Cancel anytime.</p>
           </div>
-          <button onClick={() => navigate("build-a-box")} className="inline-flex items-center gap-2 bg-[#F5B300] text-[#111111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors whitespace-nowrap shrink-0">
+          <button onClick={() => navigate("ready-series")} className="inline-flex items-center gap-2 bg-[#F5B300] text-[#111111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors whitespace-nowrap shrink-0">
             Subscribe &amp; Save →
           </button>
         </div>
@@ -597,9 +597,9 @@ export default function ReadyToGoPage({ navigate, addToCart, cart }: Props) {
                   className="flex-1 bg-[#F5B300] text-[#111111] py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-white transition-colors">
                   Add to Cart — ${selectedMeal.price.toFixed(2)}
                 </button>
-                <button onClick={() => { navigate("build-a-box"); setSelectedMeal(null); }}
+                <button onClick={() => { navigate("ready-series"); setSelectedMeal(null); }}
                   className="border border-white/15 px-5 py-4 text-[11px] text-white/40 hover:border-[#F5B300] hover:text-[#F5B300] transition-colors whitespace-nowrap">
-                  Add to Sub Box
+                  Subscribe →
                 </button>
               </div>
             </div>

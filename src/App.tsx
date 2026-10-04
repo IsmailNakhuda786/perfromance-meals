@@ -6,7 +6,6 @@ import PromoPopup from "@/components/PromoPopup";
 import HomePage from "@/pages/HomePage";
 import ReadySeriesPage from "@/pages/ReadySeriesPage";
 import ReadyToGoPage from "@/pages/ReadyToGoPage";
-import BuildABoxPage from "@/pages/BuildABoxPage";
 import MealPlanLandingPage from "@/pages/MealPlanLandingPage";
 import MealPlanWizardPage from "@/pages/MealPlanWizardPage";
 import CheckoutPage from "@/pages/CheckoutPage";
@@ -22,7 +21,7 @@ import ScreensExportPage from "@/pages/ScreensExportPage";
 import ReadySeriesProductPage from "@/pages/ReadySeriesProductPage";
 import RewardsPage from "@/pages/RewardsPage";
 
-const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "build-a-box", "handoff", "blueprint", "wireframe", "screens-export", "ready-series-product"];
+const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "handoff", "blueprint", "wireframe", "screens-export", "ready-series-product"];
 
 export interface SavedAddress {
   name: string;
@@ -156,7 +155,6 @@ export default function App() {
       {page === "ready-series-product" && <ReadySeriesProductPage mealId={selectedMealId} navigate={navigate} addToCart={addToCart} />}
       {page === "ready-to-go" && <ReadyToGoPage navigate={navigate} addToCart={addToCart} cart={cart} />}
       {page === "meal-plan-landing" && <MealPlanLandingPage navigate={navigate} navigateToWizard={navigateToWizard} />}
-      {page === "build-a-box" && <BuildABoxPage navigate={navigate} addToCart={addToCart} onProceedToCheckout={(isSub) => { setCheckoutIsSubscription(isSub); navigate("checkout"); }} />}
       {page === "meal-plan-wizard" && (
         <MealPlanWizardPage
           navigate={navigate}
