@@ -72,6 +72,10 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
             className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
             Shopify Theme
           </a>
+          <a href="/performance-meals-figma-make.tar.gz" download="performance-meals-figma-make.tar.gz"
+            className="border border-[#f5b800]/30 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-[#f5b800]/40 hover:text-[#f5b800]/70 hover:border-[#f5b800]/50 transition-colors font-mono">
+            ↓ Source (Figma Make)
+          </a>
         </div>
       </div>
     </footer>
