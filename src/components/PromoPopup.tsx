@@ -112,7 +112,7 @@ export default function PromoPopup({ onClose, navigate, navigateToWizard }: Prop
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {/* Everyday 12 */}
               <div className="flex flex-col justify-between p-4" style={{ background: "#fff", border: "1px solid #d8d6d0" }}>
                 <div className="flex flex-col gap-1.5 mb-4">

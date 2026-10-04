@@ -30,7 +30,7 @@ type ShatterPhase = "idle" | "exit" | "enter-init" | "enter";
 
 function ShatterImage({ src, phase }: { src: string; phase: ShatterPhase }) {
   return (
-    <div className="absolute inset-0" style={{ display: "grid", gridTemplateColumns: `repeat(${COLS}, 1fr)`, gridTemplateRows: `repeat(${ROWS}, 1fr)` }}>
+    <div className="absolute inset-0 w-full h-full" style={{ display: "grid", gridTemplateColumns: `repeat(${COLS}, 1fr)`, gridTemplateRows: `repeat(${ROWS}, 1fr)` }}>
       {CELL_CONFIGS.map(({ col, row, dx, dy, rot, exitDelay, enterDelay }, i) => {
         let transform: string;
         let opacity: number;
@@ -240,24 +240,24 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
 
   return (
     <section ref={brandsRef} className="overflow-hidden">
-      <div className={`bg-white px-6 sm:px-10 pt-20 pb-10 transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+      <div className={`bg-white px-6 sm:px-10 pt-12 sm:pt-16 pb-8 transition-all duration-700 ${brandsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-baseline gap-10 mb-6">
-            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>03</span>
-            <span className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>OUR BRAND FAMILY</span>
+          <div className="flex items-baseline gap-5 mb-5">
+            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "clamp(36px, 4vw, 52px)", lineHeight: 1, letterSpacing: "-0.03em" }}>03</span>
+            <span className="text-[#1A1A1A] text-[10px] sm:text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>OUR BRAND FAMILY</span>
           </div>
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
-            <h2 className="font-display text-[52px] sm:text-[72px] font-extrabold text-[#1A1A1A] leading-[0.88]">
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+            <h2 className="font-display font-extrabold text-[#1A1A1A] leading-[0.88]" style={{ fontSize: "clamp(32px, 5vw, 72px)" }}>
               One Standard.<br /><span className="text-[#F5B300]">Two Experiences.</span>
             </h2>
-            <p className="text-[#888] text-[15px] leading-relaxed max-w-[320px] lg:mb-2">
-              Hover each brand to explore its story — all built on the same trusted kitchen.
+            <p className="text-[#888] text-[14px] leading-relaxed max-w-[320px] lg:mb-2">
+              Tap each brand to explore its story — all built on the same trusted kitchen.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row" style={{ minHeight: "600px" }}>
+      <div className="flex flex-col lg:flex-row" style={{ minHeight: "520px" }}>
         {BRAND_DATA.map((b, i) => {
           const isActive = active === i;
           const isInactive = active !== null && !isActive;
@@ -271,14 +271,14 @@ function BrandFamilySection({ brandsRef, brandsVisible, navigate }: BrandFamilyP
               key={i}
               onMouseEnter={() => setActive(i)}
               onMouseLeave={() => setActive(null)}
-              onClick={() => navigate(b.page)}
+              onClick={() => setActive(isActive ? null : i)}
               className="relative overflow-hidden flex flex-col justify-between cursor-pointer"
               style={{
                 backgroundColor: b.bg,
                 flex: isActive ? "2.4" : isInactive ? "0.7" : "1",
                 transition: "flex 0.55s cubic-bezier(0.4,0,0.2,1)",
-                minHeight: "520px",
-                padding: "48px 44px",
+                minHeight: "clamp(200px, 40vw, 520px)",
+                padding: "clamp(28px, 4vw, 48px) clamp(20px, 3.5vw, 44px)",
               }}
             >
               <div
@@ -428,52 +428,59 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
     <div className="bg-white text-[#1A1A1A] overflow-x-hidden">
 
       {/* ── CAROUSEL HERO ── */}
-      <section className="relative bg-white overflow-hidden" style={{ minHeight: "560px" }}>
+      <section className="relative bg-white overflow-hidden">
+        {/* Mobile: stacked. Desktop: side-by-side */}
+        <div className="flex flex-col lg:flex-row" style={{ minHeight: "clamp(500px, 70vh, 620px)" }}>
 
-        {/* Shatter image panel */}
-        <div className="absolute inset-y-0 right-0 w-[47%] overflow-hidden">
-          <ShatterImage src={s.img} phase={phase} />
-        </div>
-
-        <div className="absolute inset-y-0 right-[47%] w-5 bg-[#F5B300] z-10" />
-        <div className="relative z-10 max-w-none px-14 sm:px-16 py-10 sm:py-14 flex flex-col justify-between" style={{ minHeight: "560px", maxWidth: "53%" }}>
-          <div>
-            <p className="text-[#1A1A1A] text-[12px] font-medium tracking-[0.06em] mb-10" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.6s ease", fontFamily: "Inter, sans-serif" }}>{s.eyebrow}</p>
-            <h1 className="font-display font-bold leading-[0.84] mb-6" style={{ fontSize: "clamp(36px, 4.8vw, 64px)", letterSpacing: "-0.03em", color: "#1A1A1A", opacity: phase === "exit" ? 0 : 1, transform: phase === "exit" ? "translateY(10px)" : "none", transition: "opacity 0.5s ease, transform 0.5s ease" }}>
-              {s.headline.map((line, i) => <span key={i} className="block">{line}</span>)}
-            </h1>
-            <p className="text-[#1A1A1A] leading-[1.45] mb-8 max-w-[440px]" style={{ fontSize: "clamp(14px, 1.1vw, 16px)", fontFamily: "Inter, sans-serif", opacity: phase === "exit" ? 0 : 1, transition: "opacity 0.5s ease 0.08s" }}>{s.sub}</p>
-            <div className="flex flex-wrap gap-6 pl-16" style={{ opacity: heroVisible ? (phase === "exit" ? 0.4 : 1) : 0, transition: "opacity 0.5s ease 0.15s" }}>
-              <button
-                onClick={() => s.ctaPrimary.action === "ready-series" ? navigate("ready-series") : navigateToWizard?.()}
-                className="group relative h-14 px-9 bg-[#1A1A1A] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(26,26,26,0.35)]"
-                style={{ fontFamily: "Inter, sans-serif" }}
-              >
-                <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-                <span className="relative">{s.ctaPrimary.label}</span>
-              </button>
-              {s.ctaSecondary && (
+          {/* Text panel */}
+          <div className="relative z-10 w-full lg:w-[53%] flex-shrink-0 px-6 sm:px-10 lg:px-14 py-10 lg:py-14 flex flex-col justify-between order-2 lg:order-1" style={{ minHeight: "clamp(340px, 50vw, 560px)" }}>
+            <div>
+              <p className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.06em] mb-6 lg:mb-10" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.6s ease", fontFamily: "Inter, sans-serif" }}>{s.eyebrow}</p>
+              <h1 className="font-display font-bold leading-[0.88] mb-5 lg:mb-6" style={{ fontSize: "clamp(32px, 5vw, 64px)", letterSpacing: "-0.03em", color: "#1A1A1A", opacity: phase === "exit" ? 0 : 1, transform: phase === "exit" ? "translateY(10px)" : "none", transition: "opacity 0.5s ease, transform 0.5s ease" }}>
+                {s.headline.map((line, i) => <span key={i} className="block">{line}</span>)}
+              </h1>
+              <p className="text-[#1A1A1A] leading-[1.45] mb-6 lg:mb-8 max-w-[440px]" style={{ fontSize: "clamp(13px, 1.2vw, 16px)", fontFamily: "Inter, sans-serif", opacity: phase === "exit" ? 0 : 1, transition: "opacity 0.5s ease 0.08s" }}>{s.sub}</p>
+              <div className="flex flex-wrap gap-3 lg:gap-6 lg:pl-16" style={{ opacity: heroVisible ? (phase === "exit" ? 0.4 : 1) : 0, transition: "opacity 0.5s ease 0.15s" }}>
                 <button
-                  onClick={() => s.ctaSecondary!.action === "meal-plan" ? navigateToWizard?.() : navigate("ready-series")}
-                  className="group relative h-14 px-9 bg-[#E85D04] text-white text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(232,93,4,0.45)]"
+                  onClick={() => s.ctaPrimary.action === "ready-series" ? navigate("ready-series") : navigateToWizard?.()}
+                  className="group relative h-12 lg:h-14 px-7 lg:px-9 bg-[#1A1A1A] text-white text-[12px] lg:text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(26,26,26,0.35)]"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-                  <span className="relative">{s.ctaSecondary.label}</span>
+                  <span className="relative">{s.ctaPrimary.label}</span>
                 </button>
-              )}
-            </div>
-          </div>
-          <div className="mt-14 flex flex-col gap-4" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.8s ease 0.6s" }}>
-            <p className="text-[#7A7A75] text-[11px] font-medium tracking-[0.034em]" style={{ fontFamily: "Inter, sans-serif" }}>ONE TRUSTED STANDARD. TWO CLEAR OFFERS.</p>
-            <div className="flex items-center gap-4">
-              <div className="relative h-[2px] w-[240px] bg-[#1A1A1A]/15 rounded-full overflow-hidden">
-                <div className="absolute left-0 top-0 h-full bg-[#F5B300] rounded-full transition-all duration-300" style={{ width: `${((slide + 1) / SLIDES.length) * 100}%` }} />
+                {s.ctaSecondary && (
+                  <button
+                    onClick={() => s.ctaSecondary!.action === "meal-plan" ? navigateToWizard?.() : navigate("ready-series")}
+                    className="group relative h-12 lg:h-14 px-7 lg:px-9 bg-[#E85D04] text-white text-[12px] lg:text-[13px] font-semibold tracking-[0.04em] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.04] hover:shadow-[0_8px_28px_rgba(232,93,4,0.45)]"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                  >
+                    <span className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                    <span className="relative">{s.ctaSecondary.label}</span>
+                  </button>
+                )}
               </div>
-              <span className="text-[#7A7A75] text-[12px] font-medium" style={{ fontFamily: "Inter, sans-serif" }}>0{slide + 1} / 0{SLIDES.length}</span>
-              <span className="text-[#7A7A75] text-[11px]" style={{ fontFamily: "Inter, sans-serif" }}>AUTO 05s</span>
+            </div>
+            <div className="mt-8 lg:mt-14 flex flex-col gap-3" style={{ opacity: heroVisible ? 1 : 0, transition: "opacity 0.8s ease 0.6s" }}>
+              <p className="text-[#7A7A75] text-[10px] lg:text-[11px] font-medium tracking-[0.034em]" style={{ fontFamily: "Inter, sans-serif" }}>ONE TRUSTED STANDARD. TWO CLEAR OFFERS.</p>
+              <div className="flex items-center gap-3 lg:gap-4">
+                <div className="relative h-[2px] w-[140px] lg:w-[240px] bg-[#1A1A1A]/15 rounded-full overflow-hidden">
+                  <div className="absolute left-0 top-0 h-full bg-[#F5B300] rounded-full transition-all duration-300" style={{ width: `${((slide + 1) / SLIDES.length) * 100}%` }} />
+                </div>
+                <span className="text-[#7A7A75] text-[11px] font-medium" style={{ fontFamily: "Inter, sans-serif" }}>0{slide + 1} / 0{SLIDES.length}</span>
+                <span className="text-[#7A7A75] text-[10px]" style={{ fontFamily: "Inter, sans-serif" }}>AUTO 05s</span>
+              </div>
             </div>
           </div>
+
+          {/* Yellow spine — desktop only */}
+          <div className="hidden lg:block w-5 flex-shrink-0 bg-[#F5B300] z-10" />
+
+          {/* Image panel */}
+          <div className="relative w-full lg:flex-1 order-1 lg:order-2 overflow-hidden" style={{ minHeight: "240px" }}>
+            <ShatterImage src={s.img} phase={phase} />
+          </div>
+
         </div>
       </section>
 
@@ -481,38 +488,38 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       <StatsBridge />
 
       {/* ── 01 THE STANDARD BEHIND EVERY MEAL ── */}
-      <section className="bg-[#1A1A1A] overflow-hidden" style={{ minHeight: "480px" }}>
-        <div className="flex flex-col lg:flex-row" style={{ minHeight: "480px" }}>
-          <div className="flex-1 px-10 sm:px-14 py-12 sm:py-16 flex flex-col justify-between">
+      <section className="bg-[#1A1A1A] overflow-hidden">
+        <div className="flex flex-col lg:flex-row">
+          <div className="flex-1 px-6 sm:px-10 lg:px-14 py-10 sm:py-14 lg:py-16 flex flex-col justify-between">
             <div>
-              <div className="flex items-baseline gap-8 mb-8">
-                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "52px", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
-                <span className="text-[#F5B300] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>THE PARENT BRAND</span>
+              <div className="flex items-baseline gap-5 mb-6">
+                <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "clamp(36px, 4vw, 52px)", lineHeight: 1, letterSpacing: "-0.03em" }}>01</span>
+                <span className="text-[#F5B300] text-[10px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>THE PARENT BRAND</span>
               </div>
-              <h2 className="font-display font-bold text-white mb-6" style={{ fontSize: "clamp(30px, 3.6vw, 48px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
+              <h2 className="font-display font-bold text-white mb-5" style={{ fontSize: "clamp(28px, 3.6vw, 48px)", lineHeight: 0.9, letterSpacing: "-0.023em" }}>
                 <span className="block">THE STANDARD</span>
                 <span className="block">BEHIND EVERY</span>
                 <span className="block">MEAL.</span>
               </h2>
-              <p className="text-white leading-[1.48] mb-6 max-w-[420px]" style={{ fontSize: "14px", fontFamily: "Inter, sans-serif" }}>
+              <p className="text-white/80 leading-[1.48] mb-5 max-w-[420px]" style={{ fontSize: "14px", fontFamily: "Inter, sans-serif" }}>
                 Performance Meals sets the purpose, quality standard and experience behind everything we offer.
               </p>
               <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em]" style={{ fontFamily: "Inter, sans-serif" }}>PRINCIPLED  •  GROUNDED</p>
             </div>
           </div>
-          <div className="relative lg:w-[55%] flex-shrink-0" style={{ minHeight: "400px" }}>
-            <img src={imgChef} alt="Chef preparing meals" className="w-full h-full object-cover" style={{ minHeight: "400px" }} />
-            <div className="absolute bottom-0 left-0 right-0 bg-[rgba(26,26,26,0.90)] px-8 py-8">
-              <div className="grid grid-cols-3 gap-4">
+          <div className="relative lg:w-[55%] flex-shrink-0" style={{ minHeight: "320px" }}>
+            <img src={imgChef} alt="Chef preparing meals" className="w-full h-full object-cover absolute inset-0" style={{ minHeight: "320px" }} />
+            <div className="absolute bottom-0 left-0 right-0 bg-[rgba(26,26,26,0.92)] px-5 sm:px-8 py-5 sm:py-7">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 {[
                   { num: "01", title: "CHEF-LED RECIPES", sub: "Craft-led food." },
                   { num: "02", title: "CLEAR NUTRITION", sub: "Visible macros & ingredients." },
                   { num: "03", title: "QUALITY CONTROL", sub: "Kitchen to doorstep." },
                 ].map((p) => (
                   <div key={p.num}>
-                    <p className="text-[#F5B300] text-[10px] tracking-[0.01em] mb-3" style={{ fontFamily: "Inter, sans-serif" }}>{p.num}</p>
-                    <p className="text-white text-[13px] font-medium leading-[1.1] mb-2" style={{ fontFamily: "Outfit, sans-serif" }}>{p.title}</p>
-                    <p className="text-[#C2C2BA] text-[11px] leading-[1.35]" style={{ fontFamily: "Inter, sans-serif" }}>{p.sub}</p>
+                    <p className="text-[#F5B300] text-[9px] tracking-[0.06em] mb-2" style={{ fontFamily: "Inter, sans-serif" }}>{p.num}</p>
+                    <p className="text-white text-[11px] sm:text-[13px] font-medium leading-[1.1] mb-1" style={{ fontFamily: "Outfit, sans-serif" }}>{p.title}</p>
+                    <p className="text-[#C2C2BA] text-[10px] sm:text-[11px] leading-[1.35] hidden sm:block" style={{ fontFamily: "Inter, sans-serif" }}>{p.sub}</p>
                   </div>
                 ))}
               </div>
@@ -522,12 +529,12 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       </section>
 
       {/* ── 02 CHOOSE HOW PERFORMANCE MEALS WORKS FOR YOU ── */}
-      <section className="bg-[#F7F4EB] overflow-hidden py-12 sm:py-16 px-6 sm:px-10 lg:px-16">
+      <section className="bg-[#F7F4EB] overflow-hidden py-10 sm:py-14 lg:py-16 px-6 sm:px-10 lg:px-16">
         <div className="max-w-[1380px] mx-auto">
           {/* Header */}
-          <div className="flex items-baseline gap-8 mb-5">
-            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "52px", lineHeight: 1, letterSpacing: "-0.03em" }}>02</span>
-            <span className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>ONE STANDARD. TWO DISTINCT EXPERIENCES.</span>
+          <div className="flex items-baseline gap-5 mb-4">
+            <span className="font-display font-bold text-[#1A1A1A]" style={{ fontSize: "clamp(36px, 4vw, 52px)", lineHeight: 1, letterSpacing: "-0.03em" }}>02</span>
+            <span className="text-[#1A1A1A] text-[10px] sm:text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>ONE STANDARD. TWO DISTINCT EXPERIENCES.</span>
           </div>
 
           <h2 className="font-display font-bold text-[#1A1A1A] mb-4" style={{ fontSize: "clamp(28px, 3.2vw, 42px)", lineHeight: 0.92, letterSpacing: "-0.021em" }}>
@@ -544,25 +551,25 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
             {/* Ready Series card */}
-            <div className="group bg-[#1A1A1A] overflow-hidden flex cursor-pointer" style={{ minHeight: "340px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.28)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
-              <div className="w-[42%] flex-shrink-0 relative overflow-hidden">
+            <div className="group bg-[#1A1A1A] overflow-hidden flex flex-col sm:flex-row cursor-pointer" style={{ minHeight: "280px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.28)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
+              <div className="w-full sm:w-[42%] flex-shrink-0 relative overflow-hidden" style={{ minHeight: "200px" }}>
                 <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
               </div>
-              <div className="flex-shrink-0 bg-[#F5B300] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
-              <div className="flex-1 px-8 py-8 flex flex-col justify-between">
+              <div className="hidden sm:block flex-shrink-0 bg-[#F5B300] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
+              <div className="flex-1 px-6 sm:px-8 py-6 sm:py-8 flex flex-col justify-between">
                 <div>
-                  <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.06em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>READY SERIES</p>
-                  <h3 className="font-display font-bold text-white mb-5" style={{ fontSize: "clamp(26px, 2.4vw, 36px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
+                  <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.06em] mb-4" style={{ fontFamily: "Inter, sans-serif" }}>READY SERIES</p>
+                  <h3 className="font-display font-bold text-white mb-4" style={{ fontSize: "clamp(22px, 2.4vw, 36px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
                     <span className="block">EVERYDAY</span>
                     <span className="block">MOMENTUM.</span>
                   </h3>
-                  <p className="text-white/70 leading-[1.5]" style={{ fontSize: "15px", fontFamily: "Inter, sans-serif" }}>
+                  <p className="text-white/70 leading-[1.5] text-[14px] sm:text-[15px]" style={{ fontFamily: "Inter, sans-serif" }}>
                     Frozen convenience for changing schedules. Fast, flexible and dependable.
                   </p>
                 </div>
                 <button
                   onClick={() => navigate("ready-series")}
-                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-white transition-all duration-300 pt-6 border-t border-white/15"
+                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-white transition-all duration-300 pt-5 border-t border-white/15 mt-5"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   <span className="relative pb-[3px] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-[#F5B300] after:transition-all after:duration-300 group-hover:after:w-full group-hover:text-[#F5B300]">
@@ -574,25 +581,25 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             </div>
 
             {/* Meal Plan card */}
-            <div className="group bg-white overflow-hidden flex cursor-pointer" style={{ minHeight: "340px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.14)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
-              <div className="w-[42%] flex-shrink-0 relative overflow-hidden">
+            <div className="group bg-white overflow-hidden flex flex-col sm:flex-row cursor-pointer" style={{ minHeight: "280px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.14)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
+              <div className="w-full sm:w-[42%] flex-shrink-0 relative overflow-hidden" style={{ minHeight: "200px" }}>
                 <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
               </div>
-              <div className="flex-shrink-0 bg-[#E85D04] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
-              <div className="flex-1 px-8 py-8 flex flex-col justify-between">
+              <div className="hidden sm:block flex-shrink-0 bg-[#E85D04] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
+              <div className="flex-1 px-6 sm:px-8 py-6 sm:py-8 flex flex-col justify-between">
                 <div>
-                  <p className="text-[#E85D04] text-[11px] font-medium tracking-[0.06em] mb-5" style={{ fontFamily: "Inter, sans-serif" }}>MEAL PLAN</p>
-                  <h3 className="font-display font-bold text-[#1A1A1A] mb-5" style={{ fontSize: "clamp(26px, 2.4vw, 36px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
+                  <p className="text-[#E85D04] text-[11px] font-medium tracking-[0.06em] mb-4" style={{ fontFamily: "Inter, sans-serif" }}>MEAL PLAN</p>
+                  <h3 className="font-display font-bold text-[#1A1A1A] mb-4" style={{ fontSize: "clamp(22px, 2.4vw, 36px)", lineHeight: 0.92, letterSpacing: "-0.018em" }}>
                     <span className="block">BOUTIQUE</span>
                     <span className="block">PROGRESS.</span>
                   </h3>
-                  <p className="text-[#1A1A1A]/60 leading-[1.5]" style={{ fontSize: "15px", fontFamily: "Inter, sans-serif" }}>
+                  <p className="text-[#1A1A1A]/60 leading-[1.5] text-[14px] sm:text-[15px]" style={{ fontFamily: "Inter, sans-serif" }}>
                     Fresh structure, personal guidance and support around a clear goal.
                   </p>
                 </div>
                 <button
                   onClick={() => navigateToWizard?.()}
-                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-[#1A1A1A] transition-all duration-300 pt-6 border-t border-[#1A1A1A]/12"
+                  className="group inline-flex items-center gap-2 text-[12px] font-semibold tracking-[0.04em] text-[#1A1A1A] transition-all duration-300 pt-5 border-t border-[#1A1A1A]/12 mt-5"
                   style={{ fontFamily: "Inter, sans-serif" }}
                 >
                   <span className="relative pb-[3px] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-[#E85D04] after:transition-all after:duration-300 group-hover:after:w-full group-hover:text-[#E85D04]">
@@ -610,23 +617,23 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
       {/* ── 03 BRAND FAMILY ── */}
       <BrandFamilySection brandsRef={brandsRef} brandsVisible={brandsVisible} navigate={navigate} />
 
-      {/* ── 05 CONVENIENCE WITHOUT COMPROMISE ── */}
-      <section className="bg-white overflow-hidden" style={{ minHeight: "690px" }}>
-        <div className="flex flex-col lg:flex-row" style={{ minHeight: "690px" }}>
+      {/* ── 04 CONVENIENCE WITHOUT COMPROMISE ── */}
+      <section className="bg-white overflow-hidden">
+        <div className="flex flex-col lg:flex-row">
 
           {/* Left: image */}
-          <div className="lg:w-[47%] flex-shrink-0 relative" style={{ minHeight: "360px" }}>
-            <img src={imgKitchen} alt="Performance Meals food" className="w-full h-full object-cover" style={{ minHeight: "360px" }} />
+          <div className="lg:w-[47%] flex-shrink-0 relative" style={{ minHeight: "280px" }}>
+            <img src={imgKitchen} alt="Performance Meals food" className="w-full h-full object-cover absolute inset-0" style={{ minHeight: "280px" }} />
           </div>
 
           {/* Yellow spine */}
           <div className="hidden lg:block w-5 flex-shrink-0 bg-[#F5B300]" />
 
           {/* Right: text */}
-          <div className="flex-1 px-12 sm:px-16 py-16 sm:py-20 flex flex-col justify-center">
+          <div className="flex-1 px-6 sm:px-10 lg:px-14 py-10 sm:py-14 lg:py-20 flex flex-col justify-center">
             {/* Number + tag */}
-            <div className="flex items-baseline gap-8 mb-8">
-              <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "72px", lineHeight: 1, letterSpacing: "-0.03em" }}>04</span>
+            <div className="flex items-baseline gap-5 mb-6">
+              <span className="font-display font-bold text-[#F5B300]" style={{ fontSize: "clamp(36px, 4vw, 52px)", lineHeight: 1, letterSpacing: "-0.03em" }}>04</span>
               <span className="text-[#1A1A1A] text-[11px] font-medium tracking-[0.05em]" style={{ fontFamily: "Inter, sans-serif" }}>FOOD FIRST. PERFORMANCE FOLLOWS.</span>
             </div>
 
@@ -638,12 +645,12 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             </h2>
 
             {/* Body */}
-            <p className="text-[#7A7A75] leading-[1.5] mb-10 max-w-[500px]" style={{ fontSize: "17px", fontFamily: "Inter, sans-serif" }}>
+            <p className="text-[#7A7A75] leading-[1.5] mb-8 max-w-[500px]" style={{ fontSize: "clamp(14px, 1.5vw, 17px)", fontFamily: "Inter, sans-serif" }}>
               Convenient food should still respect the ingredients, the craft and the person eating it. That principle shapes every Performance Meals experience.
             </p>
 
             {/* Rule */}
-            <div className="h-px bg-[#1A1A1A]/13 w-full max-w-[510px] mb-8" />
+            <div className="h-px bg-[#1A1A1A]/13 w-full max-w-[510px] mb-7" />
 
             {/* Mission */}
             <p className="text-[#F5B300] text-[11px] font-medium tracking-[0.04em] mb-4" style={{ fontFamily: "Inter, sans-serif" }}>OUR MISSION</p>
@@ -654,8 +661,8 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
         </div>
       </section>
 
-      {/* ── 06 CLOSING CTA ── */}
-      <section className="bg-[#F5B300] overflow-hidden px-16 py-16 sm:py-20 relative" style={{ minHeight: "442px" }}>
+      {/* ── CLOSING CTA ── */}
+      <section className="bg-[#F5B300] overflow-hidden px-6 sm:px-10 lg:px-16 py-12 sm:py-16 lg:py-20 relative">
         <div className="max-w-[1380px] mx-auto flex flex-col lg:flex-row lg:items-start lg:justify-between gap-12">
 
           {/* Left */}
