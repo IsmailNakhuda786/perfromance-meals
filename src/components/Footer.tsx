@@ -49,35 +49,6 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
         </div>
       </div>
 
-      {/* Prototype-only tools — developer/QA navigation */}
-      <div className="border-t border-white/[0.04] bg-white/[0.02]">
-        <div className="max-w-[1440px] mx-auto px-6 py-2 flex flex-wrap gap-2 items-center justify-end">
-          <span className="text-[9px] font-mono tracking-[0.2em] uppercase text-white/15 mr-1">PROTOTYPE</span>
-          {[
-            { label: "Wireframes", action: () => navigate("wireframe") },
-            { label: "Blueprint",  action: () => navigate("blueprint") },
-            { label: "QA Handoff", action: () => navigate("handoff") },
-            { label: "Screens", action: () => navigate("screens-export") },
-          ].map(({ label, action }) => (
-            <button key={label} onClick={action}
-              className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
-              {label}
-            </button>
-          ))}
-          <a href="/performance-meals-prototype.html" download="performance-meals-prototype.html"
-            className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
-            ↓ HTML Export
-          </a>
-          <a href="/PerformanceMeals-Shopify-Theme.zip" download="PerformanceMeals-Shopify-Theme.zip"
-            className="border border-white/10 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-white/20 hover:text-white/40 hover:border-white/20 transition-colors font-mono">
-            Shopify Theme
-          </a>
-          <a href="/performance-meals-figma-make.tar.gz" download="performance-meals-figma-make.tar.gz"
-            className="border border-[#f5b800]/30 px-2.5 py-0.5 text-[9px] tracking-[0.12em] uppercase text-[#f5b800]/40 hover:text-[#f5b800]/70 hover:border-[#f5b800]/50 transition-colors font-mono">
-            ↓ Source
-          </a>
-        </div>
-      </div>
     </footer>
   );
 }
