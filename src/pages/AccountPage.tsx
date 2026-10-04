@@ -267,7 +267,7 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
         </div>
       )}
 
-      <div className="max-w-[1200px] mx-auto px-6 py-10">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-10">
 
         {/* ══ DASHBOARD ══ */}
         {tab === "dashboard" && (

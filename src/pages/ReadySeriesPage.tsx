@@ -399,16 +399,16 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       {/* ── PURCHASE MODE TABS ── */}
       <div id="rs-shop" className={`border-b ${th("bg-[#111] border-white/8", "bg-white border-black/8", "bg-[#1C1108] border-[#F5EDD8]/8")}`}>
         <div className="max-w-[1200px] mx-auto px-6">
-          <div className="flex">
+          <div className="flex overflow-x-auto">
             {([
               { key: "single" as const,       label: "Single Purchase", sub: "Individual meals" },
               { key: "bundles" as const,       label: "Bundles",         sub: "Predefined packs" },
               { key: "subscription" as const,  label: "Subscription",    sub: "3 or 6 months" },
             ]).map((m) => (
               <button key={m.key} onClick={() => setPurchaseMode(m.key)}
-                className={`px-6 py-4 text-left transition-all border-b-2 ${purchaseMode === m.key ? "border-[#F5B300]" : "border-transparent"} ${purchaseMode === m.key ? th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]") : th("text-white/35 hover:text-white/70", "text-black/30 hover:text-black/60", "text-[#F5EDD8]/35 hover:text-[#F5EDD8]/70")}`}>
-                <div className="text-[12px] font-bold tracking-wide">{m.label}</div>
-                <div className={`text-[10px] mt-0.5 ${th("text-white/30", "text-black/30", "text-[#F5EDD8]/30")}`}>{m.sub}</div>
+                className={`shrink-0 px-5 sm:px-6 py-4 text-left transition-all border-b-2 ${purchaseMode === m.key ? "border-[#F5B300]" : "border-transparent"} ${purchaseMode === m.key ? th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]") : th("text-white/35 hover:text-white/70", "text-black/30 hover:text-black/60", "text-[#F5EDD8]/35 hover:text-[#F5EDD8]/70")}`}>
+                <div className="text-[12px] font-bold tracking-wide whitespace-nowrap">{m.label}</div>
+                <div className={`text-[10px] mt-0.5 whitespace-nowrap ${th("text-white/30", "text-black/30", "text-[#F5EDD8]/30")}`}>{m.sub}</div>
               </button>
             ))}
           </div>
