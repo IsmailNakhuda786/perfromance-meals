@@ -21,6 +21,7 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
           {[
             { label: "Ready Series", action: () => navigate("ready-series") },
             { label: "Meal Plans", action: () => navigate("meal-plan-landing") },
+            { label: "Gift Cards", action: () => navigate("gift-card") },
             { label: "About Us", action: () => navigate("about") },
           ].map((l) => (
             <button key={l.label} onClick={l.action}

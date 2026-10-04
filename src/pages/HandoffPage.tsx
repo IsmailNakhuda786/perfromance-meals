@@ -42,11 +42,6 @@ const SCREENS = [
     flows: ["→ Meal Plan Wizard", "→ Ready-to-Go"],
   },
   {
-    id: "how-it-works", label: "How It Works", tag: "Education", color: "#F2C94C",
-    desc: "Side-by-side explanation of the guided Meal Plan journey and the transactional Ready Series journey, plus FAQs and conversion CTAs.",
-    flows: ["→ Meal Plan Wizard"],
-  },
-  {
     id: "gift-card", label: "Gift Card", tag: "Revenue", color: "#F2C94C",
     desc: "3-step flow: Configure (amount $25/$50/$100/$150, recipient details, message, delivery method email/physical) → Payment (card + PayNow) → Confirmation (gift card preview + code).",
     flows: ["→ Home"],

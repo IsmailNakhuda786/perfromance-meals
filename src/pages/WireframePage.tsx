@@ -244,40 +244,6 @@ const WF_GiftCard = () => (
   </div>
 );
 
-const WF_HowItWorks = () => (
-  <div className="space-y-1.5">
-    <WNav />
-    <WSection label="Hero — centered">
-      <div className="text-center space-y-1.5 py-2">
-        <WText w="w-1/2 mx-auto" className="h-5"/>
-        <WText w="w-2/3 mx-auto"/>
-        <WText w="w-1/2 mx-auto"/>
-        <WBtn w="w-32 mx-auto" dark/>
-      </div>
-    </WSection>
-    <WSection label="4-Step Process">
-      <div className="grid grid-cols-4 gap-1.5">
-        {["Choose","Delivered","Heat","Track"].map((l,i)=>(
-          <div key={l} className="text-center space-y-1 border border-[#C8C4BC] p-1.5 rounded-sm">
-            <div className="w-8 h-8 rounded-full bg-[#D8D5CF] mx-auto flex items-center justify-center text-[10px] text-[#888]">{i+1}</div>
-            <WText w="w-3/4 mx-auto"/>
-            <WText/><WText w="w-2/3 mx-auto"/>
-          </div>
-        ))}
-      </div>
-    </WSection>
-    <WSection label="6in60 Promise — full width banner">
-      <div className="bg-[#444] p-2 rounded-sm flex items-center gap-2">
-        <div className="w-10 h-10 rounded-full bg-[#666] shrink-0"/>
-        <div className="flex-1 space-y-1"><WText className="bg-[#666]"/><WText w="w-5/6" className="bg-[#666]"/></div>
-        <WBtn dark w="w-20"/>
-      </div>
-    </WSection>
-    <WSection label="FAQ — accordion">
-      {[0,1,2,3].map(i=><div key={i} className="flex justify-between items-center border-b border-[#C8C4BC] py-1.5"><WText w="w-2/3"/><div className="w-4 h-4 bg-[#D8D5CF] rounded-sm"/></div>)}
-    </WSection>
-  </div>
-);
 
 const WF_Confirmation = () => (
   <div className="space-y-1.5">
@@ -317,7 +283,6 @@ const SCREENS = [
   { id: "checkout",     label: "08 — Checkout",           WF: WF_Checkout,     page: "checkout" as Page },
   { id: "confirm",      label: "09 — Confirmation",       WF: WF_Confirmation, page: "confirmation" as Page },
   { id: "account",      label: "10 — My Account",         WF: WF_Account,      page: "account" as Page },
-  { id: "how-it-works", label: "11 — How It Works",       WF: WF_HowItWorks,   page: "how-it-works" as Page },
   { id: "gift-card",    label: "12 — Gift Card",          WF: WF_GiftCard,     page: "gift-card" as Page },
   { id: "rewards",      label: "13 — Rewards",            WF: WF_Account,      page: "rewards" as Page },
   { id: "about",        label: "14 — About",              WF: WF_Home,         page: "about" as Page },

@@ -6,7 +6,6 @@ export type Page =
   | "checkout"
   | "confirmation"
   | "account"
-  | "how-it-works"
   | "gift-card"
   | "handoff"
   | "blueprint"

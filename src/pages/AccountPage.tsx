@@ -67,7 +67,7 @@ interface Props {
   initialSection?: string;
 }
 
-type Tab = "dashboard" | "subscription" | "orders" | "wallet" | "settings";
+type Tab = "dashboard" | "subscription" | "orders" | "wallet" | "rewards" | "gift-card" | "settings";
 
 const ORDERS = [
   { id: "PM-20250901-7721", date: "1 Sep 2025", items: "Herb Chicken ×2, Teriyaki ×1", total: 36.70, originalTotal: 40.78, status: "Delivered", type: "ready", promo: "WELCOME10", promoSaving: 4.08 },
@@ -212,7 +212,9 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
     { key: "dashboard", label: "Dashboard" },
     { key: "subscription", label: "My Plan" },
     { key: "orders", label: "Order History" },
-    { key: "wallet", label: "Wallet & Rewards" },
+    { key: "wallet", label: "Wallet" },
+    { key: "rewards", label: "Rewards" },
+    { key: "gift-card", label: "Gift Cards" },
     { key: "settings", label: "Settings" },
   ];
 
@@ -925,6 +927,96 @@ export default function AccountPage({ navigate, initialTab, initialSection }: Pr
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══ REWARDS ══ */}
+        {tab === "rewards" && (
+          <div>
+            <h2 className="font-display text-[28px] font-bold mb-2">Rewards</h2>
+            <p className="text-[#888] text-[13px] mb-8">Earn points on every order. Redeem for wallet credit anytime.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              {[
+                { label: "Points Balance", val: "1,234 pts", sub: "≈ $12.34 credit" },
+                { label: "Lifetime Earned", val: "4,820 pts", sub: "Since Oct 2024" },
+                { label: "Current Tier", val: "Gold", sub: "Next: Platinum at 5,000 pts" },
+              ].map((s) => (
+                <div key={s.label} className="bg-white border border-[#E5E2DA] p-5">
+                  <div className="text-[10px] font-mono tracking-[0.25em] uppercase text-[#aaa] mb-2">{s.label}</div>
+                  <div className="font-display text-[26px] font-extrabold text-[#111]">{s.val}</div>
+                  <div className="text-[11px] text-[#aaa] mt-1">{s.sub}</div>
+                </div>
+              ))}
+            </div>
+            <div className="bg-white border border-[#E5E2DA] p-6 mb-6">
+              <h3 className="font-medium text-[15px] mb-4">Redeem Points</h3>
+              <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
+                <div className="flex-1">
+                  <label className="block text-[11px] font-mono tracking-widest uppercase text-[#999] mb-2">Points to Redeem</label>
+                  <input type="number" defaultValue={500} min={100} step={100}
+                    className="w-full border border-[#E5E2DA] px-4 py-3 text-[14px] outline-none focus:border-[#F5B300] transition-colors" />
+                  <div className="text-[11px] text-[#aaa] mt-1">500 pts = $5.00 wallet credit · Min. 100 pts</div>
+                </div>
+                <button className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap">
+                  Redeem →
+                </button>
+              </div>
+            </div>
+            <div className="bg-white border border-[#E5E2DA] p-6">
+              <h3 className="font-medium text-[15px] mb-4">Points History</h3>
+              <div className="divide-y divide-[#F0EDE8]">
+                {[
+                  { date: "1 Sep 2025", desc: "Purchase — #PM-20250901-7721", pts: +36 },
+                  { date: "25 Aug 2025", desc: "Meal Plan bonus (2× pts)", pts: +356 },
+                  { date: "18 Aug 2025", desc: "Redemption — Wallet top-up", pts: -500 },
+                  { date: "11 Aug 2025", desc: "Purchase — #PM-20250811-7588", pts: +178 },
+                  { date: "4 Aug 2025", desc: "Referral bonus — Jerome's referral", pts: +200 },
+                ].map((r) => (
+                  <div key={r.date + r.desc} className="flex items-center justify-between py-3">
+                    <div>
+                      <div className="text-[13px] font-medium text-[#111]">{r.desc}</div>
+                      <div className="text-[11px] text-[#aaa]">{r.date}</div>
+                    </div>
+                    <span className={`font-mono text-[13px] font-bold ${r.pts > 0 ? "text-[#22843a]" : "text-[#e04444]"}`}>
+                      {r.pts > 0 ? "+" : ""}{r.pts} pts
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══ GIFT CARDS ══ */}
+        {tab === "gift-card" && (
+          <div>
+            <h2 className="font-display text-[28px] font-bold mb-2">Gift Cards</h2>
+            <p className="text-[#888] text-[13px] mb-8">Send a gift card to someone you care about, or redeem one you received.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-white border border-[#E5E2DA] p-6">
+                <h3 className="font-medium text-[15px] mb-4">Send a Gift Card</h3>
+                <p className="text-[12px] text-[#999] mb-4">Configure and purchase a gift card for a friend or family member.</p>
+                <button onClick={() => navigate("gift-card")}
+                  className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors">
+                  Buy a Gift Card →
+                </button>
+              </div>
+              <div className="bg-white border border-[#E5E2DA] p-6">
+                <h3 className="font-medium text-[15px] mb-4">Redeem a Gift Card</h3>
+                <label className="block text-[11px] font-mono tracking-widest uppercase text-[#999] mb-2">Gift Card Code</label>
+                <div className="flex gap-2">
+                  <input type="text" placeholder="PM-XXXX-XXXX-XXXX"
+                    className="flex-1 border border-[#E5E2DA] px-4 py-3 text-[13px] outline-none focus:border-[#F5B300] transition-colors font-mono tracking-wider" />
+                  <button className="border border-[#111] text-[#111] px-5 py-3 text-[12px] font-bold tracking-[0.12em] uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap">
+                    Redeem
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white border border-[#E5E2DA] p-6">
+              <h3 className="font-medium text-[15px] mb-4">Your Gift Cards</h3>
+              <div className="text-[13px] text-[#aaa] text-center py-8">No gift cards in your account yet.</div>
             </div>
           </div>
         )}

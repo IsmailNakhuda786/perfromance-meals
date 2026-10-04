@@ -10,7 +10,6 @@ import MealPlanWizardPage from "@/pages/MealPlanWizardPage";
 import CheckoutPage from "@/pages/CheckoutPage";
 import ConfirmationPage from "@/pages/ConfirmationPage";
 import AccountPage from "@/pages/AccountPage";
-import HowItWorksPage from "@/pages/HowItWorksPage";
 import GiftCardPage from "@/pages/GiftCardPage";
 import HandoffPage from "@/pages/HandoffPage";
 import BlueprintPage from "@/pages/BlueprintPage";
@@ -164,7 +163,6 @@ export default function App() {
       {page === "checkout" && <CheckoutPage navigate={navigate} cart={cart} savedAddress={savedAddress} requireAccount={checkoutIsSubscription} onComplete={(isGuest, promoCode, promoDiscount, total, details) => { setLastOrderType("ready"); setLastOrderGuest(isGuest); setLastPromoCode(promoCode); setLastPromoDiscount(promoDiscount); setLastOrderTotal(total); setLastOrderDetails(details); navigate("confirmation"); }} />}
       {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} isGuest={lastOrderGuest} promoCode={lastPromoCode} promoDiscount={lastPromoDiscount} orderTotal={lastOrderTotal} orderDetails={lastOrderDetails} />}
       {page === "account" && <AccountPage navigate={navigate} initialTab={accountInitialTab} initialSection={accountInitialSection} />}
-      {page === "how-it-works" && <HowItWorksPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "gift-card" && <GiftCardPage navigate={navigate} />}
       {page === "handoff" && <HandoffPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "blueprint" && <BlueprintPage navigate={navigate} navigateToWizard={navigateToWizard} />}

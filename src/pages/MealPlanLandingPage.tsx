@@ -124,9 +124,9 @@ export default function MealPlanLandingPage({ navigate, navigateToWizard }: Prop
                 Start your plan
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
-              <button onClick={() => navigate("how-it-works")}
+              <button onClick={() => navigate("about")}
                 className="inline-flex items-center gap-3 px-8 py-4 font-medium text-[13px] border border-white/20 text-white/60 hover:border-white/40 hover:text-white transition-all">
-                How it works
+                About Us
               </button>
             </div>
           </div>

@@ -25,10 +25,9 @@ const SCREENS: { title: string; label: string; desc: string; color: string; acce
   { title: "06", label: "Checkout", desc: "Auth choice, delivery, payment, wallet, promo", color: "#1A1A1A", accent: "#F5B300", page: "checkout" },
   { title: "07", label: "Confirmation", desc: "Order confirmed, loyalty points earned, next steps", color: "#0D1F0F", accent: "#7EE8B0", page: "confirmation" },
   { title: "08", label: "My Account", desc: "Dashboard plus Meal Plan / Ready Series management contexts", color: "#111", accent: "#F5B300", page: "account" },
-  { title: "09", label: "How It Works", desc: "Guided Meal Plan and transactional Ready Series journeys", color: "#1A3324", accent: "#F5B300", page: "how-it-works" },
-  { title: "10", label: "Gift Cards", desc: "Configure → payment → confirmation", color: "#111", accent: "#F2C94C", page: "gift-card" },
-  { title: "11", label: "Rewards", desc: "Points, vouchers, membership tiers, FAQ", color: "#111", accent: "#7EE8B0", page: "rewards" },
-  { title: "12", label: "About", desc: "Brand story, values, proof, and product paths", color: "#111", accent: "#F5B300", page: "about" },
+  { title: "09", label: "Gift Cards", desc: "Configure → payment → confirmation", color: "#111", accent: "#F2C94C", page: "gift-card" },
+  { title: "10", label: "Rewards", desc: "Points, vouchers, membership tiers, FAQ", color: "#111", accent: "#7EE8B0", page: "rewards" },
+  { title: "11", label: "About", desc: "Brand story, values, proof, and product paths", color: "#111", accent: "#F5B300", page: "about" },
 ];
 
 const FLOWS = [
