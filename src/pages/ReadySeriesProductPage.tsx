@@ -56,7 +56,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
       <div className="min-h-screen bg-[#1A1A1A] text-white flex items-center justify-center">
         <div className="text-center">
           <p className="text-white/40 mb-4">Meal not found.</p>
-          <button onClick={() => navigate("ready-series")} className="bg-[#F5B300] text-[#1A1A1A] px-6 py-3 font-bold text-[12px] tracking-widest uppercase">
+          <button onClick={() => navigate("ready-series-order")} className="bg-[#F5B300] text-[#1A1A1A] px-6 py-3 font-bold text-[12px] tracking-widest uppercase">
             Back to Ready-Series
           </button>
         </div>
@@ -92,7 +92,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
         <div className="max-w-[1200px] mx-auto flex items-center gap-2 text-[11px] font-mono text-white/30">
           <button onClick={() => navigate("home")} className="hover:text-white transition-colors">Performance Meals</button>
           <span>/</span>
-          <button onClick={() => navigate("ready-series")} className="hover:text-white transition-colors">Ready-Series</button>
+          <button onClick={() => navigate("ready-series-order")} className="hover:text-white transition-colors">Ready-Series Order</button>
           <span>/</span>
           <span className="text-white/60 truncate max-w-[200px]">{meal.name}</span>
         </div>
@@ -201,7 +201,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
                 {added ? "✓ ADDED TO CART" : "ADD TO CART"}
               </button>
               <button
-                onClick={() => navigate("ready-series")}
+                onClick={() => navigate("ready-series-order")}
                 className="px-6 py-4 border border-white/15 text-white/50 hover:border-white/40 hover:text-white transition-colors text-[11px] font-bold tracking-[0.15em] uppercase"
               >
                 KEEP SHOPPING
@@ -415,7 +415,7 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
 
             <div className="mt-8 text-center">
               <button
-                onClick={() => navigate("ready-series")}
+                onClick={() => navigate("ready-series-order")}
                 className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] px-10 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors"
               >
                 SHOP ALL READY-SERIES →

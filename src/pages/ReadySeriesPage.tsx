@@ -238,7 +238,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
   const deliveryFee = cartTotal > 0 ? (cartTotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE) : 0;
 
   return (
-    <div className="bg-[#1A1A1A] text-white min-h-screen">
+    <div className="bg-[#071B35] text-white min-h-screen">
 
       {/* ── HERO ── */}
       <div className="relative overflow-hidden min-h-[75svh] flex items-center">
@@ -249,9 +249,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             alt="Ready-Series meal prep containers"
             className="w-full h-full object-cover object-center"
           />
-          {/* Heavy charcoal overlay with yellow undertone — keeps e-commerce energy, not boutique softness */}
+          {/* Deep freezer-blue overlay keeps the order experience distinct and highly legible. */}
           <div className="absolute inset-0"
-            style={{ background: "linear-gradient(100deg, rgba(16,16,16,0.97) 0%, rgba(16,16,16,0.90) 45%, rgba(16,16,16,0.65) 75%, rgba(16,16,16,0.3) 100%)" }} />
+            style={{ background: "linear-gradient(100deg, rgba(7,27,53,0.98) 0%, rgba(7,27,53,0.92) 45%, rgba(7,27,53,0.68) 75%, rgba(7,27,53,0.35) 100%)" }} />
           {/* Yellow burst — top right, energetic */}
           <div className="absolute top-0 right-0 w-[600px] h-[400px] pointer-events-none"
             style={{ background: "radial-gradient(ellipse at 85% 10%, rgba(245,179,0,0.28) 0%, transparent 60%)" }} />
@@ -261,9 +261,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#F5B300] z-20" />
 
         <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 sm:px-8 py-20 sm:py-24">
-          <button onClick={() => navigate("home")} className="inline-flex items-center gap-2 text-white/30 hover:text-white transition-colors text-[11px] font-mono tracking-widest uppercase mb-8">
+          <button onClick={() => navigate("ready-series")} className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[11px] font-mono tracking-widest uppercase mb-8">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-            Performance Meals
+            Ready Series overview
           </button>
 
           <div className="mb-7">
@@ -272,9 +272,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             <div>
-              <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#F5B300] mb-5">Everyday Momentum</p>
+              <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#72A7FF] mb-5">Order Ready Series · Choose one pathway</p>
               <h1 className="font-display text-[36px] sm:text-[52px] lg:text-[68px] font-extrabold leading-[0.88] mb-6">
-                FROZEN AT PEAK.<br /><span className="text-[#F5B300]">READY ON DEMAND.</span>
+                YOUR FREEZER.<br /><span className="text-[#F5B300]">YOUR WAY.</span>
               </h1>
               <p className="text-white/50 text-[15px] leading-relaxed max-w-[420px] mb-8">
                 Fast, enjoyable frozen meals that are ready when life gets busy. Keep your week moving.
@@ -292,9 +292,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             {/* Stats — energetic tiles, yellow-accented */}
             <div className="grid grid-cols-3 gap-3 lg:justify-items-end">
               {[
-                { v: "3 min", l: "Ready to eat" },
-                { v: "40+", l: "Meal options" },
-                { v: "$8.90", l: "From" },
+                { v: "01", l: "Individual" },
+                { v: "02", l: "Bundles" },
+                { v: "03", l: "Subscription" },
               ].map((s) => (
                 <div key={s.l} className="border border-[#F5B300]/25 bg-[#F5B300]/5 px-4 py-5 text-center">
                   <div className="text-[#F5B300] font-display text-[28px] sm:text-[32px] font-extrabold leading-none">{s.v}</div>
@@ -401,9 +401,9 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="flex overflow-x-auto">
             {([
-              { key: "single" as const,       label: "Single Purchase", sub: "Individual meals" },
+              { key: "single" as const,       label: "Individual Selection", sub: "One-time · choose meals" },
               { key: "bundles" as const,       label: "Bundles",         sub: "Predefined packs" },
-              { key: "subscription" as const,  label: "Subscription",    sub: "3 or 6 months" },
+              { key: "subscription" as const,  label: "Subscription",    sub: "Recurring · 3 or 6 months" },
             ]).map((m) => (
               <button key={m.key} onClick={() => setPurchaseMode(m.key)}
                 className={`shrink-0 px-5 sm:px-6 py-4 text-left transition-all border-b-2 ${purchaseMode === m.key ? "border-[#F5B300]" : "border-transparent"} ${purchaseMode === m.key ? th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]") : th("text-white/35 hover:text-white/70", "text-black/30 hover:text-black/60", "text-[#F5EDD8]/35 hover:text-[#F5EDD8]/70")}`}>

@@ -223,7 +223,7 @@ const BRAND_DATA = [
     headline: ["Ready for", "real life."],
     body: "Fast, enjoyable frozen meals built to keep your week moving without locking you in. Dependable, repeat-friendly, and zero compromise on nutrition.",
     stat: { v: "40+", l: "Macro-tracked meals" },
-    cta: "Shop Ready-Series",
+    cta: "Explore Ready-Series",
     page: "ready-series" as Page,
     bg: "#F5B300",
     accent: "#1A1A1A",
