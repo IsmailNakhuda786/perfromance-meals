@@ -95,12 +95,11 @@ export default function ReadySeriesAboutPage({ navigate }: Props) {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-5 mb-12">
-            <img src={kitchenImage} alt="Food being prepared in a professional kitchen" className="w-full h-[340px] sm:h-[430px] object-cover rounded-2xl" />
-            <div className="grid grid-rows-2 gap-5">
-              <img src={preparationImage} alt="Prepared ingredients in a professional kitchen" className="w-full h-full min-h-[200px] object-cover rounded-2xl" />
-              <img src="/d006a.png" alt="Ready Series prepared meals" className="w-full h-full min-h-[200px] object-cover rounded-2xl" />
-            </div>
+          <div className="grid sm:grid-cols-2 gap-5 mb-12">
+            <img src={kitchenImage} alt="Food being prepared in a professional kitchen" className="w-full aspect-[4/3] object-cover rounded-2xl" />
+            <img src={preparationImage} alt="Prepared meals moving through a professional kitchen" className="w-full aspect-[4/3] object-cover rounded-2xl" />
+            <img src="/19606.png" alt="A balanced Ready Series salmon meal" className="w-full aspect-[4/3] object-cover rounded-2xl" />
+            <img src="/d006a.png" alt="A selection of Ready Series prepared meals" className="w-full aspect-[4/3] object-cover rounded-2xl" />
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 border border-white/10">
