@@ -191,10 +191,7 @@ const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: strin
 };
 
 export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen }: Props) {
-  const [theme, setTheme] = useState<"dark" | "warm" | "espresso">("dark");
-  const th = <T,>(d: T, w: T, e: T): T => (
-    theme === "dark" ? d : theme === "warm" ? w : e
-  );
+  const th = <T,>(_dark: T, warm: T, _espresso: T): T => warm;
   const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
   const [subTerm, setSubTerm] = useState<3 | 6>(3);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
@@ -238,7 +235,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
   const deliveryFee = cartTotal > 0 ? (cartTotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE) : 0;
 
   return (
-    <div className="bg-[#071B35] text-white min-h-screen">
+    <div className="bg-[#FAF8F4] text-[#1A1A1A] min-h-screen">
 
       {/* ── HERO ── */}
       <div className="relative overflow-hidden min-h-[75svh] flex items-center">
@@ -342,73 +339,28 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         </div>
       )}
 
-      {/* ── CLIENT THEME PICKER ── */}
-      <div className="bg-[#1A1A1A] border-b border-white/10 px-6 py-5">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-start justify-between gap-6 flex-wrap">
-            <div>
-              <div className="text-[#F5B300] text-[9px] font-mono tracking-[0.35em] uppercase mb-1">Design Preview</div>
-              <p className="text-white/40 text-[12px]">Three directions for your team to review — pick the one that fits best.</p>
-            </div>
-            <div className="flex gap-3 flex-wrap">
-              {([
-                {
-                  key: "dark" as const,
-                  label: "A — Cold Dark",
-                  sub: "Athletic · High contrast",
-                  swatches: ["#111111", "#1A1A1A", "#F5B300"],
-                  border: "border-white/20",
-                  activeBorder: "border-[#F5B300]",
-                },
-                {
-                  key: "warm" as const,
-                  label: "B — Warm Cream",
-                  sub: "Food-first · Appetising",
-                  swatches: ["#FAF8F4", "#FFFFFF", "#F5B300"],
-                  border: "border-white/20",
-                  activeBorder: "border-[#F5B300]",
-                },
-                {
-                  key: "espresso" as const,
-                  label: "C — Espresso",
-                  sub: "Restaurant warmth · Premium",
-                  swatches: ["#1C1108", "#2A1C0D", "#F5B300"],
-                  border: "border-white/20",
-                  activeBorder: "border-[#F5B300]",
-                },
-              ]).map((opt) => {
-                const active = theme === opt.key;
-                return (
-                  <button key={opt.key} onClick={() => setTheme(opt.key)}
-                    className={`text-left px-4 py-3 border transition-all ${active ? opt.activeBorder + " bg-white/5" : opt.border + " bg-transparent hover:bg-white/4"}`}>
-                    <div className="flex items-center gap-2 mb-2">
-                      {opt.swatches.map((s, i) => (
-                        <div key={i} className="w-4 h-4 rounded-sm border border-white/10" style={{ background: s }} />
-                      ))}
-                    </div>
-                    <div className={`text-[12px] font-extrabold tracking-wide ${active ? "text-[#F5B300]" : "text-white/60"}`}>{opt.label}</div>
-                    <div className="text-[10px] text-white/30 mt-0.5">{opt.sub}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* ── PURCHASE MODE TABS ── */}
-      <div id="rs-shop" className={`border-b ${th("bg-[#111] border-white/8", "bg-white border-black/8", "bg-[#1C1108] border-[#F5EDD8]/8")}`}>
+      <div id="rs-shop" className="bg-white border-b border-[#DDD6CB] shadow-[0_6px_20px_rgba(52,42,30,0.06)]">
         <div className="max-w-[1200px] mx-auto px-6">
-          <div className="flex overflow-x-auto">
+          <div className="flex overflow-x-auto gap-1 sm:gap-3">
             {([
               { key: "single" as const,       label: "Individual Selection", sub: "One-time · choose meals" },
               { key: "bundles" as const,       label: "Bundles",         sub: "Predefined packs" },
               { key: "subscription" as const,  label: "Subscription",    sub: "Recurring · 3 or 6 months" },
             ]).map((m) => (
               <button key={m.key} onClick={() => setPurchaseMode(m.key)}
-                className={`shrink-0 px-5 sm:px-6 py-4 text-left transition-all border-b-2 ${purchaseMode === m.key ? "border-[#F5B300]" : "border-transparent"} ${purchaseMode === m.key ? th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]") : th("text-white/35 hover:text-white/70", "text-black/30 hover:text-black/60", "text-[#F5EDD8]/35 hover:text-[#F5EDD8]/70")}`}>
-                <div className="text-[12px] font-bold tracking-wide whitespace-nowrap">{m.label}</div>
-                <div className={`text-[10px] mt-0.5 whitespace-nowrap ${th("text-white/30", "text-black/30", "text-[#F5EDD8]/30")}`}>{m.sub}</div>
+                className={`group relative shrink-0 min-w-[190px] sm:min-w-[240px] px-5 sm:px-7 py-5 text-left transition-all duration-300 border-b-[3px] ${
+                  purchaseMode === m.key
+                    ? "border-[#F5B300] bg-[#FFF9E9] text-[#1A1A1A]"
+                    : "border-transparent text-[#5F574F] hover:text-[#1A1A1A] hover:bg-[#FAF8F4] hover:-translate-y-0.5"
+                }`}>
+                <div className="text-[14px] sm:text-[15px] font-extrabold tracking-[0.01em] whitespace-nowrap transition-transform duration-300 group-hover:translate-x-1">{m.label}</div>
+                <div className={`text-[11px] sm:text-[12px] mt-1 whitespace-nowrap transition-colors duration-300 ${
+                  purchaseMode === m.key ? "text-[#746A60]" : "text-[#8A8178] group-hover:text-[#655D55]"
+                }`}>{m.sub}</div>
+                <span className={`absolute bottom-0 left-5 right-5 h-[3px] bg-[#F5B300] origin-left transition-transform duration-300 ${
+                  purchaseMode === m.key ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`} />
               </button>
             ))}
           </div>
@@ -445,7 +397,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       <div className="flex h-28 overflow-hidden">
                         {previewMeals.map((m, pi) => (
                           <div key={pi} className="flex-1 overflow-hidden">
-                            <img src={m.img} alt={m.name} className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${theme !== "warm" ? "opacity-80 group-hover:opacity-100" : ""}`} />
+                            <img src={m.img} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           </div>
                         ))}
                         {previewMeals.length === 0 && <div className={`flex-1 ${th("bg-[#222]", "bg-[#F0EBE3]", "bg-[#3A2810]")}`} />}
