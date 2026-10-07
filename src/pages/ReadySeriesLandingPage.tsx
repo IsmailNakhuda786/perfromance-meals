@@ -45,7 +45,7 @@ export default function ReadySeriesLandingPage({ navigate, navigateToReadyOrder 
           </div>
 
           <div className="relative min-h-[560px] lg:min-h-full overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1625631980634-397b9e9a73f9?w=1200&h=1000&fit=crop&auto=format&q=85" alt="Busy professional enjoying a prepared meal at home" className="absolute inset-0 w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1576089073624-b5751a8f4de9?w=1400&h=1200&fit=crop&auto=format&q=85" alt="Asian family enjoying a meal together at home" className="absolute inset-0 w-full h-full object-cover object-center" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
             <div className="absolute top-6 right-6 bg-white text-[#1A1A1A] rounded-2xl px-5 py-4 shadow-xl">
               <div className="text-[9px] font-bold tracking-[0.18em] uppercase text-[#897F74]">From freezer to table</div>
