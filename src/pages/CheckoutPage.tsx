@@ -164,7 +164,7 @@ export default function CheckoutPage({
               {requireAccount ? (
                 <>
                   <p className="text-[#666] text-[14px] mb-4">
-                    Box Subscription requires an account to manage your
+                    Ready Series Subscription requires an account to manage your
                     deliveries, swap meals, and earn rewards.
                   </p>
                   <div className="flex items-start gap-3 bg-[#F5B300]/10 border border-[#F5B300]/40 px-4 py-3 mb-6 text-[12px] text-[#7B5900]">

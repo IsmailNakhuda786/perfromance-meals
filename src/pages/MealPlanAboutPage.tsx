@@ -116,9 +116,9 @@ export default function MealPlanAboutPage({
               </h2>
             </div>
             <p className="text-[#6D655E] text-[15px] leading-relaxed max-w-[520px] lg:justify-self-end">
-              It is not an unrestricted meal box. Your goal establishes the
-              programme, the plan defines what is included, and meal selection
-              happens inside the approved structure.
+              It is not an unrestricted meal selection. Your goal establishes
+              the programme, the plan defines what is included, and meal
+              selection happens inside the approved structure.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -6,7 +6,7 @@ export interface CartItem {
   price: number
   qty: number
   img: string
-  type: "ready" | "box" | "plan"
+  type: "ready" | "bundle" | "plan"
   planLabel?: string
   mealImgs?: string[]
   mealNames?: string[]
@@ -190,7 +190,7 @@ export const BUNDLES = [
   },
   {
     id: 202,
-    name: "Bulk Performance Box (10 meals)",
+    name: "Bulk Performance Bundle (10 meals)",
     desc: "Mix of high-protein picks, best value per meal.",
     price: 109.0,
     perMeal: 10.9,
@@ -465,7 +465,7 @@ export const ALL_REVIEWS: Record<number, MealReview[]> = {
       author: "Grace T.",
       role: "Nurse Manager",
       rating: 5,
-      text: "This is my weekly order. High protein, good fats from the salmon, complex carbs from the sweet potato. A nutritionally complete meal in one box.",
+      text: "This is my weekly order. High protein, good fats from the salmon, complex carbs from the sweet potato. A nutritionally complete meal in one dish.",
       date: "6 Sep 2026",
       verified: true,
     },

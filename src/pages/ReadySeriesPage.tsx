@@ -545,10 +545,12 @@ export default function ReadySeriesPage({
     setTimeout(() => setAddedId(null), 1200)
   }
 
-  const cartItems = cart.filter((i) => i.type === "ready" || i.type === "box")
+  const cartItems = cart.filter(
+    (i) => i.type === "ready" || i.type === "bundle",
+  )
   const cartQty = cartItems.reduce((s, i) => s + i.qty, 0)
   const cartTotal = cart
-    .filter((i) => i.type === "ready" || i.type === "box")
+    .filter((i) => i.type === "ready" || i.type === "bundle")
     .reduce((s, i) => s + i.price * i.qty, 0)
   const toFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - cartTotal)
   const freeDeliveryPct = Math.min(
@@ -774,8 +776,8 @@ export default function ReadySeriesPage({
                 Choose your bundle<span className="text-[#F5B300]">.</span>
               </h2>
               <p className={`text-[15px] mt-3 max-w-[500px] ${"text-[#555]"}`}>
-                All bundles are curated and ready to go — pick the category and
-                size that suits your week.
+                All bundles are predefined and ready to order — pick the
+                category and size that suits your week.
               </p>
             </div>
 
@@ -905,7 +907,7 @@ export default function ReadySeriesPage({
                                   img:
                                     bundleMeals[0]?.img ??
                                     "https://images.unsplash.com/photo-1682568514220-c477d5432024?w=200&h=200&fit=crop&auto=format",
-                                  type: "box",
+                                  type: "bundle",
                                   mealNames: bundleMeals.map((m) => m.name),
                                   mealImgs: bundleMeals.map((m) => m.img),
                                 })
@@ -1238,14 +1240,14 @@ export default function ReadySeriesPage({
                           )}
                         </div>
 
-                        {/* Meals in box — always visible */}
+                        {/* Meals in delivery — always visible */}
                         {details && (
                           <div className="border-t border-white/8 pt-3 flex flex-col gap-1.5">
                             <div
                               className="text-[9px] font-mono tracking-[0.25em] uppercase mb-1"
                               style={{ color: accentColor }}
                             >
-                              Monthly box · {sub.items} meals
+                              Monthly delivery · {sub.items} meals
                             </div>
                             {details.meals.map(({ id, qty }) => {
                               const meal = MEALS.find((m) => m.id === id)
@@ -1331,7 +1333,7 @@ export default function ReadySeriesPage({
                               img:
                                 previewMeals[0]?.img ??
                                 "https://images.unsplash.com/photo-1555789185-76365931ffaa?w=200&h=200&fit=crop&auto=format",
-                              type: "box",
+                              type: "bundle",
                               mealNames: subMealNames,
                               mealImgs: subMealImgs,
                             })
@@ -1506,7 +1508,7 @@ export default function ReadySeriesPage({
                             img:
                               firstMeal?.img ??
                               "https://images.unsplash.com/photo-1562828358-432c7bdde45e?w=200&h=200&fit=crop&auto=format",
-                            type: "box",
+                            type: "bundle",
                             mealNames: subMealNames,
                             mealImgs: subMealImgs,
                           })
@@ -1547,7 +1549,7 @@ export default function ReadySeriesPage({
         </div>
       )}
 
-      {/* ── PRODUCT GRID (single purchase) ── */}
+      {/* ── PRODUCT GRID (individual selection) ── */}
       {purchaseMode === "single" && (
         <section className={`py-16 px-6 sm:px-8 ${"bg-[#FAF8F4]"}`}>
           <div className="max-w-[1200px] mx-auto">

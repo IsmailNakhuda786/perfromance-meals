@@ -217,7 +217,7 @@ export default function GiftCardPage({ navigate }: Props) {
               Gift Card
             </h1>
             <p className="text-[#666] text-[15px] mb-8">
-              Works on any Ready-to-Go order, Build-A-Box, or Meal Plan
+              Works on Ready Series Individual Selection, Bundles, or Meal Plan
               subscription.
             </p>
 

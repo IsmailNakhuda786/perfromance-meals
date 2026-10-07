@@ -1366,7 +1366,7 @@ export default function MealPlanWizardPage({
                     Account Required
                   </p>
                   <p className="text-[14px] text-[#555] mb-5">
-                    Meal Plans are subscription-based and require an account to
+                    Meal Plan is subscription-based and requires an account to
                     manage your weekly menu, deliveries, and earn rewards.
                   </p>
                   <div className="space-y-2">

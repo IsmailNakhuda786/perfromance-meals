@@ -402,7 +402,7 @@ export default function ConfirmationPage({
               onClick={() => navigate("ready-series-order")}
               className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors"
             >
-              Browse Ready-to-Go Meals
+              Browse Ready Series Meals
             </button>
           ) : (
             <button

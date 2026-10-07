@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { MEALS, Page, PLANS } from "@/data"
 
-function BoxSubscriptionCard({
+function ReadySeriesSubscriptionCard({
   navigate,
   save,
 }: {
@@ -133,11 +133,11 @@ const ORDERS = [
   {
     id: "PM-20250818-7641",
     date: "18 Aug 2025",
-    items: "Build-A-Box ×10",
+    items: "Ready Series Bundle ×10",
     total: 101.15,
     originalTotal: 119.0,
     status: "Delivered",
-    type: "box",
+    type: "bundle",
     promo: "WELCOME15",
     promoSaving: 17.85,
   },
@@ -183,7 +183,7 @@ const WALLET_HISTORY = [
   { date: "20 Aug 2025", desc: "Redeemed 500 pts", pts: -500, type: "redeem" },
   {
     date: "18 Aug 2025",
-    desc: "Build-A-Box — #PM-20250818-7641",
+    desc: "Ready Series Bundle — #PM-20250818-7641",
     pts: +119,
     type: "earn",
   },
@@ -562,7 +562,7 @@ export default function AccountPage({ navigate }: Props) {
               )}
             </div>
 
-            {/* Box subscription dashboard card */}
+            {/* Ready Series subscription dashboard card */}
             <div className="border border-[#E5E2DA] bg-white mb-2">
               <div className="p-4 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
@@ -665,7 +665,7 @@ export default function AccountPage({ navigate }: Props) {
             {/* ── READY SERIES context ── */}
             {myPlanContext === "readyseries" && (
               <div className="space-y-5">
-                <BoxSubscriptionCard navigate={navigate} save={save} />
+                <ReadySeriesSubscriptionCard navigate={navigate} save={save} />
               </div>
             )}
 
@@ -1473,7 +1473,11 @@ export default function AccountPage({ navigate }: Props) {
                         o.type === "plan" ? "bg-[#1A1A1A]" : "bg-[#111111]"
                       }`}
                     >
-                      {o.type === "plan" ? "🥗" : o.type === "box" ? "📦" : "❄️"}
+                      {o.type === "plan"
+                        ? "🥗"
+                        : o.type === "bundle"
+                          ? "📦"
+                          : "❄️"}
                     </div>
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">

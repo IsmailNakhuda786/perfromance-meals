@@ -69,7 +69,7 @@ const FAQS = [
   },
   {
     q: "Can I earn points on bundles?",
-    a: "Yes — bundles earn the same points as individual meal orders. Meal Plans earn 1.5× the standard rate.",
+    a: "Yes — bundles earn the same points as individual meal orders. Meal Plan orders earn 1.5× the standard rate.",
   },
   {
     q: "How do I refer a friend?",
@@ -131,10 +131,10 @@ export default function RewardsPage({ navigate, isLoggedIn }: Props) {
         </div>
       </div>
 
-      {/* How it works */}
+      {/* Earning rewards */}
       <section className="max-w-[1200px] mx-auto px-6 py-16">
         <div className="text-[10px] font-mono tracking-[0.3em] text-[#F5B300] uppercase mb-2">
-          How It Works
+          Earning Rewards
         </div>
         <h2 className="font-display text-[32px] font-extrabold mb-10">
           Three simple steps<span className="text-[#F5B300]">.</span>

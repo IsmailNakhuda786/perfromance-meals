@@ -20,7 +20,7 @@ export default function Footer({ navigate }: FooterProps) {
           {[
             { label: "Ready Series", action: () => navigate("ready-series") },
             {
-              label: "Meal Plans",
+              label: "Meal Plan",
               action: () => navigate("meal-plan-landing"),
             },
             { label: "Gift Cards", action: () => navigate("gift-card") },

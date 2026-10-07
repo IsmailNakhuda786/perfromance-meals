@@ -1025,18 +1025,18 @@ export default function Nav({
               <>
                 <div className="flex-1 p-4 space-y-3">
                   {cart.map((item) => {
-                    const isBox = item.type === "box"
-                    const bundleDef = isBox
+                    const isBundle = item.type === "bundle"
+                    const bundleDef = isBundle
                       ? BUNDLES.find((b) => b.id === item.id)
                       : undefined
                     const bundleMealIds = bundleDef?.mealIds ?? []
-                    const boxImgs =
+                    const bundleImgs =
                       item.mealImgs ??
                       bundleMealIds
                         .slice(0, 6)
                         .map((mid) => MEALS.find((m) => m.id === mid)?.img)
                         .filter(Boolean) as string[]
-                    const boxNames =
+                    const bundleNames =
                       item.mealNames ??
                       bundleMealIds
                         .map(
@@ -1048,7 +1048,7 @@ export default function Nav({
                         key={`${item.id}-${item.type}`}
                         className="bg-[#1A1A1A] p-3"
                       >
-                        {isBox ? (
+                        {isBundle ? (
                           /* Bundle cart item — expandable */
                           <div>
                             <div className="flex items-start justify-between gap-2">
@@ -1058,8 +1058,8 @@ export default function Nav({
                                 </p>
                                 <p className="text-[10px] text-[#F5B300] mt-0.5">
                                   $
-                                  {boxNames.length > 0
-                                    ? (item.price / boxNames.length).toFixed(2)
+                                  {bundleNames.length > 0
+                                    ? (item.price / bundleNames.length).toFixed(2)
                                     : item.price.toFixed(2)}
                                   /meal
                                 </p>
@@ -1088,9 +1088,9 @@ export default function Nav({
                               </div>
                             </div>
                             {/* Thumbnail strip always visible */}
-                            {boxImgs.length > 0 && (
+                            {bundleImgs.length > 0 && (
                               <div className="flex gap-1 mt-2">
-                                {boxImgs.slice(0, 5).map((src, i) =>
+                                {bundleImgs.slice(0, 5).map((src, i) =>
                                   src ? (
                                     <div
                                       key={i}
@@ -1104,10 +1104,10 @@ export default function Nav({
                                     </div>
                                   ) : null,
                                 )}
-                                {boxImgs.length > 5 && (
+                                {bundleImgs.length > 5 && (
                                   <div className="w-9 h-9 bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                                     <span className="text-[9px] text-white/40 font-mono">
-                                      +{boxImgs.length - 5}
+                                      +{bundleImgs.length - 5}
                                     </span>
                                   </div>
                                 )}
@@ -1141,19 +1141,19 @@ export default function Nav({
                             </button>
                             {/* Expanded meal list — deduplicated with counts */}
                             {expandedBundles.has(`${item.id}-${item.type}`) &&
-                              boxNames.length > 0 &&
+                              bundleNames.length > 0 &&
                               (() => {
                                 const seen = new Map<string, {
                                   name: string
                                   img: string
                                   count: number
                                 }>()
-                                boxNames.forEach((n, i) => {
+                                bundleNames.forEach((n, i) => {
                                   if (seen.has(n)) seen.get(n)!.count++
                                   else
                                     seen.set(n, {
                                       name: n,
-                                      img: boxImgs[i] ?? "",
+                                      img: bundleImgs[i] ?? "",
                                       count: 1,
                                     })
                                 })
