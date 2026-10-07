@@ -296,6 +296,27 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         </div>
       </section>
 
+      {/* ── FREE DELIVERY PROGRESS — individual selection and bundles ── */}
+      {purchaseMode !== "subscription" && (
+        <div className="bg-white border-b border-[#DDD6CB] px-6 py-4">
+          <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+            <div className="flex items-center justify-between sm:block shrink-0">
+              <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#61584F]">Free delivery progress</div>
+              <div className="text-[10px] text-[#8A8178] mt-0.5">Orders $120 and above</div>
+            </div>
+            <div className="flex-1 h-2 bg-[#EDE8E0] rounded-full overflow-hidden">
+              <div className="h-full bg-[#F5B300] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
+            </div>
+            <div className="text-[11px] text-[#61584F] shrink-0">
+              {toFreeDelivery <= 0
+                ? <span className="font-bold text-[#8A6100]">Free delivery unlocked</span>
+                : <>Add <span className="font-extrabold text-[#1A1A1A]">${toFreeDelivery.toFixed(2)}</span> more</>
+              }
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── PURCHASE MODE TABS ── */}
       <div id="rs-shop" className="bg-white border-b border-[#DDD6CB] shadow-[0_6px_20px_rgba(52,42,30,0.06)]">
         <div className="max-w-[1200px] mx-auto px-6">
