@@ -1,22 +1,20 @@
 import { useState, useMemo } from "react"
-import { MEALS, Page } from "@/data"
+import { CartItem, MEAL_PLAN_MEALS, Page } from "@/data"
 import { MealPlanLogo } from "@/components/Logos"
 
 interface Props {
   navigate: (page: Page) => void
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addToCart?: (item: any) => void
+  addToCart: (item: CartItem) => void
   initialPlan: string
-  onCheckoutComplete: (
-    addr: {
-      name: string
-      phone: string
-      line1: string
-      unit: string
-      postal: string
-    },
-    total: number,
-  ) => void
+  isLoggedIn: boolean
+  onAuthenticated: () => void
+  onContinueToCheckout: (addr: {
+    name: string
+    phone: string
+    line1: string
+    unit: string
+    postal: string
+  }) => void
 }
 
 type ProgrammeType = "bi-weekly" | "monthly" | "2-months" | "6by60" | "6by60plus"
@@ -136,20 +134,6 @@ const BASE_PRICES: Record<MealPlanType, Record<MealCount, number>> = {
   "Balance Regular+": { "lunch-only": 165, "lunch-dinner": 235 },
 }
 
-const VALID_PROMOS: Record<string, {
-  discount: number
-  flat?: number
-  expired?: boolean
-}> = {
-  WELCOME10: { discount: 0.1 },
-  WELCOME15: { discount: 0.15 },
-  SUMMER20: { discount: 0.2, expired: true },
-  FITLIFE: { discount: 0.12 },
-  READY20: { discount: 0.2 },
-  SG61: { discount: 0, flat: 6.1 },
-  FREEZER5: { discount: 0, flat: 5.0 },
-}
-
 // Generate the next 4 Mon–Fri delivery weeks from today
 function buildWeeks() {
   const MONTHS = [
@@ -198,7 +182,7 @@ const WEEK_MENUS: Array<{
 ]
 
 function getMeal(id: number) {
-  return MEALS.find((m) => m.id === id) ?? MEALS[0]
+  return MEAL_PLAN_MEALS.find((m) => m.id === id) ?? MEAL_PLAN_MEALS[0]
 }
 
 // Delivery windows — Mon-Tue, Wed-Thu, Fri
@@ -311,7 +295,7 @@ function WindowMealCard({
   onClick,
   atMax,
 }: {
-  meal: typeof MEALS[0]
+  meal: typeof MEAL_PLAN_MEALS[0]
   count: number
   onClick: () => void
   atMax: boolean
@@ -378,26 +362,37 @@ function Field({
 const inputCls =
   "w-full border border-[#D0CCC4] bg-white text-[#1A1A1A] px-4 py-3 text-[14px] placeholder:text-[#C0BAB0] focus:outline-none focus:border-[#E85D04] focus:shadow-[0_0_0_3px_rgba(232,93,4,0.12)] transition-all"
 
-// Map landing-page goal label → wizard defaults
-function goalDefaults(
-  goal: string,
+function programmeDefaults(
+  initialProgramme: string,
 ): {
   programme: ProgrammeType
   mealPlan: MealPlanType
 } {
-  if (goal === "CUT")
+  if (initialProgramme === "6by60")
     return { programme: "6by60", mealPlan: "Low Carb Regular" }
-  if (goal === "BUILD")
+  if (initialProgramme === "6by60plus")
     return { programme: "6by60plus", mealPlan: "Balance Regular" }
+  if (
+    initialProgramme === "monthly" ||
+    initialProgramme === "2-months" ||
+    initialProgramme === "bi-weekly"
+  )
+    return {
+      programme: initialProgramme,
+      mealPlan: "Balance Regular",
+    }
   return { programme: "bi-weekly", mealPlan: "Balance Regular" }
 }
 
 export default function MealPlanWizardPage({
   navigate,
+  addToCart,
   initialPlan,
-  onCheckoutComplete,
+  isLoggedIn,
+  onAuthenticated,
+  onContinueToCheckout,
 }: Props) {
-  const defaults = goalDefaults(initialPlan ?? "")
+  const defaults = programmeDefaults(initialPlan ?? "")
   const [step, setStep] = useState<Step>(1)
   const [programme, setProgramme] = useState<ProgrammeType>(defaults.programme)
   const [mealPlan, setMealPlan] = useState<MealPlanType>(defaults.mealPlan)
@@ -416,56 +411,46 @@ export default function MealPlanWizardPage({
   })
 
   // Auth (Meal Plan requires account — no guest)
-  const [authMode, setAuthMode] = useState<AuthMode>(null)
+  const [authMode, setAuthMode] = useState<AuthMode>(isLoggedIn ? "done" : null)
   const [waName, setWaName] = useState("")
   const [waEmail, setWaEmail] = useState("")
   const [waPhone, setWaPhone] = useState("")
   const [waPass, setWaPass] = useState("")
 
-  // Promo & wallet
-  const [promoCode, setPromoCode] = useState("")
-  const [promoApplied, setPromoApplied] = useState(false)
-  const [promoError, setPromoError] = useState<"invalid" | "expired" | null>(
-    null,
-  )
-  const [useWallet, setUseWallet] = useState(false)
-  const WALLET_BALANCE = 12.0 // simulated wallet
-
   const progInfo = PROGRAMME_DETAILS[programme]
   const effectiveMealCount = progInfo.fixedMealCount ?? mealCount
   const basePrice = BASE_PRICES[mealPlan][effectiveMealCount]
-
-  const promoEntry = promoApplied
-    ? VALID_PROMOS[promoCode.trim().toUpperCase()]
-    : null
-  const promoDiscount = promoEntry
-    ? promoEntry.flat
-      ? promoEntry.flat
-      : basePrice * promoEntry.discount
-    : 0
-  const walletDiscount = useWallet
-    ? Math.min(WALLET_BALANCE, basePrice - promoDiscount)
-    : 0
-  const afterDiscounts = Math.max(0, basePrice - promoDiscount - walletDiscount)
-  const gst = afterDiscounts * 0.06
-  const total = afterDiscounts + gst
   const pointsEarned = Math.round(basePrice * 1.5)
 
-  const handleApplyPromo = () => {
-    const code = promoCode.trim().toUpperCase()
-    const entry = VALID_PROMOS[code]
-    if (!entry) {
-      setPromoError("invalid")
-      setPromoApplied(false)
-      return
-    }
-    if (entry.expired) {
-      setPromoError("expired")
-      setPromoApplied(false)
-      return
-    }
-    setPromoError(null)
-    setPromoApplied(true)
+  const continueToSharedCheckout = () => {
+    const menuContext = JSON.stringify(menuSelections)
+    addToCart({
+      lineKey: `meal-plan:${programme}:${mealPlan}:${effectiveMealCount}:${menuContext}`,
+      id:
+        ["bi-weekly", "monthly", "2-months", "6by60", "6by60plus"].indexOf(
+          programme,
+        ) + 301,
+      name: `Meal Plan — ${progInfo.label}`,
+      price: basePrice,
+      qty: 1,
+      img: getMeal(Object.values(menuSelections[0] ?? {})[0]?.[0] ?? 1).img,
+      type: "plan",
+      purchaseMode: "meal-plan",
+      productId: `meal-plan:${programme}`,
+      variantId: `${mealPlan}:${effectiveMealCount}`,
+      sellingPlanId: progInfo.kind === "recurring" ? programme : undefined,
+      programmeContext: `${progInfo.label} · ${mealPlan} · ${mealCountLabel}`,
+      requiresAccount: true,
+      bonusWalletEligible: false,
+      planLabel: `${progInfo.label} · ${mealPlan} · ${mealCountLabel}`,
+    })
+    onContinueToCheckout({
+      name: details.name,
+      phone: details.phone,
+      line1: details.street,
+      unit: "",
+      postal: details.postcode,
+    })
   }
 
   const slotsPerDay = effectiveMealCount === "lunch-dinner" ? 2 : 1
@@ -512,23 +497,6 @@ export default function MealPlanWizardPage({
       return { ...prev, [selectedWeek]: { ...wk, [windowKey]: next } }
     })
   }
-  // Next upcoming Sunday (first delivery day)
-  const startDate = (() => {
-    const d = new Date()
-    const daysUntilSun = (7 - d.getDay()) % 7 || 7
-    d.setDate(d.getDate() + daysUntilSun)
-    return d
-  })()
-  const endDate = progInfo.days
-    ? new Date(startDate.getTime() + (progInfo.days - 1) * 86400000)
-    : null
-  const fmtDate = (d: Date) =>
-    d.toLocaleDateString("en-MY", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    })
-
   const canProceed4 = !!(
     details.name &&
     details.phone &&
@@ -1357,8 +1325,8 @@ export default function MealPlanWizardPage({
                         on this order
                       </p>
                       <p className="text-white/50 text-[12px]">
-                        Redeem for free meals, discounts, and referral bonuses.
-                        Requires an account.
+                        Redeem as bonus wallet value on eligible Ready Series
+                        purchases. Requires an account.
                       </p>
                     </div>
                   </div>
@@ -1478,7 +1446,10 @@ export default function MealPlanWizardPage({
                   </div>
                   <button
                     disabled={!waName || !waEmail || !waPass}
-                    onClick={() => setAuthMode("done")}
+                    onClick={() => {
+                      onAuthenticated()
+                      setAuthMode("done")
+                    }}
                     className="w-full bg-[#E85D04] text-white py-4 font-bold text-[15px] hover:bg-[#1A1A1A] transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
                   >
                     Continue to Payment
@@ -1543,7 +1514,10 @@ export default function MealPlanWizardPage({
                   </div>
                   <button
                     disabled={!waEmail || !waPass}
-                    onClick={() => setAuthMode("done")}
+                    onClick={() => {
+                      onAuthenticated()
+                      setAuthMode("done")
+                    }}
                     className="w-full bg-[#1A1A1A] text-white py-4 font-bold text-[15px] hover:bg-[#E85D04] transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
                   >
                     Sign In & Continue
@@ -1561,14 +1535,13 @@ export default function MealPlanWizardPage({
                 </div>
               )}
 
-              {/* Payment + order summary */}
+              {/* Shared cart handoff */}
               {authMode === "done" && (
                 <div className="space-y-4">
-                  {/* Order summary */}
                   <div className="bg-white border border-[#E8E4DC] overflow-hidden">
                     <div className="px-5 py-3 bg-[#F4F2EE] border-b border-[#E8E4DC]">
                       <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#888]">
-                        Your Order
+                        Meal Plan Configuration
                       </p>
                     </div>
                     {[
@@ -1576,260 +1549,33 @@ export default function MealPlanWizardPage({
                       ["Meal Plan", mealPlan],
                       ["Meals", mealCountLabel],
                       ["Menu", `${progInfo.menuWeeks} weekly menus`],
-                      ...(progInfo.days
-                        ? [
-                            ["Duration", `${progInfo.days} days`],
-                            ["Start", fmtDate(startDate)],
-                            ["End", endDate ? fmtDate(endDate) : "—"],
-                          ]
-                        : []),
-                    ].map(([k, v]) => (
+                    ].map(([key, value]) => (
                       <div
-                        key={k}
+                        key={key}
                         className="flex justify-between items-center px-5 py-3 border-b border-[#F4F2EE] last:border-b-0"
                       >
-                        <span className="text-[13px] text-[#666]">{k}</span>
-                        <span className="text-[13px] font-semibold">{v}</span>
+                        <span className="text-[13px] text-[#666]">{key}</span>
+                        <span className="text-[13px] font-semibold text-right">
+                          {value}
+                        </span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Promo code */}
-                  <div className="bg-white border border-[#E8E4DC] px-5 py-4">
-                    <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#888] mb-3">
-                      Promo / Discount Code
-                    </p>
-                    <div className="flex gap-2">
-                      <input
-                        value={promoCode}
-                        onChange={(e) => {
-                          setPromoCode(e.target.value.toUpperCase())
-                          setPromoApplied(false)
-                          setPromoError(null)
-                        }}
-                        placeholder="e.g. WELCOME10"
-                        className={`flex-1 border bg-white px-4 py-3 text-[14px] font-mono uppercase focus:outline-none transition-all
-                          ${
-                            promoApplied
-                              ? "border-green-400 bg-green-50"
-                              : promoError
-                                ? "border-red-400"
-                                : "border-[#D0CCC4] focus:border-[#E85D04] focus:shadow-[0_0_0_3px_rgba(232,93,4,0.12)]"
-                          }`}
-                      />
-                      <button
-                        onClick={handleApplyPromo}
-                        className="px-5 py-3 bg-[#1A1A1A] text-white text-[12px] font-bold tracking-widest uppercase hover:bg-[#E85D04] transition-colors"
-                      >
-                        Apply
-                      </button>
-                    </div>
-                    {promoApplied && (
-                      <p className="text-green-600 text-[12px] mt-2 font-semibold">
-                        ✓ {promoCode} applied — saving $
-                        {promoDiscount.toFixed(2)}
-                      </p>
-                    )}
-                    {promoError === "invalid" && (
-                      <p className="text-red-500 text-[12px] mt-2">
-                        ✕ Invalid promo code. Check spelling or try another.
-                      </p>
-                    )}
-                    {promoError === "expired" && (
-                      <p className="text-red-500 text-[12px] mt-2">
-                        ⏰ This promo code has expired.
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Wallet credit */}
-                  <div className="bg-white border border-[#E8E4DC] px-5 py-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#888] mb-0.5">
-                          Wallet Credit
-                        </p>
-                        <p className="font-bold text-[15px]">
-                          ${WALLET_BALANCE.toFixed(2)} available
-                        </p>
-                        {useWallet && (
-                          <p className="text-[12px] text-green-600 font-semibold mt-0.5">
-                            −${walletDiscount.toFixed(2)} applied
-                          </p>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => setUseWallet(!useWallet)}
-                        className={`relative w-12 h-6 transition-colors duration-200 ${
-                          useWallet ? "bg-[#E85D04]" : "bg-[#E8E4DC]"
-                        }`}
-                        style={{ borderRadius: 999 }}
-                      >
-                        <div
-                          className={`absolute top-0.5 w-5 h-5 bg-white shadow transition-all duration-200 ${
-                            useWallet ? "left-6" : "left-0.5"
-                          }`}
-                          style={{ borderRadius: 999 }}
-                        />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Reward points earned */}
-                  <div className="bg-[#1A1A1A] text-white px-5 py-4 flex items-center gap-4">
-                    <span className="text-2xl">🪙</span>
-                    <div className="flex-1">
-                      <p className="font-bold text-[14px]">
-                        Earn{" "}
-                        <span className="text-[#F5B300]">
-                          +{pointsEarned} points
-                        </span>{" "}
-                        on this order
-                      </p>
-                      <p className="text-white/50 text-[11px]">
-                        Added to your account after first delivery
-                      </p>
-                    </div>
-                    <div className="text-right text-[11px] text-white/40">
-                      <p>Current balance</p>
-                      <p className="text-[#F5B300] font-bold text-[13px]">
-                        1,234 pts
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Pricing breakdown */}
-                  <div className="bg-white border border-[#E8E4DC] overflow-hidden">
-                    <div className="px-5 py-3 bg-[#F4F2EE] border-b border-[#E8E4DC]">
-                      <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#888]">
-                        Cost Breakdown
-                      </p>
-                    </div>
-                    <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
-                      <span className="text-[13px] text-[#666]">
-                        {progInfo.days
-                          ? `${progInfo.days}-day programme`
-                          : progInfo.label}
-                      </span>
-                      <span className="text-[13px]">
-                        ${basePrice.toFixed(2)}
-                      </span>
-                    </div>
-                    {promoApplied && (
-                      <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
-                        <span className="text-[13px] text-green-600">
-                          Promo ({promoCode})
-                        </span>
-                        <span className="text-[13px] text-green-600">
-                          −${promoDiscount.toFixed(2)}
-                        </span>
-                      </div>
-                    )}
-                    {useWallet && (
-                      <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
-                        <span className="text-[13px] text-green-600">
-                          Wallet credit
-                        </span>
-                        <span className="text-[13px] text-green-600">
-                          −${walletDiscount.toFixed(2)}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
-                      <span className="text-[13px] text-[#666]">Delivery</span>
-                      <span className="text-[13px]">Free</span>
-                    </div>
-                    <div className="flex justify-between px-5 py-3 border-b border-[#F4F2EE]">
-                      <span className="text-[13px] text-[#666]">GST (6%)</span>
-                      <span className="text-[13px]">${gst.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between items-center px-5 py-4 bg-[#1A1A1A]">
-                      <span className="text-white font-bold text-[15px]">
-                        Total
-                      </span>
-                      <span className="text-[#F5B300] font-extrabold text-[22px]">
-                        ${total.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Payment method */}
-                  <div className="bg-white border border-[#E8E4DC] px-5 py-4">
-                    <p className="text-[10px] font-extrabold tracking-[0.2em] uppercase text-[#888] mb-3">
-                      Payment Method
-                    </p>
-                    <div className="border-2 border-[#E85D04] bg-[#FFF9F5] px-4 py-3 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-7 bg-[#1A1A1A] flex items-center justify-center shrink-0">
-                          <svg
-                            width="20"
-                            height="13"
-                            viewBox="0 0 30 20"
-                            fill="none"
-                          >
-                            <rect width="30" height="20" fill="#333" />
-                            <rect
-                              x="2"
-                              y="7"
-                              width="26"
-                              height="3"
-                              fill="#666"
-                            />
-                            <rect
-                              x="2"
-                              y="13"
-                              width="8"
-                              height="2"
-                              rx="0.5"
-                              fill="#999"
-                            />
-                          </svg>
-                        </div>
-                        <span className="font-semibold text-[14px]">
-                          Credit / Debit Card
-                        </span>
-                      </div>
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#E85D04"
-                        strokeWidth="2.5"
-                      >
-                        <path d="M20 6 9 17l-5-5" />
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Trust + CTA */}
-                  <div className="flex items-center gap-3 bg-[#E85D04]/10 border border-[#E85D04]/30 px-4 py-3">
-                    <span className="text-xl shrink-0">🔒</span>
-                    <p className="text-[12px] text-[#555] leading-tight">
-                      <strong className="text-[#1A1A1A]">
-                        Satisfaction guarantee.
-                      </strong>{" "}
-                      Exceptional meals and support — or your money back. No
-                      questions asked.
+                  <div className="bg-[#E85D04]/10 border border-[#E85D04]/30 px-4 py-4">
+                    <p className="text-[13px] text-[#555] leading-relaxed">
+                      This configured Meal Plan will be added to the shared
+                      cart. Ready Series items already in the cart remain in the
+                      same Shopify order. Payment, promotions, and eligible
+                      wallet balances are applied once in shared checkout.
                     </p>
                   </div>
 
                   <button
-                    onClick={() =>
-                      onCheckoutComplete(
-                        {
-                          name: details.name,
-                          phone: details.phone,
-                          line1: details.street,
-                          unit: "",
-                          postal: details.postcode,
-                        },
-                        total,
-                      )
-                    }
+                    onClick={continueToSharedCheckout}
                     className="w-full bg-[#E85D04] text-white py-4 font-bold text-[16px] tracking-wide hover:bg-[#1A1A1A] transition-colors active:scale-[0.99] flex items-center justify-center gap-2"
                   >
-                    Place Order · ${total.toFixed(2)}
+                    Add to Cart & Continue · ${basePrice.toFixed(2)}
                     <svg
                       width="16"
                       height="16"
@@ -1842,27 +1588,16 @@ export default function MealPlanWizardPage({
                     </svg>
                   </button>
                   <p className="text-center text-[12px] text-[#aaa]">
-                    Cancel anytime from your account · No lock-in
+                    Account identity is retained for recurring and fixed
+                    programme management.
                   </p>
 
-                  <div className="pt-2">
-                    <button
-                      onClick={goBack}
-                      className="flex items-center gap-1.5 text-[13px] text-[#888] hover:text-[#1A1A1A] font-semibold transition-colors"
-                    >
-                      <svg
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M19 12H5M12 5l-7 7 7 7" />
-                      </svg>
-                      Back to Details
-                    </button>
-                  </div>
+                  <button
+                    onClick={goBack}
+                    className="flex items-center gap-1.5 text-[13px] text-[#888] hover:text-[#1A1A1A] font-semibold transition-colors"
+                  >
+                    ← Back to Details
+                  </button>
                 </div>
               )}
             </div>
@@ -1946,37 +1681,6 @@ export default function MealPlanWizardPage({
                 </div>
               </div>
 
-              {/* Wallet credit — only shown at checkout step */}
-              {step === 5 && (
-                <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] font-extrabold tracking-[0.15em] uppercase text-[#555] mb-0.5">
-                      Wallet Credit
-                    </p>
-                    <p className="text-[14px] font-bold text-[#F5B300]">
-                      ${WALLET_BALANCE.toFixed(2)}
-                    </p>
-                    <p className="text-[10px] text-white/30">
-                      Available to use
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => setUseWallet(!useWallet)}
-                    className={`relative w-11 h-6 transition-colors duration-200 ${
-                      useWallet ? "bg-[#E85D04]" : "bg-white/20"
-                    }`}
-                    style={{ borderRadius: 999 }}
-                  >
-                    <div
-                      className={`absolute top-0.5 w-5 h-5 bg-white shadow transition-all duration-200 ${
-                        useWallet ? "left-5" : "left-0.5"
-                      }`}
-                      style={{ borderRadius: 999 }}
-                    />
-                  </button>
-                </div>
-              )}
-
               {/* Order details */}
               <div className="px-6 py-4 space-y-3 text-[13px] border-b border-white/10">
                 <div>
@@ -2046,20 +1750,15 @@ export default function MealPlanWizardPage({
               <div className="px-6 py-4 flex items-center justify-between">
                 <div>
                   <p className="text-[9px] font-extrabold tracking-[0.15em] uppercase text-[#555] mb-0.5">
-                    Total incl. GST
+                    Cart line price
                   </p>
                   <p className="text-[24px] font-extrabold text-[#F5B300] leading-none">
-                    ${total.toFixed(2)}
+                    ${basePrice.toFixed(2)}
                   </p>
-                  {(promoApplied || useWallet) && (
-                    <p className="text-[10px] text-white/40 line-through mt-0.5">
-                      ${(basePrice * 1.06).toFixed(2)}
-                    </p>
-                  )}
                 </div>
                 <div className="text-right text-[10px] text-white/30 leading-relaxed">
-                  <p>Free delivery</p>
-                  <p>Cancel anytime</p>
+                  <p>Tax calculated in shared checkout</p>
+                  <p>Account required</p>
                 </div>
               </div>
             </div>

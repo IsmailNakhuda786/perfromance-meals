@@ -1,12 +1,20 @@
 export type Page = "home" | "ready-series" | "ready-series-about" | "ready-series-order" | "meal-plan-landing" | "meal-plan-about" | "meal-plan-stories" | "meal-plan-wizard" | "checkout" | "confirmation" | "account" | "gift-card" | "about" | "ready-series-product" | "rewards"
 
 export interface CartItem {
+  lineKey: string
   id: number
   name: string
   price: number
   qty: number
   img: string
   type: "ready" | "bundle" | "plan"
+  purchaseMode: "individual" | "bundle" | "subscription" | "meal-plan"
+  productId: string
+  variantId?: string
+  sellingPlanId?: string
+  programmeContext?: string
+  requiresAccount?: boolean
+  bonusWalletEligible: boolean
   planLabel?: string
   mealImgs?: string[]
   mealNames?: string[]
@@ -29,7 +37,7 @@ export interface Meal {
   desc: string
 }
 
-export const MEALS: Meal[] = [
+export const MEAL_PLAN_MEALS: Meal[] = [
   {
     id: 1,
     name: "Herb Grilled Chicken & Brown Rice",
@@ -167,49 +175,6 @@ export const MEALS: Meal[] = [
   },
 ]
 
-export const CATS = [
-  { id: "all", label: "All Meals" },
-  { id: "promotion", label: "🔥 Promotion" },
-  { id: "bundles", label: "📦 Useful Bundles" },
-  { id: "low-carb", label: "Low Carb" },
-  { id: "high-carb", label: "High Carb" },
-  { id: "breakfast", label: "Breakfast" },
-  { id: "just-protein", label: "Just Protein" },
-]
-
-export const BUNDLES = [
-  {
-    id: 201,
-    name: "Lean Starter Pack (5 meals)",
-    desc: "Curated low-carb selection — perfect for first-timers.",
-    price: 59.0,
-    perMeal: 11.8,
-    img: "https://images.unsplash.com/photo-1667499745120-f9bcef8f584e?w=600&h=500&fit=crop&auto=format&q=85",
-    tag: "Popular",
-    mealIds: [2, 7, 6, 3, 9],
-  },
-  {
-    id: 202,
-    name: "Bulk Performance Bundle (10 meals)",
-    desc: "Mix of high-protein picks, best value per meal.",
-    price: 109.0,
-    perMeal: 10.9,
-    img: "https://images.unsplash.com/photo-1569420077790-afb136b3bb8c?w=600&h=500&fit=crop&auto=format&q=85",
-    tag: "Best Value",
-    mealIds: [1, 2, 4, 5, 6, 7, 9, 3, 8, 1],
-  },
-  {
-    id: 203,
-    name: "Breakfast Week (7 meals)",
-    desc: "Protein oats + salmon scramble — 7 mornings sorted.",
-    price: 65.0,
-    perMeal: 9.28,
-    img: "https://images.unsplash.com/photo-1569420067112-b57b4f024595?w=600&h=500&fit=crop&auto=format&q=85",
-    tag: "New",
-    mealIds: [3, 8, 3, 8, 3, 8, 3],
-  },
-]
-
 export type MealReview = {
   author: string
   role: string
@@ -220,264 +185,6 @@ export type MealReview = {
 }
 
 export const ALL_REVIEWS: Record<number, MealReview[]> = {
-  1: [
-    {
-      author: "Marcus T.",
-      role: "Software Engineer",
-      rating: 5,
-      text: "Best meal prep chicken I have had. The brown rice keeps me full till 5pm and the herb marinade is genuinely restaurant-quality. I have ordered this 4 weeks in a row.",
-      date: "12 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Rena L.",
-      role: "Marketing Manager",
-      rating: 5,
-      text: "Ordered 10 of these. Zero regrets. My whole office is jealous at lunchtime. The macros are spot-on every single time.",
-      date: "8 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Kevin P.",
-      role: "Personal Trainer",
-      rating: 4,
-      text: "Really solid. Portion size is generous and macros match exactly as listed. Would be 5 stars if carbs were slightly lower for a cut phase.",
-      date: "1 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Alicia W.",
-      role: "Nurse",
-      rating: 5,
-      text: "Works perfectly for my 12-hour shifts. Heat in 3 minutes, eat at the station, done. Consistent quality every week.",
-      date: "29 Aug 2026",
-      verified: true,
-    },
-    {
-      author: "Daniel F.",
-      role: "CrossFit Coach",
-      rating: 5,
-      text: "I recommend this to every client who asks about meal prep. Clean ingredients, honest macros, great taste. Nothing like it in Singapore.",
-      date: "22 Aug 2026",
-      verified: true,
-    },
-  ],
-  2: [
-    {
-      author: "Sophie H.",
-      role: "Product Designer",
-      rating: 5,
-      text: "The chilli lime dressing makes this. It actually has flavour — not just plain chicken on rice. Low carb without feeling like punishment.",
-      date: "10 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Jared Ng",
-      role: "Entrepreneur",
-      rating: 5,
-      text: "I am on a cut and this is my go-to. 40g protein, under 315 cal, and it tastes good. That combination is rare in meal prep.",
-      date: "5 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Priya S.",
-      role: "Doctor",
-      rating: 4,
-      text: "Good flavour and solid protein. I wish there were a bit more sauce but the macros are exactly what I need on a low-carb week.",
-      date: "2 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Brian K.",
-      role: "Runner",
-      rating: 5,
-      text: "The pickled cucumber is a nice touch — it brightens the whole meal. Genuinely enjoyable and keeps me on track with my diet goals.",
-      date: "28 Aug 2026",
-      verified: true,
-    },
-  ],
-  3: [
-    {
-      author: "Vanessa C.",
-      role: "Yoga Instructor",
-      rating: 5,
-      text: "A breakfast that actually keeps me full until noon. The salmon is cold-smoked properly — not the cheap kind. Feels like a cafe breakfast at home.",
-      date: "9 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "James O.",
-      role: "Architect",
-      rating: 4,
-      text: "I did not expect frozen scrambled eggs to be this good. The texture is right and the salmon quantity is generous. Will keep ordering.",
-      date: "4 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Linda T.",
-      role: "Teacher",
-      rating: 5,
-      text: "Finally a healthy breakfast I actually look forward to. The capers add the perfect punch of flavour. My kids even steal it from the fridge.",
-      date: "30 Aug 2026",
-      verified: true,
-    },
-  ],
-  4: [
-    {
-      author: "Amir R.",
-      role: "Finance Analyst",
-      rating: 5,
-      text: "The teriyaki glaze caramelises perfectly in the microwave. One of the best-tasting ready meals I have had, full stop. Premium quality.",
-      date: "11 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Lin Y.",
-      role: "Pharmacist",
-      rating: 5,
-      text: "Excellent flavour, great macros, and the jasmine rice is actually fluffy after reheating. That is not easy to do. Five stars.",
-      date: "7 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Tom B.",
-      role: "Sales Lead",
-      rating: 4,
-      text: "Genuinely delicious. My only feedback is I want a slightly larger portion — but the macros make sense for the size. Will keep buying.",
-      date: "3 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Sarah K.",
-      role: "Physiotherapist",
-      rating: 5,
-      text: "Ordered as a bundle of 10. Three weeks in and I have not grown tired of it. The edamame and ginger really lift the whole thing.",
-      date: "27 Aug 2026",
-      verified: true,
-    },
-  ],
-  5: [
-    {
-      author: "Chris M.",
-      role: "Gym Owner",
-      rating: 5,
-      text: "The gochujang marinade is deeply flavourful without being overwhelming. Purple rice is a nice nutritional upgrade. Solid high-carb option.",
-      date: "8 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Rachel T.",
-      role: "Account Manager",
-      rating: 5,
-      text: "I meal prep for myself and my partner. This is both of our favourites. The kimchi slaw keeps it interesting and the beef quality is clearly high.",
-      date: "2 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Dylan W.",
-      role: "Student Athlete",
-      rating: 4,
-      text: "Great macros for a build phase and the Korean flavours are authentic. I have had worse bulgogi at actual restaurants.",
-      date: "28 Aug 2026",
-      verified: true,
-    },
-  ],
-  6: [
-    {
-      author: "Natalie P.",
-      role: "Dietitian",
-      rating: 5,
-      text: "As a dietitian I am picky about protein sources. This turkey breast is lean, well-seasoned, and the macros are genuinely clean. I recommend it to clients.",
-      date: "10 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Ethan G.",
-      role: "Cyclist",
-      rating: 4,
-      text: "Clean, simple, high protein. Exactly what I need on recovery days when I want less carbs. The herb seasoning is subtle but good.",
-      date: "6 Sep 2026",
-      verified: true,
-    },
-  ],
-  7: [
-    {
-      author: "Jessica L.",
-      role: "Content Creator",
-      rating: 5,
-      text: "The quinoa absorbs the lemon herb dressing beautifully. Light but filling — perfect for work-from-home lunches when I do not want to feel heavy.",
-      date: "9 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Paulo A.",
-      role: "Project Manager",
-      rating: 5,
-      text: "My favourite low-carb option in the whole range. The Greek flavour profile — olives, feta, oregano — actually tastes Mediterranean. Impressive.",
-      date: "5 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Mei L.",
-      role: "HR Manager",
-      rating: 4,
-      text: "Really enjoyable. Great for people who want flavour without a heavy meal. Would love a slightly larger portion of the quinoa component.",
-      date: "1 Sep 2026",
-      verified: true,
-    },
-  ],
-  8: [
-    {
-      author: "Felicia H.",
-      role: "Early Childhood Educator",
-      rating: 5,
-      text: "I was sceptical about frozen protein oats but these are genuinely good. The berry mix is not too sweet and the oats have the right texture after a quick heat.",
-      date: "7 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Darren C.",
-      role: "Swimmer",
-      rating: 5,
-      text: "This has replaced my usual breakfast smoothie. More filling, higher protein, less work. And it actually tastes good — not like cardboard.",
-      date: "3 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Anna K.",
-      role: "Lawyer",
-      rating: 4,
-      text: "Great quick breakfast for busy mornings. I add a little extra honey sometimes. The protein content is impressive for a breakfast item.",
-      date: "29 Aug 2026",
-      verified: true,
-    },
-  ],
-  9: [
-    {
-      author: "Michael C.",
-      role: "Triathlete",
-      rating: 5,
-      text: "The cajun seasoning on the salmon is bold without overpowering. Sweet potato mash is creamy and not mushy after reheating. Nutrition is excellent for endurance training.",
-      date: "11 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Grace T.",
-      role: "Nurse Manager",
-      rating: 5,
-      text: "This is my weekly order. High protein, good fats from the salmon, complex carbs from the sweet potato. A nutritionally complete meal in one dish.",
-      date: "6 Sep 2026",
-      verified: true,
-    },
-    {
-      author: "Ryan B.",
-      role: "Structural Engineer",
-      rating: 5,
-      text: "The best fish meal prep option I have found in Singapore. The cajun spice level is perfect — noticeable but not burning. Restaurant quality.",
-      date: "1 Sep 2026",
-      verified: true,
-    },
-  ],
   101: [
     {
       author: "Ryan T.",
@@ -525,7 +232,7 @@ export const ALL_REVIEWS: Record<number, MealReview[]> = {
       author: "Siti K.",
       role: "Dietitian",
       rating: 5,
-      text: "Impressive macros for a low-carb meal. The beef quality is clearly high. I recommend it to clients on a cut phase regularly.",
+      text: "Impressive macros for a low-carb meal. The beef quality is clearly high. I recommend it to clients on lower-carb weeks regularly.",
       date: "5 Sep 2026",
       verified: true,
     },
@@ -770,39 +477,43 @@ export const ALL_REVIEWS: Record<number, MealReview[]> = {
 
 export const PLANS = [
   {
-    name: "CUT",
-    cal: 1500,
-    protein: 130,
-    carbs: 120,
-    fat: 45,
-    meals: 3,
-    priceWeek: 148,
-    priceMonth: 520,
-    desc: "Structured deficit for steady, sustainable fat loss without sacrificing muscle.",
+    name: "Biweekly",
+    cal: "Configured at ordering",
+    billingLabel: "every 2 weeks",
+    totalWeeks: null,
+    desc: "Recurring Monday–Friday coverage with a two-week menu view.",
     accent: "#CDFF3A",
   },
   {
-    name: "MAINTAIN",
-    cal: 2000,
-    protein: 160,
-    carbs: 190,
-    fat: 60,
-    meals: 4,
-    priceWeek: 178,
-    priceMonth: 625,
-    desc: "Calibrated to your TDEE — optimal fueling for daily performance and recovery.",
+    name: "Monthly",
+    cal: "Configured at ordering",
+    billingLabel: "every month",
+    totalWeeks: null,
+    desc: "Recurring Monday–Friday coverage with a four-week menu view.",
     accent: "#F2C94C",
   },
   {
-    name: "BUILD",
-    cal: 2500,
-    protein: 190,
-    carbs: 260,
-    fat: 75,
-    meals: 5,
-    priceWeek: 208,
-    priceMonth: 729,
-    desc: "Clean surplus with high-protein loading designed for serious muscle gain.",
+    name: "2 Months",
+    cal: "Configured at ordering",
+    billingLabel: "every 2 months",
+    totalWeeks: null,
+    desc: "Recurring Monday–Friday coverage on a two-month renewal rhythm.",
     accent: "#7EE8B0",
+  },
+  {
+    name: "6 by 60",
+    cal: "Configured at ordering",
+    billingLabel: "fixed 60-day programme",
+    totalWeeks: 9,
+    desc: "Selectable 60-day programme with all-week coverage.",
+    accent: "#E85D04",
+  },
+  {
+    name: "6 by 60 Plus",
+    cal: "Configured at ordering",
+    billingLabel: "fixed 60-day programme",
+    totalWeeks: 9,
+    desc: "Selectable 60-day programme with all-week coverage and muscle support.",
+    accent: "#A78BFA",
   },
 ]

@@ -54,7 +54,7 @@ const HOW_IT_WORKS = [
   {
     step: "03",
     title: "Redeem for credit",
-    desc: "Choose a voucher tier: 500 pts = $5 · 1,000 pts = $11 · 2,000 pts = $25. Applied at checkout instantly.",
+    desc: "Choose a voucher tier: 500 pts = $5 · 1,000 pts = $11 · 2,000 pts = $25. Redemptions become restricted bonus wallet value.",
   },
 ]
 
@@ -101,8 +101,8 @@ export default function RewardsPage({ navigate, isLoggedIn }: Props) {
             <span className="text-[#F5B300]">Get rewarded.</span>
           </h1>
           <p className="text-white/50 text-[16px] max-w-[480px] leading-relaxed mb-8">
-            Earn points on every order, unlock tiers, and redeem for wallet
-            credit. The more you eat, the more you save.
+            Earn points on every order, unlock tiers, and redeem for bonus
+            wallet value on eligible Ready Series purchases.
           </p>
           <div className="flex flex-wrap gap-3">
             <button
@@ -206,8 +206,9 @@ export default function RewardsPage({ navigate, isLoggedIn }: Props) {
             ))}
           </div>
           <p className="text-white/25 text-[12px] text-center mt-4">
-            Applied instantly at checkout — no codes needed. Combine with promos
-            for maximum savings.
+            Reward redemptions are bonus wallet value for Ready Series
+            Individual Selection and Bundles only. They cannot pay for Ready
+            Series Subscription or Meal Plan.
           </p>
         </div>
       </section>

@@ -3,7 +3,7 @@ import { Page } from "@/data"
 
 interface Props {
   navigate: (page: Page) => void
-  orderType: "ready" | "plan"
+  orderType: "ready" | "plan" | "mixed"
   isGuest?: boolean
   promoCode?: string
   promoDiscount?: number
@@ -286,8 +286,10 @@ export default function ConfirmationPage({
               Check <strong className="text-white/70">jerome@email.com</strong>{" "}
               for your{" "}
               {orderType === "plan"
-                ? "full meal plan schedule and delivery windows"
-                : "order receipt and delivery details"}
+                ? "full Meal Plan schedule and delivery windows"
+                : orderType === "mixed"
+                  ? "combined Ready Series and Meal Plan order details"
+                  : "order receipt and delivery details"}
             </div>
           </div>
           <div className="shrink-0 text-[#F5B300] text-[10px] font-bold tracking-wider uppercase">
@@ -309,7 +311,7 @@ export default function ConfirmationPage({
         </div>
 
         {/* Customize Meal Plan CTA — only for plan orders */}
-        {orderType === "plan" && (
+        {(orderType === "plan" || orderType === "mixed") && (
           <div className="bg-[#1A1A1A] border border-[#E85D04]/30 p-5 mb-5 text-left">
             <div className="flex items-start justify-between gap-4">
               <div>

@@ -217,8 +217,8 @@ export default function GiftCardPage({ navigate }: Props) {
               Gift Card
             </h1>
             <p className="text-[#666] text-[15px] mb-8">
-              Works on Ready Series Individual Selection, Bundles, or Meal Plan
-              subscription.
+              The recipient redeems the Gift Card into monetary wallet value,
+              usable wherever wallet payment is supported.
             </p>
 
             {/* Amount */}
@@ -247,7 +247,9 @@ export default function GiftCardPage({ navigate }: Props) {
                 ))}
               </div>
               <p className="text-[#aaa] text-[12px]">
-                Gift cards never expire and can be used on any purchase.
+                Gift Card value becomes monetary wallet balance after
+                redemption. Settlement shown here is illustrative prototype
+                behavior.
               </p>
             </div>
 

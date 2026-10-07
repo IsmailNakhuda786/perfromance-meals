@@ -11,7 +11,8 @@ interface Props {
     unit: string
     postal: string
   } | null
-  requireAccount?: boolean
+  isLoggedIn: boolean
+  onAuthenticated: () => void
   onComplete: (
     isGuest: boolean,
     promoCode: string,
@@ -36,10 +37,13 @@ export default function CheckoutPage({
   navigate,
   cart,
   savedAddress,
-  requireAccount = false,
+  isLoggedIn,
+  onAuthenticated,
   onComplete,
 }: Props) {
-  const [authMode, setAuthMode] = useState<AuthMode>(null)
+  const [authMode, setAuthMode] = useState<AuthMode>(
+    isLoggedIn ? "signin_done" : null,
+  )
   const [authEmail, setAuthEmail] = useState("")
   const [authName, setAuthName] = useState("")
   const [authPhone, setAuthPhone] = useState("")
@@ -61,6 +65,10 @@ export default function CheckoutPage({
   )
 
   const FREE_DELIVERY_THRESHOLD = 120
+  const requiresCustomerAccount = cart.some((item) => item.requiresAccount)
+  const fundedWalletBalance = 8
+  const giftCardWalletBalance = 4.5
+  const bonusWalletBalance = 5
 
   const VALID_PROMOS: Record<string, {
     discount: number
@@ -102,9 +110,33 @@ export default function CheckoutPage({
   const promoFlat = promoEntry?.flat ?? 0
   const promoDiscount = promoFlat > 0 ? promoFlat : subtotal * promoRate
   const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 10
+  const monetaryWalletApplied = useWallet
+    ? Math.min(
+        fundedWalletBalance + giftCardWalletBalance,
+        Math.max(0, subtotal + deliveryFee - promoDiscount),
+      )
+    : 0
+  const bonusEligibleSubtotal = cart
+    .filter((item) => item.bonusWalletEligible)
+    .reduce((sum, item) => sum + item.price * item.qty, 0)
+  const bonusEligibleAfterPromo = Math.max(
+    0,
+    bonusEligibleSubtotal - Math.min(promoDiscount, bonusEligibleSubtotal),
+  )
+  const bonusWalletApplied = useWallet
+    ? Math.min(
+        bonusWalletBalance,
+        bonusEligibleAfterPromo,
+        Math.max(
+          0,
+          subtotal + deliveryFee - promoDiscount - monetaryWalletApplied,
+        ),
+      )
+    : 0
+  const walletDiscount = monetaryWalletApplied + bonusWalletApplied
   const total = Math.max(
     0,
-    subtotal + deliveryFee - (useWallet ? 12.5 : 0) - promoDiscount,
+    subtotal + deliveryFee - walletDiscount - promoDiscount,
   )
 
   return (
@@ -161,11 +193,11 @@ export default function CheckoutPage({
               <h1 className="font-display text-[28px] sm:text-[34px] font-bold mb-2">
                 Almost there.
               </h1>
-              {requireAccount ? (
+              {requiresCustomerAccount ? (
                 <>
                   <p className="text-[#666] text-[14px] mb-4">
-                    Ready Series Subscription requires an account to manage your
-                    deliveries, swap meals, and earn rewards.
+                    Recurring Ready Series and Meal Plan selections require your
+                    shared customer account for delivery and plan management.
                   </p>
                   <div className="flex items-start gap-3 bg-[#F5B300]/10 border border-[#F5B300]/40 px-4 py-3 mb-6 text-[12px] text-[#7B5900]">
                     <span className="text-[16px] shrink-0">📦</span>
@@ -197,7 +229,7 @@ export default function CheckoutPage({
                 >
                   Sign In to Existing Account
                 </button>
-                {!requireAccount && (
+                {!requiresCustomerAccount && (
                   <button
                     onClick={() => setAuthMode("guest")}
                     className="w-full text-[#888] text-[13px] py-3 hover:text-[#111] transition-colors border border-[#D0CCC4] hover:border-[#111]"
@@ -206,7 +238,7 @@ export default function CheckoutPage({
                   </button>
                 )}
               </div>
-              {!requireAccount && (
+              {!requiresCustomerAccount && (
                 <p className="text-[11px] text-[#aaa] text-center">
                   Guest orders earn no reward points and won't appear in order
                   history.
@@ -279,7 +311,10 @@ export default function CheckoutPage({
               </div>
               <button
                 disabled={!authName || !authEmail || !authPassword}
-                onClick={() => setAuthMode("signup_done")}
+                onClick={() => {
+                  onAuthenticated()
+                  setAuthMode("signup_done")
+                }}
                 className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors disabled:opacity-40"
               >
                 Create Account & Continue →
@@ -393,7 +428,10 @@ export default function CheckoutPage({
               </div>
               <button
                 disabled={!authEmail || !authPassword}
-                onClick={() => setAuthMode("signin_done")}
+                onClick={() => {
+                  onAuthenticated()
+                  setAuthMode("signin_done")
+                }}
                 className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors mb-3 disabled:opacity-40"
               >
                 Sign In & Continue →
@@ -436,7 +474,9 @@ export default function CheckoutPage({
                         <li>
                           Order history, easy reorders, and delivery tracking
                         </li>
-                        <li>Referral bonuses — earn $10 credit per friend</li>
+                        <li>
+                          Referral bonuses for eligible Ready Series purchases
+                        </li>
                       </ul>
                       <button
                         onClick={() => setAuthMode(null)}
@@ -576,7 +616,7 @@ export default function CheckoutPage({
                 </button>
 
                 {/* Wallet toggle */}
-                {true && (
+                <>
                   <button
                     onClick={() => setUseWallet((v) => !v)}
                     className={`w-full flex items-center justify-between px-4 py-3.5 border mb-5 transition-all ${
@@ -611,7 +651,7 @@ export default function CheckoutPage({
                           useWallet ? "text-white" : "text-[#333]"
                         }`}
                       >
-                        Apply wallet credit
+                        Apply available wallet balances
                       </span>
                     </div>
                     <span
@@ -619,10 +659,19 @@ export default function CheckoutPage({
                         useWallet ? "text-[#F5B300]" : "text-[#888]"
                       }`}
                     >
-                      {useWallet ? "–$12.50" : "$12.50 available"}
+                      {useWallet
+                        ? `–$${walletDiscount.toFixed(2)}`
+                        : `$${(fundedWalletBalance + giftCardWalletBalance + bonusWalletBalance).toFixed(2)} available`}
                     </span>
                   </button>
-                )}
+                  <p className="text-[11px] text-[#888] -mt-3 mb-5 leading-relaxed">
+                    Funded (${fundedWalletBalance.toFixed(2)}) and Gift Card ($
+                    {giftCardWalletBalance.toFixed(2)}) balances are monetary.
+                    Bonus (${bonusWalletBalance.toFixed(2)}) applies only to
+                    Ready Series Individual Selection and Bundles. This is
+                    illustrative prototype settlement.
+                  </p>
+                </>
 
                 {/* Card fields */}
                 <div className="space-y-3 mb-6">
@@ -760,7 +809,7 @@ export default function CheckoutPage({
 
             <div className="space-y-4 mb-6">
               {cart.map((item) => (
-                <div key={`${item.id}-${item.type}`} className="flex gap-3">
+                <div key={item.lineKey} className="flex gap-3">
                   <div className="relative shrink-0">
                     <img
                       src={item.img}
@@ -816,10 +865,18 @@ export default function CheckoutPage({
                 </div>
               )}
               {useWallet && (
-                <div className="flex justify-between text-green-600">
-                  <span>Wallet credit</span>
-                  <span>–$12.50</span>
-                </div>
+                <>
+                  <div className="flex justify-between text-green-600">
+                    <span>Monetary wallet</span>
+                    <span>–${monetaryWalletApplied.toFixed(2)}</span>
+                  </div>
+                  {bonusWalletApplied > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Eligible bonus wallet</span>
+                      <span>–${bonusWalletApplied.toFixed(2)}</span>
+                    </div>
+                  )}
+                </>
               )}
               {promoApplied && (
                 <div className="flex justify-between text-green-600">

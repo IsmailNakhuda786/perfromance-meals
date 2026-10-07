@@ -1,23 +1,28 @@
-import { useState, useEffect } from "react"
+import { lazy, Suspense, useEffect, useState } from "react"
 import { CartItem, Page } from "@/data"
 import Nav from "@/components/Nav"
 import Footer from "@/components/Footer"
 import PromoPopup from "@/components/PromoPopup"
 import HomePage from "@/pages/HomePage"
-import ReadySeriesPage from "@/pages/ReadySeriesPage"
-import ReadySeriesLandingPage from "@/pages/ReadySeriesLandingPage"
-import ReadySeriesAboutPage from "@/pages/ReadySeriesAboutPage"
-import MealPlanLandingPage from "@/pages/MealPlanLandingPage"
-import MealPlanAboutPage from "@/pages/MealPlanAboutPage"
-import MealPlanStoriesPage from "@/pages/MealPlanStoriesPage"
-import MealPlanWizardPage from "@/pages/MealPlanWizardPage"
-import CheckoutPage from "@/pages/CheckoutPage"
-import ConfirmationPage from "@/pages/ConfirmationPage"
-import AccountPage from "@/pages/AccountPage"
-import GiftCardPage from "@/pages/GiftCardPage"
-import AboutPage from "@/pages/AboutPage"
-import ReadySeriesProductPage from "@/pages/ReadySeriesProductPage"
-import RewardsPage from "@/pages/RewardsPage"
+
+const ReadySeriesPage = lazy(() => import("@/pages/ReadySeriesPage"))
+const ReadySeriesLandingPage = lazy(
+  () => import("@/pages/ReadySeriesLandingPage"),
+)
+const ReadySeriesAboutPage = lazy(() => import("@/pages/ReadySeriesAboutPage"))
+const MealPlanLandingPage = lazy(() => import("@/pages/MealPlanLandingPage"))
+const MealPlanAboutPage = lazy(() => import("@/pages/MealPlanAboutPage"))
+const MealPlanStoriesPage = lazy(() => import("@/pages/MealPlanStoriesPage"))
+const MealPlanWizardPage = lazy(() => import("@/pages/MealPlanWizardPage"))
+const CheckoutPage = lazy(() => import("@/pages/CheckoutPage"))
+const ConfirmationPage = lazy(() => import("@/pages/ConfirmationPage"))
+const AccountPage = lazy(() => import("@/pages/AccountPage"))
+const GiftCardPage = lazy(() => import("@/pages/GiftCardPage"))
+const AboutPage = lazy(() => import("@/pages/AboutPage"))
+const ReadySeriesProductPage = lazy(
+  () => import("@/pages/ReadySeriesProductPage"),
+)
+const RewardsPage = lazy(() => import("@/pages/RewardsPage"))
 
 const NO_FOOTER_PAGES: Page[] = [
   "checkout",
@@ -26,7 +31,7 @@ const NO_FOOTER_PAGES: Page[] = [
   "ready-series-product",
 ]
 
-export interface SavedAddress {
+interface SavedAddress {
   name: string
   phone: string
   line1: string
@@ -38,9 +43,11 @@ export default function App() {
   const [page, setPage] = useState<Page>("home")
   const [cart, setCart] = useState<CartItem[]>([])
   const [cartOpen, setCartOpen] = useState(false)
-  const [wizardInitialPlan, setWizardInitialPlan] = useState("MAINTAIN")
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [wizardInitialPlan, setWizardInitialPlan] = useState("bi-weekly")
   const [savedAddress, setSavedAddress] = useState<SavedAddress | null>(null)
-  const [lastOrderType, setLastOrderType] = useState<"ready" | "plan">("ready")
+  const [lastOrderType, setLastOrderType] =
+    useState<"ready" | "plan" | "mixed">("ready")
   const [lastOrderGuest, setLastOrderGuest] = useState(false)
   const [lastPromoCode, setLastPromoCode] = useState("")
   const [lastPromoDiscount, setLastPromoDiscount] = useState(0)
@@ -82,52 +89,35 @@ export default function App() {
 
   const addToCart = (item: CartItem) => {
     setCart((prev) => {
-      const key = `${item.id}-${item.type}`
-      const existing = prev.find((i) => `${i.id}-${i.type}` === key)
+      const existing = prev.find((i) => i.lineKey === item.lineKey)
       if (existing)
         return prev.map((i) =>
-          `${i.id}-${i.type}` === key ? { ...i, qty: i.qty + item.qty } : i,
+          i.lineKey === item.lineKey ? { ...i, qty: i.qty + item.qty } : i,
         )
       return [...prev, item]
     })
     setCartOpen(true)
   }
 
-  const updateCartQty = (id: number, type: string, delta: number) => {
+  const updateCartQty = (lineKey: string, delta: number) => {
     setCart((prev) => {
-      const key = `${id}-${type}`
       return prev
-        .map((i) =>
-          `${i.id}-${i.type}` === key ? { ...i, qty: i.qty + delta } : i,
-        )
+        .map((i) => (i.lineKey === lineKey ? { ...i, qty: i.qty + delta } : i))
         .filter((i) => i.qty > 0)
     })
   }
 
-  const removeFromCart = (id: number, type: string) => {
-    setCart((prev) => prev.filter((i) => !(i.id === id && i.type === type)))
+  const removeFromCart = (lineKey: string) => {
+    setCart((prev) => prev.filter((i) => i.lineKey !== lineKey))
   }
 
-  const handlePlanCheckout = (addr: SavedAddress, total: number) => {
+  const handlePlanCart = (addr: SavedAddress) => {
     setSavedAddress(addr)
-    setLastOrderType("plan")
-    setLastOrderTotal(total)
-    setLastOrderGuest(false)
-    setLastPromoCode("")
-    setLastPromoDiscount(0)
-    setLastOrderDetails({
-      name: addr.name,
-      address: `${addr.line1}${
-        addr.unit ? `, ${addr.unit}` : ""
-      }, S${addr.postal}`,
-      date: "Next available",
-      slot: "6am – 9am",
-      deliveryFee: 0,
-    })
+    setCartOpen(false)
+    navigate("checkout")
   }
 
   const handleReadyCheckout = () => {
-    setLastOrderType("ready")
     navigate("checkout")
   }
 
@@ -152,100 +142,121 @@ export default function App() {
         updateCartQty={updateCartQty}
         removeFromCart={removeFromCart}
         onCheckout={handleReadyCheckout}
+        isLoggedIn={isLoggedIn}
+        onAuthChange={setIsLoggedIn}
       />
 
-      {page === "home" && (
-        <HomePage navigate={navigate} navigateToWizard={navigateToWizard} />
-      )}
-      {page === "ready-series" && (
-        <ReadySeriesLandingPage
-          navigate={navigate}
-          navigateToReadyOrder={navigateToReadyOrder}
-        />
-      )}
-      {page === "ready-series-about" && (
-        <ReadySeriesAboutPage navigate={navigate} />
-      )}
-      {page === "ready-series-order" && (
-        <ReadySeriesPage
-          navigate={navigate}
-          addToCart={addToCart}
-          cart={cart}
-          onSelectMeal={(id) => {
-            setSelectedMealId(id)
-            navigate("ready-series-product")
-          }}
-          setCartOpen={setCartOpen}
-          initialPurchaseMode={readyInitialMode}
-        />
-      )}
-      {page === "ready-series-product" && (
-        <ReadySeriesProductPage
-          mealId={selectedMealId}
-          navigate={navigate}
-          addToCart={addToCart}
-        />
-      )}
-      {page === "meal-plan-landing" && (
-        <MealPlanLandingPage
-          navigate={navigate}
-          navigateToWizard={navigateToWizard}
-        />
-      )}
-      {page === "meal-plan-about" && (
-        <MealPlanAboutPage
-          navigate={navigate}
-          navigateToWizard={navigateToWizard}
-        />
-      )}
-      {page === "meal-plan-stories" && (
-        <MealPlanStoriesPage
-          navigate={navigate}
-          navigateToWizard={navigateToWizard}
-        />
-      )}
-      {page === "meal-plan-wizard" && (
-        <MealPlanWizardPage
-          navigate={navigate}
-          addToCart={addToCart}
-          initialPlan={wizardInitialPlan}
-          onCheckoutComplete={(addr, total) => {
-            handlePlanCheckout(addr, total)
-            navigate("confirmation")
-          }}
-        />
-      )}
-      {page === "checkout" && (
-        <CheckoutPage
-          navigate={navigate}
-          cart={cart}
-          savedAddress={savedAddress}
-          onComplete={(isGuest, promoCode, promoDiscount, total, details) => {
-            setLastOrderType("ready")
-            setLastOrderGuest(isGuest)
-            setLastPromoCode(promoCode)
-            setLastPromoDiscount(promoDiscount)
-            setLastOrderTotal(total)
-            setLastOrderDetails(details)
-            navigate("confirmation")
-          }}
-        />
-      )}
-      {page === "confirmation" && (
-        <ConfirmationPage
-          navigate={navigate}
-          orderType={lastOrderType}
-          isGuest={lastOrderGuest}
-          promoCode={lastPromoCode}
-          promoDiscount={lastPromoDiscount}
-          orderTotal={lastOrderTotal}
-          orderDetails={lastOrderDetails}
-        />
-      )}
-      {page === "account" && <AccountPage navigate={navigate} />}
-      {page === "gift-card" && <GiftCardPage navigate={navigate} />}
-      {page === "about" && <AboutPage navigate={navigate} />}
-      {page === "rewards" && <RewardsPage navigate={navigate} />}
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-[#F7F5F0]" aria-hidden="true" />
+        }
+      >
+        {page === "home" && (
+          <HomePage navigate={navigate} navigateToWizard={navigateToWizard} />
+        )}
+        {page === "ready-series" && (
+          <ReadySeriesLandingPage
+            navigate={navigate}
+            navigateToReadyOrder={navigateToReadyOrder}
+          />
+        )}
+        {page === "ready-series-about" && (
+          <ReadySeriesAboutPage navigate={navigate} />
+        )}
+        {page === "ready-series-order" && (
+          <ReadySeriesPage
+            navigate={navigate}
+            addToCart={addToCart}
+            cart={cart}
+            onSelectMeal={(id) => {
+              setSelectedMealId(id)
+              navigate("ready-series-product")
+            }}
+            setCartOpen={setCartOpen}
+            initialPurchaseMode={readyInitialMode}
+            isLoggedIn={isLoggedIn}
+            onAuthenticated={() => setIsLoggedIn(true)}
+          />
+        )}
+        {page === "ready-series-product" && (
+          <ReadySeriesProductPage
+            mealId={selectedMealId}
+            navigate={navigate}
+            addToCart={addToCart}
+          />
+        )}
+        {page === "meal-plan-landing" && (
+          <MealPlanLandingPage
+            navigate={navigate}
+            navigateToWizard={navigateToWizard}
+          />
+        )}
+        {page === "meal-plan-about" && (
+          <MealPlanAboutPage
+            navigate={navigate}
+            navigateToWizard={navigateToWizard}
+          />
+        )}
+        {page === "meal-plan-stories" && (
+          <MealPlanStoriesPage
+            navigate={navigate}
+            navigateToWizard={navigateToWizard}
+          />
+        )}
+        {page === "meal-plan-wizard" && (
+          <MealPlanWizardPage
+            navigate={navigate}
+            addToCart={addToCart}
+            initialPlan={wizardInitialPlan}
+            isLoggedIn={isLoggedIn}
+            onAuthenticated={() => setIsLoggedIn(true)}
+            onContinueToCheckout={handlePlanCart}
+          />
+        )}
+        {page === "checkout" && (
+          <CheckoutPage
+            navigate={navigate}
+            cart={cart}
+            savedAddress={savedAddress}
+            isLoggedIn={isLoggedIn}
+            onAuthenticated={() => setIsLoggedIn(true)}
+            onComplete={(isGuest, promoCode, promoDiscount, total, details) => {
+              const hasMealPlan = cart.some((item) => item.type === "plan")
+              const hasReadySeries = cart.some((item) => item.type !== "plan")
+              setLastOrderType(
+                hasMealPlan && hasReadySeries
+                  ? "mixed"
+                  : hasMealPlan
+                    ? "plan"
+                    : "ready",
+              )
+              setLastOrderGuest(isGuest)
+              setLastPromoCode(promoCode)
+              setLastPromoDiscount(promoDiscount)
+              setLastOrderTotal(total)
+              setLastOrderDetails(details)
+              navigate("confirmation")
+            }}
+          />
+        )}
+        {page === "confirmation" && (
+          <ConfirmationPage
+            navigate={navigate}
+            orderType={lastOrderType}
+            isGuest={lastOrderGuest}
+            promoCode={lastPromoCode}
+            promoDiscount={lastPromoDiscount}
+            orderTotal={lastOrderTotal}
+            orderDetails={lastOrderDetails}
+          />
+        )}
+        {page === "account" && <AccountPage navigate={navigate} />}
+        {page === "gift-card" && <GiftCardPage navigate={navigate} />}
+        {page === "about" && <AboutPage navigate={navigate} />}
+        {page === "rewards" && (
+          <RewardsPage navigate={navigate} isLoggedIn={isLoggedIn} />
+        )}
+      </Suspense>
 
       {showFooter && <Footer navigate={navigate} />}
 

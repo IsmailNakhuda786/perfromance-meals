@@ -29,13 +29,9 @@ export default defineConfig(({ mode }) => {
     define: {
       global: "globalThis",
     },
-    optimizeDeps: {
-      include: ["buffer"],
-    },
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
-        buffer: "buffer",
       },
     },
     server: {

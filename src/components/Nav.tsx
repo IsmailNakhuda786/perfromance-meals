@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { BUNDLES, CartItem, MEALS, Page } from "@/data"
+import { CartItem, Page } from "@/data"
 import {
   PerformanceMealsLogo,
   MealPlanLogo,
@@ -12,9 +12,11 @@ interface NavProps {
   cart: CartItem[]
   cartOpen: boolean
   setCartOpen: (v: boolean) => void
-  updateCartQty: (id: number, type: string, delta: number) => void
-  removeFromCart: (id: number, type: string) => void
+  updateCartQty: (lineKey: string, delta: number) => void
+  removeFromCart: (lineKey: string) => void
   onCheckout: () => void
+  isLoggedIn: boolean
+  onAuthChange: (isLoggedIn: boolean) => void
 }
 
 export default function Nav({
@@ -26,9 +28,10 @@ export default function Nav({
   updateCartQty,
   removeFromCart,
   onCheckout,
+  isLoggedIn,
+  onAuthChange,
 }: NavProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [logoutToast, setLogoutToast] = useState(false)
   const [expandedBundles, setExpandedBundles] = useState<Set<string>>(new Set())
 
@@ -79,7 +82,7 @@ export default function Nav({
       setLoginError(true)
       return
     }
-    setIsLoggedIn(true)
+    onAuthChange(true)
     setShowLoginModal(false)
     go("account")
   }
@@ -95,7 +98,7 @@ export default function Nav({
   }
 
   const handleLogout = () => {
-    setIsLoggedIn(false)
+    onAuthChange(false)
     setMobileOpen(false)
     setLogoutToast(true)
     setTimeout(() => setLogoutToast(false), 3000)
@@ -898,7 +901,7 @@ export default function Nav({
                   </div>
                   <button
                     onClick={() => {
-                      setIsLoggedIn(true)
+                      onAuthChange(true)
                       setShowLoginModal(false)
                       go("account")
                     }}
@@ -1026,28 +1029,10 @@ export default function Nav({
                 <div className="flex-1 p-4 space-y-3">
                   {cart.map((item) => {
                     const isBundle = item.type === "bundle"
-                    const bundleDef = isBundle
-                      ? BUNDLES.find((b) => b.id === item.id)
-                      : undefined
-                    const bundleMealIds = bundleDef?.mealIds ?? []
-                    const bundleImgs =
-                      item.mealImgs ??
-                      bundleMealIds
-                        .slice(0, 6)
-                        .map((mid) => MEALS.find((m) => m.id === mid)?.img)
-                        .filter(Boolean) as string[]
-                    const bundleNames =
-                      item.mealNames ??
-                      bundleMealIds
-                        .map(
-                          (mid) => MEALS.find((m) => m.id === mid)?.name ?? "",
-                        )
-                        .filter(Boolean)
+                    const bundleImgs = item.mealImgs ?? []
+                    const bundleNames = item.mealNames ?? []
                     return (
-                      <div
-                        key={`${item.id}-${item.type}`}
-                        className="bg-[#1A1A1A] p-3"
-                      >
+                      <div key={item.lineKey} className="bg-[#1A1A1A] p-3">
                         {isBundle ? (
                           /* Bundle cart item — expandable */
                           <div>
@@ -1059,7 +1044,9 @@ export default function Nav({
                                 <p className="text-[10px] text-[#F5B300] mt-0.5">
                                   $
                                   {bundleNames.length > 0
-                                    ? (item.price / bundleNames.length).toFixed(2)
+                                    ? (item.price / bundleNames.length).toFixed(
+                                        2,
+                                      )
                                     : item.price.toFixed(2)}
                                   /meal
                                 </p>
@@ -1069,9 +1056,7 @@ export default function Nav({
                                   ${(item.price * item.qty).toFixed(2)}
                                 </span>
                                 <button
-                                  onClick={() =>
-                                    removeFromCart(item.id, item.type)
-                                  }
+                                  onClick={() => removeFromCart(item.lineKey)}
                                   className="w-6 h-6 text-white/25 hover:text-red-400 flex items-center justify-center transition-colors"
                                 >
                                   <svg
@@ -1115,9 +1100,7 @@ export default function Nav({
                             )}
                             {/* Expand/collapse toggle */}
                             <button
-                              onClick={() =>
-                                toggleBundleExpand(`${item.id}-${item.type}`)
-                              }
+                              onClick={() => toggleBundleExpand(item.lineKey)}
                               className="flex items-center gap-1.5 mt-2 text-[10px] text-white/35 hover:text-[#F5B300] font-mono uppercase tracking-wider transition-colors"
                             >
                               <svg
@@ -1128,19 +1111,19 @@ export default function Nav({
                                 stroke="currentColor"
                                 strokeWidth="2.5"
                                 className={`transition-transform ${
-                                  expandedBundles.has(`${item.id}-${item.type}`)
+                                  expandedBundles.has(item.lineKey)
                                     ? "rotate-180"
                                     : ""
                                 }`}
                               >
                                 <path d="M6 9l6 6 6-6" />
                               </svg>
-                              {expandedBundles.has(`${item.id}-${item.type}`)
+                              {expandedBundles.has(item.lineKey)
                                 ? "Hide meals"
                                 : "See all meals"}
                             </button>
                             {/* Expanded meal list — deduplicated with counts */}
-                            {expandedBundles.has(`${item.id}-${item.type}`) &&
+                            {expandedBundles.has(item.lineKey) &&
                               bundleNames.length > 0 &&
                               (() => {
                                 const seen = new Map<string, {
@@ -1218,7 +1201,7 @@ export default function Nav({
                                   <div className="flex items-center gap-1">
                                     <button
                                       onClick={() =>
-                                        updateCartQty(item.id, item.type, -1)
+                                        updateCartQty(item.lineKey, -1)
                                       }
                                       className="w-7 h-7 bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-[14px] transition-colors"
                                     >
@@ -1229,7 +1212,7 @@ export default function Nav({
                                     </span>
                                     <button
                                       onClick={() =>
-                                        updateCartQty(item.id, item.type, 1)
+                                        updateCartQty(item.lineKey, 1)
                                       }
                                       className="w-7 h-7 bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-[14px] transition-colors"
                                     >
@@ -1237,7 +1220,7 @@ export default function Nav({
                                     </button>
                                     <button
                                       onClick={() =>
-                                        removeFromCart(item.id, item.type)
+                                        removeFromCart(item.lineKey)
                                       }
                                       className="w-7 h-7 ml-0.5 text-white/30 hover:text-red-400 flex items-center justify-center transition-colors"
                                     >
@@ -1255,9 +1238,7 @@ export default function Nav({
                                   </div>
                                 ) : (
                                   <button
-                                    onClick={() =>
-                                      removeFromCart(item.id, item.type)
-                                    }
+                                    onClick={() => removeFromCart(item.lineKey)}
                                     className="text-white/30 hover:text-red-400 text-[11px] transition-colors"
                                   >
                                     Remove
@@ -1277,7 +1258,8 @@ export default function Nav({
                 <div className="mx-4 bg-[#F5B300]/10 border border-[#F5B300]/25 p-3 text-[12px] text-[#F5B300] flex items-center gap-2">
                   <span>💳</span>
                   <span>
-                    Wallet: <strong>$12.50</strong> available at checkout
+                    Monetary wallet: <strong>$12.50</strong> available at
+                    checkout
                   </span>
                 </div>
 

@@ -7,31 +7,47 @@ interface Props {
   navigateToWizard: (plan?: string) => void
 }
 
-const GOALS = [
+const PROGRAMMES = [
   {
-    id: "CUT",
-    label: "CUT",
-    headline: "Fat Loss",
-    desc: "Structured calorie deficit with high protein retention. Designed for meaningful, sustainable fat loss.",
-    macros: "1,600–1,900 kcal · 40%+ protein",
-    weeks: "8–12 weeks recommended",
-  },
-  {
-    id: "MAINTAIN",
-    label: "MAINTAIN",
-    headline: "Performance",
-    desc: "Balanced macros to sustain energy, support training, and maintain your current body composition.",
-    macros: "2,000–2,400 kcal · Balanced macros",
-    weeks: "Ongoing lifestyle plan",
+    id: "bi-weekly",
+    label: "Biweekly",
+    headline: "Two-week rhythm",
+    desc: "Recurring Monday–Friday meal coverage with a focused two-week menu view.",
+    macros: "Recurring subscription",
+    weeks: "Renews every 2 weeks",
     featured: true,
   },
   {
-    id: "BUILD",
-    label: "BUILD",
-    headline: "Muscle Gain",
-    desc: "Calorie surplus with strategic protein timing to fuel muscle growth and recovery.",
-    macros: "2,600–3,200 kcal · High protein surplus",
-    weeks: "12–16 weeks recommended",
+    id: "monthly",
+    label: "Monthly",
+    headline: "Monthly rhythm",
+    desc: "Recurring Monday–Friday coverage with four weekly menus visible together.",
+    macros: "Recurring subscription",
+    weeks: "Renews every month",
+  },
+  {
+    id: "2-months",
+    label: "2 Months",
+    headline: "Extended rhythm",
+    desc: "Recurring Monday–Friday coverage on a longer two-month renewal cycle.",
+    macros: "Recurring subscription",
+    weeks: "Renews every 2 months",
+  },
+  {
+    id: "6by60",
+    label: "6 by 60",
+    headline: "60-day programme",
+    desc: "A selectable fixed programme with all-week meal coverage for 60 days.",
+    macros: "Fixed programme",
+    weeks: "60-day duration",
+  },
+  {
+    id: "6by60plus",
+    label: "6 by 60 Plus",
+    headline: "60-day Plus",
+    desc: "A selectable 60-day programme with all-week coverage and muscle support.",
+    macros: "Fixed programme",
+    weeks: "60-day duration",
   },
 ]
 
@@ -67,8 +83,8 @@ const PLANS = [
 const HOW_IT_WORKS = [
   {
     n: "01",
-    label: "Set your goal",
-    desc: "CUT, MAINTAIN, or BUILD. We build your plan from your target, not the other way around.",
+    label: "Choose your programme",
+    desc: "Select Biweekly, Monthly, 2 Months, 6 by 60, or 6 by 60 Plus.",
   },
   {
     n: "02",
@@ -90,19 +106,19 @@ const HOW_IT_WORKS = [
 const testimonials = [
   {
     name: "Jonathan C.",
-    role: "CUT plan, 12 weeks",
+    role: "6 by 60 programme",
     text: "Down 9kg. My nutritionist was impressed. The personalised check-ins made the difference.",
     stars: 5,
   },
   {
     name: "Mei Lin T.",
-    role: "MAINTAIN plan, 6 months",
+    role: "Monthly plan, 6 months",
     text: "Finally stopped guessing what to eat. The plan fits my training schedule perfectly.",
     stars: 5,
   },
   {
     name: "Ravi S.",
-    role: "BUILD plan, 8 weeks",
+    role: "6 by 60 Plus programme",
     text: "Gained 4kg lean mass. The calorie surplus meals actually taste great — that was unexpected.",
     stars: 5,
   },
@@ -114,7 +130,7 @@ export default function MealPlanLandingPage({
   navigate,
   navigateToWizard,
 }: Props) {
-  const [selectedGoal, setSelectedGoal] = useState("MAINTAIN")
+  const [selectedProgramme, setSelectedProgramme] = useState("bi-weekly")
 
   return (
     <div className="bg-white text-[#1A1A1A] min-h-screen">
@@ -212,7 +228,7 @@ export default function MealPlanLandingPage({
 
             <div className="flex flex-wrap gap-3">
               <button
-                onClick={() => navigateToWizard(selectedGoal)}
+                onClick={() => navigateToWizard(selectedProgramme)}
                 className="inline-flex items-center gap-3 px-8 py-4 font-semibold text-[13px] tracking-[0.12em] uppercase text-white transition-opacity hover:opacity-85"
                 style={{ backgroundColor: ORANGE }}
               >
@@ -250,17 +266,17 @@ export default function MealPlanLandingPage({
               Your goals deserve consistent support.
             </p>
             <h2 className="font-display text-[32px] sm:text-[40px] font-semibold text-[#1A1A1A]">
-              Choose your goal.
+              Choose your programme.
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-            {GOALS.map((g) => {
-              const selected = selectedGoal === g.id
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+            {PROGRAMMES.map((g) => {
+              const selected = selectedProgramme === g.id
               return (
                 <button
                   key={g.id}
-                  onClick={() => setSelectedGoal(g.id)}
+                  onClick={() => setSelectedProgramme(g.id)}
                   className={`text-left p-6 border-2 transition-all ${
                     selected
                       ? "border-[#1A1A1A] bg-white"
@@ -306,12 +322,12 @@ export default function MealPlanLandingPage({
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <button
-              onClick={() => navigateToWizard(selectedGoal)}
+              onClick={() => navigateToWizard(selectedProgramme)}
               className="w-full sm:w-auto px-10 py-4 font-bold text-[13px] tracking-[0.15em] uppercase text-white transition-colors hover:opacity-90"
               style={{ backgroundColor: ORANGE }}
             >
-              Start My {GOALS.find((g) => g.id === selectedGoal)?.headline} Plan
-              →
+              Start {PROGRAMMES.find((g) => g.id === selectedProgramme)?.label}{" "}
+              → →
             </button>
             <p className="text-[12px] text-[#aaa]">
               No long-term commitment · Cancel anytime
@@ -441,7 +457,7 @@ export default function MealPlanLandingPage({
               Ready to start? The whole process takes under 5 minutes.
             </p>
             <button
-              onClick={() => navigateToWizard(selectedGoal)}
+              onClick={() => navigateToWizard(selectedProgramme)}
               className="inline-flex items-center gap-3 px-8 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase text-[#1A1A1A] hover:opacity-90 transition-opacity shrink-0"
               style={{ backgroundColor: ORANGE }}
             >
@@ -512,7 +528,7 @@ export default function MealPlanLandingPage({
                   {p.desc}
                 </p>
                 <button
-                  onClick={() => navigateToWizard(selectedGoal)}
+                  onClick={() => navigateToWizard(selectedProgramme)}
                   className={`w-full py-3.5 font-bold text-[12px] tracking-[0.15em] uppercase transition-colors ${
                     p.badge === "POPULAR"
                       ? "text-white hover:opacity-90"
@@ -621,7 +637,7 @@ export default function MealPlanLandingPage({
           </div>
           <div className="shrink-0">
             <button
-              onClick={() => navigateToWizard(selectedGoal)}
+              onClick={() => navigateToWizard(selectedProgramme)}
               className="px-10 py-4 font-bold text-[13px] tracking-[0.15em] uppercase text-white transition-colors hover:opacity-90"
               style={{ backgroundColor: "#E85D04" }}
             >

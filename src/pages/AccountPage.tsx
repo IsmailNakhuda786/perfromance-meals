@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { MEALS, Page, PLANS } from "@/data"
+import { MEAL_PLAN_MEALS, Page, PLANS } from "@/data"
 
 function ReadySeriesSubscriptionCard({
   navigate,
@@ -122,7 +122,7 @@ const ORDERS = [
   {
     id: "PM-20250825-7698",
     date: "25 Aug 2025",
-    items: "Meal Plan — Maintain (Week 12)",
+    items: "Meal Plan — Monthly (Week 12)",
     total: 178.0,
     originalTotal: 178.0,
     status: "Delivered",
@@ -144,7 +144,7 @@ const ORDERS = [
   {
     id: "PM-20250811-7588",
     date: "11 Aug 2025",
-    items: "Meal Plan — Maintain (Week 11)",
+    items: "Meal Plan — Monthly (Week 11)",
     total: 178.0,
     originalTotal: 178.0,
     status: "Delivered",
@@ -206,9 +206,7 @@ export default function AccountPage({ navigate }: Props) {
   const [pauseWeeks, setPauseWeeks] = useState(1)
   const [showPauseModal, setShowPauseModal] = useState(false)
 
-  const [activePlan, setActivePlan] = useState("MAINTAIN")
-  const [billing, setBilling] = useState<"biweekly" | "month">("biweekly")
-
+  const [activePlan, setActivePlan] = useState("Biweekly")
   // Meal swap state
   const [schedule, setSchedule] = useState(INITIAL_SCHEDULE)
   const [swapTarget, setSwapTarget] = useState<{
@@ -218,7 +216,7 @@ export default function AccountPage({ navigate }: Props) {
   const [savedMsg, setSavedMsg] = useState("")
 
   const [editingPlan, setEditingPlan] = useState(false)
-  const [showCheaperPlanHint, setShowCheaperPlanHint] = useState(false)
+  const [showProgrammeChoices, setShowProgrammeChoices] = useState(false)
 
   // Cancel subscription flow
   const [showCancelModal, setShowCancelModal] = useState(false)
@@ -260,7 +258,7 @@ export default function AccountPage({ navigate }: Props) {
   const [myPlanContext, setMyPlanContext] =
     useState<"mealplan" | "readyseries">("mealplan")
 
-  const plan = PLANS.find((p) => p.name === activePlan) || PLANS[1]
+  const plan = PLANS.find((p) => p.name === activePlan) || PLANS[0]
 
   const swapMeal = (mealId: number) => {
     if (!swapTarget) return
@@ -277,20 +275,11 @@ export default function AccountPage({ navigate }: Props) {
     setTimeout(() => setSavedMsg(""), 2500)
   }
 
-  const openCheaperPlanOptions = () => {
-    const hasCheaperPlan = PLANS.some(
-      (candidate) => candidate.priceWeek < plan.priceWeek,
-    )
+  const openProgrammeOptions = () => {
     setShowCancelModal(false)
-
-    if (!hasCheaperPlan) {
-      save("You're already on the lowest-cost plan")
-      return
-    }
-
     setTab("subscription")
     setMyPlanContext("mealplan")
-    setShowCheaperPlanHint(true)
+    setShowProgrammeChoices(true)
     setEditingPlan(true)
     setTimeout(() => {
       document
@@ -325,7 +314,7 @@ export default function AccountPage({ navigate }: Props) {
               <h1 className="font-display text-[24px] font-bold">Jerome Tan</h1>
               <div className="flex items-center gap-3 mt-1">
                 <span className="text-[#F5B300] text-[11px] font-mono tracking-wider">
-                  VIP Member
+                  Illustrative Prototype Account
                 </span>
                 <span className="text-white/30">·</span>
                 <span className="text-white/40 text-[12px]">
@@ -337,8 +326,8 @@ export default function AccountPage({ navigate }: Props) {
           <div className="flex flex-wrap gap-4 sm:gap-6 text-center">
             {[
               { val: "1,234", label: "Points" },
-              { val: "$12.50", label: "Wallet" },
-              { val: "Week 13", label: "Plan Week" },
+              { val: "$12.50", label: "Monetary Wallet" },
+              { val: "Week 3", label: "Plan Week" },
               {
                 val: (() => {
                   const d = new Date()
@@ -431,13 +420,13 @@ export default function AccountPage({ navigate }: Props) {
                 {
                   label: "Active Plan",
                   val: activePlan,
-                  sub: `${plan.cal} kcal/day`,
+                  sub: plan.cal,
                   onClick: () => setTab("subscription"),
                 },
                 {
-                  label: "Wallet Balance",
+                  label: "Monetary Wallet",
                   val: "$12.50",
-                  sub: "1,234 reward pts",
+                  sub: "$8 funded + $4.50 Gift Card · $5 bonus separate",
                   onClick: () => setTab("wallet"),
                 },
               ].map((s) => (
@@ -498,9 +487,7 @@ export default function AccountPage({ navigate }: Props) {
                             year: "numeric",
                           })
                         })()}`
-                      : `${
-                          billing === "biweekly" ? "Biweekly" : "Monthly"
-                        } billing`}
+                      : `Billed ${plan.billingLabel}`}
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -541,7 +528,7 @@ export default function AccountPage({ navigate }: Props) {
                     {
                       icon: "⚖️",
                       label: "Plan type",
-                      desc: `${activePlan} · ${plan.cal} kcal`,
+                      desc: `${activePlan} · ${plan.cal}`,
                     },
                   ].map((item) => (
                     <button
@@ -628,13 +615,20 @@ export default function AccountPage({ navigate }: Props) {
                       <rect x="3" y="4" width="18" height="18" rx="1" />
                       <path d="M16 2v4M8 2v4M3 10h18" />
                     </svg>
-                    <span>Next billing:</span>
+                    <span>
+                      {plan.totalWeeks ? "Programme term:" : "Next billing:"}
+                    </span>
                     <strong className="text-[#111]">
                       {(() => {
+                        if (plan.totalWeeks) return "60 days"
                         const d = new Date()
-                        billing === "biweekly"
-                          ? d.setDate(d.getDate() + 14)
-                          : d.setMonth(d.getMonth() + 1)
+                        if (activePlan === "Biweekly") {
+                          d.setDate(d.getDate() + 14)
+                        } else if (activePlan === "2 Months") {
+                          d.setMonth(d.getMonth() + 2)
+                        } else {
+                          d.setMonth(d.getMonth() + 1)
+                        }
                         return d.toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
@@ -724,16 +718,16 @@ export default function AccountPage({ navigate }: Props) {
                       </div>
                       <div className="ml-auto">
                         <div className="text-[11px] text-[#888]">
-                          Billing:{" "}
+                          Programme:{" "}
                           <strong className="text-[#1A1A1A]">
-                            {billing === "biweekly" ? "Biweekly" : "Monthly"}
+                            {plan.billingLabel}
                           </strong>
                         </div>
                       </div>
                       {!editingPlan ? (
                         <button
                           onClick={() => {
-                            setShowCheaperPlanHint(false)
+                            setShowProgrammeChoices(false)
                             setEditingPlan(true)
                           }}
                           className="border border-[#D0CCC4] px-4 py-2 text-[11px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors"
@@ -744,7 +738,7 @@ export default function AccountPage({ navigate }: Props) {
                         <button
                           onClick={() => {
                             setEditingPlan(false)
-                            setShowCheaperPlanHint(false)
+                            setShowProgrammeChoices(false)
                             save(`Plan changed to ${activePlan}`)
                           }}
                           className="bg-[#111] text-white px-4 py-2 text-[11px] font-medium hover:bg-[#F5B300] hover:text-[#111] transition-colors"
@@ -755,23 +749,19 @@ export default function AccountPage({ navigate }: Props) {
                     </div>
                     {editingPlan && (
                       <div className="border-t border-[#F0EDE8] pt-4">
-                        {showCheaperPlanHint && (
+                        {showProgrammeChoices && (
                           <div className="bg-[#FFF9E8] border border-[#F5B300]/40 px-4 py-3 mb-4">
                             <div className="text-[12px] font-semibold text-[#1A1A1A]">
-                              Lower-cost plans
+                              Other programme choices
                             </div>
                             <div className="text-[11px] text-[#777] mt-0.5">
-                              Select an option below, then choose Save. Your
-                              next billing cycle will use the new price.
+                              Select an approved programme below, then choose
+                              Save. Billing follows that programme's rhythm.
                             </div>
                           </div>
                         )}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          {PLANS.filter(
-                            (candidate) =>
-                              !showCheaperPlanHint ||
-                              candidate.priceWeek < plan.priceWeek,
-                          ).map((p) => (
+                          {PLANS.map((p) => (
                             <button
                               key={p.name}
                               onClick={() => setActivePlan(p.name)}
@@ -791,7 +781,7 @@ export default function AccountPage({ navigate }: Props) {
                                 {p.desc}
                               </div>
                               <div className="text-[12px] font-bold text-[#1A1A1A] mt-2">
-                                ${p.priceWeek} / 2 weeks
+                                Billing {p.billingLabel}
                               </div>
                             </button>
                           ))}
@@ -804,16 +794,8 @@ export default function AccountPage({ navigate }: Props) {
                 {/* ── 5. MENU REVIEW ── */}
                 {(() => {
                   // Plan progress — weeks depend on plan type
-                  const PLAN_TOTAL_WEEKS: Record<string, number> = {
-                    CUT: 12,
-                    MAINTAIN: 12,
-                    BUILD: 12,
-                    "6BY60": 9,
-                    BUDDY: 3,
-                    HYROX: 8,
-                  }
-                  const totalWeeks = PLAN_TOTAL_WEEKS[activePlan] ?? 12
-                  const currentPlanWeek = 13 // Week 13 of subscription (from order history)
+                  const totalWeeks = plan.totalWeeks ?? 52
+                  const currentPlanWeek = 3
                   const weeksRemaining = Math.max(
                     0,
                     totalWeeks - (currentPlanWeek - 1),
@@ -1054,7 +1036,8 @@ export default function AccountPage({ navigate }: Props) {
                         <div className="divide-y divide-[#F0EDE8]">
                           {slots.map(({ mealId, slot }, slotIdx) => {
                             const meal =
-                              MEALS.find((m) => m.id === mealId) || MEALS[0]
+                              MEAL_PLAN_MEALS.find((m) => m.id === mealId) ||
+                              MEAL_PLAN_MEALS[0]
                             const isDelivered =
                               activeWeek === 0 &&
                               DELIVERED_DAYS.includes("Mon") &&
@@ -1134,7 +1117,7 @@ export default function AccountPage({ navigate }: Props) {
                             scheduled meal to switch.
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {MEALS.slice(0, 6).map((meal) => (
+                            {MEAL_PLAN_MEALS.slice(0, 6).map((meal) => (
                               <div
                                 key={meal.id}
                                 className="border border-[#E5E2DA] flex gap-3 p-3 items-center hover:border-[#1A1A1A] transition-colors"
@@ -1161,121 +1144,22 @@ export default function AccountPage({ navigate }: Props) {
                   )
                 })()}
 
-                {/* ── 6. BILLING CYCLE ── */}
-                {(() => {
-                  const nextBillingDate = (() => {
-                    const d = new Date()
-                    billing === "biweekly"
-                      ? d.setDate(d.getDate() + 14)
-                      : d.setMonth(d.getMonth() + 1)
-                    return d.toLocaleDateString("en-GB", {
-                      weekday: "long",
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })
-                  })()
-                  return (
-                    <div className="bg-white border border-[#E5E2DA] p-5">
-                      <h3 className="font-medium text-[15px] mb-1">
-                        Billing Cycle
-                      </h3>
-                      <p className="text-[#888] text-[13px] mb-4">
-                        Next charge:{" "}
-                        <strong className="text-[#111]">
-                          {nextBillingDate}
-                        </strong>
-                      </p>
-                      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                        <button
-                          onClick={() => setBilling("biweekly")}
-                          className={`flex-1 px-6 py-4 border text-left transition-all ${
-                            billing === "biweekly"
-                              ? "bg-[#111] text-white border-[#111]"
-                              : "border-[#D0CCC4] text-[#666] hover:border-[#888]"
-                          }`}
-                        >
-                          <div
-                            className={`text-[13px] font-semibold ${
-                              billing === "biweekly"
-                                ? "text-white"
-                                : "text-[#111]"
-                            }`}
-                          >
-                            Biweekly
-                          </div>
-                          <div
-                            className={`text-[22px] font-display font-bold mt-0.5 ${
-                              billing === "biweekly"
-                                ? "text-[#F5B300]"
-                                : "text-[#111]"
-                            }`}
-                          >
-                            ${plan.priceWeek}
-                          </div>
-                          <div
-                            className={`text-[11px] mt-0.5 ${
-                              billing === "biweekly"
-                                ? "text-white/50"
-                                : "text-[#888]"
-                            }`}
-                          >
-                            billed every 2 weeks
-                          </div>
-                        </button>
-                        <button
-                          onClick={() => setBilling("month")}
-                          className={`flex-1 px-6 py-4 border text-left transition-all ${
-                            billing === "month"
-                              ? "bg-[#111] text-white border-[#111]"
-                              : "border-[#D0CCC4] text-[#666] hover:border-[#888]"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`text-[13px] font-semibold ${
-                                billing === "month"
-                                  ? "text-white"
-                                  : "text-[#111]"
-                              }`}
-                            >
-                              Monthly
-                            </div>
-                            <span className="text-[9px] font-bold tracking-[0.15em] uppercase bg-[#F5B300] text-[#111] px-1.5 py-0.5">
-                              Save 12%
-                            </span>
-                          </div>
-                          <div
-                            className={`text-[22px] font-display font-bold mt-0.5 ${
-                              billing === "month"
-                                ? "text-[#F5B300]"
-                                : "text-[#111]"
-                            }`}
-                          >
-                            ${plan.priceMonth}
-                          </div>
-                          <div
-                            className={`text-[11px] mt-0.5 ${
-                              billing === "month"
-                                ? "text-white/50"
-                                : "text-[#888]"
-                            }`}
-                          >
-                            per month · save $
-                            {(plan.priceWeek * 4 - plan.priceMonth).toFixed(0)}{" "}
-                            vs. biweekly
-                          </div>
-                        </button>
-                      </div>
-                      <button
-                        onClick={() => save("Billing cycle updated")}
-                        className="bg-[#111] text-white px-6 py-3 text-[12px] font-bold tracking-widest uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors"
-                      >
-                        Save Billing Preference
-                      </button>
-                    </div>
-                  )
-                })()}
+                {/* ── 6. PROGRAMME BILLING ── */}
+                <div className="bg-white border border-[#E5E2DA] p-5">
+                  <h3 className="font-medium text-[15px] mb-1">
+                    Programme Billing
+                  </h3>
+                  <p className="text-[#888] text-[13px] leading-relaxed">
+                    <strong className="text-[#111]">{activePlan}</strong> is
+                    billed {plan.billingLabel}. Meal type and frequency
+                    determine the final amount recorded on the original Shopify
+                    order.
+                  </p>
+                  <p className="text-[#aaa] text-[11px] mt-3">
+                    Illustrative account state — no production customer billing
+                    data is shown.
+                  </p>
+                </div>
 
                 {/* ── 7. PAUSE / CANCEL ── */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1541,26 +1425,37 @@ export default function AccountPage({ navigate }: Props) {
             <h2 className="font-display text-[28px] font-bold mb-8">
               Wallet & Rewards
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <p className="text-[#888] text-[13px] mb-5">
+              Illustrative prototype balances are separated by funding source so
+              checkout can apply each balance under the correct rule.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {[
                 {
-                  label: "Wallet Balance",
-                  val: "$12.50",
-                  sub: "Available to spend",
+                  label: "Customer-Funded",
+                  val: "$8.00",
+                  sub: "Monetary · wherever wallet is supported",
+                  color: "#F5B300",
+                  bg: "#1A1A1A",
+                },
+                {
+                  label: "Gift-Card-Funded",
+                  val: "$4.50",
+                  sub: "Monetary · wherever wallet is supported",
+                  color: "#F5B300",
+                  bg: "#1A1A1A",
+                },
+                {
+                  label: "Bonus / Promotional",
+                  val: "$5.00",
+                  sub: "Individual Selection + Bundles only",
                   color: "#F5B300",
                   bg: "#1A1A1A",
                 },
                 {
                   label: "Reward Points",
                   val: "1,234",
-                  sub: "= $12.34 value",
-                  color: "#F5B300",
-                  bg: "#1A1A1A",
-                },
-                {
-                  label: "Lifetime Earned",
-                  val: "4,891 pts",
-                  sub: "Since Jun 2024",
+                  sub: "Redeems to restricted bonus balance",
                   color: "#F5B300",
                   bg: "#1A1A1A",
                 },
@@ -1589,7 +1484,8 @@ export default function AccountPage({ navigate }: Props) {
                 <div>
                   <h3 className="font-medium text-[16px]">Top Up Wallet</h3>
                   <p className="text-[#888] text-[13px] mt-0.5">
-                    Add credit via card — use it on any order at checkout.
+                    Add customer-funded monetary value for use wherever wallet
+                    payment is supported.
                   </p>
                 </div>
                 <button
@@ -1640,19 +1536,19 @@ export default function AccountPage({ navigate }: Props) {
                   {
                     pts: 500,
                     credit: 5.0,
-                    label: "$5 wallet credit",
+                    label: "$5 bonus wallet credit",
                     bonus: null,
                   },
                   {
                     pts: 1000,
                     credit: 11.0,
-                    label: "$11 wallet credit",
+                    label: "$11 bonus wallet credit",
                     bonus: "10% bonus",
                   },
                   {
                     pts: 2000,
                     credit: 25.0,
-                    label: "$25 wallet credit",
+                    label: "$25 bonus wallet credit",
                     bonus: "25% bonus",
                   },
                 ].map((tier) => {
@@ -1731,7 +1627,9 @@ export default function AccountPage({ navigate }: Props) {
                 })}
               </div>
               <p className="text-[#aaa] text-[11px] mt-3">
-                Rate: 100 pts = $1. Bonus credit applies at higher tiers.
+                Rate: 100 pts = $1. Redeemed and promotional bonus value is
+                limited to Ready Series Individual Selection and Bundles; it
+                cannot pay for Ready Series Subscription or Meal Plan.
               </p>
             </div>
             <div className="bg-white border border-[#E5E2DA] p-6">
@@ -1770,7 +1668,8 @@ export default function AccountPage({ navigate }: Props) {
           <div>
             <h2 className="font-display text-[28px] font-bold mb-2">Rewards</h2>
             <p className="text-[#888] text-[13px] mb-8">
-              Earn points on every order. Redeem for wallet credit anytime.
+              Earn points on every order. Redemptions become bonus wallet value
+              for Ready Series Individual Selection and Bundles.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               {[
@@ -1819,7 +1718,7 @@ export default function AccountPage({ navigate }: Props) {
                     className="w-full border border-[#E5E2DA] px-4 py-3 text-[14px] outline-none focus:border-[#F5B300] transition-colors"
                   />
                   <div className="text-[11px] text-[#aaa] mt-1">
-                    500 pts = $5.00 wallet credit · Min. 100 pts
+                    500 pts = $5.00 bonus wallet credit · Min. 100 pts
                   </div>
                 </div>
                 <button className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap">
@@ -1890,7 +1789,8 @@ export default function AccountPage({ navigate }: Props) {
             </h2>
             <p className="text-[#888] text-[13px] mb-8">
               Send a gift card to someone you care about, or redeem one you
-              received.
+              received. Redemption adds Gift-Card-funded monetary value to the
+              shared wallet.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="bg-white border border-[#E5E2DA] p-6">
@@ -1899,7 +1799,8 @@ export default function AccountPage({ navigate }: Props) {
                 </h3>
                 <p className="text-[12px] text-[#999] mb-4">
                   Configure and purchase a gift card for a friend or family
-                  member.
+                  member. Once redeemed, its monetary wallet value can be used
+                  wherever wallet payment is supported.
                 </p>
                 <button
                   onClick={() => navigate("gift-card")}
@@ -2165,8 +2066,9 @@ export default function AccountPage({ navigate }: Props) {
                 </span>
               </div>
               <p className="text-[#888] text-[13px] mb-5">
-                Refer a friend and earn $10 wallet credit when they complete
-                their first order.
+                Refer a friend and earn $10 promotional wallet value when they
+                complete their first order. Promotional value follows the Ready
+                Series eligibility rule.
               </p>
               <div className="mb-4">
                 <label className="block text-[11px] font-mono tracking-[0.2em] uppercase text-[#888] mb-1.5">
@@ -2332,7 +2234,7 @@ export default function AccountPage({ navigate }: Props) {
               </button>
             </div>
             <div className="overflow-y-auto p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {MEALS.filter((m) => m.cat !== "bundle").map((meal) => {
+              {MEAL_PLAN_MEALS.map((meal) => {
                 const currentMealId =
                   schedule[swapTarget.day]?.[swapTarget.slotIdx]
                 const isCurrent = meal.id === currentMealId
@@ -2424,14 +2326,15 @@ export default function AccountPage({ navigate }: Props) {
                     </div>
                   </button>
                   <button
-                    onClick={openCheaperPlanOptions}
+                    onClick={openProgrammeOptions}
                     className="w-full text-left border border-[#E5E2DA] p-4 hover:border-[#111] transition-colors"
                   >
                     <div className="font-medium text-[14px]">
-                      💰 Switch to a cheaper plan
+                      Review other programmes
                     </div>
                     <div className="text-[#888] text-[12px] mt-0.5">
-                      Change your caloric target to reduce your weekly cost.
+                      Compare the approved recurring and fixed programme
+                      choices.
                     </div>
                   </button>
                   <button

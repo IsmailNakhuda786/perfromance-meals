@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { MEALS as DATA_MEALS, CartItem, Page, ALL_REVIEWS } from "@/data"
+import { CartItem, Page, ALL_REVIEWS } from "@/data"
 import { ReadySeriesLogo } from "@/components/Logos"
 import { READY_SERIES_MEALS } from "@/readySeriesData"
 
@@ -18,9 +18,6 @@ const RS_MEALS = READY_SERIES_MEALS.map((meal) => ({
   reviews: meal.reviews,
   desc: meal.description,
 }))
-
-// Merge both meal sources for unified lookup
-const ALL_MEALS = [...DATA_MEALS, ...RS_MEALS]
 
 interface Props {
   mealId: number
@@ -63,7 +60,7 @@ export default function ReadySeriesProductPage({
   navigate,
   addToCart,
 }: Props) {
-  const meal = ALL_MEALS.find((m) => m.id === mealId)
+  const meal = RS_MEALS.find((m) => m.id === mealId)
   const [qty, setQty] = useState(1)
   const [added, setAdded] = useState(false)
   const [activeTab, setActiveTab] =
@@ -101,22 +98,26 @@ export default function ReadySeriesProductPage({
 
   const handleAddToCart = () => {
     addToCart({
+      lineKey: `ready:${meal.id}:individual`,
       id: meal.id,
       name: meal.name,
       price: meal.price,
       qty,
       img: meal.img,
       type: "ready",
+      purchaseMode: "individual",
+      productId: `ready-meal:${meal.id}`,
+      variantId: `ready-meal:${meal.id}:default`,
+      bonusWalletEligible: true,
     })
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }
 
   // Related meals (same category, excluding this one — from same pool)
-  const pool = mealId >= 100 ? RS_MEALS : DATA_MEALS
-  const related = pool
-    .filter((m) => m.cat === meal.cat && m.id !== meal.id)
-    .slice(0, 3)
+  const related = RS_MEALS.filter(
+    (m) => m.cat === meal.cat && m.id !== meal.id,
+  ).slice(0, 3)
 
   return (
     <div className="bg-[#1A1A1A] text-white min-h-screen">

@@ -25,7 +25,7 @@ const journeys = [
     context:
       "When work, travel, or family needs disrupt familiar habits, restarting can feel harder than beginning.",
     role: "A goal-first programme creates a defined next step, while fresh weekday meals reduce the preparation burden during the return.",
-    rhythm: "Maintain direction · Monthly rhythm",
+    rhythm: "Monthly programme · Recurring rhythm",
   },
   {
     number: "03",
@@ -272,8 +272,8 @@ export default function MealPlanStoriesPage({
           Explore the Meal Plan structure.
         </h2>
         <p className="text-white/70 text-[14px] leading-relaxed max-w-[580px] mx-auto mt-5">
-          Choose a goal, understand what is included, and see the menu rhythm
-          before continuing.
+          Choose a programme, understand what is included, and see the menu
+          rhythm before continuing.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3 mt-8">
           <button

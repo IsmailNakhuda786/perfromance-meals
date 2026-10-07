@@ -126,7 +126,7 @@ export default function MealPlanAboutPage({
               [
                 "01",
                 "Goal-first start",
-                "Begin with Cut, Maintain, Gain, or an approved fixed programme so the plan has a clear purpose.",
+                "Begin with Biweekly, Monthly, 2 Months, 6 by 60, or 6 by 60 Plus so the plan has a clear operating rhythm.",
               ],
               [
                 "02",
@@ -297,7 +297,7 @@ export default function MealPlanAboutPage({
               </p>
             </div>
             <button
-              onClick={() => navigateToWizard("CUT")}
+              onClick={() => navigateToWizard("6by60")}
               className="shrink-0 rounded-full bg-white text-[#1A1A1A] px-7 py-4 text-[10px] font-bold uppercase tracking-[0.16em] hover:bg-[#1A1A1A] hover:text-white transition-colors"
             >
               Explore programmes

@@ -10,6 +10,8 @@ interface Props {
   onSelectMeal: (id: number) => void
   setCartOpen: (v: boolean) => void
   initialPurchaseMode?: "single" | "bundles" | "subscription"
+  isLoggedIn: boolean
+  onAuthenticated: () => void
 }
 
 const MEALS = READY_SERIES_MEALS.map((meal) => ({
@@ -319,7 +321,7 @@ const SUB_MEAL_DETAILS: Record<string, {
     highlights: [
       "Under 14g net carbs per meal",
       "No beef — lighter proteins",
-      "Cut-phase friendly",
+      "Lower-carb friendly",
     ],
   },
   LCSUB02: {
@@ -379,7 +381,7 @@ const SUB_MEAL_DETAILS: Record<string, {
     highlights: [
       "7 Low Carb + 8 Just Protein",
       "Best savings per meal in range",
-      "Split for cut & muscle-hold days",
+      "Split for lower-carb and muscle-support days",
     ],
   },
   LCMIXSUB02: {
@@ -395,7 +397,7 @@ const SUB_MEAL_DETAILS: Record<string, {
     highlights: [
       "Beef cuts + JP rotation",
       "Low carb + high protein split",
-      "Serious cut protocol",
+      "Structured lower-carb rotation",
     ],
   },
   HCMIXSUB01: {
@@ -495,7 +497,7 @@ const MEAL_REVIEWS: Record<number, {
     {
       author: "Brian K.",
       rating: 5,
-      text: "Genuinely spicy — exactly as advertised. Low carb but still super satisfying. Great for cut phase.",
+      text: "Genuinely spicy — exactly as advertised. Low carb but still super satisfying. Great for lower-carb weeks.",
       date: "9 Sep",
     },
     {
@@ -514,6 +516,8 @@ export default function ReadySeriesPage({
   onSelectMeal,
   setCartOpen,
   initialPurchaseMode = "single",
+  isLoggedIn,
+  onAuthenticated,
 }: Props) {
   const [purchaseMode, setPurchaseMode] =
     useState<"single" | "bundles" | "subscription">(initialPurchaseMode)
@@ -521,7 +525,6 @@ export default function ReadySeriesPage({
   const [selectedSub, setSelectedSub] = useState<string | null>(null)
   const [subTypeFilter, setSubTypeFilter] =
     useState<"meals" | "protein" | "mixed">("meals")
-  const [rsSignedIn, setRsSignedIn] = useState(false)
   const [showRsAuthGate, setShowRsAuthGate] = useState(false)
   const [pendingSubSku, setPendingSubSku] = useState<string | null>(null)
   const [activeCat, setActiveCat] = useState("A-la-carte")
@@ -534,12 +537,17 @@ export default function ReadySeriesPage({
 
   const handleAdd = (meal: typeof MEALS[0]) => {
     addToCart({
+      lineKey: `ready:${meal.id}:individual`,
       id: meal.id,
       name: meal.name,
       price: meal.price,
       qty: 1,
       img: meal.img,
       type: "ready",
+      purchaseMode: "individual",
+      productId: `ready-meal:${meal.id}`,
+      variantId: `ready-meal:${meal.id}:default`,
+      bonusWalletEligible: true,
     })
     setAddedId(meal.id)
     setTimeout(() => setAddedId(null), 1200)
@@ -762,7 +770,7 @@ export default function ReadySeriesPage({
 
       {/* ── BUNDLES TAB ── */}
       {purchaseMode === "bundles" && (
-        <section className={`py-16 px-6 sm:px-8 ${"bg-[#FAF8F4]"}`}>
+        <section className="py-16 px-6 sm:px-8 bg-[#FAF8F4]">
           <div className="max-w-[1200px] mx-auto">
             <div className="mb-12">
               <p
@@ -770,12 +778,10 @@ export default function ReadySeriesPage({
               >
                 Predefined Bundles
               </p>
-              <h2
-                className={`font-display text-[38px] sm:text-[52px] font-extrabold leading-[0.92] ${"text-[#1A1A1A]"}`}
-              >
+              <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold leading-[0.92] text-[#1A1A1A]">
                 Choose your bundle<span className="text-[#F5B300]">.</span>
               </h2>
-              <p className={`text-[15px] mt-3 max-w-[500px] ${"text-[#555]"}`}>
+              <p className="text-[15px] mt-3 max-w-[500px] text-[#555]">
                 All bundles are predefined and ready to order — pick the
                 category and size that suits your week.
               </p>
@@ -785,12 +791,10 @@ export default function ReadySeriesPage({
               {PREDEFINED_BUNDLES.map((group) => (
                 <div key={group.category}>
                   <div className="flex items-center gap-4 mb-6">
-                    <div
-                      className={`text-[11px] font-mono tracking-[0.4em] uppercase font-bold ${"text-[#1A1A1A]/60"}`}
-                    >
+                    <div className="text-[11px] font-mono tracking-[0.4em] uppercase font-bold text-[#1A1A1A]/60">
                       {group.category}
                     </div>
-                    <div className={`flex-1 h-px ${"bg-black/10"}`} />
+                    <div className="flex-1 h-px bg-black/10" />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     {group.items.map((item) => {
@@ -802,7 +806,7 @@ export default function ReadySeriesPage({
                       return (
                         <div
                           key={item.name}
-                          className={`flex flex-col hover:border-[#F5B300]/70 transition-all duration-300 group overflow-hidden border ${"bg-white border-[#E8E2D9] shadow-sm hover:shadow-md"}`}
+                          className="flex flex-col hover:border-[#F5B300]/70 transition-all duration-300 group overflow-hidden border bg-white border-[#E8E2D9] shadow-sm hover:shadow-md"
                         >
                           {/* Meal image strip */}
                           <div className="flex h-28 overflow-hidden">
@@ -820,22 +824,18 @@ export default function ReadySeriesPage({
                               </div>
                             ))}
                             {previewMeals.length === 0 && (
-                              <div className={`flex-1 ${"bg-[#F0EBE3]"}`} />
+                              <div className="flex-1 bg-[#F0EBE3]" />
                             )}
                           </div>
 
                           <div className="p-5 flex flex-col gap-3 flex-1">
                             <div className="flex items-start justify-between gap-2">
                               <div>
-                                <div
-                                  className={`text-[14px] font-extrabold leading-snug ${"text-[#1A1A1A]"}`}
-                                >
+                                <div className="text-[14px] font-extrabold leading-snug text-[#1A1A1A]">
                                   {item.name}
                                 </div>
                                 {item.variant && (
-                                  <div
-                                    className={`text-[10px] font-mono tracking-widest uppercase mt-1 ${"text-[#999]"}`}
-                                  >
+                                  <div className="text-[10px] font-mono tracking-widest uppercase mt-1 text-[#999]">
                                     {item.variant}
                                   </div>
                                 )}
@@ -846,9 +846,7 @@ export default function ReadySeriesPage({
                                 </span>
                               )}
                             </div>
-                            <p
-                              className={`text-[12px] leading-relaxed flex-1 ${"text-[#666]"}`}
-                            >
+                            <p className="text-[12px] leading-relaxed flex-1 text-[#666]">
                               {item.desc}
                             </p>
 
@@ -857,7 +855,7 @@ export default function ReadySeriesPage({
                               {previewMeals.map((m) => (
                                 <span
                                   key={m.id}
-                                  className={`text-[10px] px-2 py-0.5 leading-snug border ${"bg-[#FAF8F4] border-[#E0D9CE] text-[#555]"}`}
+                                  className="text-[10px] px-2 py-0.5 leading-snug border bg-[#FAF8F4] border-[#E0D9CE] text-[#555]"
                                 >
                                   {m.name}
                                 </span>
@@ -875,18 +873,12 @@ export default function ReadySeriesPage({
                               )}
                             </div>
 
-                            <div
-                              className={`flex items-end justify-between pt-2 border-t ${"border-[#E8E2D9]"}`}
-                            >
+                            <div className="flex items-end justify-between pt-2 border-t border-[#E8E2D9]">
                               <div>
-                                <span
-                                  className={`font-display text-[22px] font-extrabold ${"text-[#1A1A1A]"}`}
-                                >
+                                <span className="font-display text-[22px] font-extrabold text-[#1A1A1A]">
                                   ${item.price.toFixed(2)}
                                 </span>
-                                <span
-                                  className={`text-[11px] ml-1.5 ${"text-[#999]"}`}
-                                >
+                                <span className="text-[11px] ml-1.5 text-[#999]">
                                   {item.meals} meals · $
                                   {(item.price / item.meals).toFixed(2)}/meal
                                 </span>
@@ -898,6 +890,7 @@ export default function ReadySeriesPage({
                                   .map((id) => MEALS.find((m) => m.id === id))
                                   .filter(Boolean) as typeof MEALS
                                 addToCart({
+                                  lineKey: `ready-bundle:${group.category}:${item.name}:${item.variant ?? "standard"}`,
                                   id: parseInt(
                                     `${group.category.charCodeAt(0)}${item.name.charCodeAt(0)}${item.price * 100}`,
                                   ),
@@ -908,11 +901,15 @@ export default function ReadySeriesPage({
                                     bundleMeals[0]?.img ??
                                     "https://images.unsplash.com/photo-1682568514220-c477d5432024?w=200&h=200&fit=crop&auto=format",
                                   type: "bundle",
+                                  purchaseMode: "bundle",
+                                  productId: `ready-bundle:${group.category}:${item.name}`,
+                                  variantId: item.variant ?? "standard",
+                                  bonusWalletEligible: true,
                                   mealNames: bundleMeals.map((m) => m.name),
                                   mealImgs: bundleMeals.map((m) => m.img),
                                 })
                               }}
-                              className={`w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase transition-colors ${"bg-[#1A1A1A] text-white hover:bg-[#F5B300] hover:text-[#1A1A1A]"}`}
+                              className="w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase transition-colors bg-[#1A1A1A] text-white hover:bg-[#F5B300] hover:text-[#1A1A1A]"
                             >
                               Add to Cart →
                             </button>
@@ -926,9 +923,7 @@ export default function ReadySeriesPage({
               ))}
             </div>
 
-            <div
-              className={`mt-10 p-5 text-[12px] border ${"bg-[#FFF8E8] border-[#F5B300]/30 text-[#888]"}`}
-            >
+            <div className="mt-10 p-5 text-[12px] border bg-[#FFF8E8] border-[#F5B300]/30 text-[#888]">
               🚚 Free delivery on orders $120 and above · $10 delivery fee below
               $120
             </div>
@@ -1055,7 +1050,7 @@ export default function ReadySeriesPage({
                     </button>
                   ))}
                 </div>
-                {rsSignedIn && (
+                {isLoggedIn && (
                   <div className="ml-auto flex items-center gap-2 text-[11px] text-[#34D399] font-mono">
                     <svg
                       width="12"
@@ -1073,7 +1068,7 @@ export default function ReadySeriesPage({
               </div>
 
               {/* Auth notice for subscription (account-gated) */}
-              {!rsSignedIn && (
+              {!isLoggedIn && (
                 <div className="flex items-center gap-4 mb-6 bg-white/4 border border-white/10 px-5 py-3.5">
                   <svg
                     width="16"
@@ -1317,13 +1312,14 @@ export default function ReadySeriesPage({
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            if (!rsSignedIn) {
+                            if (!isLoggedIn) {
                               setPendingSubSku(sub.sku)
                               setShowRsAuthGate(true)
                               return
                             }
                             setSelectedSub(sub.sku)
                             addToCart({
+                              lineKey: `ready-subscription:${sub.sku}:${subTerm}m`,
                               id: sub.sku
                                 .split("")
                                 .reduce((a, c) => a + c.charCodeAt(0), 0),
@@ -1334,6 +1330,12 @@ export default function ReadySeriesPage({
                                 previewMeals[0]?.img ??
                                 "https://images.unsplash.com/photo-1555789185-76365931ffaa?w=200&h=200&fit=crop&auto=format",
                               type: "bundle",
+                              purchaseMode: "subscription",
+                              productId: `ready-subscription:${sub.sku}`,
+                              variantId: sub.variant,
+                              sellingPlanId: `${subTerm}-month`,
+                              requiresAccount: true,
+                              bonusWalletEligible: false,
                               mealNames: subMealNames,
                               mealImgs: subMealImgs,
                             })
@@ -1349,7 +1351,7 @@ export default function ReadySeriesPage({
                         >
                           {isSelected
                             ? "✓ Added to cart"
-                            : rsSignedIn
+                            : isLoggedIn
                               ? "Subscribe →"
                               : "Sign In & Subscribe →"}
                         </button>
@@ -1464,7 +1466,7 @@ export default function ReadySeriesPage({
                 <div className="space-y-3 mb-5">
                   <button
                     onClick={() => {
-                      setRsSignedIn(true)
+                      onAuthenticated()
                       setShowRsAuthGate(false)
                       // Auto-add the pending subscription
                       if (pendingSubSku) {
@@ -1499,6 +1501,7 @@ export default function ReadySeriesPage({
                           )
                           setSelectedSub(pendingSubSku)
                           addToCart({
+                            lineKey: `ready-subscription:${sub.sku}:${subTerm}m`,
                             id: pendingSubSku
                               .split("")
                               .reduce((a, c) => a + c.charCodeAt(0), 0),
@@ -1509,6 +1512,12 @@ export default function ReadySeriesPage({
                               firstMeal?.img ??
                               "https://images.unsplash.com/photo-1562828358-432c7bdde45e?w=200&h=200&fit=crop&auto=format",
                             type: "bundle",
+                            purchaseMode: "subscription",
+                            productId: `ready-subscription:${sub.sku}`,
+                            variantId: sub.variant,
+                            sellingPlanId: `${subTerm}-month`,
+                            requiresAccount: true,
+                            bonusWalletEligible: false,
                             mealNames: subMealNames,
                             mealImgs: subMealImgs,
                           })
@@ -1522,7 +1531,7 @@ export default function ReadySeriesPage({
                   </button>
                   <button
                     onClick={() => {
-                      setRsSignedIn(true)
+                      onAuthenticated()
                       setShowRsAuthGate(false)
                       setPendingSubSku(null)
                     }}
@@ -1551,16 +1560,14 @@ export default function ReadySeriesPage({
 
       {/* ── PRODUCT GRID (individual selection) ── */}
       {purchaseMode === "single" && (
-        <section className={`py-16 px-6 sm:px-8 ${"bg-[#FAF8F4]"}`}>
+        <section className="py-16 px-6 sm:px-8 bg-[#FAF8F4]">
           <div className="max-w-[1200px] mx-auto">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
               <div>
                 <div className="text-[10px] font-mono tracking-[0.3em] uppercase mb-2 text-[#F5B300]">
                   All Meals
                 </div>
-                <h2
-                  className={`font-display text-[32px] sm:text-[40px] font-extrabold ${"text-[#1A1A1A]"}`}
-                >
+                <h2 className="font-display text-[32px] sm:text-[40px] font-extrabold text-[#1A1A1A]">
                   {filtered.length} meals available
                   <span className="text-[#F5B300]">.</span>
                 </h2>
@@ -1582,9 +1589,7 @@ export default function ReadySeriesPage({
               </div>
             </div>
 
-            <div
-              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px ${"bg-[#E8E2D9]"}`}
-            >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-[#E8E2D9]">
               {filtered.map((meal) => {
                 const inCart = cart.find(
                   (i) => i.id === meal.id && i.type === "ready",
@@ -1599,7 +1604,7 @@ export default function ReadySeriesPage({
                   : "4.8"
                 const reviewCount = mealReviews?.length ?? 0
                 return (
-                  <div key={meal.id} className={`flex flex-col ${"bg-white"}`}>
+                  <div key={meal.id} className="flex flex-col bg-white">
                     <button
                       onClick={() => onSelectMeal(meal.id)}
                       className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A] block w-full group"
@@ -1631,13 +1636,11 @@ export default function ReadySeriesPage({
                     <div className="p-5 flex flex-col gap-3 flex-1">
                       <button
                         onClick={() => onSelectMeal(meal.id)}
-                        className={`font-display text-[15px] font-bold leading-snug text-left hover:text-[#F5B300] transition-colors ${"text-[#1A1A1A]"}`}
+                        className="font-display text-[15px] font-bold leading-snug text-left hover:text-[#F5B300] transition-colors text-[#1A1A1A]"
                       >
                         {meal.name}
                       </button>
-                      <div
-                        className={`flex gap-3 text-[10px] font-mono ${"text-[#888]"}`}
-                      >
+                      <div className="flex gap-3 text-[10px] font-mono text-[#888]">
                         <span>{meal.protein}g protein</span>
                         <span>·</span>
                         <span>{meal.cal} cal</span>
@@ -1662,23 +1665,17 @@ export default function ReadySeriesPage({
                             </span>
                           ))}
                         </div>
-                        <span
-                          className={`text-[11px] font-mono ${"text-[#888]"}`}
-                        >
+                        <span className="text-[11px] font-mono text-[#888]">
                           {avgRating}
                         </span>
                         {reviewCount > 0 && (
-                          <span className={`text-[10px] ${"text-[#aaa]"}`}>
+                          <span className="text-[10px] text-[#aaa]">
                             ({reviewCount} reviews)
                           </span>
                         )}
                       </button>
-                      <div
-                        className={`mt-auto flex items-center justify-between gap-2 pt-3 border-t ${"border-[#E8E2D9]"}`}
-                      >
-                        <span
-                          className={`font-display text-[18px] font-extrabold ${"text-[#1A1A1A]"}`}
-                        >
+                      <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-[#E8E2D9]">
+                        <span className="font-display text-[18px] font-extrabold text-[#1A1A1A]">
                           ${meal.price.toFixed(2)}
                         </span>
                         <button
