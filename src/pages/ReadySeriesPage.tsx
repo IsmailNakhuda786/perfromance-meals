@@ -164,12 +164,6 @@ const SUB_MEAL_DETAILS: Record<string, {
 const FREE_DELIVERY_THRESHOLD = 120;
 const DELIVERY_FEE = 10;
 
-const promos = [
-  { code: "READY20", desc: "20% off your first Ready Series order", expires: "30 Sep 2026" },
-  { code: "SG61", desc: "$6.10 off — Singapore National Day special", expires: "Ongoing" },
-  { code: "FREEZER5", desc: "$5 off orders of 10+ meals", expires: "15 Oct 2026" },
-];
-
 const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: string; date: string }[]> = {
   101: [
     { author: "Marcus T.", rating: 5, text: "Best meal prep chicken I have ever had. The teriyaki glaze is spot-on and the brown rice keeps me full till 5pm.", date: "12 Sep" },
@@ -301,42 +295,6 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
           </div>
         </div>
       </section>
-
-      {/* ── ACTIVE PROMOS BAR ── */}
-      <div className="bg-[#F5B300]/8 border-y border-[#F5B300]/15 px-6 py-4">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-8">
-          <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase shrink-0">Active Promos</div>
-          <div className="flex flex-wrap gap-4">
-            {promos.map((p) => (
-              <div key={p.code} className="flex items-center gap-2">
-                <span className="bg-[#F5B300] text-[#111] text-[9px] font-extrabold px-2 py-0.5 tracking-wider">{p.code}</span>
-                <span className="text-white/50 text-[11px]">{p.desc}</span>
-                <span className="text-white/20 text-[10px] font-mono">{p.expires}</span>
-              </div>
-            ))}
-          </div>
-          <div className="ml-auto text-[10px] text-white/25 hidden lg:block">Enter code at checkout</div>
-        </div>
-      </div>
-
-      {/* ── FREE DELIVERY PROGRESS — single/bundle only ── */}
-      {purchaseMode !== "subscription" && (
-        <div className="bg-[#111] border-b border-white/5 px-6 py-3">
-          <div className="max-w-[1200px] mx-auto">
-            <div className="flex items-center gap-4">
-              <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-[#F5B300] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
-              </div>
-              <div className="text-[11px] shrink-0">
-                {toFreeDelivery <= 0
-                  ? <span className="text-[#F5B300] font-bold">🎉 Free delivery unlocked!</span>
-                  : <span className="text-white/40">Add <span className="text-white font-semibold">${toFreeDelivery.toFixed(2)}</span> more for free delivery</span>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── PURCHASE MODE TABS ── */}
       <div id="rs-shop" className="bg-white border-b border-[#DDD6CB] shadow-[0_6px_20px_rgba(52,42,30,0.06)]">
