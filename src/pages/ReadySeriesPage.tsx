@@ -8,6 +8,7 @@ interface Props {
   cart: CartItem[];
   onSelectMeal: (id: number) => void;
   setCartOpen: (v: boolean) => void;
+  initialPurchaseMode?: "single" | "bundles" | "subscription";
 }
 
 const MEALS = [
@@ -184,9 +185,9 @@ const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: strin
   ],
 };
 
-export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen }: Props) {
+export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen, initialPurchaseMode = "single" }: Props) {
   const th = <T,>(_dark: T, warm: T, _espresso: T): T => warm;
-  const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
+  const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">(initialPurchaseMode);
   const [subTerm, setSubTerm] = useState<3 | 6>(3);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
   const [subTypeFilter, setSubTypeFilter] = useState<"meals" | "protein" | "mixed">("meals");

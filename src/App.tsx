@@ -46,6 +46,7 @@ export default function App() {
   const [accountInitialSection, setAccountInitialSection] = useState<string | undefined>(undefined);
   const [showPromo, setShowPromo] = useState(false);
   const [checkoutIsSubscription, setCheckoutIsSubscription] = useState(false);
+  const [readyInitialMode, setReadyInitialMode] = useState<"single" | "bundles" | "subscription">("single");
 
   useEffect(() => {
     const timer = setTimeout(() => setShowPromo(true), 1800);
@@ -67,6 +68,11 @@ export default function App() {
   const navigateToWizard = (plan?: string) => {
     if (plan) setWizardInitialPlan(plan);
     navigate("meal-plan-wizard");
+  };
+
+  const navigateToReadyOrder = (mode: "single" | "bundles" | "subscription") => {
+    setReadyInitialMode(mode);
+    navigate("ready-series-order");
   };
 
   const addToCart = (item: CartItem) => {
@@ -126,9 +132,9 @@ export default function App() {
       />
 
       {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} />}
-      {page === "ready-series" && <ReadySeriesLandingPage navigate={navigate} />}
+      {page === "ready-series" && <ReadySeriesLandingPage navigate={navigate} navigateToReadyOrder={navigateToReadyOrder} />}
       {page === "ready-series-about" && <ReadySeriesAboutPage navigate={navigate} />}
-      {page === "ready-series-order" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} onSelectMeal={(id) => { setSelectedMealId(id); navigate("ready-series-product"); }} setCartOpen={setCartOpen} />}
+      {page === "ready-series-order" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} onSelectMeal={(id) => { setSelectedMealId(id); navigate("ready-series-product"); }} setCartOpen={setCartOpen} initialPurchaseMode={readyInitialMode} />}
       {page === "ready-series-product" && <ReadySeriesProductPage mealId={selectedMealId} navigate={navigate} addToCart={addToCart} />}
       {page === "meal-plan-landing" && <MealPlanLandingPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "meal-plan-about" && <MealPlanAboutPage navigate={navigate} navigateToWizard={navigateToWizard} />}
