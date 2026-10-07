@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CartItem, Page } from "@/data"
+import { getMonetaryWalletBalance, WalletBalances } from "@/wallet"
 
 interface Props {
   navigate: (page: Page) => void
@@ -13,6 +14,7 @@ interface Props {
   } | null
   isLoggedIn: boolean
   onAuthenticated: () => void
+  wallet: WalletBalances
   onComplete: (
     isGuest: boolean,
     promoCode: string,
@@ -39,6 +41,7 @@ export default function CheckoutPage({
   savedAddress,
   isLoggedIn,
   onAuthenticated,
+  wallet,
   onComplete,
 }: Props) {
   const [authMode, setAuthMode] = useState<AuthMode>(
@@ -66,9 +69,15 @@ export default function CheckoutPage({
 
   const FREE_DELIVERY_THRESHOLD = 120
   const requiresCustomerAccount = cart.some((item) => item.requiresAccount)
-  const fundedWalletBalance = 8
-  const giftCardWalletBalance = 4.5
-  const bonusWalletBalance = 5
+  const monetaryWalletBalance = getMonetaryWalletBalance(wallet)
+
+  useEffect(() => {
+    if (requiresCustomerAccount && !isLoggedIn) {
+      setAuthMode(null)
+      setSignupConfirmed(false)
+      setStep(1)
+    }
+  }, [isLoggedIn, requiresCustomerAccount])
 
   const VALID_PROMOS: Record<string, {
     discount: number
@@ -112,7 +121,7 @@ export default function CheckoutPage({
   const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 10
   const monetaryWalletApplied = useWallet
     ? Math.min(
-        fundedWalletBalance + giftCardWalletBalance,
+        monetaryWalletBalance,
         Math.max(0, subtotal + deliveryFee - promoDiscount),
       )
     : 0
@@ -125,7 +134,7 @@ export default function CheckoutPage({
   )
   const bonusWalletApplied = useWallet
     ? Math.min(
-        bonusWalletBalance,
+        wallet.bonus,
         bonusEligibleAfterPromo,
         Math.max(
           0,
@@ -138,6 +147,34 @@ export default function CheckoutPage({
     0,
     subtotal + deliveryFee - walletDiscount - promoDiscount,
   )
+  const hasCheckoutIdentity =
+    (authMode === "guest" ||
+      authMode === "signin_done" ||
+      (authMode === "signup_done" && signupConfirmed)) &&
+    (!requiresCustomerAccount || isLoggedIn)
+
+  const handleOrderSubmit = () => {
+    if (requiresCustomerAccount && !isLoggedIn) {
+      setAuthMode(null)
+      setSignupConfirmed(false)
+      setStep(1)
+      return
+    }
+
+    onComplete(
+      authMode === "guest" || !isLoggedIn,
+      promoApplied ? promoCode.trim().toUpperCase() : "",
+      promoDiscount,
+      total,
+      {
+        name: addrName,
+        address: `${addrLine}, S${addrPostal}`,
+        date,
+        slot,
+        deliveryFee,
+      },
+    )
+  }
 
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col">
@@ -446,10 +483,7 @@ export default function CheckoutPage({
           )}
 
           {/* ── STEP 1: DELIVERY ── */}
-          {(authMode === "guest" ||
-            authMode === "signin_done" ||
-            (authMode === "signup_done" && signupConfirmed)) &&
-            step === 1 && (
+          {hasCheckoutIdentity && step === 1 && (
               <div>
                 <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-4">
                   Delivery
@@ -590,10 +624,7 @@ export default function CheckoutPage({
             )}
 
           {/* ── STEP 2: PAYMENT ── */}
-          {(authMode === "guest" ||
-            authMode === "signin_done" ||
-            (authMode === "signup_done" && signupConfirmed)) &&
-            step === 2 && (
+          {hasCheckoutIdentity && step === 2 && (
               <div>
                 <h1 className="font-display text-[26px] sm:text-[32px] font-bold mb-8">
                   Payment
@@ -661,15 +692,15 @@ export default function CheckoutPage({
                     >
                       {useWallet
                         ? `–$${walletDiscount.toFixed(2)}`
-                        : `$${(fundedWalletBalance + giftCardWalletBalance + bonusWalletBalance).toFixed(2)} available`}
+                        : `$${(monetaryWalletBalance + wallet.bonus).toFixed(2)} available`}
                     </span>
                   </button>
                   <p className="text-[11px] text-[#888] -mt-3 mb-5 leading-relaxed">
-                    Funded (${fundedWalletBalance.toFixed(2)}) and Gift Card ($
-                    {giftCardWalletBalance.toFixed(2)}) balances are monetary.
-                    Bonus (${bonusWalletBalance.toFixed(2)}) applies only to
-                    Ready Series Individual Selection and Bundles. This is
-                    illustrative prototype settlement.
+                    Funded (${wallet.funded.toFixed(2)}) and Gift Card ($
+                    {wallet.giftFunded.toFixed(2)}) balances are monetary. Bonus
+                    (${wallet.bonus.toFixed(2)}) applies only to Ready Series
+                    Individual Selection and Bundles. This is illustrative
+                    prototype settlement.
                   </p>
                 </>
 
@@ -774,21 +805,8 @@ export default function CheckoutPage({
                 </div>
 
                 <button
-                  onClick={() =>
-                    onComplete(
-                      authMode === "guest",
-                      promoApplied ? promoCode.trim().toUpperCase() : "",
-                      promoDiscount,
-                      total,
-                      {
-                        name: addrName,
-                        address: `${addrLine}, S${addrPostal}`,
-                        date,
-                        slot,
-                        deliveryFee,
-                      },
-                    )
-                  }
+                  onClick={handleOrderSubmit}
+                  disabled={requiresCustomerAccount && !isLoggedIn}
                   className="w-full bg-[#111111] text-white py-4 text-[13px] font-bold tracking-[0.15em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors"
                 >
                   Place Order — ${total.toFixed(2)}

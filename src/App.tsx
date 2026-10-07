@@ -4,6 +4,10 @@ import Nav from "@/components/Nav"
 import Footer from "@/components/Footer"
 import PromoPopup from "@/components/PromoPopup"
 import HomePage from "@/pages/HomePage"
+import {
+  getMonetaryWalletBalance,
+  INITIAL_WALLET_BALANCES,
+} from "@/wallet"
 
 const ReadySeriesPage = lazy(() => import("@/pages/ReadySeriesPage"))
 const ReadySeriesLandingPage = lazy(
@@ -44,6 +48,7 @@ export default function App() {
   const [cart, setCart] = useState<CartItem[]>([])
   const [cartOpen, setCartOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [wallet, setWallet] = useState(INITIAL_WALLET_BALANCES)
   const [wizardInitialPlan, setWizardInitialPlan] = useState("bi-weekly")
   const [savedAddress, setSavedAddress] = useState<SavedAddress | null>(null)
   const [lastOrderType, setLastOrderType] =
@@ -122,6 +127,7 @@ export default function App() {
   }
 
   const showFooter = !NO_FOOTER_PAGES.includes(page)
+  const monetaryWalletBalance = getMonetaryWalletBalance(wallet)
 
   return (
     <div className="min-h-screen font-body">
@@ -144,6 +150,7 @@ export default function App() {
         onCheckout={handleReadyCheckout}
         isLoggedIn={isLoggedIn}
         onAuthChange={setIsLoggedIn}
+        walletBalance={monetaryWalletBalance}
       />
 
       <Suspense
@@ -220,6 +227,7 @@ export default function App() {
             savedAddress={savedAddress}
             isLoggedIn={isLoggedIn}
             onAuthenticated={() => setIsLoggedIn(true)}
+            wallet={wallet}
             onComplete={(isGuest, promoCode, promoDiscount, total, details) => {
               const hasMealPlan = cart.some((item) => item.type === "plan")
               const hasReadySeries = cart.some((item) => item.type !== "plan")
@@ -250,7 +258,24 @@ export default function App() {
             orderDetails={lastOrderDetails}
           />
         )}
-        {page === "account" && <AccountPage navigate={navigate} />}
+        {page === "account" && (
+          <AccountPage
+            navigate={navigate}
+            wallet={wallet}
+            onTopUpFunded={(amount) =>
+              setWallet((current) => ({
+                ...current,
+                funded: current.funded + amount,
+              }))
+            }
+            onAddBonus={(amount) =>
+              setWallet((current) => ({
+                ...current,
+                bonus: current.bonus + amount,
+              }))
+            }
+          />
+        )}
         {page === "gift-card" && <GiftCardPage navigate={navigate} />}
         {page === "about" && <AboutPage navigate={navigate} />}
         {page === "rewards" && (

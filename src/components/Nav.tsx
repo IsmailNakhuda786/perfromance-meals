@@ -17,6 +17,7 @@ interface NavProps {
   onCheckout: () => void
   isLoggedIn: boolean
   onAuthChange: (isLoggedIn: boolean) => void
+  walletBalance: number
 }
 
 export default function Nav({
@@ -30,6 +31,7 @@ export default function Nav({
   onCheckout,
   isLoggedIn,
   onAuthChange,
+  walletBalance,
 }: NavProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [logoutToast, setLogoutToast] = useState(false)
@@ -105,7 +107,6 @@ export default function Nav({
   }
   const cartCount = cart.reduce((s, i) => s + i.qty, 0)
   const cartTotal = cart.reduce((s, i) => s + i.price * i.qty, 0)
-  const WALLET_BALANCE = 12.5
   const REWARD_PTS = 1234
 
   const [brandOpen, setBrandOpen] = useState(false)
@@ -291,7 +292,7 @@ export default function Nav({
                 >
                   <span className="text-[15px] leading-none">🪙</span>
                   <span className="text-[#F5B300] font-mono text-[11px] font-bold">
-                    ${Math.floor(WALLET_BALANCE)}
+                    ${Math.floor(walletBalance)}
                   </span>
                   <span className="text-white/25 text-[9px]">·</span>
                   <span className="text-white/40 text-[10px]">
@@ -465,7 +466,7 @@ export default function Nav({
                         Jerome
                       </div>
                       <div className="text-[#F5B300] text-[11px] font-mono">
-                        💳 ${WALLET_BALANCE.toFixed(2)} · {REWARD_PTS} pts
+                        💳 ${walletBalance.toFixed(2)} · {REWARD_PTS} pts
                       </div>
                     </div>
                   </div>

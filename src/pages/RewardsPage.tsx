@@ -1,60 +1,55 @@
 import { Page } from "@/data"
+import {
+  formatRewardTierRange,
+  MEAL_PLAN_POINTS_MULTIPLIER,
+  POINTS_ACTIVITY_WINDOW_DAYS,
+  REWARD_REDEMPTIONS,
+  REWARD_TIERS,
+} from "@/rewardsConfig"
 
 interface Props {
   navigate: (page: Page) => void
   isLoggedIn?: boolean
 }
 
-const TIERS = [
-  {
-    name: "Starter",
-    pts: "0–499 pts",
+const TIER_PRESENTATION = {
+  Starter: {
     color: "#888",
-    perks: [
-      "1 pt per $1 spent",
-      "Birthday bonus meal",
-      "Early access to new menus",
-    ],
+    perks: ["Birthday bonus meal", "Early access to new menus"],
   },
-  {
-    name: "Gold",
-    pts: "500–1,999 pts",
+  Gold: {
     color: "#F5B300",
     perks: [
-      "1.5 pts per $1 spent",
       "Free delivery on all orders",
       "Priority customer support",
       "Exclusive Gold bundles",
     ],
   },
-  {
-    name: "Platinum",
-    pts: "2,000+ pts",
+  Platinum: {
     color: "#E0E0E0",
     perks: [
-      "2 pts per $1 spent",
       "Monthly free meal",
       "Dedicated account manager",
       "Invite-only events & tastings",
     ],
   },
-]
+}
 
 const HOW_IT_WORKS = [
   {
     step: "01",
     title: "Order any meal",
-    desc: "Every $1 spent earns you points. Meal Plan orders earn 1.5× points automatically.",
+    desc: `Every $1 spent earns you points. Meal Plan orders earn ${MEAL_PLAN_POINTS_MULTIPLIER}× points automatically.`,
   },
   {
     step: "02",
     title: "Points stack up",
-    desc: "No expiry on points as long as you order once every 90 days. Referrals earn 200 bonus pts per friend.",
+    desc: `Points remain valid as long as you order once every ${POINTS_ACTIVITY_WINDOW_DAYS} days. Referrals earn 200 bonus pts per friend.`,
   },
   {
     step: "03",
     title: "Redeem for credit",
-    desc: "Choose a voucher tier: 500 pts = $5 · 1,000 pts = $11 · 2,000 pts = $25. Redemptions become restricted bonus wallet value.",
+    desc: `Choose a voucher tier: ${REWARD_REDEMPTIONS.map((redemption) => `${redemption.points.toLocaleString()} pts = $${redemption.credit}`).join(" · ")}. Redemptions become restricted bonus wallet value.`,
   },
 ]
 
@@ -65,11 +60,11 @@ const FAQS = [
   },
   {
     q: "Do points expire?",
-    a: "Points remain valid as long as you place at least one order every 90 days. Your tier resets annually on your account anniversary.",
+    a: `Points remain valid as long as you place at least one order every ${POINTS_ACTIVITY_WINDOW_DAYS} days. Your tier resets annually on your account anniversary.`,
   },
   {
     q: "Can I earn points on bundles?",
-    a: "Yes — bundles earn the same points as individual meal orders. Meal Plan orders earn 1.5× the standard rate.",
+    a: `Yes — bundles earn the same points as individual meal orders. Meal Plan orders earn ${MEAL_PLAN_POINTS_MULTIPLIER}× the standard rate.`,
   },
   {
     q: "How do I refer a friend?",
@@ -166,41 +161,19 @@ export default function RewardsPage({ navigate, isLoggedIn }: Props) {
             Voucher Tiers
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 border border-white/8">
-            {[
-              {
-                pts: "500 pts",
-                credit: "$5",
-                bonus: null,
-                label: "Starter voucher",
-              },
-              {
-                pts: "1,000 pts",
-                credit: "$11",
-                bonus: "10% bonus",
-                label: "Value voucher",
-              },
-              {
-                pts: "2,000 pts",
-                credit: "$25",
-                bonus: "25% bonus",
-                label: "Premium voucher",
-              },
-            ].map((t, i) => (
+            {REWARD_REDEMPTIONS.map((redemption) => (
               <div
-                key={i}
+                key={redemption.points}
                 className="p-8 border-b sm:border-b-0 sm:border-r border-white/8 last:border-0 text-center"
               >
                 <div className="font-display text-[48px] font-extrabold text-[#F5B300] leading-none">
-                  {t.credit}
+                  ${redemption.credit}
                 </div>
-                <div className="text-white/60 text-[14px] mt-1">{t.pts}</div>
-                {t.bonus && (
-                  <div className="text-[#F5B300] text-[11px] font-bold mt-1 tracking-wider">
-                    {t.bonus}
-                  </div>
-                )}
+                <div className="text-white/60 text-[14px] mt-1">
+                  {redemption.points.toLocaleString()} pts
+                </div>
                 <div className="text-white/25 text-[11px] font-mono mt-2 uppercase tracking-wider">
-                  {t.label}
+                  Bonus wallet credit
                 </div>
               </div>
             ))}
@@ -223,34 +196,40 @@ export default function RewardsPage({ navigate, isLoggedIn }: Props) {
           <span className="text-[#F5B300]">.</span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {TIERS.map((t) => (
-            <div
-              key={t.name}
-              className="bg-[#111] border border-white/8 p-6 hover:border-[#F5B300]/30 transition-colors"
-            >
+          {REWARD_TIERS.map((tier) => {
+            const presentation = TIER_PRESENTATION[tier.name]
+            return (
               <div
-                className="w-10 h-1 mb-5"
-                style={{ backgroundColor: t.color }}
-              />
-              <div className="font-display text-[22px] font-extrabold text-white mb-1">
-                {t.name}
+                key={tier.name}
+                className="bg-[#111] border border-white/8 p-6 hover:border-[#F5B300]/30 transition-colors"
+              >
+                <div
+                  className="w-10 h-1 mb-5"
+                  style={{ backgroundColor: presentation.color }}
+                />
+                <div className="font-display text-[22px] font-extrabold text-white mb-1">
+                  {tier.name}
+                </div>
+                <div className="text-[11px] font-mono text-white/30 mb-5">
+                  {formatRewardTierRange(tier)}
+                </div>
+                <ul className="flex flex-col gap-2.5">
+                  {[
+                    `${tier.pointsPerDollar} ${tier.pointsPerDollar === 1 ? "pt" : "pts"} per $1 spent`,
+                    ...presentation.perks,
+                  ].map((p) => (
+                    <li
+                      key={p}
+                      className="flex items-start gap-2.5 text-[13px] text-white/60"
+                    >
+                      <span className="text-[#F5B300] mt-0.5 shrink-0">✓</span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="text-[11px] font-mono text-white/30 mb-5">
-                {t.pts}
-              </div>
-              <ul className="flex flex-col gap-2.5">
-                {t.perks.map((p) => (
-                  <li
-                    key={p}
-                    className="flex items-start gap-2.5 text-[13px] text-white/60"
-                  >
-                    <span className="text-[#F5B300] mt-0.5 shrink-0">✓</span>
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </section>
 

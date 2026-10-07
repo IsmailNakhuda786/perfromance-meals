@@ -1,5 +1,13 @@
 import { useState } from "react"
 import { MEAL_PLAN_MEALS, Page, PLANS } from "@/data"
+import {
+  getNextRewardTier,
+  getRewardTier,
+  MEAL_PLAN_POINTS_MULTIPLIER,
+  POINTS_ACTIVITY_WINDOW_DAYS,
+  REWARD_REDEMPTIONS,
+} from "@/rewardsConfig"
+import { getMonetaryWalletBalance, WalletBalances } from "@/wallet"
 
 function ReadySeriesSubscriptionCard({
   navigate,
@@ -103,6 +111,9 @@ function ReadySeriesSubscriptionCard({
 
 interface Props {
   navigate: (page: Page) => void
+  wallet: WalletBalances
+  onTopUpFunded: (amount: number) => void
+  onAddBonus: (amount: number) => void
 }
 
 type Tab = "dashboard" | "subscription" | "orders" | "wallet" | "rewards" | "gift-card" | "settings"
@@ -176,7 +187,7 @@ const WALLET_HISTORY = [
   },
   {
     date: "25 Aug 2025",
-    desc: "Meal Plan bonus (2× pts)",
+    desc: `Meal Plan bonus (${MEAL_PLAN_POINTS_MULTIPLIER}× pts)`,
     pts: +356,
     type: "earn",
   },
@@ -199,7 +210,16 @@ const INITIAL_SCHEDULE: Record<string, number[]> = {
   Sat: [3],
 }
 
-export default function AccountPage({ navigate }: Props) {
+export default function AccountPage({
+  navigate,
+  wallet,
+  onTopUpFunded,
+  onAddBonus,
+}: Props) {
+  const points = 1234
+  const currentRewardTier = getRewardTier(points)
+  const nextRewardTier = getNextRewardTier(points)
+  const monetaryWalletBalance = getMonetaryWalletBalance(wallet)
   const [tab, setTab] = useState<Tab>("dashboard")
 
   const [subPaused, setSubPaused] = useState(false)
@@ -241,6 +261,7 @@ export default function AccountPage({ navigate }: Props) {
       setTopUpError(true)
       return
     }
+    onTopUpFunded(topUpAmount)
     setTopUpDone(true)
   }
 
@@ -326,7 +347,10 @@ export default function AccountPage({ navigate }: Props) {
           <div className="flex flex-wrap gap-4 sm:gap-6 text-center">
             {[
               { val: "1,234", label: "Points" },
-              { val: "$12.50", label: "Monetary Wallet" },
+              {
+                val: `$${monetaryWalletBalance.toFixed(2)}`,
+                label: "Monetary Wallet",
+              },
               { val: "Week 3", label: "Plan Week" },
               {
                 val: (() => {
@@ -425,8 +449,8 @@ export default function AccountPage({ navigate }: Props) {
                 },
                 {
                   label: "Monetary Wallet",
-                  val: "$12.50",
-                  sub: "$8 funded + $4.50 Gift Card · $5 bonus separate",
+                  val: `$${monetaryWalletBalance.toFixed(2)}`,
+                  sub: `$${wallet.funded.toFixed(2)} funded + $${wallet.giftFunded.toFixed(2)} Gift Card · $${wallet.bonus.toFixed(2)} bonus separate`,
                   onClick: () => setTab("wallet"),
                 },
               ].map((s) => (
@@ -1433,21 +1457,21 @@ export default function AccountPage({ navigate }: Props) {
               {[
                 {
                   label: "Customer-Funded",
-                  val: "$8.00",
+                  val: `$${wallet.funded.toFixed(2)}`,
                   sub: "Monetary · wherever wallet is supported",
                   color: "#F5B300",
                   bg: "#1A1A1A",
                 },
                 {
                   label: "Gift-Card-Funded",
-                  val: "$4.50",
+                  val: `$${wallet.giftFunded.toFixed(2)}`,
                   sub: "Monetary · wherever wallet is supported",
                   color: "#F5B300",
                   bg: "#1A1A1A",
                 },
                 {
                   label: "Bonus / Promotional",
-                  val: "$5.00",
+                  val: `$${wallet.bonus.toFixed(2)}`,
                   sub: "Individual Selection + Bundles only",
                   color: "#F5B300",
                   bg: "#1A1A1A",
@@ -1532,32 +1556,15 @@ export default function AccountPage({ navigate }: Props) {
                 Choose a voucher to apply to your next order.
               </p>
               <div className="space-y-2">
-                {[
-                  {
-                    pts: 500,
-                    credit: 5.0,
-                    label: "$5 bonus wallet credit",
-                    bonus: null,
-                  },
-                  {
-                    pts: 1000,
-                    credit: 11.0,
-                    label: "$11 bonus wallet credit",
-                    bonus: "10% bonus",
-                  },
-                  {
-                    pts: 2000,
-                    credit: 25.0,
-                    label: "$25 bonus wallet credit",
-                    bonus: "25% bonus",
-                  },
-                ].map((tier) => {
-                  const canRedeem = 1234 >= tier.pts
-                  const selected = redeemPts === tier.pts
+                {REWARD_REDEMPTIONS.map((redemption) => {
+                  const canRedeem = points >= redemption.points
+                  const selected = redeemPts === redemption.points
                   return (
                     <div
-                      key={tier.pts}
-                      onClick={() => canRedeem && setRedeemPts(tier.pts)}
+                      key={redemption.points}
+                      onClick={() =>
+                        canRedeem && setRedeemPts(redemption.points)
+                      }
                       className={`flex items-center justify-between gap-4 px-5 py-4 border transition-all ${
                         selected
                           ? "border-[#111] bg-[#111] text-white"
@@ -1572,7 +1579,7 @@ export default function AccountPage({ navigate }: Props) {
                             selected ? "text-[#F5B300]" : "text-[#111]"
                           }`}
                         >
-                          {tier.pts}
+                          {redemption.points}
                           <span
                             className={`text-[12px] font-normal ml-1 ${
                               selected ? "text-white/50" : "text-[#888]"
@@ -1587,27 +1594,20 @@ export default function AccountPage({ navigate }: Props) {
                               selected ? "text-white" : "text-[#111]"
                             }`}
                           >
-                            {tier.label}
+                            ${redemption.credit} bonus wallet credit
                           </div>
-                          {tier.bonus && (
-                            <div
-                              className={`text-[11px] mt-0.5 ${
-                                selected ? "text-[#F5B300]" : "text-[#F5B300]"
-                              }`}
-                            >
-                              {tier.bonus} value
-                            </div>
-                          )}
                         </div>
                       </div>
                       <div className="shrink-0">
                         {selected ? (
                           <button
-                            onClick={() =>
+                            onClick={(event) => {
+                              event.stopPropagation()
+                              onAddBonus(redemption.credit)
                               save(
-                                `${tier.pts} points redeemed → ${tier.label} added to wallet`,
+                                `${redemption.points} points redeemed. Bonus wallet is now $${(wallet.bonus + redemption.credit).toFixed(2)}.`,
                               )
-                            }
+                            }}
                             className="bg-[#F5B300] text-[#111] px-4 py-2 text-[11px] font-bold tracking-widest uppercase hover:bg-white transition-colors"
                           >
                             Redeem
@@ -1669,14 +1669,16 @@ export default function AccountPage({ navigate }: Props) {
             <h2 className="font-display text-[28px] font-bold mb-2">Rewards</h2>
             <p className="text-[#888] text-[13px] mb-8">
               Earn points on every order. Redemptions become bonus wallet value
-              for Ready Series Individual Selection and Bundles.
+              for Ready Series Individual Selection and Bundles. Points remain
+              valid when you place at least one order every{" "}
+              {POINTS_ACTIVITY_WINDOW_DAYS} days.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               {[
                 {
                   label: "Points Balance",
-                  val: "1,234 pts",
-                  sub: "≈ $12.34 credit",
+                  val: `${points.toLocaleString()} pts`,
+                  sub: `${currentRewardTier.pointsPerDollar} pts per $1`,
                 },
                 {
                   label: "Lifetime Earned",
@@ -1685,8 +1687,10 @@ export default function AccountPage({ navigate }: Props) {
                 },
                 {
                   label: "Current Tier",
-                  val: "Gold",
-                  sub: "Next: Platinum at 5,000 pts",
+                  val: currentRewardTier.name,
+                  sub: nextRewardTier
+                    ? `Next: ${nextRewardTier.name} at ${nextRewardTier.minPoints.toLocaleString()} pts`
+                    : "Top tier reached",
                 },
               ].map((s) => (
                 <div
@@ -1710,18 +1714,40 @@ export default function AccountPage({ navigate }: Props) {
                   <label className="block text-[11px] font-mono tracking-widest uppercase text-[#999] mb-2">
                     Points to Redeem
                   </label>
-                  <input
-                    type="number"
-                    defaultValue={500}
-                    min={100}
-                    step={100}
+                  <select
+                    value={redeemPts}
+                    onChange={(event) => setRedeemPts(Number(event.target.value))}
                     className="w-full border border-[#E5E2DA] px-4 py-3 text-[14px] outline-none focus:border-[#F5B300] transition-colors"
-                  />
+                  >
+                    {REWARD_REDEMPTIONS.map((redemption) => (
+                      <option
+                        key={redemption.points}
+                        value={redemption.points}
+                        disabled={points < redemption.points}
+                      >
+                        {redemption.points.toLocaleString()} pts = $
+                        {redemption.credit.toFixed(2)} bonus wallet credit
+                      </option>
+                    ))}
+                  </select>
                   <div className="text-[11px] text-[#aaa] mt-1">
-                    500 pts = $5.00 bonus wallet credit · Min. 100 pts
+                    Canonical redemption values apply to the restricted bonus
+                    wallet.
                   </div>
                 </div>
-                <button className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap">
+                <button
+                  onClick={() => {
+                    const redemption = REWARD_REDEMPTIONS.find(
+                      (option) => option.points === redeemPts,
+                    )
+                    if (!redemption || points < redemption.points) return
+                    onAddBonus(redemption.credit)
+                    save(
+                      `${redemption.points} points redeemed. Bonus wallet is now $${(wallet.bonus + redemption.credit).toFixed(2)}.`,
+                    )
+                  }}
+                  className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-[#111] hover:text-white transition-colors whitespace-nowrap"
+                >
                   Redeem →
                 </button>
               </div>
@@ -1737,7 +1763,7 @@ export default function AccountPage({ navigate }: Props) {
                   },
                   {
                     date: "25 Aug 2025",
-                    desc: "Meal Plan bonus (2× pts)",
+                    desc: `Meal Plan bonus (${MEAL_PLAN_POINTS_MULTIPLIER}× pts)`,
                     pts: +356,
                   },
                   {
@@ -1829,7 +1855,13 @@ export default function AccountPage({ navigate }: Props) {
               </div>
             </div>
             <div className="bg-white border border-[#E5E2DA] p-6">
-              <h3 className="font-medium text-[15px] mb-4">Your Gift Cards</h3>
+              <h3 className="font-medium text-[15px] mb-2">Your Gift Cards</h3>
+              <p className="text-[12px] text-[#888] mb-4">
+                Gift-card-funded wallet balance:{" "}
+                <strong className="text-[#111]">
+                  ${wallet.giftFunded.toFixed(2)}
+                </strong>
+              </p>
               <div className="text-[13px] text-[#aaa] text-center py-8">
                 No gift cards in your account yet.
               </div>
@@ -2664,7 +2696,7 @@ export default function AccountPage({ navigate }: Props) {
                 <p className="text-[13px] text-[#888] mb-6">
                   Your new wallet balance is{" "}
                   <strong className="text-[#111]">
-                    ${(12.5 + topUpAmount).toFixed(2)}
+                    ${monetaryWalletBalance.toFixed(2)}
                   </strong>
                 </p>
                 <div className="w-full bg-[#075E54] text-white px-5 py-3 flex items-center gap-3 mb-2">
