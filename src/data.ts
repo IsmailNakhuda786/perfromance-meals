@@ -1,7 +1,11 @@
 export type Page =
   | "home"
   | "ready-series"
+  | "ready-series-about"
+  | "ready-series-order"
   | "meal-plan-landing"
+  | "meal-plan-about"
+  | "meal-plan-stories"
   | "meal-plan-wizard"
   | "checkout"
   | "confirmation"

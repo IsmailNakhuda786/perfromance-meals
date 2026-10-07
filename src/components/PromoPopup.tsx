@@ -91,7 +91,7 @@ export default function PromoPopup({ onClose, navigate, navigateToWizard }: Prop
               Valid until 11:59pm SGT, 18 October 2026. Selected meals only. One use per customer.
             </p>
 
-            <button onClick={() => { navigate("ready-series"); onClose(); }}
+            <button onClick={() => { navigate("ready-series-order"); onClose(); }}
               className="flex items-center justify-center gap-2 w-full font-bold text-[#191919] text-[12px] hover:opacity-85 transition-opacity"
               style={{ fontFamily: "Inter, sans-serif", background: "#f5b800", height: "42px" }}
             >

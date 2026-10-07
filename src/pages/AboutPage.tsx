@@ -208,7 +208,7 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
                 </div>
               ))}
             </div>
-            <button onClick={() => navigate("ready-series")}
+            <button onClick={() => navigate("ready-series-order")}
               className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] text-[11px] font-extrabold tracking-[0.2em] uppercase px-7 py-4 hover:bg-white transition-colors">
               Shop Ready-Series
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -235,7 +235,7 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
               style={{ backgroundColor: "#E85D04" }}>
               Discover Meal Plan
             </button>
-            <button onClick={() => navigate("ready-series")}
+            <button onClick={() => navigate("ready-series-order")}
               className="inline-flex items-center justify-center gap-3 bg-[#1A1A1A] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-7 py-4 hover:bg-[#F5B300] hover:text-[#1A1A1A] transition-colors">
               Shop Ready-Series
             </button>

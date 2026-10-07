@@ -5,7 +5,11 @@ import Footer from "@/components/Footer";
 import PromoPopup from "@/components/PromoPopup";
 import HomePage from "@/pages/HomePage";
 import ReadySeriesPage from "@/pages/ReadySeriesPage";
+import ReadySeriesLandingPage from "@/pages/ReadySeriesLandingPage";
+import ReadySeriesAboutPage from "@/pages/ReadySeriesAboutPage";
 import MealPlanLandingPage from "@/pages/MealPlanLandingPage";
+import MealPlanAboutPage from "@/pages/MealPlanAboutPage";
+import MealPlanStoriesPage from "@/pages/MealPlanStoriesPage";
 import MealPlanWizardPage from "@/pages/MealPlanWizardPage";
 import CheckoutPage from "@/pages/CheckoutPage";
 import ConfirmationPage from "@/pages/ConfirmationPage";
@@ -149,9 +153,13 @@ export default function App() {
       />
 
       {page === "home" && <HomePage navigate={navigate} navigateToWizard={navigateToWizard} />}
-      {page === "ready-series" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} onSelectMeal={(id) => { setSelectedMealId(id); navigate("ready-series-product"); }} setCartOpen={setCartOpen} />}
+      {page === "ready-series" && <ReadySeriesLandingPage navigate={navigate} />}
+      {page === "ready-series-about" && <ReadySeriesAboutPage navigate={navigate} />}
+      {page === "ready-series-order" && <ReadySeriesPage navigate={navigate} addToCart={addToCart} cart={cart} onSelectMeal={(id) => { setSelectedMealId(id); navigate("ready-series-product"); }} setCartOpen={setCartOpen} />}
       {page === "ready-series-product" && <ReadySeriesProductPage mealId={selectedMealId} navigate={navigate} addToCart={addToCart} />}
       {page === "meal-plan-landing" && <MealPlanLandingPage navigate={navigate} navigateToWizard={navigateToWizard} />}
+      {page === "meal-plan-about" && <MealPlanAboutPage navigate={navigate} navigateToWizard={navigateToWizard} />}
+      {page === "meal-plan-stories" && <MealPlanStoriesPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "meal-plan-wizard" && (
         <MealPlanWizardPage
           navigate={navigate}

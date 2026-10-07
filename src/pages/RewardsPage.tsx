@@ -153,7 +153,7 @@ export default function RewardsPage({ navigate, isLoggedIn }: Props) {
         </h2>
         <p className="text-white/40 text-[14px] mb-8">Join thousands of members already earning rewards on every meal.</p>
         <div className="flex flex-wrap gap-3 justify-center">
-          <button onClick={() => navigate("ready-series")}
+          <button onClick={() => navigate("ready-series-order")}
             className="bg-[#F5B300] text-[#111] px-10 py-4 font-extrabold text-[12px] tracking-[0.25em] uppercase hover:bg-white transition-colors">
             Shop Ready Series
           </button>

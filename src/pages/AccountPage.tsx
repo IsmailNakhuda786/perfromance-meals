@@ -47,7 +47,7 @@ function BoxSubscriptionCard({ navigate, save }: { navigate: (page: Page) => voi
             className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
             {paused ? "▶ Resume Subscription" : "⏸ Skip Next Delivery"}
           </button>
-          <button onClick={() => navigate("ready-series")}
+          <button onClick={() => navigate("ready-series-order")}
             className="border border-[#D0CCC4] px-5 py-2.5 text-[12px] font-medium text-[#666] hover:border-[#111] hover:text-[#111] transition-colors">
             View Subscription Options →
           </button>

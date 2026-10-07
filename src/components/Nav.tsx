@@ -77,10 +77,27 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
     { id: "ready-series",  label: "Ready-Series",       sub: "Everyday momentum · Frozen",     color: "#F5B300", action: () => go("ready-series") },
   ];
   const currentBrandId =
-    currentPage === "meal-plan-landing" || currentPage === "meal-plan-wizard" ? "meal-plan"
-    : currentPage === "ready-series" || currentPage === "ready-series-product" ? "ready-series"
+    currentPage === "meal-plan-landing" || currentPage === "meal-plan-about" || currentPage === "meal-plan-stories" || currentPage === "meal-plan-wizard" ? "meal-plan"
+    : currentPage === "ready-series" || currentPage === "ready-series-about" || currentPage === "ready-series-order" || currentPage === "ready-series-product" ? "ready-series"
     : "parent";
   const currentBrand = BRANDS.find((b) => b.id === currentBrandId)!;
+  const contextualLinks = currentBrandId === "ready-series"
+    ? [
+        { label: "Overview", page: "ready-series" as Page },
+        { label: "About", page: "ready-series-about" as Page },
+        { label: "Order", page: "ready-series-order" as Page },
+      ]
+    : currentBrandId === "meal-plan"
+      ? [
+          { label: "Overview", page: "meal-plan-landing" as Page },
+          { label: "About", page: "meal-plan-about" as Page },
+          { label: "Order", page: "meal-plan-wizard" as Page },
+          { label: "Customer Stories", page: "meal-plan-stories" as Page },
+        ]
+      : [
+          { label: "Our Brands", page: "home" as Page },
+          { label: "About Us", page: "about" as Page },
+        ];
 
 
   return (
@@ -134,16 +151,14 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
             )}
           </div>
 
-          {/* Desktop right links */}
+          {/* Desktop contextual links */}
           <div className="hidden lg:flex items-center gap-6 flex-1 justify-end mr-4">
-            <button onClick={() => go("home")}
-              className="text-[11px] tracking-[0.2em] uppercase font-semibold text-white/45 hover:text-white transition-colors">
-              Our Brands
-            </button>
-            <button onClick={() => go("about")}
-              className={`text-[11px] tracking-[0.2em] uppercase font-semibold transition-colors ${currentPage === "about" ? "text-white" : "text-white/45 hover:text-white"}`}>
-              About Us
-            </button>
+            {contextualLinks.map((link) => (
+              <button key={link.label} onClick={() => go(link.page)}
+                className={`text-[11px] tracking-[0.16em] uppercase font-semibold transition-colors ${currentPage === link.page ? "text-white" : "text-white/45 hover:text-white"}`}>
+                {link.label}
+              </button>
+            ))}
           </div>
 
           {/* Right icons */}
@@ -221,12 +236,9 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   {currentBrandId === b.id && <span className="ml-auto text-[9px] font-mono tracking-widest uppercase text-white/30">Current</span>}
                 </button>
               ))}
-              <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2 mt-2">More</div>
-              {[
-                { label: "Our Brands", action: () => go("home") },
-                { label: "About Us", action: () => go("about") },
-              ].map((l) => (
-                <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
+              <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2 mt-2">{currentBrand.label}</div>
+              {contextualLinks.map((l) => (
+                <button key={l.label} onClick={() => go(l.page)} className={`w-full text-left py-3 px-3 text-[15px] hover:text-white hover:bg-white/5 transition-colors border-b border-white/5 ${currentPage === l.page ? "text-white" : "text-white/70"}`}>{l.label}</button>
               ))}
 
               <div className="text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase py-2 mt-2">Account</div>
@@ -515,7 +527,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   <line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" />
                 </svg>
                 <p className="text-[14px]">Your cart is empty</p>
-                <button onClick={() => { setCartOpen(false); navigate("ready-series"); }} className="text-[#F5B300] text-[12px] tracking-widest uppercase font-semibold">Shop Meals →</button>
+                <button onClick={() => { setCartOpen(false); navigate("ready-series-order"); }} className="text-[#F5B300] text-[12px] tracking-widest uppercase font-semibold">Shop Meals →</button>
               </div>
             ) : (
               <>
