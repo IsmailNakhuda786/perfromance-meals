@@ -12,7 +12,7 @@ const RS_MEALS = [
   { id: 106, name: "Miso Glazed Salmon", cat: "High Protein", price: 16.90, protein: 46, carbs: 18, fat: 18, cal: 414, badge: "PREMIUM", img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80", rating: 4.9, reviews: 142, desc: "Premium Atlantic salmon fillet in a house-made white miso glaze, served with steamed bok choy and sesame soba. The flagship premium option." },
   { id: 107, name: "Overnight Oats & Berry", cat: "Breakfast", price: 8.90, protein: 18, carbs: 52, fat: 6, cal: 334, badge: null, img: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400&q=80", rating: 4.7, reviews: 119, desc: "Rolled oats soaked overnight with chia seeds, protein powder, and oat milk. Topped with a mixed berry compote. Ready cold or warm." },
   { id: 108, name: "Greek Chicken Wrap", cat: "High Protein", price: 12.90, protein: 34, carbs: 36, fat: 10, cal: 374, badge: null, img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80", rating: 4.8, reviews: 87, desc: "Grilled lemon-oregano chicken with tzatziki, tomato, red onion, and rocket in a wholemeal wrap. Light, fresh, and high protein." },
-  { id: 109, name: "Egg White & Avocado Toast", cat: "Breakfast", price: 9.50, protein: 22, carbs: 34, fat: 12, cal: 332, badge: "POPULAR", img: "https://images.unsplash.com/photo-1541519227354-08fa5d50c820?w=400&q=80", rating: 4.8, reviews: 203, desc: "Thick-cut sourdough topped with smashed avocado, seasoned egg white omelette, and chilli flakes. Cafe quality at home — in under 3 minutes." },
+  { id: 109, name: "Egg White & Avocado Toast", cat: "Breakfast", price: 9.50, protein: 22, carbs: 34, fat: 12, cal: 332, badge: "POPULAR", img: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&h=450&fit=crop&auto=format&q=85", rating: 4.8, reviews: 203, desc: "Thick-cut sourdough topped with smashed avocado, seasoned egg white omelette, and chilli flakes. Cafe quality at home — in under 3 minutes." },
   { id: 110, name: "Beef Rendang & Cauliflower", cat: "Low Carb", price: 14.90, protein: 40, carbs: 10, fat: 22, cal: 398, badge: null, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80", rating: 4.8, reviews: 134, desc: "Slow-braised beef in rich rendang spice paste — lemongrass, galangal, coconut. Served over cauliflower rice for a deeply satisfying low-carb meal." },
   { id: 111, name: "Chicken Burrito Bowl", cat: "High Carb", price: 12.50, protein: 30, carbs: 58, fat: 10, cal: 450, badge: null, img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&q=80", rating: 4.7, reviews: 92, desc: "Chipotle-marinated chicken over Mexican rice with black beans, corn salsa, guacamole, and sour cream. Big flavour, big carbs." },
   { id: 112, name: "Prawn Fried Rice", cat: "High Carb", price: 13.90, protein: 26, carbs: 60, fat: 8, cal: 428, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80", rating: 4.9, reviews: 267, desc: "Wok-tossed jasmine rice with tiger prawns, egg, spring onion, and light soy. Clean, familiar, and genuinely satisfying — a week-day staple." },
@@ -104,7 +104,12 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
         {/* Left — image */}
         <div className="relative">
           <div className="aspect-[4/3] overflow-hidden bg-[#111]">
-            <img src={meal.img} alt={meal.name} className="w-full h-full object-cover" />
+            <img
+              src={meal.img}
+              alt={meal.name}
+              onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1547592180-85f173990554?w=900&h=675&fit=crop&auto=format&q=80"; }}
+              className="w-full h-full object-cover"
+            />
           </div>
           {meal.badge && (
             <div className="absolute top-4 left-4 bg-[#F5B300] text-[#1A1A1A] text-[9px] font-extrabold tracking-[0.2em] uppercase px-3 py-1.5">
@@ -395,7 +400,12 @@ export default function ReadySeriesProductPage({ mealId, navigate, addToCart }: 
                     className="bg-[#111] text-left group"
                   >
                     <div className="aspect-[4/3] overflow-hidden">
-                      <img src={m.img} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img
+                        src={m.img}
+                        alt={m.name}
+                        onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop&auto=format&q=80"; }}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
                     </div>
                     <div className="p-5">
                       <div className="font-display text-[14px] font-extrabold uppercase text-white mb-1 leading-snug">{m.name}</div>
