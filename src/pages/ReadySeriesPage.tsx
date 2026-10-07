@@ -926,25 +926,61 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       )}
 
       {/* ── WHY READY SERIES ── */}
-      <section className="py-16 bg-[#1A1A1A] px-6 sm:px-8">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-12">
-            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-3">Why Ready Series</div>
-            <h2 className="font-display text-[36px] sm:text-[48px] font-extrabold">
-              A busy day does not have<br />to knock you off track<span className="text-[#F5B300]">.</span>
-            </h2>
+      <section className="bg-[#F7F2E8] border-t border-[#DDD6CB] px-6 sm:px-8 py-20 sm:py-24">
+        <div className="max-w-[1280px] mx-auto">
+          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-16 items-end mb-12">
+            <div>
+              <div className="flex items-center gap-3 mb-5">
+                <span className="w-8 h-[2px] bg-[#F5B300]" />
+                <p className="text-[#806A2A] text-[10px] font-bold tracking-[0.22em] uppercase">Why Ready Series</p>
+              </div>
+              <h2 className="font-display text-[40px] sm:text-[54px] font-black leading-[0.94] tracking-[-0.035em] text-[#1A1A1A]">
+                Built for days<br />that move fast.
+              </h2>
+            </div>
+            <p className="text-[#6B6259] text-[15px] sm:text-[16px] leading-relaxed max-w-[540px] lg:justify-self-end">
+              Proper meals without the planning spiral. Keep a dependable option ready, see exactly what you are eating, and stay moving when the day changes.
+            </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/8">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: "🧊", label: "Frozen at peak", desc: "Locked in at maximum freshness and nutrition." },
-              { icon: "⏱", label: "3-minute prep", desc: "Microwave from frozen. No thaw time needed." },
-              { icon: "📊", label: "Macro tracked", desc: "Every gram counted. No guesswork required." },
-              { icon: "🚚", label: "Free delivery $120+", desc: "Free delivery on orders $120 and above. $10 below." },
-            ].map((f) => (
-              <div key={f.label} className="bg-[#1A1A1A] px-7 py-8">
-                <div className="text-[30px] mb-4">{f.icon}</div>
-                <div className="font-display text-[18px] font-bold text-white mb-2">{f.label}</div>
-                <div className="text-white/40 text-[12px] leading-relaxed">{f.desc}</div>
+              { icon: "freeze", label: "Frozen at peak", desc: "Quality and nutrition locked in, ready whenever you need it." },
+              { icon: "time", label: "Ready in 3 minutes", desc: "Heat straight from frozen. No chopping, thawing, or cleanup." },
+              { icon: "macro", label: "Macros made clear", desc: "Protein and calories shown upfront, so choosing stays simple." },
+              { icon: "delivery", label: "Free delivery $120+", desc: "Stock the freezer and delivery is on us across Singapore." },
+            ].map((feature, index) => (
+              <div key={feature.label} className="group relative overflow-hidden bg-white border border-[#DED7CD] rounded-2xl px-6 py-7 min-h-[280px] flex flex-col shadow-[0_8px_30px_rgba(52,42,30,0.04)] hover:-translate-y-1.5 hover:border-[#D5A52B] hover:shadow-[0_18px_45px_rgba(52,42,30,0.10)] transition-all duration-300">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-[#F5B300] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-full bg-[#FFF4CF] text-[#9B6B00] flex items-center justify-center group-hover:bg-[#F5B300] group-hover:text-[#1A1A1A] transition-colors duration-300">
+                    {feature.icon === "freeze" && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+                        <path d="M12 2v20M4.2 6.5l15.6 11M19.8 6.5l-15.6 11M9 4.5l3 2 3-2M9 19.5l3-2 3 2M4.8 10l.2 3.6-3.2 1.6M22.2 8.8L19 10.4l.2 3.6" />
+                      </svg>
+                    )}
+                    {feature.icon === "time" && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6M12 2v3" />
+                      </svg>
+                    )}
+                    {feature.icon === "macro" && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+                        <path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7M2 20h20" />
+                      </svg>
+                    )}
+                    {feature.icon === "delivery" && (
+                      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 5h11v12H3zM14 9h4l3 4v4h-7z" /><circle cx="7" cy="18" r="2" /><circle cx="18" cy="18" r="2" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="font-mono text-[10px] text-[#A49B91]">0{index + 1}</span>
+                </div>
+                <div className="mt-auto pt-10">
+                  <h3 className="font-display text-[20px] font-extrabold text-[#1A1A1A] mb-3">{feature.label}</h3>
+                  <p className="text-[#71685F] text-[13px] leading-relaxed">{feature.desc}</p>
+                </div>
               </div>
             ))}
           </div>
