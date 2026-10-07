@@ -8,10 +8,11 @@ interface Props {
   cart: CartItem[];
   onSelectMeal: (id: number) => void;
   setCartOpen: (v: boolean) => void;
+  initialPurchaseMode?: "single" | "bundles" | "subscription";
 }
 
 const MEALS = [
-  { id: 101, name: "Teriyaki Chicken & Brown Rice", cat: "Just Protein", price: 12.90, protein: 42, carbs: 48, fat: 8, cal: 478, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" },
+  { id: 101, name: "Teriyaki Chicken & Brown Rice", cat: "Just Protein", price: 12.90, protein: 42, carbs: 48, fat: 8, cal: 478, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1762631383520-df106b252f6a?w=600&h=450&fit=crop&auto=format&q=85" },
   { id: 102, name: "Spicy Korean Beef Bulgogi", cat: "Low Carb", price: 13.50, protein: 38, carbs: 12, fat: 14, cal: 326, badge: "HOT", img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80" },
   { id: 103, name: "Herb Chicken & Roasted Veg", cat: "Low Carb", price: 12.50, protein: 36, carbs: 14, fat: 10, cal: 290, badge: null, img: "https://images.unsplash.com/photo-1604909052743-94e838986d24?w=400&q=80" },
   { id: 104, name: "Salmon & Quinoa Power Bowl", cat: "Just Protein", price: 15.90, protein: 44, carbs: 38, fat: 16, cal: 468, badge: "NEW", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" },
@@ -19,10 +20,10 @@ const MEALS = [
   { id: 106, name: "Miso Glazed Salmon", cat: "Just Protein", price: 16.90, protein: 46, carbs: 18, fat: 18, cal: 414, badge: "PREMIUM", img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80" },
   { id: 107, name: "Overnight Oats & Berry", cat: "High Carb", price: 8.90, protein: 18, carbs: 52, fat: 6, cal: 334, badge: null, img: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400&q=80" },
   { id: 108, name: "Greek Chicken Wrap", cat: "Just Protein", price: 12.90, protein: 34, carbs: 36, fat: 10, cal: 374, badge: null, img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80" },
-  { id: 109, name: "Egg White & Avocado Toast", cat: "High Carb", price: 9.50, protein: 22, carbs: 34, fat: 12, cal: 332, badge: "POPULAR", img: "https://images.unsplash.com/photo-1541519227354-08fa5d50c820?w=400&q=80" },
-  { id: 110, name: "Beef Rendang & Cauliflower", cat: "Low Carb", price: 14.90, protein: 40, carbs: 10, fat: 22, cal: 398, badge: null, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80" },
+  { id: 109, name: "Egg White & Avocado Toast", cat: "High Carb", price: 9.50, protein: 22, carbs: 34, fat: 12, cal: 332, badge: "POPULAR", img: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&h=450&fit=crop&auto=format&q=85" },
+  { id: 110, name: "Beef Rendang & Cauliflower", cat: "Low Carb", price: 14.90, protein: 40, carbs: 10, fat: 22, cal: 398, badge: null, img: "https://images.unsplash.com/photo-1661257711676-79a0fc533569?w=600&h=450&fit=crop&auto=format&q=85" },
   { id: 111, name: "Chicken Burrito Bowl", cat: "High Carb", price: 12.50, protein: 30, carbs: 58, fat: 10, cal: 450, badge: null, img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&q=80" },
-  { id: 112, name: "Prawn Fried Rice", cat: "High Carb", price: 13.90, protein: 26, carbs: 60, fat: 8, cal: 428, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80" },
+  { id: 112, name: "Prawn Fried Rice", cat: "High Carb", price: 13.90, protein: 26, carbs: 60, fat: 8, cal: 428, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1580683742795-49989f7ecb72?w=600&h=450&fit=crop&auto=format&q=85" },
 ];
 
 const CATS = ["A-la-carte", "Low Carb", "High Carb", "Just Protein"];
@@ -164,12 +165,6 @@ const SUB_MEAL_DETAILS: Record<string, {
 const FREE_DELIVERY_THRESHOLD = 120;
 const DELIVERY_FEE = 10;
 
-const promos = [
-  { code: "READY20", desc: "20% off your first Ready Series order", expires: "30 Sep 2026" },
-  { code: "SG61", desc: "$6.10 off — Singapore National Day special", expires: "Ongoing" },
-  { code: "FREEZER5", desc: "$5 off orders of 10+ meals", expires: "15 Oct 2026" },
-];
-
 const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: string; date: string }[]> = {
   101: [
     { author: "Marcus T.", rating: 5, text: "Best meal prep chicken I have ever had. The teriyaki glaze is spot-on and the brown rice keeps me full till 5pm.", date: "12 Sep" },
@@ -190,9 +185,9 @@ const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: strin
   ],
 };
 
-export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen }: Props) {
+export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen, initialPurchaseMode = "single" }: Props) {
   const th = <T,>(_dark: T, warm: T, _espresso: T): T => warm;
-  const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">("single");
+  const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">(initialPurchaseMode);
   const [subTerm, setSubTerm] = useState<3 | 6>(3);
   const [selectedSub, setSelectedSub] = useState<string | null>(null);
   const [subTypeFilter, setSubTypeFilter] = useState<"meals" | "protein" | "mixed">("meals");
@@ -238,102 +233,86 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
     <div className="bg-[#FAF8F4] text-[#1A1A1A] min-h-screen">
 
       {/* ── HERO ── */}
-      <div className="relative overflow-hidden min-h-[75svh] flex items-center">
-        {/* Full-bleed food photo background */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1600&h=900&fit=crop&auto=format&q=80"
-            alt="Ready-Series meal prep containers"
-            className="w-full h-full object-cover object-center"
-          />
-          {/* Deep freezer-blue overlay keeps the order experience distinct and highly legible. */}
-          <div className="absolute inset-0"
-            style={{ background: "linear-gradient(100deg, rgba(7,27,53,0.98) 0%, rgba(7,27,53,0.92) 45%, rgba(7,27,53,0.68) 75%, rgba(7,27,53,0.35) 100%)" }} />
-          {/* Yellow burst — top right, energetic */}
-          <div className="absolute top-0 right-0 w-[600px] h-[400px] pointer-events-none"
-            style={{ background: "radial-gradient(ellipse at 85% 10%, rgba(245,179,0,0.28) 0%, transparent 60%)" }} />
-        </div>
+      <section className="relative overflow-hidden bg-[#F7F2E8] border-t-[3px] border-[#F5B300]">
+        <div className="max-w-[1440px] mx-auto grid lg:grid-cols-[0.88fr_1.12fr] min-h-[680px]">
+          <div className="relative z-10 px-6 sm:px-10 lg:px-16 py-14 sm:py-18 lg:py-20 flex flex-col">
+            <button onClick={() => navigate("ready-series")} className="inline-flex self-start items-center gap-2 text-[#766D63] hover:text-[#1A1A1A] transition-colors text-[10px] font-semibold tracking-[0.18em] uppercase">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+              Ready Series overview
+            </button>
 
-        {/* Yellow top bar — brand identifier stripe */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#F5B300] z-20" />
-
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 sm:px-8 py-20 sm:py-24">
-          <button onClick={() => navigate("ready-series")} className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[11px] font-mono tracking-widest uppercase mb-8">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-            Ready Series overview
-          </button>
-
-          <div className="mb-7">
-            <ReadySeriesLogo size="md" variant="dark" />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#72A7FF] mb-5">Order Ready Series · Choose one pathway</p>
-              <h1 className="font-display text-[36px] sm:text-[52px] lg:text-[68px] font-extrabold leading-[0.88] mb-6">
-                YOUR FREEZER.<br /><span className="text-[#F5B300]">YOUR WAY.</span>
-              </h1>
-              <p className="text-white/50 text-[15px] leading-relaxed max-w-[420px] mb-8">
-                Fast, enjoyable frozen meals that are ready when life gets busy. Keep your week moving.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() => document.getElementById("rs-shop")?.scrollIntoView({ behavior: "smooth" })}
-                  className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] px-8 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors">
-                  Shop Now
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-                </button>
-              </div>
+            <div className="mt-10">
+              <ReadySeriesLogo size="md" variant="light" />
             </div>
 
-            {/* Stats — energetic tiles, yellow-accented */}
-            <div className="grid grid-cols-3 gap-3 lg:justify-items-end">
+            <div className="mt-auto pt-16 lg:pt-24 max-w-[610px]">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-8 h-[2px] bg-[#F5B300]" />
+                <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] uppercase text-[#806A2A]">Fast food, properly done</p>
+              </div>
+              <h1 className="font-display text-[48px] sm:text-[64px] lg:text-[74px] font-black leading-[0.91] tracking-[-0.045em] text-[#171717]">
+                Your freezer,<br />
+                <span className="text-[#B47C00]">ready for anything.</span>
+              </h1>
+              <p className="text-[#625A52] text-[16px] sm:text-[17px] leading-relaxed max-w-[500px] mt-7">
+                High-protein meals for Singapore’s fullest days. Pick your favourites, heat in minutes, and get on with what matters.
+              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-9">
+                <button
+                  onClick={() => document.getElementById("rs-shop")?.scrollIntoView({ behavior: "smooth" })}
+                  className="group inline-flex items-center justify-between gap-7 rounded-full bg-[#1A1A1A] text-white pl-7 pr-2 py-2 text-[11px] font-bold tracking-[0.16em] uppercase hover:bg-[#B47C00] transition-colors duration-300">
+                  Choose your meals
+                  <span className="w-10 h-10 rounded-full bg-[#F5B300] text-[#1A1A1A] flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </span>
+                </button>
+                <span className="text-[#847A70] text-[11px] leading-relaxed">Individual meals from $8.90<br />Free delivery from $120</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative min-h-[480px] lg:min-h-full overflow-hidden">
+            <div className="absolute top-6 right-6 z-10 bg-[#F5B300] text-[#1A1A1A] rounded-full px-4 py-2 text-[9px] font-black tracking-[0.18em] uppercase">
+              Made for Singapore pace
+            </div>
+          <img
+            src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1600&h=900&fit=crop&auto=format&q=80"
+              alt="Colourful Ready Series meals prepared for a busy week"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+          />
+            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/75 to-transparent" />
+            <div className="absolute left-5 right-5 sm:left-8 sm:right-8 bottom-6 grid grid-cols-3 rounded-2xl overflow-hidden bg-white/90 backdrop-blur-md shadow-2xl">
               {[
-                { v: "01", l: "Individual" },
-                { v: "02", l: "Bundles" },
-                { v: "03", l: "Subscription" },
+                { v: "01", l: "Pick your meals" },
+                { v: "02", l: "Choose a bundle" },
+                { v: "03", l: "Keep it stocked" },
               ].map((s) => (
-                <div key={s.l} className="border border-[#F5B300]/25 bg-[#F5B300]/5 px-4 py-5 text-center">
-                  <div className="text-[#F5B300] font-display text-[28px] sm:text-[32px] font-extrabold leading-none">{s.v}</div>
-                  <div className="text-white/40 text-[10px] tracking-wide mt-2 uppercase">{s.l}</div>
+                <div key={s.l} className="px-3 sm:px-5 py-5 border-r border-[#D7D0C6] last:border-0">
+                  <div className="text-[#B47C00] font-display text-[22px] sm:text-[26px] font-black leading-none">{s.v}</div>
+                  <div className="text-[#4E4841] text-[9px] sm:text-[10px] font-bold tracking-[0.08em] mt-2 uppercase">{s.l}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ── ACTIVE PROMOS BAR ── */}
-      <div className="bg-[#F5B300]/8 border-y border-[#F5B300]/15 px-6 py-4">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-8">
-          <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase shrink-0">Active Promos</div>
-          <div className="flex flex-wrap gap-4">
-            {promos.map((p) => (
-              <div key={p.code} className="flex items-center gap-2">
-                <span className="bg-[#F5B300] text-[#111] text-[9px] font-extrabold px-2 py-0.5 tracking-wider">{p.code}</span>
-                <span className="text-white/50 text-[11px]">{p.desc}</span>
-                <span className="text-white/20 text-[10px] font-mono">{p.expires}</span>
-              </div>
-            ))}
-          </div>
-          <div className="ml-auto text-[10px] text-white/25 hidden lg:block">Enter code at checkout</div>
-        </div>
-      </div>
-
-      {/* ── FREE DELIVERY PROGRESS — single/bundle only ── */}
+      {/* ── FREE DELIVERY PROGRESS — individual selection and bundles ── */}
       {purchaseMode !== "subscription" && (
-        <div className="bg-[#111] border-b border-white/5 px-6 py-3">
-          <div className="max-w-[1200px] mx-auto">
-            <div className="flex items-center gap-4">
-              <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-[#F5B300] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
-              </div>
-              <div className="text-[11px] shrink-0">
-                {toFreeDelivery <= 0
-                  ? <span className="text-[#F5B300] font-bold">🎉 Free delivery unlocked!</span>
-                  : <span className="text-white/40">Add <span className="text-white font-semibold">${toFreeDelivery.toFixed(2)}</span> more for free delivery</span>
-                }
-              </div>
+        <div className="bg-white border-b border-[#DDD6CB] px-6 py-4">
+          <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+            <div className="flex items-center justify-between sm:block shrink-0">
+              <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#61584F]">Free delivery progress</div>
+              <div className="text-[10px] text-[#8A8178] mt-0.5">Orders $120 and above</div>
+            </div>
+            <div className="flex-1 h-2 bg-[#EDE8E0] rounded-full overflow-hidden">
+              <div className="h-full bg-[#F5B300] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
+            </div>
+            <div className="text-[11px] text-[#61584F] shrink-0">
+              {toFreeDelivery <= 0
+                ? <span className="font-bold text-[#8A6100]">Free delivery unlocked</span>
+                : <>Add <span className="font-extrabold text-[#1A1A1A]">${toFreeDelivery.toFixed(2)}</span> more</>
+              }
             </div>
           </div>
         </div>
@@ -397,7 +376,12 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                       <div className="flex h-28 overflow-hidden">
                         {previewMeals.map((m, pi) => (
                           <div key={pi} className="flex-1 overflow-hidden">
-                            <img src={m.img} alt={m.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <img
+                              src={m.img}
+                              alt={m.name}
+                              onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1633179498414-88e5b9ccb843?w=600&h=450&fit=crop&auto=format&q=80"; }}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
                           </div>
                         ))}
                         {previewMeals.length === 0 && <div className={`flex-1 ${th("bg-[#222]", "bg-[#F0EBE3]", "bg-[#3A2810]")}`} />}
@@ -441,7 +425,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                             name: item.name,
                             price: item.price,
                             qty: 1,
-                            img: bundleMeals[0]?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                            img: bundleMeals[0]?.img ?? "https://images.unsplash.com/photo-1682568514220-c477d5432024?w=200&h=200&fit=crop&auto=format",
                             type: "box",
                             mealNames: bundleMeals.map((m) => m.name),
                             mealImgs: bundleMeals.map((m) => m.img),
@@ -714,7 +698,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                             name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
                             price,
                             qty: 1,
-                            img: previewMeals[0]?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                            img: previewMeals[0]?.img ?? "https://images.unsplash.com/photo-1555789185-76365931ffaa?w=200&h=200&fit=crop&auto=format",
                             type: "box",
                             mealNames: subMealNames,
                             mealImgs: subMealImgs,
@@ -812,7 +796,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                           name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
                           price,
                           qty: 1,
-                          img: firstMeal?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                          img: firstMeal?.img ?? "https://images.unsplash.com/photo-1562828358-432c7bdde45e?w=200&h=200&fit=crop&auto=format",
                           type: "box",
                           mealNames: subMealNames,
                           mealImgs: subMealImgs,
@@ -887,7 +871,12 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                     className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A] block w-full group"
                     aria-label={`View ${meal.name} details`}
                   >
-                    <img src={meal.img} alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img
+                      src={meal.img}
+                      alt={meal.name}
+                      onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1597958792579-bd3517df6399?w=600&h=450&fit=crop&auto=format&q=80"; }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
                       <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-[#F5B300] text-[#1A1A1A] text-[10px] font-extrabold tracking-[0.2em] uppercase px-4 py-2">VIEW DETAILS →</span>
                     </div>
@@ -938,25 +927,61 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       )}
 
       {/* ── WHY READY SERIES ── */}
-      <section className="py-16 bg-[#1A1A1A] px-6 sm:px-8">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="text-center mb-12">
-            <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.3em] uppercase mb-3">Why Ready Series</div>
-            <h2 className="font-display text-[36px] sm:text-[48px] font-extrabold">
-              A busy day does not have<br />to knock you off track<span className="text-[#F5B300]">.</span>
-            </h2>
+      <section className="bg-[#F7F2E8] border-t border-[#DDD6CB] px-6 sm:px-8 py-20 sm:py-24">
+        <div className="max-w-[1280px] mx-auto">
+          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-8 lg:gap-16 items-end mb-12">
+            <div>
+              <div className="flex items-center gap-3 mb-5">
+                <span className="w-8 h-[2px] bg-[#F5B300]" />
+                <p className="text-[#806A2A] text-[10px] font-bold tracking-[0.22em] uppercase">Why Ready Series</p>
+              </div>
+              <h2 className="font-display text-[40px] sm:text-[54px] font-black leading-[0.94] tracking-[-0.035em] text-[#1A1A1A]">
+                Built for days<br />that move fast.
+              </h2>
+            </div>
+            <p className="text-[#6B6259] text-[15px] sm:text-[16px] leading-relaxed max-w-[540px] lg:justify-self-end">
+              Proper meals without the planning spiral. Keep a dependable option ready, see exactly what you are eating, and stay moving when the day changes.
+            </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/8">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: "🧊", label: "Frozen at peak", desc: "Locked in at maximum freshness and nutrition." },
-              { icon: "⏱", label: "3-minute prep", desc: "Microwave from frozen. No thaw time needed." },
-              { icon: "📊", label: "Macro tracked", desc: "Every gram counted. No guesswork required." },
-              { icon: "🚚", label: "Free delivery $120+", desc: "Free delivery on orders $120 and above. $10 below." },
-            ].map((f) => (
-              <div key={f.label} className="bg-[#1A1A1A] px-7 py-8">
-                <div className="text-[30px] mb-4">{f.icon}</div>
-                <div className="font-display text-[18px] font-bold text-white mb-2">{f.label}</div>
-                <div className="text-white/40 text-[12px] leading-relaxed">{f.desc}</div>
+              { icon: "freeze", label: "Frozen at peak", desc: "Quality and nutrition locked in, ready whenever you need it." },
+              { icon: "time", label: "Ready in 3 minutes", desc: "Heat straight from frozen. No chopping, thawing, or cleanup." },
+              { icon: "macro", label: "Macros made clear", desc: "Protein and calories shown upfront, so choosing stays simple." },
+              { icon: "delivery", label: "Free delivery $120+", desc: "Stock the freezer and delivery is on us across Singapore." },
+            ].map((feature, index) => (
+              <div key={feature.label} className="group relative overflow-hidden bg-white border border-[#DED7CD] rounded-2xl px-6 py-7 min-h-[280px] flex flex-col shadow-[0_8px_30px_rgba(52,42,30,0.04)] hover:-translate-y-1.5 hover:border-[#D5A52B] hover:shadow-[0_18px_45px_rgba(52,42,30,0.10)] transition-all duration-300">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-[#F5B300] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-full bg-[#FFF4CF] text-[#9B6B00] flex items-center justify-center group-hover:bg-[#F5B300] group-hover:text-[#1A1A1A] transition-colors duration-300">
+                    {feature.icon === "freeze" && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+                        <path d="M12 2v20M4.2 6.5l15.6 11M19.8 6.5l-15.6 11M9 4.5l3 2 3-2M9 19.5l3-2 3 2M4.8 10l.2 3.6-3.2 1.6M22.2 8.8L19 10.4l.2 3.6" />
+                      </svg>
+                    )}
+                    {feature.icon === "time" && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6M12 2v3" />
+                      </svg>
+                    )}
+                    {feature.icon === "macro" && (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+                        <path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7M2 20h20" />
+                      </svg>
+                    )}
+                    {feature.icon === "delivery" && (
+                      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 5h11v12H3zM14 9h4l3 4v4h-7z" /><circle cx="7" cy="18" r="2" /><circle cx="18" cy="18" r="2" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="font-mono text-[10px] text-[#A49B91]">0{index + 1}</span>
+                </div>
+                <div className="mt-auto pt-10">
+                  <h3 className="font-display text-[20px] font-extrabold text-[#1A1A1A] mb-3">{feature.label}</h3>
+                  <p className="text-[#71685F] text-[13px] leading-relaxed">{feature.desc}</p>
+                </div>
               </div>
             ))}
           </div>

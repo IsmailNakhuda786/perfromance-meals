@@ -8,6 +8,8 @@ const imgKitchen = "/13da6.png";
 const imgChef = "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1200&h=590&fit=crop&auto=format";
 const imgReady   = "/d006a.png";
 const imgMeal    = "/98c55.png";
+const imgReadyFamily = "https://images.unsplash.com/photo-1627662055794-94ab33f5913a?w=1200&h=900&fit=crop&auto=format&q=85";
+const imgMealFamily = "https://images.unsplash.com/photo-1636647511729-6703539ba71f?w=1200&h=900&fit=crop&auto=format&q=85";
 
 /* ─── Shatter image grid ─────────────────────────────────── */
 const COLS = 5;
@@ -553,7 +555,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             {/* Ready Series card */}
             <div className="group bg-[#1A1A1A] overflow-hidden flex flex-col sm:flex-row cursor-pointer" style={{ minHeight: "280px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.28)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
               <div className="w-full sm:w-[42%] flex-shrink-0 relative overflow-hidden" style={{ minHeight: "200px" }}>
-                <img src={imgReady} alt="Ready Series" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
+                <img src={imgReadyFamily} alt="Ready Series for everyday routines" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
               </div>
               <div className="hidden sm:block flex-shrink-0 bg-[#F5B300] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
               <div className="flex-1 px-6 sm:px-8 py-6 sm:py-8 flex flex-col justify-between">
@@ -583,7 +585,7 @@ export default function HomePage({ navigate, navigateToWizard }: Props) {
             {/* Meal Plan card */}
             <div className="group bg-white overflow-hidden flex flex-col sm:flex-row cursor-pointer" style={{ minHeight: "280px", transition: "box-shadow 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1)" }} onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-6px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 24px 60px rgba(0,0,0,0.14)"; }} onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}>
               <div className="w-full sm:w-[42%] flex-shrink-0 relative overflow-hidden" style={{ minHeight: "200px" }}>
-                <img src={imgMeal} alt="Meal Plan" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
+                <img src={imgMealFamily} alt="Meal Plan preparation and structure" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 ease-out group-hover:scale-105" />
               </div>
               <div className="hidden sm:block flex-shrink-0 bg-[#E85D04] transition-all duration-400 group-hover:w-[5px]" style={{ width: "3px" }} />
               <div className="flex-1 px-6 sm:px-8 py-6 sm:py-8 flex flex-col justify-between">

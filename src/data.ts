@@ -63,7 +63,7 @@ export const MEALS: Meal[] = [
     id: 3, name: "Smoked Salmon Scrambled Eggs", cat: "breakfast",
     price: 11.90, protein: 28, carbs: 8, fat: 16, cal: 290,
     rating: 4.7, reviews: 143, badge: "Breakfast",
-    img: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&h=500&fit=crop&auto=format",
+    img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&h=500&fit=crop&auto=format&q=85",
     desc: "Slow-scrambled free-range eggs with cold-smoked Atlantic salmon, capers, and dill.",
   },
   {
@@ -77,7 +77,7 @@ export const MEALS: Meal[] = [
     id: 5, name: "Korean BBQ Beef & Purple Rice", cat: "high-carb",
     price: 13.90, protein: 44, carbs: 58, fat: 12, cal: 510,
     rating: 4.8, reviews: 201, badge: null,
-    img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=500&fit=crop&auto=format",
+    img: "https://images.unsplash.com/photo-1696906594893-e9995c4d7082?w=600&h=500&fit=crop&auto=format&q=85",
     desc: "Grass-fed beef in house gochujang marinade over antioxidant-rich purple rice with kimchi slaw.",
   },
   {
@@ -121,14 +121,14 @@ export const CATS = [
 ];
 
 export const PROMOTIONS = [
-  { id: 101, name: "SG61 Deal — Herb Chicken ×3", desc: "Our #1 bestseller at a special price. Use code SG61.", original: 37.20, sale: 28.90, saving: "22% OFF", img: "https://images.unsplash.com/photo-1670398564097-0762e1b30b3a?w=600&h=500&fit=crop&auto=format", tag: "Promo" },
-  { id: 102, name: "Weekend Bundle — Mix of 4", desc: "Teriyaki, Korean BBQ, Cajun Salmon + Herb Chicken.", original: 52.60, sale: 39.90, saving: "24% OFF", img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=500&fit=crop&auto=format", tag: "Flash Sale" },
+  { id: 101, name: "SG61 Deal — Herb Chicken ×3", desc: "Our #1 bestseller at a special price. Use code SG61.", original: 37.20, sale: 28.90, saving: "22% OFF", img: "https://images.unsplash.com/photo-1606858374191-c18040e98ad7?w=600&h=500&fit=crop&auto=format&q=85", tag: "Promo" },
+  { id: 102, name: "Weekend Bundle — Mix of 4", desc: "Teriyaki, Korean BBQ, Cajun Salmon + Herb Chicken.", original: 52.60, sale: 39.90, saving: "24% OFF", img: "https://images.unsplash.com/photo-1543353071-c953d88f7033?w=600&h=500&fit=crop&auto=format&q=85", tag: "Flash Sale" },
 ];
 
 export const BUNDLES = [
-  { id: 201, name: "Lean Starter Pack (5 meals)", desc: "Curated low-carb selection — perfect for first-timers.", price: 59.00, perMeal: 11.80, img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&h=500&fit=crop&auto=format", tag: "Popular", mealIds: [2, 7, 6, 3, 9] },
-  { id: 202, name: "Bulk Performance Box (10 meals)", desc: "Mix of high-protein picks, best value per meal.", price: 109.00, perMeal: 10.90, img: "https://images.unsplash.com/photo-1607532941433-304659e8198a?w=600&h=500&fit=crop&auto=format", tag: "Best Value", mealIds: [1, 2, 4, 5, 6, 7, 9, 3, 8, 1] },
-  { id: 203, name: "Breakfast Week (7 meals)", desc: "Protein oats + salmon scramble — 7 mornings sorted.", price: 65.00, perMeal: 9.28, img: "https://images.unsplash.com/photo-1600335895229-6e75511892c8?w=600&h=500&fit=crop&auto=format", tag: "New", mealIds: [3, 8, 3, 8, 3, 8, 3] },
+  { id: 201, name: "Lean Starter Pack (5 meals)", desc: "Curated low-carb selection — perfect for first-timers.", price: 59.00, perMeal: 11.80, img: "https://images.unsplash.com/photo-1667499745120-f9bcef8f584e?w=600&h=500&fit=crop&auto=format&q=85", tag: "Popular", mealIds: [2, 7, 6, 3, 9] },
+  { id: 202, name: "Bulk Performance Box (10 meals)", desc: "Mix of high-protein picks, best value per meal.", price: 109.00, perMeal: 10.90, img: "https://images.unsplash.com/photo-1569420077790-afb136b3bb8c?w=600&h=500&fit=crop&auto=format&q=85", tag: "Best Value", mealIds: [1, 2, 4, 5, 6, 7, 9, 3, 8, 1] },
+  { id: 203, name: "Breakfast Week (7 meals)", desc: "Protein oats + salmon scramble — 7 mornings sorted.", price: 65.00, perMeal: 9.28, img: "https://images.unsplash.com/photo-1569420067112-b57b4f024595?w=600&h=500&fit=crop&auto=format&q=85", tag: "New", mealIds: [3, 8, 3, 8, 3, 8, 3] },
 ];
 
 export type MealReview = { author: string; role: string; rating: number; text: string; date: string; verified: boolean };

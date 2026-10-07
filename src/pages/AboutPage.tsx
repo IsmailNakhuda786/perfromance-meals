@@ -28,7 +28,7 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
           </div>
           <div className="relative">
             <img
-              src="https://images.unsplash.com/photo-1547592180-85f173990554?w=700&h=500&fit=crop&auto=format"
+              src="https://images.unsplash.com/photo-1641106598584-cfbb5a0c8812?w=700&h=500&fit=crop&auto=format&q=85"
               alt="Real food for real routines"
               className="w-full object-cover"
               style={{ height: 420 }}
@@ -176,7 +176,7 @@ export default function AboutPage({ navigate, navigateToWizard }: Props) {
         <div className="max-w-[1200px] mx-auto px-6 sm:px-10 grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
           <div className="order-2 lg:order-1">
             <img
-              src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=700&h=520&fit=crop&auto=format"
+              src="https://images.unsplash.com/photo-1666819691666-4be36926335e?w=700&h=520&fit=crop&auto=format&q=85"
               alt="Ready-Series — fast, enjoyable frozen meals for everyday life"
               className="w-full object-cover"
               style={{ height: 440 }}
