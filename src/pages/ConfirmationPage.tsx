@@ -1,29 +1,43 @@
-import { useState } from "react";
-import { Page } from "@/data";
+import { useState } from "react"
+import { Page } from "@/data"
 
 interface Props {
-  navigate: (page: Page) => void;
-  orderType: "ready" | "plan";
-  isGuest?: boolean;
-  promoCode?: string;
-  promoDiscount?: number;
-  orderTotal?: number;
-  orderDetails?: { name: string; address: string; date: string; slot: string; deliveryFee: number } | null;
+  navigate: (page: Page) => void
+  orderType: "ready" | "plan"
+  isGuest?: boolean
+  promoCode?: string
+  promoDiscount?: number
+  orderTotal?: number
+  orderDetails?: {
+    name: string
+    address: string
+    date: string
+    slot: string
+    deliveryFee: number
+  } | null
 }
 
-export default function ConfirmationPage({ navigate, orderType, isGuest = false, promoCode = "", promoDiscount = 0, orderTotal = 0, orderDetails = null }: Props) {
-  const orderNum = `#PM-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random() * 9000)}`;
-  const customerName = orderDetails?.name?.split(" ")[0] ?? "Jerome";
-  const deliveryFee = orderDetails?.deliveryFee ?? 0;
+export default function ConfirmationPage({
+  navigate,
+  orderType,
+  isGuest = false,
+  promoCode = "",
+  promoDiscount = 0,
+  orderTotal = 0,
+  orderDetails = null,
+}: Props) {
+  const orderNum = `#PM-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.floor(1000 + Math.random() * 9000)}`
+  const customerName = orderDetails?.name?.split(" ")[0] ?? "Jerome"
+  const deliveryFee = orderDetails?.deliveryFee ?? 0
   // orderTotal passed from CheckoutPage already includes deliveryFee and deducts promoDiscount
-  const finalTotal = orderTotal;
+  const finalTotal = orderTotal
 
-  const [showSignup, setShowSignup] = useState(false);
-  const [signupDone, setSignupDone] = useState(false);
-  const [suName, setSuName] = useState("");
-  const [suEmail, setSuEmail] = useState("");
-  const [suPhone, setSuPhone] = useState("");
-  const [suPassword, setSuPassword] = useState("");
+  const [showSignup, setShowSignup] = useState(false)
+  const [signupDone, setSignupDone] = useState(false)
+  const [suName, setSuName] = useState("")
+  const [suEmail, setSuEmail] = useState("")
+  const [suPhone, setSuPhone] = useState("")
+  const [suPassword, setSuPassword] = useState("")
 
   return (
     <div className="min-h-screen bg-[#F7F5F0] flex flex-col items-center justify-center px-6 py-12 sm:py-20">
@@ -37,38 +51,90 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
           <div className="absolute top-8 left-16 w-5 h-5 bg-[#7EE8B0] rounded-full opacity-40" />
           {/* Success icon */}
           <div className="w-20 h-20 bg-[#F5B300] rounded-full flex items-center justify-center mx-auto">
-            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5">
+            <svg
+              width="36"
+              height="36"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#111"
+              strokeWidth="2.5"
+            >
               <path d="M20 6 9 17l-5-5" />
             </svg>
           </div>
         </div>
 
-        <div className="font-mono text-[10px] tracking-[0.45em] text-[#111]/35 uppercase mb-4">Order Confirmed</div>
+        <div className="font-mono text-[10px] tracking-[0.45em] text-[#111]/35 uppercase mb-4">
+          Order Confirmed
+        </div>
         <h1 className="font-display text-[36px] sm:text-[48px] font-bold mb-2 leading-tight">
           Your order is confirmed!
         </h1>
-        <p className="text-[#555] text-[18px] mb-4">{customerName}, your meals are being prepared.</p>
+        <p className="text-[#555] text-[18px] mb-4">
+          {customerName}, your meals are being prepared.
+        </p>
         <p className="text-[#666] text-[16px] leading-relaxed mb-10">
-          Your order <strong className="text-[#111] font-mono">{orderNum}</strong> has been confirmed. You'll receive a confirmation email and SMS shortly.
+          Your order{" "}
+          <strong className="text-[#111] font-mono">{orderNum}</strong> has been
+          confirmed. You'll receive a confirmation email and SMS shortly.
         </p>
 
         {/* Order details */}
         <div className="bg-white border border-[#E5E2DA] p-6 text-left mb-6">
-          <div className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">Order Details</div>
+          <div className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">
+            Order Details
+          </div>
           <div className="space-y-4">
             {[
-              { label: "Delivery Address", value: orderDetails?.address ?? "—" },
+              {
+                label: "Delivery Address",
+                value: orderDetails?.address ?? "—",
+              },
               { label: "Delivery Date", value: orderDetails?.date ?? "—" },
               { label: "Time Slot", value: orderDetails?.slot ?? "—" },
               { label: "Subtotal", value: `$${orderTotal.toFixed(2)}` },
-              ...(deliveryFee > 0 ? [{ label: "Delivery Fee", value: `$${deliveryFee.toFixed(2)}` }] : [{ label: "Delivery", value: "Free" }]),
-              ...(promoCode ? [{ label: `Promo (${promoCode})`, value: `–$${promoDiscount.toFixed(2)}` }] : []),
+              ...(deliveryFee > 0
+                ? [
+                    {
+                      label: "Delivery Fee",
+                      value: `$${deliveryFee.toFixed(2)}`,
+                    },
+                  ]
+                : [{ label: "Delivery", value: "Free" }]),
+              ...(promoCode
+                ? [
+                    {
+                      label: `Promo (${promoCode})`,
+                      value: `–$${promoDiscount.toFixed(2)}`,
+                    },
+                  ]
+                : []),
               { label: "Total Charged", value: `$${finalTotal.toFixed(2)}` },
-              { label: "Payment", value: `Visa ···· 4242 · $${finalTotal.toFixed(2)}` },
+              {
+                label: "Payment",
+                value: `Visa ···· 4242 · $${finalTotal.toFixed(2)}`,
+              },
             ].map((d) => (
-              <div key={d.label} className={`flex items-start justify-between gap-4 ${d.label.startsWith("Promo") ? "text-green-600" : ""}`}>
-                <span className={`text-[13px] shrink-0 ${d.label.startsWith("Promo") ? "font-medium" : "text-[#999]"}`}>{d.label}</span>
-                <span className={`text-[13px] font-medium text-right ${d.label.startsWith("Promo") ? "" : "text-[#111]"}`}>{d.value}</span>
+              <div
+                key={d.label}
+                className={`flex items-start justify-between gap-4 ${
+                  d.label.startsWith("Promo") ? "text-green-600" : ""
+                }`}
+              >
+                <span
+                  className={`text-[13px] shrink-0 ${
+                    d.label.startsWith("Promo") ? "font-medium" : "text-[#999]"
+                  }`}
+                >
+                  {d.label}
+                </span>
+                <span
+                  className={`text-[13px] font-medium text-right ${
+                    d.label.startsWith("Promo") ? "" : "text-[#111]"
+                  }`}
+                >
+                  {d.value}
+                </span>
               </div>
             ))}
           </div>
@@ -76,32 +142,110 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
 
         {/* Delivery progress timeline — detailed */}
         <div className="bg-white border border-[#E5E2DA] p-6 mb-5 text-left">
-          <div className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">Live Order Status</div>
+          <div className="font-mono text-[10px] tracking-[0.3em] text-[#999] uppercase mb-5">
+            Live Order Status
+          </div>
           <div className="space-y-0">
             {[
-              { label: "Order Confirmed", time: "Today · 9:04am", detail: `Payment processed · Order ${orderNum}`, done: true, active: false },
-              { label: "Kitchen Preparing", time: "Today · 11:00am", detail: "Our chefs are preparing your meals fresh to order", done: false, active: true },
-              { label: "Quality Check", time: "Today · 1:00pm", detail: "Macro verification and packaging seal check", done: false, active: false },
-              { label: "Out for Delivery", time: "Today · 2:30pm", detail: "Driver assigned · ETA within your selected time window", done: false, active: false },
-              { label: "Delivered", time: "Today · 5:00pm", detail: "Meals at your door — enjoy your performance fuel!", done: false, active: false },
+              {
+                label: "Order Confirmed",
+                time: "Today · 9:04am",
+                detail: `Payment processed · Order ${orderNum}`,
+                done: true,
+                active: false,
+              },
+              {
+                label: "Kitchen Preparing",
+                time: "Today · 11:00am",
+                detail: "Our chefs are preparing your meals fresh to order",
+                done: false,
+                active: true,
+              },
+              {
+                label: "Quality Check",
+                time: "Today · 1:00pm",
+                detail: "Macro verification and packaging seal check",
+                done: false,
+                active: false,
+              },
+              {
+                label: "Out for Delivery",
+                time: "Today · 2:30pm",
+                detail:
+                  "Driver assigned · ETA within your selected time window",
+                done: false,
+                active: false,
+              },
+              {
+                label: "Delivered",
+                time: "Today · 5:00pm",
+                detail: "Meals at your door — enjoy your performance fuel!",
+                done: false,
+                active: false,
+              },
             ].map((s, i) => (
               <div key={s.label} className="flex gap-4">
                 <div className="flex flex-col items-center">
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 flex-shrink-0 ${s.done ? "bg-[#F5B300] border-[#F5B300]" : s.active ? "bg-[#111] border-[#111]" : "bg-white border-[#D0CCC4]"}`}>
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center border-2 flex-shrink-0 ${
+                      s.done
+                        ? "bg-[#F5B300] border-[#F5B300]"
+                        : s.active
+                          ? "bg-[#111] border-[#111]"
+                          : "bg-white border-[#D0CCC4]"
+                    }`}
+                  >
                     {s.done ? (
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="3"><path d="M20 6 9 17l-5-5" /></svg>
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#111"
+                        strokeWidth="3"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
                     ) : s.active ? (
                       <div className="w-2 h-2 bg-[#F5B300] rounded-full animate-pulse" />
                     ) : null}
                   </div>
-                  {i < 4 && <div className={`w-px flex-1 min-h-[32px] ${s.done ? "bg-[#F5B300]/40" : "bg-[#E5E2DA]"}`} />}
+                  {i < 4 && (
+                    <div
+                      className={`w-px flex-1 min-h-[32px] ${
+                        s.done ? "bg-[#F5B300]/40" : "bg-[#E5E2DA]"
+                      }`}
+                    />
+                  )}
                 </div>
                 <div className="pb-5 flex-1">
                   <div className="flex items-center gap-3 flex-wrap">
-                    <span className={`text-[13px] font-semibold ${s.done || s.active ? "text-[#111]" : "text-[#aaa]"}`}>{s.label}</span>
-                    <span className={`font-mono text-[11px] ${s.done ? "text-[#888]" : s.active ? "text-[#F5B300] bg-[#111] px-2 py-0.5" : "text-[#ccc]"}`}>{s.time}</span>
+                    <span
+                      className={`text-[13px] font-semibold ${
+                        s.done || s.active ? "text-[#111]" : "text-[#aaa]"
+                      }`}
+                    >
+                      {s.label}
+                    </span>
+                    <span
+                      className={`font-mono text-[11px] ${
+                        s.done
+                          ? "text-[#888]"
+                          : s.active
+                            ? "text-[#F5B300] bg-[#111] px-2 py-0.5"
+                            : "text-[#ccc]"
+                      }`}
+                    >
+                      {s.time}
+                    </span>
                   </div>
-                  <p className={`text-[12px] mt-0.5 ${s.done || s.active ? "text-[#666]" : "text-[#ccc]"}`}>{s.detail}</p>
+                  <p
+                    className={`text-[12px] mt-0.5 ${
+                      s.done || s.active ? "text-[#666]" : "text-[#ccc]"
+                    }`}
+                  >
+                    {s.detail}
+                  </p>
                 </div>
               </div>
             ))}
@@ -118,8 +262,14 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-semibold text-[14px]">Confirmation sent via WhatsApp</div>
-            <div className="text-white/70 text-[12px] mt-0.5">Live order updates at <strong className="text-white">+65 9123 4567</strong> — reply anytime to reach us</div>
+            <div className="font-semibold text-[14px]">
+              Confirmation sent via WhatsApp
+            </div>
+            <div className="text-white/70 text-[12px] mt-0.5">
+              Live order updates at{" "}
+              <strong className="text-white">+65 9123 4567</strong> — reply
+              anytime to reach us
+            </div>
           </div>
           <div className="shrink-0 bg-[#25D366] text-white text-[10px] font-bold tracking-wider uppercase px-3 py-1.5">
             ✓ Sent
@@ -129,8 +279,16 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         <div className="bg-[#0E0E0E] text-white p-5 mb-5 text-left flex items-start sm:items-center gap-4 flex-wrap sm:flex-nowrap">
           <span className="text-[24px]">✉️</span>
           <div className="flex-1 min-w-0">
-            <div className="font-medium text-[14px]">Confirmation also sent to your email</div>
-            <div className="text-white/40 text-[12px] mt-0.5">Check <strong className="text-white/70">jerome@email.com</strong> for your {orderType === "plan" ? "full meal plan schedule and delivery windows" : "order receipt and delivery details"}</div>
+            <div className="font-medium text-[14px]">
+              Confirmation also sent to your email
+            </div>
+            <div className="text-white/40 text-[12px] mt-0.5">
+              Check <strong className="text-white/70">jerome@email.com</strong>{" "}
+              for your{" "}
+              {orderType === "plan"
+                ? "full meal plan schedule and delivery windows"
+                : "order receipt and delivery details"}
+            </div>
           </div>
           <div className="shrink-0 text-[#F5B300] text-[10px] font-bold tracking-wider uppercase">
             ✓ Sent
@@ -141,50 +299,83 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         <div className="bg-[#0E0E0E] text-white p-5 mb-5 text-left flex items-start sm:items-center gap-4">
           <span className="text-[24px]">📦</span>
           <div className="flex-1 min-w-0">
-            <div className="font-medium text-[14px]">Track your order in real time</div>
-            <div className="text-white/40 text-[12px] mt-0.5">SMS updates will be sent to +65 9123 4567</div>
+            <div className="font-medium text-[14px]">
+              Track your order in real time
+            </div>
+            <div className="text-white/40 text-[12px] mt-0.5">
+              SMS updates will be sent to +65 9123 4567
+            </div>
           </div>
         </div>
 
         {/* Customize Meal Plan CTA — only for plan orders */}
-        {orderType === "plan" && <div className="bg-[#1A1A1A] border border-[#E85D04]/30 p-5 mb-5 text-left">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="font-mono text-[10px] tracking-[0.3em] text-[#E85D04] uppercase mb-2">Your Meal Plan is now active</div>
-              <div className="font-display text-[20px] font-bold text-white mb-1">Customize your upcoming meals</div>
-              <div className="text-white/40 text-[13px] leading-relaxed">
-                Swap meals, change delivery days & times, adjust quantity — all from your account.
+        {orderType === "plan" && (
+          <div className="bg-[#1A1A1A] border border-[#E85D04]/30 p-5 mb-5 text-left">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="font-mono text-[10px] tracking-[0.3em] text-[#E85D04] uppercase mb-2">
+                  Your Meal Plan is now active
+                </div>
+                <div className="font-display text-[20px] font-bold text-white mb-1">
+                  Customize your upcoming meals
+                </div>
+                <div className="text-white/40 text-[13px] leading-relaxed">
+                  Swap meals, change delivery days & times, adjust quantity —
+                  all from your account.
+                </div>
               </div>
+              <button
+                onClick={() => navigate("account")}
+                className="shrink-0 bg-[#E85D04] text-white px-5 py-3 text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-white hover:text-[#1A1A1A] transition-colors whitespace-nowrap"
+              >
+                Customize →
+              </button>
             </div>
-            <button onClick={() => navigate("account")}
-              className="shrink-0 bg-[#E85D04] text-white px-5 py-3 text-[11px] font-bold tracking-[0.15em] uppercase hover:bg-white hover:text-[#1A1A1A] transition-colors whitespace-nowrap">
-              Customize →
-            </button>
           </div>
-        </div>}
+        )}
 
         {/* Rewards earned — members only */}
         {!isGuest ? (
           <div className="bg-[#111111] text-white p-5 mb-8 flex items-center justify-between">
             <div>
-              <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-1">Points Earned</div>
-              <div className="font-display text-[28px] font-bold text-[#F5B300]">+{Math.floor(orderTotal)} pts</div>
-              <div className="text-white/35 text-[12px]">Added to your rewards balance</div>
+              <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-1">
+                Points Earned
+              </div>
+              <div className="font-display text-[28px] font-bold text-[#F5B300]">
+                +{Math.floor(orderTotal)} pts
+              </div>
+              <div className="text-white/35 text-[12px]">
+                Added to your rewards balance
+              </div>
             </div>
             <div className="text-right">
               <div className="text-white/35 text-[12px] mb-1">New balance</div>
-              <div className="font-display text-[22px] font-bold">1,234 pts</div>
+              <div className="font-display text-[22px] font-bold">
+                1,234 pts
+              </div>
               <div className="text-white/35 text-[11px]">Worth $12.34</div>
             </div>
           </div>
         ) : (
           /* Guest — nudge to sign up */
           <div className="bg-[#111111] text-white p-5 mb-8">
-            <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-2">You left points on the table</div>
-            <div className="font-display text-[22px] font-bold mb-1">This order would've earned <span className="text-[#F5B300]">+{Math.floor(orderTotal)} pts</span></div>
-            <p className="text-white/50 text-[13px] mb-4">Create a free account to earn points, get exclusive discounts, and track all your orders.</p>
-            <button onClick={() => setShowSignup(true)}
-              className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors">
+            <div className="font-mono text-[10px] tracking-[0.3em] text-[#F5B300] uppercase mb-2">
+              You left points on the table
+            </div>
+            <div className="font-display text-[22px] font-bold mb-1">
+              This order would've earned{" "}
+              <span className="text-[#F5B300]">
+                +{Math.floor(orderTotal)} pts
+              </span>
+            </div>
+            <p className="text-white/50 text-[13px] mb-4">
+              Create a free account to earn points, get exclusive discounts, and
+              track all your orders.
+            </p>
+            <button
+              onClick={() => setShowSignup(true)}
+              className="bg-[#F5B300] text-[#111] px-6 py-3 text-[12px] font-bold tracking-[0.15em] uppercase hover:bg-white transition-colors"
+            >
               Sign Up — It's Free →
             </button>
           </div>
@@ -192,20 +383,32 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {!isGuest ? (
-            <button onClick={() => navigate("account")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111111] transition-colors">
+            <button
+              onClick={() => navigate("account")}
+              className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111111] transition-colors"
+            >
               Go to My Account →
             </button>
           ) : (
-            <button onClick={() => navigate("home")} className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111111] transition-colors">
+            <button
+              onClick={() => navigate("home")}
+              className="inline-flex items-center justify-center gap-2 bg-[#111111] text-white px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111111] transition-colors"
+            >
               Back to Home
             </button>
           )}
           {orderType === "plan" ? (
-            <button onClick={() => navigate("ready-series-order")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
+            <button
+              onClick={() => navigate("ready-series-order")}
+              className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors"
+            >
               Browse Ready-to-Go Meals
             </button>
           ) : (
-            <button onClick={() => navigate("home")} className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors">
+            <button
+              onClick={() => navigate("home")}
+              className="inline-flex items-center justify-center gap-2 border border-[#D0CCC4] bg-white text-[#111] px-8 py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:border-[#111] transition-colors"
+            >
               Back to Home
             </button>
           )}
@@ -215,37 +418,94 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
       {/* ── Sign-Up Modal ── */}
       {showSignup && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/70" onClick={() => !signupDone && setShowSignup(false)} />
+          <div
+            className="absolute inset-0 bg-black/70"
+            onClick={() => !signupDone && setShowSignup(false)}
+          />
           <div className="relative bg-white w-full max-w-[440px] p-8 border border-[#E8E4DC]">
-            <button onClick={() => setShowSignup(false)} className="absolute top-4 right-4 text-[#aaa] hover:text-[#111] transition-colors">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+            <button
+              onClick={() => setShowSignup(false)}
+              className="absolute top-4 right-4 text-[#aaa] hover:text-[#111] transition-colors"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
             </button>
 
             {!signupDone ? (
               <>
-                <div className="font-mono text-[10px] tracking-[0.4em] text-[#aaa] uppercase mb-2">Create Account</div>
-                <h2 className="font-display text-[26px] font-bold mb-1">Join Performance Meals</h2>
-                <p className="text-[#666] text-[13px] mb-6">Earn points on your order history, get exclusive discounts, and track every delivery.</p>
+                <div className="font-mono text-[10px] tracking-[0.4em] text-[#aaa] uppercase mb-2">
+                  Create Account
+                </div>
+                <h2 className="font-display text-[26px] font-bold mb-1">
+                  Join Performance Meals
+                </h2>
+                <p className="text-[#666] text-[13px] mb-6">
+                  Earn points on your order history, get exclusive discounts,
+                  and track every delivery.
+                </p>
 
                 {/* Points incentive */}
                 <div className="bg-[#F5B300]/20 border border-[#F5B300]/50 px-4 py-3 mb-6 flex items-center gap-3">
                   <span className="text-[22px]">🪙</span>
                   <p className="text-[12px] text-[#555]">
-                    Your past order would have earned <strong className="text-[#111]">+{Math.floor(finalTotal)} pts</strong> — future orders will from now on.
+                    Your past order would have earned{" "}
+                    <strong className="text-[#111]">
+                      +{Math.floor(finalTotal)} pts
+                    </strong>{" "}
+                    — future orders will from now on.
                   </p>
                 </div>
 
                 <div className="space-y-3 mb-5">
                   {[
-                    { label: "Full Name", val: suName, set: setSuName, type: "text", placeholder: "Your name" },
-                    { label: "Email", val: suEmail, set: setSuEmail, type: "email", placeholder: "you@email.com" },
-                    { label: "Phone (WhatsApp updates)", val: suPhone, set: setSuPhone, type: "tel", placeholder: "+65 9123 4567" },
-                    { label: "Password", val: suPassword, set: setSuPassword, type: "password", placeholder: "Min. 8 characters" },
+                    {
+                      label: "Full Name",
+                      val: suName,
+                      set: setSuName,
+                      type: "text",
+                      placeholder: "Your name",
+                    },
+                    {
+                      label: "Email",
+                      val: suEmail,
+                      set: setSuEmail,
+                      type: "email",
+                      placeholder: "you@email.com",
+                    },
+                    {
+                      label: "Phone (WhatsApp updates)",
+                      val: suPhone,
+                      set: setSuPhone,
+                      type: "tel",
+                      placeholder: "+65 9123 4567",
+                    },
+                    {
+                      label: "Password",
+                      val: suPassword,
+                      set: setSuPassword,
+                      type: "password",
+                      placeholder: "Min. 8 characters",
+                    },
                   ].map((f) => (
                     <div key={f.label}>
-                      <label className="text-[10px] font-semibold tracking-[0.15em] uppercase text-[#888] block mb-1">{f.label}</label>
-                      <input type={f.type} value={f.val} onChange={(e) => f.set(e.target.value)} placeholder={f.placeholder}
-                        className="w-full border border-[#D0CCC4] px-4 py-3 text-[14px] bg-white outline-none focus:border-[#111] transition-colors" />
+                      <label className="text-[10px] font-semibold tracking-[0.15em] uppercase text-[#888] block mb-1">
+                        {f.label}
+                      </label>
+                      <input
+                        type={f.type}
+                        value={f.val}
+                        onChange={(e) => f.set(e.target.value)}
+                        placeholder={f.placeholder}
+                        className="w-full border border-[#D0CCC4] px-4 py-3 text-[14px] bg-white outline-none focus:border-[#111] transition-colors"
+                      />
                     </div>
                   ))}
                 </div>
@@ -253,38 +513,72 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
                 <button
                   disabled={!suName || !suEmail || !suPassword}
                   onClick={() => setSignupDone(true)}
-                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors disabled:opacity-40">
+                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors disabled:opacity-40"
+                >
                   Create My Account →
                 </button>
-                <p className="text-center text-[11px] text-[#aaa] mt-3">Free forever · No spam · Cancel anytime</p>
+                <p className="text-center text-[11px] text-[#aaa] mt-3">
+                  Free forever · No spam · Cancel anytime
+                </p>
               </>
             ) : (
               <>
                 <div className="w-14 h-14 bg-[#F5B300] rounded-full flex items-center justify-center mb-5">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2.5"><path d="M20 6 9 17l-5-5" /></svg>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#111"
+                    strokeWidth="2.5"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
                 </div>
-                <h2 className="font-display text-[26px] font-bold mb-2">Welcome to Performance Meals, {suName || "there"}!</h2>
-                <p className="text-[#555] text-[14px] mb-5">Your account is ready. We've sent confirmation details to your email and WhatsApp.</p>
+                <h2 className="font-display text-[26px] font-bold mb-2">
+                  Welcome to Performance Meals, {suName || "there"}!
+                </h2>
+                <p className="text-[#555] text-[14px] mb-5">
+                  Your account is ready. We've sent confirmation details to your
+                  email and WhatsApp.
+                </p>
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-3 bg-[#075E54]/10 border border-[#075E54]/20 px-4 py-3">
                     <span className="text-[16px]">💬</span>
                     <div className="flex-1">
-                      <p className="text-[13px] font-semibold">WhatsApp confirmation</p>
-                      <p className="text-[12px] text-[#666]">{suPhone || "+65 XXXX XXXX"}</p>
+                      <p className="text-[13px] font-semibold">
+                        WhatsApp confirmation
+                      </p>
+                      <p className="text-[12px] text-[#666]">
+                        {suPhone || "+65 XXXX XXXX"}
+                      </p>
                     </div>
-                    <span className="text-[#25D366] text-[11px] font-bold">✓ Sent</span>
+                    <span className="text-[#25D366] text-[11px] font-bold">
+                      ✓ Sent
+                    </span>
                   </div>
                   <div className="flex items-center gap-3 bg-[#0E0E0E]/5 border border-[#0E0E0E]/10 px-4 py-3">
                     <span className="text-[16px]">✉️</span>
                     <div className="flex-1">
-                      <p className="text-[13px] font-semibold">Email confirmation</p>
-                      <p className="text-[12px] text-[#666]">{suEmail || "your@email.com"}</p>
+                      <p className="text-[13px] font-semibold">
+                        Email confirmation
+                      </p>
+                      <p className="text-[12px] text-[#666]">
+                        {suEmail || "your@email.com"}
+                      </p>
                     </div>
-                    <span className="text-[#111] bg-[#F5B300] text-[10px] font-bold px-2 py-0.5">✓ Sent</span>
+                    <span className="text-[#111] bg-[#F5B300] text-[10px] font-bold px-2 py-0.5">
+                      ✓ Sent
+                    </span>
                   </div>
                 </div>
-                <button onClick={() => { setShowSignup(false); navigate("account"); }}
-                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors">
+                <button
+                  onClick={() => {
+                    setShowSignup(false)
+                    navigate("account")
+                  }}
+                  className="w-full bg-[#111] text-white py-4 text-[12px] font-bold tracking-[0.18em] uppercase hover:bg-[#F5B300] hover:text-[#111] transition-colors"
+                >
                   Go to My Account →
                 </button>
               </>
@@ -293,5 +587,5 @@ export default function ConfirmationPage({ navigate, orderType, isGuest = false,
         </div>
       )}
     </div>
-  );
+  )
 }

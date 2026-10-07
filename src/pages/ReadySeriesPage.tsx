@@ -1,213 +1,536 @@
-import { useState } from "react";
-import { Page, CartItem } from "@/data";
-import { ReadySeriesLogo } from "@/components/Logos";
+import { useState } from "react"
+import { Page, CartItem } from "@/data"
+import { ReadySeriesLogo } from "@/components/Logos"
+import { READY_SERIES_MEALS } from "@/readySeriesData"
 
 interface Props {
-  navigate: (page: Page) => void;
-  addToCart: (item: CartItem) => void;
-  cart: CartItem[];
-  onSelectMeal: (id: number) => void;
-  setCartOpen: (v: boolean) => void;
-  initialPurchaseMode?: "single" | "bundles" | "subscription";
+  navigate: (page: Page) => void
+  addToCart: (item: CartItem) => void
+  cart: CartItem[]
+  onSelectMeal: (id: number) => void
+  setCartOpen: (v: boolean) => void
+  initialPurchaseMode?: "single" | "bundles" | "subscription"
 }
 
-const MEALS = [
-  { id: 101, name: "Teriyaki Chicken & Brown Rice", cat: "Just Protein", price: 12.90, protein: 42, carbs: 48, fat: 8, cal: 478, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1762631383520-df106b252f6a?w=600&h=450&fit=crop&auto=format&q=85" },
-  { id: 102, name: "Spicy Korean Beef Bulgogi", cat: "Low Carb", price: 13.50, protein: 38, carbs: 12, fat: 14, cal: 326, badge: "HOT", img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80" },
-  { id: 103, name: "Herb Chicken & Roasted Veg", cat: "Low Carb", price: 12.50, protein: 36, carbs: 14, fat: 10, cal: 290, badge: null, img: "https://images.unsplash.com/photo-1604909052743-94e838986d24?w=400&q=80" },
-  { id: 104, name: "Salmon & Quinoa Power Bowl", cat: "Just Protein", price: 15.90, protein: 44, carbs: 38, fat: 16, cal: 468, badge: "NEW", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" },
-  { id: 105, name: "Thai Basil Pork Rice Bowl", cat: "High Carb", price: 11.90, protein: 28, carbs: 62, fat: 8, cal: 436, badge: null, img: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80" },
-  { id: 106, name: "Miso Glazed Salmon", cat: "Just Protein", price: 16.90, protein: 46, carbs: 18, fat: 18, cal: 414, badge: "PREMIUM", img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80" },
-  { id: 107, name: "Overnight Oats & Berry", cat: "High Carb", price: 8.90, protein: 18, carbs: 52, fat: 6, cal: 334, badge: null, img: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400&q=80" },
-  { id: 108, name: "Greek Chicken Wrap", cat: "Just Protein", price: 12.90, protein: 34, carbs: 36, fat: 10, cal: 374, badge: null, img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80" },
-  { id: 109, name: "Egg White & Avocado Toast", cat: "High Carb", price: 9.50, protein: 22, carbs: 34, fat: 12, cal: 332, badge: "POPULAR", img: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&h=450&fit=crop&auto=format&q=85" },
-  { id: 110, name: "Beef Rendang & Cauliflower", cat: "Low Carb", price: 14.90, protein: 40, carbs: 10, fat: 22, cal: 398, badge: null, img: "https://images.unsplash.com/photo-1661257711676-79a0fc533569?w=600&h=450&fit=crop&auto=format&q=85" },
-  { id: 111, name: "Chicken Burrito Bowl", cat: "High Carb", price: 12.50, protein: 30, carbs: 58, fat: 10, cal: 450, badge: null, img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&q=80" },
-  { id: 112, name: "Prawn Fried Rice", cat: "High Carb", price: 13.90, protein: 26, carbs: 60, fat: 8, cal: 428, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1580683742795-49989f7ecb72?w=600&h=450&fit=crop&auto=format&q=85" },
-];
+const MEALS = READY_SERIES_MEALS.map((meal) => ({
+  id: meal.id,
+  name: meal.name,
+  cat: meal.listingCategory,
+  price: meal.price,
+  protein: meal.protein,
+  carbs: meal.carbs,
+  fat: meal.fat,
+  cal: meal.cal,
+  badge: meal.badge,
+  img: meal.listingImage,
+}))
 
-const CATS = ["A-la-carte", "Low Carb", "High Carb", "Just Protein"];
+const CATS = ["A-la-carte", "Low Carb", "High Carb", "Just Protein"]
 
 const PREDEFINED_BUNDLES = [
   {
     category: "Low Carb Meals",
     color: "#F5B300",
     items: [
-      { name: "Signature 5 — Non-Beef", variant: "Non-Beef", desc: "Our most-loved low carb flavours, curated for you. 3% bundle discount applied.", badge: "POPULAR", price: 48.99, meals: 5,
-        mealIds: [103, 104, 106, 108, 109] },
-      { name: "Signature 5 — Beef",     variant: "Beef",     desc: "Best-selling beef low carb options in one bundle. 3% bundle discount applied.", badge: null, price: 48.99, meals: 5,
-        mealIds: [102, 110, 102, 110, 102] },
-      { name: "9 Flavours of the Month",variant: null,       desc: "9 rotating seasonal low carb meals, refreshed monthly. 5% bundle discount applied.", badge: "NEW", price: 86.55, meals: 9,
-        mealIds: [103, 104, 106, 108, 109, 102, 110, 103, 106] },
-      { name: "Essential 10 — Non-Beef",variant: "Non-Beef", desc: "Top up your fridge with essential low carb staples. 7% bundle discount applied.", badge: null, price: 93.00, meals: 10,
-        mealIds: [103, 104, 106, 108, 109, 103, 104, 106, 108, 109] },
-      { name: "Essential 10 — Beef",    variant: "Beef",     desc: "Beef-based essentials to keep your macros on track. 7% bundle discount applied.", badge: null, price: 93.00, meals: 10,
-        mealIds: [102, 110, 102, 110, 102, 110, 102, 110, 102, 110] },
+      {
+        name: "Signature 5 — Non-Beef",
+        variant: "Non-Beef",
+        desc: "Our most-loved low carb flavours, curated for you. 3% bundle discount applied.",
+        badge: "POPULAR",
+        price: 48.99,
+        meals: 5,
+        mealIds: [103, 104, 106, 108, 109],
+      },
+      {
+        name: "Signature 5 — Beef",
+        variant: "Beef",
+        desc: "Best-selling beef low carb options in one bundle. 3% bundle discount applied.",
+        badge: null,
+        price: 48.99,
+        meals: 5,
+        mealIds: [102, 110, 102, 110, 102],
+      },
+      {
+        name: "9 Flavours of the Month",
+        variant: null,
+        desc: "9 rotating seasonal low carb meals, refreshed monthly. 5% bundle discount applied.",
+        badge: "NEW",
+        price: 86.55,
+        meals: 9,
+        mealIds: [103, 104, 106, 108, 109, 102, 110, 103, 106],
+      },
+      {
+        name: "Essential 10 — Non-Beef",
+        variant: "Non-Beef",
+        desc: "Top up your fridge with essential low carb staples. 7% bundle discount applied.",
+        badge: null,
+        price: 93.0,
+        meals: 10,
+        mealIds: [103, 104, 106, 108, 109, 103, 104, 106, 108, 109],
+      },
+      {
+        name: "Essential 10 — Beef",
+        variant: "Beef",
+        desc: "Beef-based essentials to keep your macros on track. 7% bundle discount applied.",
+        badge: null,
+        price: 93.0,
+        meals: 10,
+        mealIds: [102, 110, 102, 110, 102, 110, 102, 110, 102, 110],
+      },
     ],
   },
   {
     category: "High Carb Meals",
     color: "#F5B300",
     items: [
-      { name: "Signature 5 — Non-Beef", variant: "Non-Beef", desc: "High carb performance meals for fuel-heavy days. 3% bundle discount applied.", badge: "POPULAR", price: 48.99, meals: 5,
-        mealIds: [107, 109, 111, 112, 105] },
-      { name: "Signature 5 — Beef",     variant: "Beef",     desc: "Beef-based high carb signatures for sustained energy. 3% bundle discount applied.", badge: null, price: 48.99, meals: 5,
-        mealIds: [105, 112, 111, 105, 112] },
-      { name: "9 Flavours of the Month",variant: null,       desc: "9 rotating seasonal high carb meals, refreshed monthly. 5% bundle discount applied.", badge: "NEW", price: 88.45, meals: 9,
-        mealIds: [107, 109, 111, 112, 105, 107, 111, 112, 109] },
-      { name: "Essential 10 — Non-Beef",variant: "Non-Beef", desc: "Restock your week with non-beef high carb essentials. 7% bundle discount applied.", badge: null, price: 93.00, meals: 10,
-        mealIds: [107, 109, 111, 112, 105, 107, 109, 111, 112, 105] },
-      { name: "Essential 10 — Beef",    variant: "Beef",     desc: "Beef high carb top-up for active weeks. 7% bundle discount applied.", badge: null, price: 93.00, meals: 10,
-        mealIds: [105, 112, 111, 105, 112, 111, 105, 112, 111, 105] },
+      {
+        name: "Signature 5 — Non-Beef",
+        variant: "Non-Beef",
+        desc: "High carb performance meals for fuel-heavy days. 3% bundle discount applied.",
+        badge: "POPULAR",
+        price: 48.99,
+        meals: 5,
+        mealIds: [107, 109, 111, 112, 105],
+      },
+      {
+        name: "Signature 5 — Beef",
+        variant: "Beef",
+        desc: "Beef-based high carb signatures for sustained energy. 3% bundle discount applied.",
+        badge: null,
+        price: 48.99,
+        meals: 5,
+        mealIds: [105, 112, 111, 105, 112],
+      },
+      {
+        name: "9 Flavours of the Month",
+        variant: null,
+        desc: "9 rotating seasonal high carb meals, refreshed monthly. 5% bundle discount applied.",
+        badge: "NEW",
+        price: 88.45,
+        meals: 9,
+        mealIds: [107, 109, 111, 112, 105, 107, 111, 112, 109],
+      },
+      {
+        name: "Essential 10 — Non-Beef",
+        variant: "Non-Beef",
+        desc: "Restock your week with non-beef high carb essentials. 7% bundle discount applied.",
+        badge: null,
+        price: 93.0,
+        meals: 10,
+        mealIds: [107, 109, 111, 112, 105, 107, 109, 111, 112, 105],
+      },
+      {
+        name: "Essential 10 — Beef",
+        variant: "Beef",
+        desc: "Beef high carb top-up for active weeks. 7% bundle discount applied.",
+        badge: null,
+        price: 93.0,
+        meals: 10,
+        mealIds: [105, 112, 111, 105, 112, 111, 105, 112, 111, 105],
+      },
     ],
   },
   {
     category: "Just Protein",
     color: "#F5B300",
     items: [
-      { name: "JP Variety Bundle of 10", variant: null, desc: "10-meal variety of high-protein just protein serves. 3% bundle discount applied.", badge: "BESTSELLER", price: 55.10, meals: 10,
-        mealIds: [101, 104, 106, 108, 101, 104, 106, 108, 101, 104] },
+      {
+        name: "JP Variety Bundle of 10",
+        variant: null,
+        desc: "10-meal variety of high-protein just protein serves. 3% bundle discount applied.",
+        badge: "BESTSELLER",
+        price: 55.1,
+        meals: 10,
+        mealIds: [101, 104, 106, 108, 101, 104, 106, 108, 101, 104],
+      },
     ],
   },
   {
     category: "Mixed Bundle",
     color: "#F5B300",
     items: [
-      { name: "7 Low Carb + 7 Just Protein",  variant: "Non-Beef", desc: "14-meal mixed bundle: 7 low carb + 7 just protein serves. 7% bundle discount applied.", badge: "BEST VALUE", price: 118.30, meals: 14,
-        mealIds: [103, 104, 106, 108, 109, 103, 106, 101, 104, 106, 108, 101, 104, 106] },
-      { name: "7 High Carb + 7 Just Protein", variant: "Non-Beef", desc: "14-meal mixed bundle: 7 high carb + 7 just protein serves. 7% bundle discount applied.", badge: null, price: 117.37, meals: 14,
-        mealIds: [107, 109, 111, 112, 105, 107, 109, 101, 104, 106, 108, 101, 104, 108] },
+      {
+        name: "7 Low Carb + 7 Just Protein",
+        variant: "Non-Beef",
+        desc: "14-meal mixed bundle: 7 low carb + 7 just protein serves. 7% bundle discount applied.",
+        badge: "BEST VALUE",
+        price: 118.3,
+        meals: 14,
+        mealIds: [
+          103, 104, 106, 108, 109, 103, 106, 101, 104, 106, 108, 101, 104, 106,
+        ],
+      },
+      {
+        name: "7 High Carb + 7 Just Protein",
+        variant: "Non-Beef",
+        desc: "14-meal mixed bundle: 7 high carb + 7 just protein serves. 7% bundle discount applied.",
+        badge: null,
+        price: 117.37,
+        meals: 14,
+        mealIds: [
+          107, 109, 111, 112, 105, 107, 109, 101, 104, 106, 108, 101, 104, 108,
+        ],
+      },
     ],
   },
-];
+]
 
 const SUBSCRIPTION_PRODUCTS = [
-  { sku: "JPSUB01", name: "Just Protein",         variant: "Non-Beef", items: 14, price3m: 252.90, price6m: 480.50, badge: null },
-  { sku: "JPSUB02", name: "Just Protein",         variant: "Beef",     items: 14, price3m: 252.90, price6m: 480.50, badge: null },
-  { sku: "LCSUB01", name: "Low Carb Meals",       variant: "Non-Beef", items: 10, price3m: 303.00, price6m: 575.70, badge: "POPULAR" },
-  { sku: "LCSUB02", name: "Low Carb Meals",       variant: "Beef",     items: 10, price3m: 303.00, price6m: 575.70, badge: null },
-  { sku: "HCSUB01", name: "High Carb Meals",      variant: "Non-Beef", items: 10, price3m: 303.00, price6m: 575.70, badge: null },
-  { sku: "HCSUB02", name: "High Carb Meals",      variant: "Beef",     items: 10, price3m: 303.00, price6m: 575.70, badge: null },
-  { sku: "LCMIXSUB01", name: "Low Carb + Just Protein",  variant: "Non-Beef", items: 15, price3m: 354.56, price6m: 693.90, badge: "BEST VALUE" },
-  { sku: "LCMIXSUB02", name: "Low Carb + Just Protein",  variant: "Beef",     items: 15, price3m: 354.56, price6m: 693.90, badge: null },
-  { sku: "HCMIXSUB01", name: "High Carb + Just Protein", variant: "Non-Beef", items: 15, price3m: 354.56, price6m: 693.90, badge: null },
-  { sku: "HCMIXSUB02", name: "High Carb + Just Protein", variant: "Beef",     items: 15, price3m: 354.56, price6m: 693.90, badge: null },
-];
+  {
+    sku: "JPSUB01",
+    name: "Just Protein",
+    variant: "Non-Beef",
+    items: 14,
+    price3m: 252.9,
+    price6m: 480.5,
+    badge: null,
+  },
+  {
+    sku: "JPSUB02",
+    name: "Just Protein",
+    variant: "Beef",
+    items: 14,
+    price3m: 252.9,
+    price6m: 480.5,
+    badge: null,
+  },
+  {
+    sku: "LCSUB01",
+    name: "Low Carb Meals",
+    variant: "Non-Beef",
+    items: 10,
+    price3m: 303.0,
+    price6m: 575.7,
+    badge: "POPULAR",
+  },
+  {
+    sku: "LCSUB02",
+    name: "Low Carb Meals",
+    variant: "Beef",
+    items: 10,
+    price3m: 303.0,
+    price6m: 575.7,
+    badge: null,
+  },
+  {
+    sku: "HCSUB01",
+    name: "High Carb Meals",
+    variant: "Non-Beef",
+    items: 10,
+    price3m: 303.0,
+    price6m: 575.7,
+    badge: null,
+  },
+  {
+    sku: "HCSUB02",
+    name: "High Carb Meals",
+    variant: "Beef",
+    items: 10,
+    price3m: 303.0,
+    price6m: 575.7,
+    badge: null,
+  },
+  {
+    sku: "LCMIXSUB01",
+    name: "Low Carb + Just Protein",
+    variant: "Non-Beef",
+    items: 15,
+    price3m: 354.56,
+    price6m: 693.9,
+    badge: "BEST VALUE",
+  },
+  {
+    sku: "LCMIXSUB02",
+    name: "Low Carb + Just Protein",
+    variant: "Beef",
+    items: 15,
+    price3m: 354.56,
+    price6m: 693.9,
+    badge: null,
+  },
+  {
+    sku: "HCMIXSUB01",
+    name: "High Carb + Just Protein",
+    variant: "Non-Beef",
+    items: 15,
+    price3m: 354.56,
+    price6m: 693.9,
+    badge: null,
+  },
+  {
+    sku: "HCMIXSUB02",
+    name: "High Carb + Just Protein",
+    variant: "Beef",
+    items: 15,
+    price3m: 354.56,
+    price6m: 693.9,
+    badge: null,
+  },
+]
 
 const SUB_MEAL_DETAILS: Record<string, {
-  meals: { id: number; qty: number }[];
-  alaCarteAvg: number;
-  accentColor: string;
-  highlights: string[];
+  meals: {
+    id: number
+    qty: number
+  }[]
+  alaCarteAvg: number
+  accentColor: string
+  highlights: string[]
 }> = {
   JPSUB01: {
-    meals: [{ id: 101, qty: 4 }, { id: 104, qty: 4 }, { id: 106, qty: 3 }, { id: 108, qty: 3 }],
+    meals: [
+      { id: 101, qty: 4 },
+      { id: 104, qty: 4 },
+      { id: 106, qty: 3 },
+      { id: 108, qty: 3 },
+    ],
     alaCarteAvg: 14.65,
     accentColor: "#F5B300",
-    highlights: ["44–46g protein per meal", "Zero rice or bread fillers", "Premium salmon & chicken"],
+    highlights: [
+      "44–46g protein per meal",
+      "Zero rice or bread fillers",
+      "Premium salmon & chicken",
+    ],
   },
   JPSUB02: {
-    meals: [{ id: 101, qty: 5 }, { id: 106, qty: 5 }, { id: 108, qty: 4 }],
+    meals: [
+      { id: 101, qty: 5 },
+      { id: 106, qty: 5 },
+      { id: 108, qty: 4 },
+    ],
     alaCarteAvg: 14.23,
     accentColor: "#F5B300",
-    highlights: ["46g protein per meal", "Chicken & salmon rotation", "Lean, high-output fuel"],
+    highlights: [
+      "46g protein per meal",
+      "Chicken & salmon rotation",
+      "Lean, high-output fuel",
+    ],
   },
   LCSUB01: {
-    meals: [{ id: 103, qty: 2 }, { id: 104, qty: 2 }, { id: 106, qty: 2 }, { id: 108, qty: 2 }, { id: 109, qty: 2 }],
+    meals: [
+      { id: 103, qty: 2 },
+      { id: 104, qty: 2 },
+      { id: 106, qty: 2 },
+      { id: 108, qty: 2 },
+      { id: 109, qty: 2 },
+    ],
     alaCarteAvg: 13.54,
     accentColor: "#34D399",
-    highlights: ["Under 14g net carbs per meal", "No beef — lighter proteins", "Cut-phase friendly"],
+    highlights: [
+      "Under 14g net carbs per meal",
+      "No beef — lighter proteins",
+      "Cut-phase friendly",
+    ],
   },
   LCSUB02: {
-    meals: [{ id: 102, qty: 5 }, { id: 110, qty: 5 }],
-    alaCarteAvg: 14.20,
+    meals: [
+      { id: 102, qty: 5 },
+      { id: 110, qty: 5 },
+    ],
+    alaCarteAvg: 14.2,
     accentColor: "#34D399",
-    highlights: ["Gochujang beef & rendang", "Under 12g net carbs", "Satiety on a deficit"],
+    highlights: [
+      "Gochujang beef & rendang",
+      "Under 12g net carbs",
+      "Satiety on a deficit",
+    ],
   },
   HCSUB01: {
-    meals: [{ id: 107, qty: 2 }, { id: 109, qty: 2 }, { id: 111, qty: 2 }, { id: 112, qty: 2 }, { id: 105, qty: 2 }],
+    meals: [
+      { id: 107, qty: 2 },
+      { id: 109, qty: 2 },
+      { id: 111, qty: 2 },
+      { id: 112, qty: 2 },
+      { id: 105, qty: 2 },
+    ],
     alaCarteAvg: 11.34,
     accentColor: "#60A5FA",
-    highlights: ["52–62g carbs per meal", "Ideal for training days", "Rice, oats & bowl variety"],
+    highlights: [
+      "52–62g carbs per meal",
+      "Ideal for training days",
+      "Rice, oats & bowl variety",
+    ],
   },
   HCSUB02: {
-    meals: [{ id: 105, qty: 4 }, { id: 112, qty: 3 }, { id: 111, qty: 3 }],
+    meals: [
+      { id: 105, qty: 4 },
+      { id: 112, qty: 3 },
+      { id: 111, qty: 3 },
+    ],
     alaCarteAvg: 12.77,
     accentColor: "#60A5FA",
-    highlights: ["Beef & prawn variety", "58–62g carbs per meal", "Fuel for heavy lift days"],
+    highlights: [
+      "Beef & prawn variety",
+      "58–62g carbs per meal",
+      "Fuel for heavy lift days",
+    ],
   },
   LCMIXSUB01: {
-    meals: [{ id: 103, qty: 2 }, { id: 104, qty: 2 }, { id: 106, qty: 2 }, { id: 109, qty: 2 }, { id: 101, qty: 4 }, { id: 108, qty: 3 }],
-    alaCarteAvg: 14.10,
+    meals: [
+      { id: 103, qty: 2 },
+      { id: 104, qty: 2 },
+      { id: 106, qty: 2 },
+      { id: 109, qty: 2 },
+      { id: 101, qty: 4 },
+      { id: 108, qty: 3 },
+    ],
+    alaCarteAvg: 14.1,
     accentColor: "#A78BFA",
-    highlights: ["7 Low Carb + 8 Just Protein", "Best savings per meal in range", "Split for cut & muscle-hold days"],
+    highlights: [
+      "7 Low Carb + 8 Just Protein",
+      "Best savings per meal in range",
+      "Split for cut & muscle-hold days",
+    ],
   },
   LCMIXSUB02: {
-    meals: [{ id: 102, qty: 3 }, { id: 110, qty: 4 }, { id: 101, qty: 4 }, { id: 106, qty: 2 }, { id: 108, qty: 2 }],
+    meals: [
+      { id: 102, qty: 3 },
+      { id: 110, qty: 4 },
+      { id: 101, qty: 4 },
+      { id: 106, qty: 2 },
+      { id: 108, qty: 2 },
+    ],
     alaCarteAvg: 14.22,
     accentColor: "#A78BFA",
-    highlights: ["Beef cuts + JP rotation", "Low carb + high protein split", "Serious cut protocol"],
+    highlights: [
+      "Beef cuts + JP rotation",
+      "Low carb + high protein split",
+      "Serious cut protocol",
+    ],
   },
   HCMIXSUB01: {
-    meals: [{ id: 107, qty: 2 }, { id: 111, qty: 2 }, { id: 112, qty: 2 }, { id: 101, qty: 3 }, { id: 104, qty: 3 }, { id: 106, qty: 3 }],
+    meals: [
+      { id: 107, qty: 2 },
+      { id: 111, qty: 2 },
+      { id: 112, qty: 2 },
+      { id: 101, qty: 3 },
+      { id: 104, qty: 3 },
+      { id: 106, qty: 3 },
+    ],
     alaCarteAvg: 12.99,
     accentColor: "#FB923C",
-    highlights: ["8 High Carb + 7 Just Protein", "Fuel heavy sessions & recover fast", "Best of carbs + protein"],
+    highlights: [
+      "8 High Carb + 7 Just Protein",
+      "Fuel heavy sessions & recover fast",
+      "Best of carbs + protein",
+    ],
   },
   HCMIXSUB02: {
-    meals: [{ id: 105, qty: 3 }, { id: 112, qty: 3 }, { id: 111, qty: 2 }, { id: 101, qty: 3 }, { id: 106, qty: 2 }, { id: 108, qty: 2 }],
-    alaCarteAvg: 13.50,
+    meals: [
+      { id: 105, qty: 3 },
+      { id: 112, qty: 3 },
+      { id: 111, qty: 2 },
+      { id: 101, qty: 3 },
+      { id: 106, qty: 2 },
+      { id: 108, qty: 2 },
+    ],
+    alaCarteAvg: 13.5,
     accentColor: "#FB923C",
-    highlights: ["Beef + prawn + JP rotation", "Performance carb-loading", "Best of both worlds"],
+    highlights: [
+      "Beef + prawn + JP rotation",
+      "Performance carb-loading",
+      "Best of both worlds",
+    ],
   },
-};
+}
 
-const FREE_DELIVERY_THRESHOLD = 120;
-const DELIVERY_FEE = 10;
+const FREE_DELIVERY_THRESHOLD = 120
+const DELIVERY_FEE = 10
 
-const MEAL_REVIEWS: Record<number, { author: string; rating: number; text: string; date: string }[]> = {
+const MEAL_REVIEWS: Record<number, {
+  author: string
+  rating: number
+  text: string
+  date: string
+}[]> = {
   101: [
-    { author: "Marcus T.", rating: 5, text: "Best meal prep chicken I have ever had. The teriyaki glaze is spot-on and the brown rice keeps me full till 5pm.", date: "12 Sep" },
-    { author: "Rena L.", rating: 5, text: "Ordered 10 of these. Zero regrets. My whole office is jealous at lunchtime.", date: "8 Sep" },
-    { author: "Kevin P.", rating: 4, text: "Really solid. Portion size is generous and macros are exactly as listed. Would add 5 stars if carbs were slightly lower.", date: "1 Sep" },
+    {
+      author: "Marcus T.",
+      rating: 5,
+      text: "Best meal prep chicken I have ever had. The teriyaki glaze is spot-on and the brown rice keeps me full till 5pm.",
+      date: "12 Sep",
+    },
+    {
+      author: "Rena L.",
+      rating: 5,
+      text: "Ordered 10 of these. Zero regrets. My whole office is jealous at lunchtime.",
+      date: "8 Sep",
+    },
+    {
+      author: "Kevin P.",
+      rating: 4,
+      text: "Really solid. Portion size is generous and macros are exactly as listed. Would add 5 stars if carbs were slightly lower.",
+      date: "1 Sep",
+    },
   ],
   104: [
-    { author: "Sophie H.", rating: 5, text: "Salmon is perfectly cooked even after freezing — huge win. The quinoa absorbs the sauce beautifully.", date: "10 Sep" },
-    { author: "Jared Ng.", rating: 5, text: "Worth every cent at $15.90. Tastes like a restaurant bowl. Easy 5/5.", date: "5 Sep" },
+    {
+      author: "Sophie H.",
+      rating: 5,
+      text: "Salmon is perfectly cooked even after freezing — huge win. The quinoa absorbs the sauce beautifully.",
+      date: "10 Sep",
+    },
+    {
+      author: "Jared Ng.",
+      rating: 5,
+      text: "Worth every cent at $15.90. Tastes like a restaurant bowl. Easy 5/5.",
+      date: "5 Sep",
+    },
   ],
   106: [
-    { author: "Amir R.", rating: 5, text: "Premium price, premium taste. The miso glaze caramelises perfectly in the microwave. Unbelievable.", date: "11 Sep" },
-    { author: "Lin Y.", rating: 4, text: "Excellent flavour. Salmon was a tiny bit dry on the edges but still very enjoyable. Will reorder.", date: "7 Sep" },
+    {
+      author: "Amir R.",
+      rating: 5,
+      text: "Premium price, premium taste. The miso glaze caramelises perfectly in the microwave. Unbelievable.",
+      date: "11 Sep",
+    },
+    {
+      author: "Lin Y.",
+      rating: 4,
+      text: "Excellent flavour. Salmon was a tiny bit dry on the edges but still very enjoyable. Will reorder.",
+      date: "7 Sep",
+    },
   ],
   102: [
-    { author: "Brian K.", rating: 5, text: "Genuinely spicy — exactly as advertised. Low carb but still super satisfying. Great for cut phase.", date: "9 Sep" },
-    { author: "Priya S.", rating: 4, text: "Good flavour, solid protein. Spice level is a little high for me but I keep ordering it anyway.", date: "4 Sep" },
+    {
+      author: "Brian K.",
+      rating: 5,
+      text: "Genuinely spicy — exactly as advertised. Low carb but still super satisfying. Great for cut phase.",
+      date: "9 Sep",
+    },
+    {
+      author: "Priya S.",
+      rating: 4,
+      text: "Good flavour, solid protein. Spice level is a little high for me but I keep ordering it anyway.",
+      date: "4 Sep",
+    },
   ],
-};
+}
 
-export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMeal, setCartOpen, initialPurchaseMode = "single" }: Props) {
-  const th = <T,>(_dark: T, warm: T, _espresso: T): T => warm;
-  const [purchaseMode, setPurchaseMode] = useState<"single" | "bundles" | "subscription">(initialPurchaseMode);
-  const [subTerm, setSubTerm] = useState<3 | 6>(3);
-  const [selectedSub, setSelectedSub] = useState<string | null>(null);
-  const [subTypeFilter, setSubTypeFilter] = useState<"meals" | "protein" | "mixed">("meals");
-  const [rsSignedIn, setRsSignedIn] = useState(false);
-  const [showRsAuthGate, setShowRsAuthGate] = useState(false);
-  const [pendingSubSku, setPendingSubSku] = useState<string | null>(null);
-  const [activeCat, setActiveCat] = useState("A-la-carte");
-  const [addedId, setAddedId] = useState<number | null>(null);
-  const [reviewMealId, setReviewMealId] = useState<number | null>(null);
-  const [carouselOffsets, setCarouselOffsets] = useState<Record<string, number>>({});
-
-  const scrollCarousel = (bundleName: string, dir: 1 | -1) => {
-    setCarouselOffsets((prev) => {
-      const current = prev[bundleName] ?? 0;
-      const next = current + dir * 120;
-      return { ...prev, [bundleName]: Math.max(0, next) };
-    });
-  };
-
-  const filtered = (activeCat === "All" || activeCat === "A-la-carte") ? MEALS : MEALS.filter((m) => m.cat === activeCat);
+export default function ReadySeriesPage({
+  navigate,
+  addToCart,
+  cart,
+  onSelectMeal,
+  setCartOpen,
+  initialPurchaseMode = "single",
+}: Props) {
+  const [purchaseMode, setPurchaseMode] =
+    useState<"single" | "bundles" | "subscription">(initialPurchaseMode)
+  const [subTerm, setSubTerm] = useState<3 | 6>(3)
+  const [selectedSub, setSelectedSub] = useState<string | null>(null)
+  const [subTypeFilter, setSubTypeFilter] =
+    useState<"meals" | "protein" | "mixed">("meals")
+  const [rsSignedIn, setRsSignedIn] = useState(false)
+  const [showRsAuthGate, setShowRsAuthGate] = useState(false)
+  const [pendingSubSku, setPendingSubSku] = useState<string | null>(null)
+  const [activeCat, setActiveCat] = useState("A-la-carte")
+  const [addedId, setAddedId] = useState<number | null>(null)
+  const [reviewMealId, setReviewMealId] = useState<number | null>(null)
+  const filtered =
+    activeCat === "All" || activeCat === "A-la-carte"
+      ? MEALS
+      : MEALS.filter((m) => m.cat === activeCat)
 
   const handleAdd = (meal: typeof MEALS[0]) => {
     addToCart({
@@ -217,27 +540,41 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       qty: 1,
       img: meal.img,
       type: "ready",
-    });
-    setAddedId(meal.id);
-    setTimeout(() => setAddedId(null), 1200);
-  };
+    })
+    setAddedId(meal.id)
+    setTimeout(() => setAddedId(null), 1200)
+  }
 
-  const cartItems = cart.filter((i) => i.type === "ready" || i.type === "box");
-  const cartQty = cartItems.reduce((s, i) => s + i.qty, 0);
-  const cartTotal = cart.filter((i) => i.type === "ready" || i.type === "box").reduce((s, i) => s + i.price * i.qty, 0);
-  const toFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - cartTotal);
-  const freeDeliveryPct = Math.min(100, (cartTotal / FREE_DELIVERY_THRESHOLD) * 100);
-  const deliveryFee = cartTotal > 0 ? (cartTotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE) : 0;
-
+  const cartItems = cart.filter((i) => i.type === "ready" || i.type === "box")
+  const cartQty = cartItems.reduce((s, i) => s + i.qty, 0)
+  const cartTotal = cart
+    .filter((i) => i.type === "ready" || i.type === "box")
+    .reduce((s, i) => s + i.price * i.qty, 0)
+  const toFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - cartTotal)
+  const freeDeliveryPct = Math.min(
+    100,
+    (cartTotal / FREE_DELIVERY_THRESHOLD) * 100,
+  )
   return (
     <div className="bg-[#FAF8F4] text-[#1A1A1A] min-h-screen">
-
       {/* ── HERO ── */}
       <section className="relative overflow-hidden bg-[#F7F2E8] border-t-[3px] border-[#F5B300]">
         <div className="max-w-[1440px] mx-auto grid lg:grid-cols-[0.88fr_1.12fr] min-h-[680px]">
           <div className="relative z-10 px-6 sm:px-10 lg:px-16 py-14 sm:py-18 lg:py-20 flex flex-col">
-            <button onClick={() => navigate("ready-series")} className="inline-flex self-start items-center gap-2 text-[#766D63] hover:text-[#1A1A1A] transition-colors text-[10px] font-semibold tracking-[0.18em] uppercase">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+            <button
+              onClick={() => navigate("ready-series")}
+              className="inline-flex self-start items-center gap-2 text-[#766D63] hover:text-[#1A1A1A] transition-colors text-[10px] font-semibold tracking-[0.18em] uppercase"
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
               Ready Series overview
             </button>
 
@@ -248,25 +585,47 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             <div className="mt-auto pt-16 lg:pt-24 max-w-[610px]">
               <div className="flex items-center gap-3 mb-6">
                 <span className="w-8 h-[2px] bg-[#F5B300]" />
-                <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] uppercase text-[#806A2A]">Fast food, properly done</p>
+                <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] uppercase text-[#806A2A]">
+                  Fast food, properly done
+                </p>
               </div>
               <h1 className="font-display text-[48px] sm:text-[64px] lg:text-[74px] font-black leading-[0.91] tracking-[-0.045em] text-[#171717]">
-                Your freezer,<br />
+                Your freezer,
+                <br />
                 <span className="text-[#B47C00]">ready for anything.</span>
               </h1>
               <p className="text-[#625A52] text-[16px] sm:text-[17px] leading-relaxed max-w-[500px] mt-7">
-                High-protein meals for Singapore’s fullest days. Pick your favourites, heat in minutes, and get on with what matters.
+                High-protein meals for Singapore’s fullest days. Pick your
+                favourites, heat in minutes, and get on with what matters.
               </p>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-9">
                 <button
-                  onClick={() => document.getElementById("rs-shop")?.scrollIntoView({ behavior: "smooth" })}
-                  className="group inline-flex items-center justify-between gap-7 rounded-full bg-[#1A1A1A] text-white pl-7 pr-2 py-2 text-[11px] font-bold tracking-[0.16em] uppercase hover:bg-[#B47C00] transition-colors duration-300">
+                  onClick={() =>
+                    document
+                      .getElementById("rs-shop")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  className="group inline-flex items-center justify-between gap-7 rounded-full bg-[#1A1A1A] text-white pl-7 pr-2 py-2 text-[11px] font-bold tracking-[0.16em] uppercase hover:bg-[#B47C00] transition-colors duration-300"
+                >
                   Choose your meals
                   <span className="w-10 h-10 rounded-full bg-[#F5B300] text-[#1A1A1A] flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
                   </span>
                 </button>
-                <span className="text-[#847A70] text-[11px] leading-relaxed">Individual meals from $8.90<br />Free delivery from $120</span>
+                <span className="text-[#847A70] text-[11px] leading-relaxed">
+                  Individual meals from $8.90
+                  <br />
+                  Free delivery from $120
+                </span>
               </div>
             </div>
           </div>
@@ -275,11 +634,11 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             <div className="absolute top-6 right-6 z-10 bg-[#F5B300] text-[#1A1A1A] rounded-full px-4 py-2 text-[9px] font-black tracking-[0.18em] uppercase">
               Made for Singapore pace
             </div>
-          <img
-            src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1600&h=900&fit=crop&auto=format&q=80"
+            <img
+              src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1600&h=900&fit=crop&auto=format&q=80"
               alt="Colourful Ready Series meals prepared for a busy week"
               className="absolute inset-0 w-full h-full object-cover object-center"
-          />
+            />
             <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/75 to-transparent" />
             <div className="absolute left-5 right-5 sm:left-8 sm:right-8 bottom-6 grid grid-cols-3 rounded-2xl overflow-hidden bg-white/90 backdrop-blur-md shadow-2xl">
               {[
@@ -287,9 +646,16 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                 { v: "02", l: "Choose a bundle" },
                 { v: "03", l: "Keep it stocked" },
               ].map((s) => (
-                <div key={s.l} className="px-3 sm:px-5 py-5 border-r border-[#D7D0C6] last:border-0">
-                  <div className="text-[#B47C00] font-display text-[22px] sm:text-[26px] font-black leading-none">{s.v}</div>
-                  <div className="text-[#4E4841] text-[9px] sm:text-[10px] font-bold tracking-[0.08em] mt-2 uppercase">{s.l}</div>
+                <div
+                  key={s.l}
+                  className="px-3 sm:px-5 py-5 border-r border-[#D7D0C6] last:border-0"
+                >
+                  <div className="text-[#B47C00] font-display text-[22px] sm:text-[26px] font-black leading-none">
+                    {s.v}
+                  </div>
+                  <div className="text-[#4E4841] text-[9px] sm:text-[10px] font-bold tracking-[0.08em] mt-2 uppercase">
+                    {s.l}
+                  </div>
                 </div>
               ))}
             </div>
@@ -302,44 +668,90 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
         <div className="bg-white border-b border-[#DDD6CB] px-6 py-4">
           <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
             <div className="flex items-center justify-between sm:block shrink-0">
-              <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#61584F]">Free delivery progress</div>
-              <div className="text-[10px] text-[#8A8178] mt-0.5">Orders $120 and above</div>
+              <div className="text-[10px] font-bold tracking-[0.16em] uppercase text-[#61584F]">
+                Free delivery progress
+              </div>
+              <div className="text-[10px] text-[#8A8178] mt-0.5">
+                Orders $120 and above
+              </div>
             </div>
             <div className="flex-1 h-2 bg-[#EDE8E0] rounded-full overflow-hidden">
-              <div className="h-full bg-[#F5B300] rounded-full transition-all duration-500" style={{ width: `${freeDeliveryPct}%` }} />
+              <div
+                className="h-full bg-[#F5B300] rounded-full transition-all duration-500"
+                style={{ width: `${freeDeliveryPct}%` }}
+              />
             </div>
             <div className="text-[11px] text-[#61584F] shrink-0">
-              {toFreeDelivery <= 0
-                ? <span className="font-bold text-[#8A6100]">Free delivery unlocked</span>
-                : <>Add <span className="font-extrabold text-[#1A1A1A]">${toFreeDelivery.toFixed(2)}</span> more</>
-              }
+              {toFreeDelivery <= 0 ? (
+                <span className="font-bold text-[#8A6100]">
+                  Free delivery unlocked
+                </span>
+              ) : (
+                <>
+                  Add{" "}
+                  <span className="font-extrabold text-[#1A1A1A]">
+                    ${toFreeDelivery.toFixed(2)}
+                  </span>{" "}
+                  more
+                </>
+              )}
             </div>
           </div>
         </div>
       )}
 
       {/* ── PURCHASE MODE TABS ── */}
-      <div id="rs-shop" className="bg-white border-b border-[#DDD6CB] shadow-[0_6px_20px_rgba(52,42,30,0.06)]">
+      <div
+        id="rs-shop"
+        className="bg-white border-b border-[#DDD6CB] shadow-[0_6px_20px_rgba(52,42,30,0.06)]"
+      >
         <div className="max-w-[1200px] mx-auto px-6">
           <div className="flex overflow-x-auto gap-1 sm:gap-3">
-            {([
-              { key: "single" as const,       label: "Individual Selection", sub: "One-time · choose meals" },
-              { key: "bundles" as const,       label: "Bundles",         sub: "Predefined packs" },
-              { key: "subscription" as const,  label: "Subscription",    sub: "Recurring · 3 or 6 months" },
-            ]).map((m) => (
-              <button key={m.key} onClick={() => setPurchaseMode(m.key)}
+            {[
+              {
+                key: "single" as const,
+                label: "Individual Selection",
+                sub: "One-time · choose meals",
+              },
+              {
+                key: "bundles" as const,
+                label: "Bundles",
+                sub: "Predefined packs",
+              },
+              {
+                key: "subscription" as const,
+                label: "Subscription",
+                sub: "Recurring · 3 or 6 months",
+              },
+            ].map((m) => (
+              <button
+                key={m.key}
+                onClick={() => setPurchaseMode(m.key)}
                 className={`group relative shrink-0 min-w-[190px] sm:min-w-[240px] px-5 sm:px-7 py-5 text-left transition-all duration-300 border-b-[3px] ${
                   purchaseMode === m.key
                     ? "border-[#F5B300] bg-[#FFF9E9] text-[#1A1A1A]"
                     : "border-transparent text-[#5F574F] hover:text-[#1A1A1A] hover:bg-[#FAF8F4] hover:-translate-y-0.5"
-                }`}>
-                <div className="text-[14px] sm:text-[15px] font-extrabold tracking-[0.01em] whitespace-nowrap transition-transform duration-300 group-hover:translate-x-1">{m.label}</div>
-                <div className={`text-[11px] sm:text-[12px] mt-1 whitespace-nowrap transition-colors duration-300 ${
-                  purchaseMode === m.key ? "text-[#746A60]" : "text-[#8A8178] group-hover:text-[#655D55]"
-                }`}>{m.sub}</div>
-                <span className={`absolute bottom-0 left-5 right-5 h-[3px] bg-[#F5B300] origin-left transition-transform duration-300 ${
-                  purchaseMode === m.key ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
-                }`} />
+                }`}
+              >
+                <div className="text-[14px] sm:text-[15px] font-extrabold tracking-[0.01em] whitespace-nowrap transition-transform duration-300 group-hover:translate-x-1">
+                  {m.label}
+                </div>
+                <div
+                  className={`text-[11px] sm:text-[12px] mt-1 whitespace-nowrap transition-colors duration-300 ${
+                    purchaseMode === m.key
+                      ? "text-[#746A60]"
+                      : "text-[#8A8178] group-hover:text-[#655D55]"
+                  }`}
+                >
+                  {m.sub}
+                </div>
+                <span
+                  className={`absolute bottom-0 left-5 right-5 h-[3px] bg-[#F5B300] origin-left transition-transform duration-300 ${
+                    purchaseMode === m.key
+                      ? "scale-x-100"
+                      : "scale-x-0 group-hover:scale-x-100"
+                  }`}
+                />
               </button>
             ))}
           </div>
@@ -348,582 +760,949 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
 
       {/* ── BUNDLES TAB ── */}
       {purchaseMode === "bundles" && (
-      <section className={`py-16 px-6 sm:px-8 ${th("bg-[#111]", "bg-[#FAF8F4]", "bg-[#1C1108]")}`}>
-        <div className="max-w-[1200px] mx-auto">
-          <div className="mb-12">
-            <p className={`text-[11px] font-mono tracking-[0.4em] uppercase mb-3 text-[#F5B300]`}>Predefined Bundles</p>
-            <h2 className={`font-display text-[38px] sm:text-[52px] font-extrabold leading-[0.92] ${th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]")}`}>Choose your bundle<span className="text-[#F5B300]">.</span></h2>
-            <p className={`text-[15px] mt-3 max-w-[500px] ${th("text-white/40", "text-[#555]", "text-[#F5EDD8]/50")}`}>All bundles are curated and ready to go — pick the category and size that suits your week.</p>
-          </div>
+        <section className={`py-16 px-6 sm:px-8 ${"bg-[#FAF8F4]"}`}>
+          <div className="max-w-[1200px] mx-auto">
+            <div className="mb-12">
+              <p
+                className={`text-[11px] font-mono tracking-[0.4em] uppercase mb-3 text-[#F5B300]`}
+              >
+                Predefined Bundles
+              </p>
+              <h2
+                className={`font-display text-[38px] sm:text-[52px] font-extrabold leading-[0.92] ${"text-[#1A1A1A]"}`}
+              >
+                Choose your bundle<span className="text-[#F5B300]">.</span>
+              </h2>
+              <p className={`text-[15px] mt-3 max-w-[500px] ${"text-[#555]"}`}>
+                All bundles are curated and ready to go — pick the category and
+                size that suits your week.
+              </p>
+            </div>
 
-          <div className="space-y-14">
-            {PREDEFINED_BUNDLES.map((group) => (
-              <div key={group.category}>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className={`text-[11px] font-mono tracking-[0.4em] uppercase font-bold ${th("text-white/50", "text-[#1A1A1A]/60", "text-[#F5EDD8]/50")}`}>{group.category}</div>
-                  <div className={`flex-1 h-px ${th("bg-white/8", "bg-black/10", "bg-[#F5EDD8]/10")}`} />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {group.items.map((item) => {
-                    const previewMeals = item.mealIds
-                      .filter((id, idx, arr) => arr.indexOf(id) === idx)
-                      .slice(0, 3)
-                      .map((id) => MEALS.find((m) => m.id === id))
-                      .filter(Boolean) as typeof MEALS;
-                    return (
-                    <div key={item.name} className={`flex flex-col hover:border-[#F5B300]/70 transition-all duration-300 group overflow-hidden border ${th("bg-[#1A1A1A] border-white/8", "bg-white border-[#E8E2D9] shadow-sm hover:shadow-md", "bg-[#2A1C0D] border-[#F5EDD8]/10")}`}>
-                      {/* Meal image strip */}
-                      <div className="flex h-28 overflow-hidden">
-                        {previewMeals.map((m, pi) => (
-                          <div key={pi} className="flex-1 overflow-hidden">
-                            <img
-                              src={m.img}
-                              alt={m.name}
-                              onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1633179498414-88e5b9ccb843?w=600&h=450&fit=crop&auto=format&q=80"; }}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                          </div>
-                        ))}
-                        {previewMeals.length === 0 && <div className={`flex-1 ${th("bg-[#222]", "bg-[#F0EBE3]", "bg-[#3A2810]")}`} />}
-                      </div>
-
-                      <div className="p-5 flex flex-col gap-3 flex-1">
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <div className={`text-[14px] font-extrabold leading-snug ${th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]")}`}>{item.name}</div>
-                            {item.variant && (
-                              <div className={`text-[10px] font-mono tracking-widest uppercase mt-1 ${th("text-white/30", "text-[#999]", "text-[#F5EDD8]/35")}`}>{item.variant}</div>
+            <div className="space-y-14">
+              {PREDEFINED_BUNDLES.map((group) => (
+                <div key={group.category}>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div
+                      className={`text-[11px] font-mono tracking-[0.4em] uppercase font-bold ${"text-[#1A1A1A]/60"}`}
+                    >
+                      {group.category}
+                    </div>
+                    <div className={`flex-1 h-px ${"bg-black/10"}`} />
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {group.items.map((item) => {
+                      const previewMeals = item.mealIds
+                        .filter((id, idx, arr) => arr.indexOf(id) === idx)
+                        .slice(0, 3)
+                        .map((id) => MEALS.find((m) => m.id === id))
+                        .filter(Boolean) as typeof MEALS
+                      return (
+                        <div
+                          key={item.name}
+                          className={`flex flex-col hover:border-[#F5B300]/70 transition-all duration-300 group overflow-hidden border ${"bg-white border-[#E8E2D9] shadow-sm hover:shadow-md"}`}
+                        >
+                          {/* Meal image strip */}
+                          <div className="flex h-28 overflow-hidden">
+                            {previewMeals.map((m, pi) => (
+                              <div key={pi} className="flex-1 overflow-hidden">
+                                <img
+                                  src={m.img}
+                                  alt={m.name}
+                                  onError={(event) => {
+                                    event.currentTarget.src =
+                                      "https://images.unsplash.com/photo-1633179498414-88e5b9ccb843?w=600&h=450&fit=crop&auto=format&q=80"
+                                  }}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                              </div>
+                            ))}
+                            {previewMeals.length === 0 && (
+                              <div className={`flex-1 ${"bg-[#F0EBE3]"}`} />
                             )}
                           </div>
-                          {item.badge && (
-                            <span className="bg-[#F5B300] text-[#1A1A1A] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-1 shrink-0">{item.badge}</span>
-                          )}
-                        </div>
-                        <p className={`text-[12px] leading-relaxed flex-1 ${th("text-white/40", "text-[#666]", "text-[#F5EDD8]/45")}`}>{item.desc}</p>
 
-                        {/* Meal name pills */}
-                        <div className="flex flex-wrap gap-1.5">
-                          {previewMeals.map((m) => (
-                            <span key={m.id} className={`text-[10px] px-2 py-0.5 leading-snug border ${th("bg-white/5 border-white/10 text-white/50", "bg-[#FAF8F4] border-[#E0D9CE] text-[#555]", "bg-[#F5EDD8]/5 border-[#F5EDD8]/12 text-[#F5EDD8]/55")}`}>{m.name}</span>
-                          ))}
-                          {item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length > 3 && (
-                            <span className="text-[10px] px-2 py-0.5 font-semibold border bg-[#F5B300]/10 border-[#F5B300]/30 text-[#F5B300]">+{item.mealIds.filter((id, idx, arr) => arr.indexOf(id) === idx).length - 3} more</span>
-                          )}
-                        </div>
+                          <div className="p-5 flex flex-col gap-3 flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div>
+                                <div
+                                  className={`text-[14px] font-extrabold leading-snug ${"text-[#1A1A1A]"}`}
+                                >
+                                  {item.name}
+                                </div>
+                                {item.variant && (
+                                  <div
+                                    className={`text-[10px] font-mono tracking-widest uppercase mt-1 ${"text-[#999]"}`}
+                                  >
+                                    {item.variant}
+                                  </div>
+                                )}
+                              </div>
+                              {item.badge && (
+                                <span className="bg-[#F5B300] text-[#1A1A1A] text-[8px] font-extrabold tracking-[0.15em] uppercase px-2 py-1 shrink-0">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </div>
+                            <p
+                              className={`text-[12px] leading-relaxed flex-1 ${"text-[#666]"}`}
+                            >
+                              {item.desc}
+                            </p>
 
-                        <div className={`flex items-end justify-between pt-2 border-t ${th("border-white/8", "border-[#E8E2D9]", "border-[#F5EDD8]/10")}`}>
-                          <div>
-                            <span className={`font-display text-[22px] font-extrabold ${th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]")}`}>${item.price.toFixed(2)}</span>
-                            <span className={`text-[11px] ml-1.5 ${th("text-white/30", "text-[#999]", "text-[#F5EDD8]/35")}`}>{item.meals} meals · ${(item.price / item.meals).toFixed(2)}/meal</span>
+                            {/* Meal name pills */}
+                            <div className="flex flex-wrap gap-1.5">
+                              {previewMeals.map((m) => (
+                                <span
+                                  key={m.id}
+                                  className={`text-[10px] px-2 py-0.5 leading-snug border ${"bg-[#FAF8F4] border-[#E0D9CE] text-[#555]"}`}
+                                >
+                                  {m.name}
+                                </span>
+                              ))}
+                              {item.mealIds.filter(
+                                (id, idx, arr) => arr.indexOf(id) === idx,
+                              ).length > 3 && (
+                                <span className="text-[10px] px-2 py-0.5 font-semibold border bg-[#F5B300]/10 border-[#F5B300]/30 text-[#F5B300]">
+                                  +
+                                  {item.mealIds.filter(
+                                    (id, idx, arr) => arr.indexOf(id) === idx,
+                                  ).length - 3}{" "}
+                                  more
+                                </span>
+                              )}
+                            </div>
+
+                            <div
+                              className={`flex items-end justify-between pt-2 border-t ${"border-[#E8E2D9]"}`}
+                            >
+                              <div>
+                                <span
+                                  className={`font-display text-[22px] font-extrabold ${"text-[#1A1A1A]"}`}
+                                >
+                                  ${item.price.toFixed(2)}
+                                </span>
+                                <span
+                                  className={`text-[11px] ml-1.5 ${"text-[#999]"}`}
+                                >
+                                  {item.meals} meals · $
+                                  {(item.price / item.meals).toFixed(2)}/meal
+                                </span>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => {
+                                const bundleMeals = item.mealIds
+                                  .map((id) => MEALS.find((m) => m.id === id))
+                                  .filter(Boolean) as typeof MEALS
+                                addToCart({
+                                  id: parseInt(
+                                    `${group.category.charCodeAt(0)}${item.name.charCodeAt(0)}${item.price * 100}`,
+                                  ),
+                                  name: item.name,
+                                  price: item.price,
+                                  qty: 1,
+                                  img:
+                                    bundleMeals[0]?.img ??
+                                    "https://images.unsplash.com/photo-1682568514220-c477d5432024?w=200&h=200&fit=crop&auto=format",
+                                  type: "box",
+                                  mealNames: bundleMeals.map((m) => m.name),
+                                  mealImgs: bundleMeals.map((m) => m.img),
+                                })
+                              }}
+                              className={`w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase transition-colors ${"bg-[#1A1A1A] text-white hover:bg-[#F5B300] hover:text-[#1A1A1A]"}`}
+                            >
+                              Add to Cart →
+                            </button>
                           </div>
-                        </div>
-                      <button
-                        onClick={() => {
-                          const bundleMeals = item.mealIds.map((id) => MEALS.find((m) => m.id === id)).filter(Boolean) as typeof MEALS;
-                          addToCart({
-                            id: parseInt(`${group.category.charCodeAt(0)}${item.name.charCodeAt(0)}${item.price * 100}`),
-                            name: item.name,
-                            price: item.price,
-                            qty: 1,
-                            img: bundleMeals[0]?.img ?? "https://images.unsplash.com/photo-1682568514220-c477d5432024?w=200&h=200&fit=crop&auto=format",
-                            type: "box",
-                            mealNames: bundleMeals.map((m) => m.name),
-                            mealImgs: bundleMeals.map((m) => m.img),
-                          });
-                        }}
-                        className={`w-full py-3 text-[11px] font-extrabold tracking-[0.15em] uppercase transition-colors ${th("bg-[#F5B300] text-[#1A1A1A] hover:bg-white", "bg-[#1A1A1A] text-white hover:bg-[#F5B300] hover:text-[#1A1A1A]", "bg-[#F5B300] text-[#1C1108] hover:bg-[#F5EDD8]")}`}>
-                        Add to Cart →
-                      </button>
-                      </div>{/* p-5 */}
-                    </div>/* card */
-                    );
-                  })}
+                          {/* p-5 */}
+                        </div> /* card */
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className={`mt-10 p-5 text-[12px] border ${th("bg-white/3 border-white/8 text-white/35", "bg-[#FFF8E8] border-[#F5B300]/30 text-[#888]", "bg-[#F5EDD8]/5 border-[#F5EDD8]/10 text-[#F5EDD8]/40")}`}>
-            🚚 Free delivery on orders $120 and above · $10 delivery fee below $120
+            <div
+              className={`mt-10 p-5 text-[12px] border ${"bg-[#FFF8E8] border-[#F5B300]/30 text-[#888]"}`}
+            >
+              🚚 Free delivery on orders $120 and above · $10 delivery fee below
+              $120
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       )}
 
       {/* ── SUBSCRIPTION TAB ── */}
       {purchaseMode === "subscription" && (
-      <div className="bg-[#0D0D0D]">
-        {/* Trust bar */}
-        <div className="bg-[#F5B300] py-2.5 px-6">
-          <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-1 text-[#111] text-[10px] font-extrabold tracking-[0.15em] uppercase">
-            {[
-              { icon: "🚚", text: "Free delivery on all subscriptions" },
-              { icon: "↩", text: "Pause or cancel anytime" },
-              { icon: "🔄", text: "Monthly meal rotation" },
-              { icon: "⭐", text: "10,000+ active subscribers" },
-            ].map((t) => (
-              <div key={t.text} className="flex items-center gap-2">
-                <span>{t.icon}</span>
-                <span>{t.text}</span>
-              </div>
-            ))}
+        <div className="bg-[#0D0D0D]">
+          {/* Trust bar */}
+          <div className="bg-[#F5B300] py-2.5 px-6">
+            <div className="max-w-[1200px] mx-auto flex flex-wrap items-center justify-center gap-x-8 gap-y-1 text-[#111] text-[10px] font-extrabold tracking-[0.15em] uppercase">
+              {[
+                { icon: "🚚", text: "Free delivery on all subscriptions" },
+                { icon: "↩", text: "Pause or cancel anytime" },
+                { icon: "🔄", text: "Monthly meal rotation" },
+                { icon: "⭐", text: "10,000+ active subscribers" },
+              ].map((t) => (
+                <div key={t.text} className="flex items-center gap-2">
+                  <span>{t.icon}</span>
+                  <span>{t.text}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <section className="py-14 px-6 sm:px-8">
-          <div className="max-w-[1200px] mx-auto">
-            {/* Header */}
-            <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-              <div>
-                <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.4em] uppercase mb-3">Ready Series Subscription</div>
-                <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.92]">
-                  Your freezer,<br />always stocked<span className="text-[#F5B300]">.</span>
-                </h2>
-                <p className="text-white/40 text-[14px] mt-4 max-w-[480px] leading-relaxed">
-                  Subscribe and save up to 59% versus individual purchases. One delivery per month — we handle the rest.
-                </p>
+          <section className="py-14 px-6 sm:px-8">
+            <div className="max-w-[1200px] mx-auto">
+              {/* Header */}
+              <div className="mb-8 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+                <div>
+                  <div className="text-[#F5B300] text-[10px] font-mono tracking-[0.4em] uppercase mb-3">
+                    Ready Series Subscription
+                  </div>
+                  <h2 className="font-display text-[38px] sm:text-[52px] font-extrabold text-white leading-[0.92]">
+                    Your freezer,
+                    <br />
+                    always stocked<span className="text-[#F5B300]">.</span>
+                  </h2>
+                  <p className="text-white/40 text-[14px] mt-4 max-w-[480px] leading-relaxed">
+                    Subscribe and save up to 59% versus individual purchases.
+                    One delivery per month — we handle the rest.
+                  </p>
+                </div>
+                {/* Term toggle */}
+                <div className="shrink-0">
+                  <div className="text-[10px] text-white/30 font-mono tracking-widest uppercase mb-2">
+                    Subscription term
+                  </div>
+                  <div className="flex border border-white/10 overflow-hidden">
+                    {([3, 6] as const).map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setSubTerm(t)}
+                        className={`relative px-7 py-3.5 text-[12px] font-bold tracking-wide transition-all ${
+                          subTerm === t
+                            ? "bg-[#F5B300] text-[#111]"
+                            : "text-white/40 hover:text-white bg-white/3"
+                        }`}
+                      >
+                        {t} months
+                        {t === 6 && (
+                          <span
+                            className={`absolute -top-2.5 -right-2 text-[8px] font-extrabold px-1.5 py-0.5 ${
+                              subTerm === 6
+                                ? "bg-[#1A1A1A] text-[#F5B300]"
+                                : "bg-[#F5B300] text-[#111]"
+                            }`}
+                          >
+                            BEST VALUE
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                  <div
+                    className={`text-[10px] mt-2 font-mono transition-colors ${
+                      subTerm === 6 ? "text-[#F5B300]" : "text-white/25"
+                    }`}
+                  >
+                    {subTerm === 6
+                      ? "↑ Extra 5% off vs 3-month plan"
+                      : "Upgrade to 6 months for extra savings"}
+                  </div>
+                </div>
               </div>
-              {/* Term toggle */}
-              <div className="shrink-0">
-                <div className="text-[10px] text-white/30 font-mono tracking-widest uppercase mb-2">Subscription term</div>
-                <div className="flex border border-white/10 overflow-hidden">
-                  {([3, 6] as const).map((t) => (
-                    <button key={t} onClick={() => setSubTerm(t)}
-                      className={`relative px-7 py-3.5 text-[12px] font-bold tracking-wide transition-all ${subTerm === t ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white bg-white/3"}`}>
-                      {t} months
-                      {t === 6 && (
-                        <span className={`absolute -top-2.5 -right-2 text-[8px] font-extrabold px-1.5 py-0.5 ${subTerm === 6 ? "bg-[#1A1A1A] text-[#F5B300]" : "bg-[#F5B300] text-[#111]"}`}>
-                          BEST VALUE
-                        </span>
-                      )}
+
+              {/* Subscription type filter — 3-way toggle */}
+              <div className="flex items-center gap-4 mb-8 flex-wrap">
+                <div className="text-[10px] text-white/30 font-mono tracking-widest uppercase shrink-0">
+                  Category
+                </div>
+                <div className="flex border border-white/15 overflow-hidden">
+                  {[
+                    {
+                      key: "meals" as const,
+                      label: "Meals",
+                      sub: "Low Carb & High Carb",
+                    },
+                    {
+                      key: "protein" as const,
+                      label: "Just Protein",
+                      sub: "High-protein, minimal carbs",
+                    },
+                    {
+                      key: "mixed" as const,
+                      label: "Mixed",
+                      sub: "Carbs + Protein combo",
+                    },
+                  ].map(({ key, label, sub }) => (
+                    <button
+                      key={key}
+                      onClick={() => setSubTypeFilter(key)}
+                      title={sub}
+                      className={`px-5 py-2.5 text-[11px] font-bold tracking-wide transition-all border-r border-white/8 last:border-r-0
+                      ${
+                        subTypeFilter === key
+                          ? "bg-[#F5B300] text-[#111]"
+                          : "text-white/40 hover:text-white bg-white/3 hover:bg-white/8"
+                      }`}
+                    >
+                      {label}
                     </button>
                   ))}
                 </div>
-                <div className={`text-[10px] mt-2 font-mono transition-colors ${subTerm === 6 ? "text-[#F5B300]" : "text-white/25"}`}>
-                  {subTerm === 6 ? "↑ Extra 5% off vs 3-month plan" : "Upgrade to 6 months for extra savings"}
-                </div>
+                {rsSignedIn && (
+                  <div className="ml-auto flex items-center gap-2 text-[11px] text-[#34D399] font-mono">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    Signed in
+                  </div>
+                )}
               </div>
-            </div>
 
-            {/* Subscription type filter — 3-way toggle */}
-            <div className="flex items-center gap-4 mb-8 flex-wrap">
-              <div className="text-[10px] text-white/30 font-mono tracking-widest uppercase shrink-0">Category</div>
-              <div className="flex border border-white/15 overflow-hidden">
-                {([
-                  { key: "meals"   as const, label: "Meals",        sub: "Low Carb & High Carb" },
-                  { key: "protein" as const, label: "Just Protein",  sub: "High-protein, minimal carbs" },
-                  { key: "mixed"   as const, label: "Mixed",         sub: "Carbs + Protein combo" },
-                ]).map(({ key, label, sub }) => (
-                  <button key={key} onClick={() => setSubTypeFilter(key)}
-                    title={sub}
-                    className={`px-5 py-2.5 text-[11px] font-bold tracking-wide transition-all border-r border-white/8 last:border-r-0
-                      ${subTypeFilter === key ? "bg-[#F5B300] text-[#111]" : "text-white/40 hover:text-white bg-white/3 hover:bg-white/8"}`}>
-                    {label}
-                  </button>
-                ))}
-              </div>
-              {rsSignedIn && (
-                <div className="ml-auto flex items-center gap-2 text-[11px] text-[#34D399] font-mono">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
-                  Signed in
+              {/* Auth notice for subscription (account-gated) */}
+              {!rsSignedIn && (
+                <div className="flex items-center gap-4 mb-6 bg-white/4 border border-white/10 px-5 py-3.5">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#F5B300"
+                    strokeWidth="2"
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  <div className="flex-1">
+                    <span className="text-[12px] text-white/60">
+                      Subscriptions require an account.{" "}
+                    </span>
+                    <span className="text-[12px] text-white/30">
+                      Sign in or create one when you subscribe — takes 30
+                      seconds.
+                    </span>
+                  </div>
                 </div>
               )}
-            </div>
 
-            {/* Auth notice for subscription (account-gated) */}
-            {!rsSignedIn && (
-              <div className="flex items-center gap-4 mb-6 bg-white/4 border border-white/10 px-5 py-3.5">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F5B300" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                <div className="flex-1">
-                  <span className="text-[12px] text-white/60">Subscriptions require an account. </span>
-                  <span className="text-[12px] text-white/30">Sign in or create one when you subscribe — takes 30 seconds.</span>
-                </div>
-              </div>
-            )}
+              {/* Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                {SUBSCRIPTION_PRODUCTS.filter((sub) => {
+                  if (subTypeFilter === "protein")
+                    return sub.sku.startsWith("JP")
+                  if (subTypeFilter === "mixed") return sub.sku.includes("MIX")
+                  return !sub.sku.startsWith("JP") && !sub.sku.includes("MIX")
+                }).map((sub) => {
+                  const details = SUB_MEAL_DETAILS[sub.sku]
+                  const price = subTerm === 3 ? sub.price3m : sub.price6m
+                  const pricePerMeal = price / (sub.items * subTerm)
+                  const savingsPct = details
+                    ? Math.round(
+                        ((details.alaCarteAvg - pricePerMeal) /
+                          details.alaCarteAvg) *
+                          100,
+                      )
+                    : 0
+                  const isSelected = selectedSub === sub.sku
+                  const uniqueMealIds = details
+                    ? [...new Set(details.meals.map((m) => m.id))]
+                    : []
+                  const previewMeals = uniqueMealIds
+                    .slice(0, 3)
+                    .map((id) => MEALS.find((m) => m.id === id))
+                    .filter(Boolean) as typeof MEALS
+                  const accentColor = details?.accentColor ?? "#F5B300"
+                  const subMealNames = details
+                    ? Array.from({ length: subTerm }).flatMap(() =>
+                        details.meals.flatMap(({ id, qty }) => {
+                          const meal = MEALS.find((m) => m.id === id)
+                          return meal ? Array(qty).fill(meal.name) : []
+                        }),
+                      )
+                    : []
+                  const subMealImgs = details
+                    ? Array.from({ length: subTerm }).flatMap(() =>
+                        details.meals.flatMap(({ id, qty }) => {
+                          const meal = MEALS.find((m) => m.id === id)
+                          return meal ? Array(qty).fill(meal.img) : []
+                        }),
+                      )
+                    : []
 
-            {/* Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {SUBSCRIPTION_PRODUCTS.filter((sub) => {
-                if (subTypeFilter === "protein") return sub.sku.startsWith("JP");
-                if (subTypeFilter === "mixed")   return sub.sku.includes("MIX");
-                return !sub.sku.startsWith("JP") && !sub.sku.includes("MIX");
-              }).map((sub) => {
-                const details = SUB_MEAL_DETAILS[sub.sku];
-                const price = subTerm === 3 ? sub.price3m : sub.price6m;
-                const pricePerMeal = price / (sub.items * subTerm);
-                const savingsPct = details ? Math.round((details.alaCarteAvg - pricePerMeal) / details.alaCarteAvg * 100) : 0;
-                const isSelected = selectedSub === sub.sku;
-                const uniqueMealIds = details ? [...new Set(details.meals.map((m) => m.id))] : [];
-                const previewMeals = uniqueMealIds.slice(0, 3).map((id) => MEALS.find((m) => m.id === id)).filter(Boolean) as typeof MEALS;
-                const accentColor = details?.accentColor ?? "#F5B300";
-                const subMealNames = details
-                  ? Array.from({ length: subTerm }).flatMap(() =>
-                      details.meals.flatMap(({ id, qty }) => {
-                        const meal = MEALS.find((m) => m.id === id);
-                        return meal ? Array(qty).fill(meal.name) : [];
-                      })
-                    )
-                  : [];
-                const subMealImgs = details
-                  ? Array.from({ length: subTerm }).flatMap(() =>
-                      details.meals.flatMap(({ id, qty }) => {
-                        const meal = MEALS.find((m) => m.id === id);
-                        return meal ? Array(qty).fill(meal.img) : [];
-                      })
-                    )
-                  : [];
-
-                return (
-                  <div key={sub.sku}
-                    className={`flex flex-col border transition-all duration-300 relative overflow-hidden bg-[#111] ${
-                      isSelected
-                        ? "border-[#F5B300]"
-                        : sub.badge
-                          ? "border-[#F5B300]/30 hover:border-[#F5B300]/70"
-                          : "border-white/8 hover:border-white/20"
-                    }`}
-                    style={isSelected ? { boxShadow: `0 0 0 1px ${accentColor}, 0 8px 32px rgba(0,0,0,0.5)` } : {}}>
-
-                    {/* Badge */}
-                    {sub.badge && (
-                      <div className="absolute top-3 right-3 z-10">
-                        <span className="bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.2em] uppercase px-2 py-1 block">
-                          {sub.badge}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Category color strip */}
-                    <div className="h-[3px] w-full shrink-0" style={{ background: accentColor }} />
-
-                    {/* Meal photo strip */}
-                    <div className="flex h-24 overflow-hidden bg-[#0D0D0D] shrink-0">
-                      {previewMeals.map((m, pi) => (
-                        <div key={pi} className="flex-1 overflow-hidden relative">
-                          <img
-                            src={`${m.img.split("?")[0]}?w=200&h=150&fit=crop&auto=format&q=75`}
-                            alt={m.name}
-                            className="w-full h-full object-cover opacity-75"
-                          />
-                          {pi < previewMeals.length - 1 && (
-                            <div className="absolute right-0 top-0 bottom-0 w-px bg-[#0D0D0D]/60" />
-                          )}
-                        </div>
-                      ))}
-                      {uniqueMealIds.length > 3 && (
-                        <div className="w-11 shrink-0 bg-[#1A1A1A] flex items-center justify-center">
-                          <span className="text-[9px] font-bold text-white/35">+{uniqueMealIds.length - 3}</span>
+                  return (
+                    <div
+                      key={sub.sku}
+                      className={`flex flex-col border transition-all duration-300 relative overflow-hidden bg-[#111] ${
+                        isSelected
+                          ? "border-[#F5B300]"
+                          : sub.badge
+                            ? "border-[#F5B300]/30 hover:border-[#F5B300]/70"
+                            : "border-white/8 hover:border-white/20"
+                      }`}
+                      style={
+                        isSelected
+                          ? {
+                              boxShadow: `0 0 0 1px ${accentColor}, 0 8px 32px rgba(0,0,0,0.5)`,
+                            }
+                          : {}
+                      }
+                    >
+                      {/* Badge */}
+                      {sub.badge && (
+                        <div className="absolute top-3 right-3 z-10">
+                          <span className="bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.2em] uppercase px-2 py-1 block">
+                            {sub.badge}
+                          </span>
                         </div>
                       )}
-                    </div>
 
-                    {/* Body */}
-                    <div className="p-5 flex flex-col gap-3 flex-1">
-                      {/* Name + variant */}
-                      <div>
-                        <div className="text-[13px] font-extrabold text-white leading-snug pr-12">{sub.name}</div>
-                        <div className="text-[9px] font-mono tracking-[0.2em] uppercase mt-1" style={{ color: accentColor }}>
-                          {sub.variant} · {sub.items} meals/month
-                        </div>
-                      </div>
+                      {/* Category color strip */}
+                      <div
+                        className="h-[3px] w-full shrink-0"
+                        style={{ background: accentColor }}
+                      />
 
-                      {/* Per-meal price — hero number */}
-                      <div className="flex items-end gap-2 mt-1">
-                        <div className="font-display text-[38px] font-extrabold leading-none text-white">
-                          ${pricePerMeal.toFixed(2)}
-                        </div>
-                        <div className="text-[10px] text-white/30 pb-1.5 font-mono leading-none">per<br />meal</div>
-                        {savingsPct > 0 && (
-                          <div className="ml-auto shrink-0 px-2 py-1 text-[9px] font-extrabold tracking-[0.1em]"
-                            style={{ backgroundColor: `${accentColor}1A`, color: accentColor, border: `1px solid ${accentColor}44` }}>
-                            {savingsPct}% OFF
+                      {/* Meal photo strip */}
+                      <div className="flex h-24 overflow-hidden bg-[#0D0D0D] shrink-0">
+                        {previewMeals.map((m, pi) => (
+                          <div
+                            key={pi}
+                            className="flex-1 overflow-hidden relative"
+                          >
+                            <img
+                              src={`${m.img.split("?")[0]}?w=200&h=150&fit=crop&auto=format&q=75`}
+                              alt={m.name}
+                              className="w-full h-full object-cover opacity-75"
+                            />
+                            {pi < previewMeals.length - 1 && (
+                              <div className="absolute right-0 top-0 bottom-0 w-px bg-[#0D0D0D]/60" />
+                            )}
+                          </div>
+                        ))}
+                        {uniqueMealIds.length > 3 && (
+                          <div className="w-11 shrink-0 bg-[#1A1A1A] flex items-center justify-center">
+                            <span className="text-[9px] font-bold text-white/35">
+                              +{uniqueMealIds.length - 3}
+                            </span>
                           </div>
                         )}
                       </div>
 
-                      {/* Meals in box — always visible */}
-                      {details && (
-                        <div className="border-t border-white/8 pt-3 flex flex-col gap-1.5">
-                          <div className="text-[9px] font-mono tracking-[0.25em] uppercase mb-1" style={{ color: accentColor }}>
-                            Monthly box · {sub.items} meals
+                      {/* Body */}
+                      <div className="p-5 flex flex-col gap-3 flex-1">
+                        {/* Name + variant */}
+                        <div>
+                          <div className="text-[13px] font-extrabold text-white leading-snug pr-12">
+                            {sub.name}
                           </div>
-                          {details.meals.map(({ id, qty }) => {
-                            const meal = MEALS.find((m) => m.id === id);
-                            if (!meal) return null;
-                            return (
-                              <div key={id} className="flex items-center gap-2 text-[11px]">
-                                <div className="w-1 h-1 shrink-0 rounded-full" style={{ background: accentColor }} />
-                                <span className="text-white/60 flex-1 leading-snug">{meal.name}</span>
-                                <span className="font-mono text-white/30 shrink-0 text-[10px]">×{qty}</span>
-                              </div>
-                            );
-                          })}
-                          <div className="mt-1.5 pt-2 border-t border-white/8 flex flex-col gap-1">
-                            {details.highlights.map((h) => (
-                              <div key={h} className="flex items-center gap-1.5 text-[10px] text-white/35">
-                                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                                  <path d="M20 6L9 17l-5-5" />
-                                </svg>
-                                {h}
-                              </div>
-                            ))}
+                          <div
+                            className="text-[9px] font-mono tracking-[0.2em] uppercase mt-1"
+                            style={{ color: accentColor }}
+                          >
+                            {sub.variant} · {sub.items} meals/month
                           </div>
                         </div>
-                      )}
 
-                      {/* Pricing breakdown */}
-                      <div className="mt-auto pt-3 border-t border-white/8">
-                        <div className="flex items-center justify-between text-[11px] mb-1.5">
-                          <span className="text-white/35">{subTerm} monthly deliveries</span>
-                          <span className="text-white/35">${(price / subTerm).toFixed(2)}/delivery</span>
+                        {/* Per-meal price — hero number */}
+                        <div className="flex items-end gap-2 mt-1">
+                          <div className="font-display text-[38px] font-extrabold leading-none text-white">
+                            ${pricePerMeal.toFixed(2)}
+                          </div>
+                          <div className="text-[10px] text-white/30 pb-1.5 font-mono leading-none">
+                            per
+                            <br />
+                            meal
+                          </div>
+                          {savingsPct > 0 && (
+                            <div
+                              className="ml-auto shrink-0 px-2 py-1 text-[9px] font-extrabold tracking-[0.1em]"
+                              style={{
+                                backgroundColor: `${accentColor}1A`,
+                                color: accentColor,
+                                border: `1px solid ${accentColor}44`,
+                              }}
+                            >
+                              {savingsPct}% OFF
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-baseline justify-between">
-                          <span className="text-[22px] font-display font-extrabold text-white">${price.toFixed(2)}</span>
-                          <span className="text-[10px] text-white/25 font-mono">total · {subTerm}mo</span>
+
+                        {/* Meals in box — always visible */}
+                        {details && (
+                          <div className="border-t border-white/8 pt-3 flex flex-col gap-1.5">
+                            <div
+                              className="text-[9px] font-mono tracking-[0.25em] uppercase mb-1"
+                              style={{ color: accentColor }}
+                            >
+                              Monthly box · {sub.items} meals
+                            </div>
+                            {details.meals.map(({ id, qty }) => {
+                              const meal = MEALS.find((m) => m.id === id)
+                              if (!meal) return null
+                              return (
+                                <div
+                                  key={id}
+                                  className="flex items-center gap-2 text-[11px]"
+                                >
+                                  <div
+                                    className="w-1 h-1 shrink-0 rounded-full"
+                                    style={{ background: accentColor }}
+                                  />
+                                  <span className="text-white/60 flex-1 leading-snug">
+                                    {meal.name}
+                                  </span>
+                                  <span className="font-mono text-white/30 shrink-0 text-[10px]">
+                                    ×{qty}
+                                  </span>
+                                </div>
+                              )
+                            })}
+                            <div className="mt-1.5 pt-2 border-t border-white/8 flex flex-col gap-1">
+                              {details.highlights.map((h) => (
+                                <div
+                                  key={h}
+                                  className="flex items-center gap-1.5 text-[10px] text-white/35"
+                                >
+                                  <svg
+                                    width="9"
+                                    height="9"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="3"
+                                  >
+                                    <path d="M20 6L9 17l-5-5" />
+                                  </svg>
+                                  {h}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Pricing breakdown */}
+                        <div className="mt-auto pt-3 border-t border-white/8">
+                          <div className="flex items-center justify-between text-[11px] mb-1.5">
+                            <span className="text-white/35">
+                              {subTerm} monthly deliveries
+                            </span>
+                            <span className="text-white/35">
+                              ${(price / subTerm).toFixed(2)}/delivery
+                            </span>
+                          </div>
+                          <div className="flex items-baseline justify-between">
+                            <span className="text-[22px] font-display font-extrabold text-white">
+                              ${price.toFixed(2)}
+                            </span>
+                            <span className="text-[10px] text-white/25 font-mono">
+                              total · {subTerm}mo
+                            </span>
+                          </div>
                         </div>
+
+                        {/* CTA */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            if (!rsSignedIn) {
+                              setPendingSubSku(sub.sku)
+                              setShowRsAuthGate(true)
+                              return
+                            }
+                            setSelectedSub(sub.sku)
+                            addToCart({
+                              id: sub.sku
+                                .split("")
+                                .reduce((a, c) => a + c.charCodeAt(0), 0),
+                              name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
+                              price,
+                              qty: 1,
+                              img:
+                                previewMeals[0]?.img ??
+                                "https://images.unsplash.com/photo-1555789185-76365931ffaa?w=200&h=200&fit=crop&auto=format",
+                              type: "box",
+                              mealNames: subMealNames,
+                              mealImgs: subMealImgs,
+                            })
+                          }}
+                          className="w-full py-3.5 text-[11px] font-extrabold tracking-[0.2em] uppercase transition-all duration-200 hover:opacity-90"
+                          style={{
+                            backgroundColor: isSelected
+                              ? accentColor
+                              : "transparent",
+                            color: isSelected ? "#111" : accentColor,
+                            border: `1px solid ${accentColor}`,
+                          }}
+                        >
+                          {isSelected
+                            ? "✓ Added to cart"
+                            : rsSignedIn
+                              ? "Subscribe →"
+                              : "Sign In & Subscribe →"}
+                        </button>
                       </div>
+                    </div>
+                  )
+                })}
+              </div>
 
-                      {/* CTA */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!rsSignedIn) {
-                            setPendingSubSku(sub.sku);
-                            setShowRsAuthGate(true);
-                            return;
-                          }
-                          setSelectedSub(sub.sku);
+              {/* Reassurance */}
+              <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-px bg-white/5">
+                {[
+                  {
+                    icon: (
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z" />
+                        <circle cx="5.5" cy="18.5" r="2.5" />
+                        <circle cx="18.5" cy="18.5" r="2.5" />
+                      </svg>
+                    ),
+                    title: "Free delivery, every time",
+                    desc: "All subscription orders ship free — no minimum, no exceptions. Delivery dates confirmed after sign-up.",
+                  },
+                  {
+                    icon: (
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      </svg>
+                    ),
+                    title: "Pause or cancel anytime",
+                    desc: "Life happens. Pause, skip, or cancel your subscription from your account — no hoops, no fees.",
+                  },
+                  {
+                    icon: (
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <polyline points="23 4 23 10 17 10" />
+                        <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" />
+                      </svg>
+                    ),
+                    title: "Monthly meal rotation",
+                    desc: "Meals refresh every month to keep variety high. You get the best of the season, automatically.",
+                  },
+                ].map((r, i) => (
+                  <div key={i} className="bg-[#111] px-7 py-8 flex gap-5">
+                    <div className="text-[#F5B300] shrink-0 mt-0.5">
+                      {r.icon}
+                    </div>
+                    <div>
+                      <div className="font-bold text-white text-[14px] mb-1.5">
+                        {r.title}
+                      </div>
+                      <div className="text-white/35 text-[12px] leading-relaxed">
+                        {r.desc}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 text-[10px] text-white/20 leading-relaxed font-mono">
+                Subscription delivers once per month over your selected term and
+                renews automatically. Pricing locked for the term. Cancel or
+                pause anytime from your account dashboard.
+              </div>
+            </div>
+          </section>
+
+          {/* ── RS Auth Gate Modal ── */}
+          {showRsAuthGate && (
+            <div
+              className="fixed inset-0 bg-black/85 z-[500] flex items-center justify-center p-6"
+              onClick={() => setShowRsAuthGate(false)}
+            >
+              <div
+                className="bg-[#0D0D0D] border border-white/12 max-w-[440px] w-full p-8"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-[#F5B300] text-[9px] font-mono tracking-[0.4em] uppercase mb-4">
+                  Account Required
+                </div>
+                <h3 className="font-display text-[26px] font-extrabold text-white leading-tight mb-2">
+                  Subscribe with
+                  <br />
+                  confidence.
+                </h3>
+                <p className="text-white/40 text-[13px] mb-7 leading-relaxed">
+                  Ready Series subscriptions are managed through your account —
+                  pause, skip deliveries, or cancel anytime. No guest checkout
+                  for subscriptions.
+                </p>
+                <div className="space-y-3 mb-5">
+                  <button
+                    onClick={() => {
+                      setRsSignedIn(true)
+                      setShowRsAuthGate(false)
+                      // Auto-add the pending subscription
+                      if (pendingSubSku) {
+                        const sub = SUBSCRIPTION_PRODUCTS.find(
+                          (s) => s.sku === pendingSubSku,
+                        )
+                        const details = SUB_MEAL_DETAILS[pendingSubSku]
+                        if (sub && details) {
+                          const price =
+                            subTerm === 3 ? sub.price3m : sub.price6m
+                          const uniqueIds = [
+                            ...new Set(details.meals.map((m) => m.id)),
+                          ]
+                          const firstMeal = MEALS.find(
+                            (m) => m.id === uniqueIds[0],
+                          )
+                          const subMealNames = Array.from({
+                            length: subTerm,
+                          }).flatMap(() =>
+                            details.meals.flatMap(({ id, qty }) => {
+                              const meal = MEALS.find((m) => m.id === id)
+                              return meal ? Array(qty).fill(meal.name) : []
+                            }),
+                          )
+                          const subMealImgs = Array.from({
+                            length: subTerm,
+                          }).flatMap(() =>
+                            details.meals.flatMap(({ id, qty }) => {
+                              const meal = MEALS.find((m) => m.id === id)
+                              return meal ? Array(qty).fill(meal.img) : []
+                            }),
+                          )
+                          setSelectedSub(pendingSubSku)
                           addToCart({
-                            id: sub.sku.split("").reduce((a, c) => a + c.charCodeAt(0), 0),
+                            id: pendingSubSku
+                              .split("")
+                              .reduce((a, c) => a + c.charCodeAt(0), 0),
                             name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
                             price,
                             qty: 1,
-                            img: previewMeals[0]?.img ?? "https://images.unsplash.com/photo-1555789185-76365931ffaa?w=200&h=200&fit=crop&auto=format",
+                            img:
+                              firstMeal?.img ??
+                              "https://images.unsplash.com/photo-1562828358-432c7bdde45e?w=200&h=200&fit=crop&auto=format",
                             type: "box",
                             mealNames: subMealNames,
                             mealImgs: subMealImgs,
-                          });
-                        }}
-                        className="w-full py-3.5 text-[11px] font-extrabold tracking-[0.2em] uppercase transition-all duration-200 hover:opacity-90"
-                        style={{
-                          backgroundColor: isSelected ? accentColor : "transparent",
-                          color: isSelected ? "#111" : accentColor,
-                          border: `1px solid ${accentColor}`,
-                        }}
-                      >
-                        {isSelected ? "✓ Added to cart" : rsSignedIn ? "Subscribe →" : "Sign In & Subscribe →"}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Reassurance */}
-            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-px bg-white/5">
-              {[
-                {
-                  icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>),
-                  title: "Free delivery, every time",
-                  desc: "All subscription orders ship free — no minimum, no exceptions. Delivery dates confirmed after sign-up.",
-                },
-                {
-                  icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>),
-                  title: "Pause or cancel anytime",
-                  desc: "Life happens. Pause, skip, or cancel your subscription from your account — no hoops, no fees.",
-                },
-                {
-                  icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>),
-                  title: "Monthly meal rotation",
-                  desc: "Meals refresh every month to keep variety high. You get the best of the season, automatically.",
-                },
-              ].map((r, i) => (
-                <div key={i} className="bg-[#111] px-7 py-8 flex gap-5">
-                  <div className="text-[#F5B300] shrink-0 mt-0.5">{r.icon}</div>
-                  <div>
-                    <div className="font-bold text-white text-[14px] mb-1.5">{r.title}</div>
-                    <div className="text-white/35 text-[12px] leading-relaxed">{r.desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 text-[10px] text-white/20 leading-relaxed font-mono">
-              Subscription delivers once per month over your selected term and renews automatically. Pricing locked for the term. Cancel or pause anytime from your account dashboard.
-            </div>
-          </div>
-        </section>
-
-        {/* ── RS Auth Gate Modal ── */}
-        {showRsAuthGate && (
-          <div className="fixed inset-0 bg-black/85 z-[500] flex items-center justify-center p-6" onClick={() => setShowRsAuthGate(false)}>
-            <div className="bg-[#0D0D0D] border border-white/12 max-w-[440px] w-full p-8" onClick={(e) => e.stopPropagation()}>
-              <div className="text-[#F5B300] text-[9px] font-mono tracking-[0.4em] uppercase mb-4">Account Required</div>
-              <h3 className="font-display text-[26px] font-extrabold text-white leading-tight mb-2">
-                Subscribe with<br />confidence.
-              </h3>
-              <p className="text-white/40 text-[13px] mb-7 leading-relaxed">
-                Ready Series subscriptions are managed through your account — pause, skip deliveries, or cancel anytime. No guest checkout for subscriptions.
-              </p>
-              <div className="space-y-3 mb-5">
-                <button
-                  onClick={() => {
-                    setRsSignedIn(true);
-                    setShowRsAuthGate(false);
-                    // Auto-add the pending subscription
-                    if (pendingSubSku) {
-                      const sub = SUBSCRIPTION_PRODUCTS.find((s) => s.sku === pendingSubSku);
-                      const details = SUB_MEAL_DETAILS[pendingSubSku];
-                      if (sub && details) {
-                        const price = subTerm === 3 ? sub.price3m : sub.price6m;
-                        const uniqueIds = [...new Set(details.meals.map((m) => m.id))];
-                        const firstMeal = MEALS.find((m) => m.id === uniqueIds[0]);
-                        const subMealNames = Array.from({ length: subTerm }).flatMap(() =>
-                          details.meals.flatMap(({ id, qty }) => {
-                            const meal = MEALS.find((m) => m.id === id);
-                            return meal ? Array(qty).fill(meal.name) : [];
                           })
-                        );
-                        const subMealImgs = Array.from({ length: subTerm }).flatMap(() =>
-                          details.meals.flatMap(({ id, qty }) => {
-                            const meal = MEALS.find((m) => m.id === id);
-                            return meal ? Array(qty).fill(meal.img) : [];
-                          })
-                        );
-                        setSelectedSub(pendingSubSku);
-                        addToCart({
-                          id: pendingSubSku.split("").reduce((a, c) => a + c.charCodeAt(0), 0),
-                          name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
-                          price,
-                          qty: 1,
-                          img: firstMeal?.img ?? "https://images.unsplash.com/photo-1562828358-432c7bdde45e?w=200&h=200&fit=crop&auto=format",
-                          type: "box",
-                          mealNames: subMealNames,
-                          mealImgs: subMealImgs,
-                        });
+                        }
+                        setPendingSubSku(null)
                       }
-                      setPendingSubSku(null);
-                    }
-                  }}
-                  className="w-full bg-[#F5B300] text-[#111] py-4 font-extrabold text-[13px] tracking-[0.15em] uppercase hover:bg-white transition-colors">
-                  Sign In & Subscribe
-                </button>
+                    }}
+                    className="w-full bg-[#F5B300] text-[#111] py-4 font-extrabold text-[13px] tracking-[0.15em] uppercase hover:bg-white transition-colors"
+                  >
+                    Sign In & Subscribe
+                  </button>
+                  <button
+                    onClick={() => {
+                      setRsSignedIn(true)
+                      setShowRsAuthGate(false)
+                      setPendingSubSku(null)
+                    }}
+                    className="w-full border border-white/20 text-white py-4 font-bold text-[13px] tracking-wide hover:border-[#F5B300] hover:text-[#F5B300] transition-colors"
+                  >
+                    Create Account
+                  </button>
+                </div>
                 <button
                   onClick={() => {
-                    setRsSignedIn(true);
-                    setShowRsAuthGate(false);
-                    setPendingSubSku(null);
+                    setShowRsAuthGate(false)
+                    setPendingSubSku(null)
                   }}
-                  className="w-full border border-white/20 text-white py-4 font-bold text-[13px] tracking-wide hover:border-[#F5B300] hover:text-[#F5B300] transition-colors">
-                  Create Account
+                  className="w-full text-center text-[12px] text-white/25 hover:text-white/50 transition-colors"
+                >
+                  Cancel
                 </button>
+                <p className="text-white/15 text-[9px] font-mono mt-5 text-center uppercase tracking-widest">
+                  Guest checkout not available for subscriptions
+                </p>
               </div>
-              <button onClick={() => { setShowRsAuthGate(false); setPendingSubSku(null); }}
-                className="w-full text-center text-[12px] text-white/25 hover:text-white/50 transition-colors">
-                Cancel
-              </button>
-              <p className="text-white/15 text-[9px] font-mono mt-5 text-center uppercase tracking-widest">
-                Guest checkout not available for subscriptions
-              </p>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       )}
 
       {/* ── PRODUCT GRID (single purchase) ── */}
       {purchaseMode === "single" && (
-      <section className={`py-16 px-6 sm:px-8 ${th("bg-[#1A1A1A]", "bg-[#FAF8F4]", "bg-[#1C1108]")}`}>
-        <div className="max-w-[1200px] mx-auto">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
-            <div>
-              <div className="text-[10px] font-mono tracking-[0.3em] uppercase mb-2 text-[#F5B300]">All Meals</div>
-              <h2 className={`font-display text-[32px] sm:text-[40px] font-extrabold ${th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]")}`}>
-                {filtered.length} meals available<span className="text-[#F5B300]">.</span>
-              </h2>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {CATS.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setActiveCat(c)}
-                  className={`px-4 py-2 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${activeCat === c ? "bg-[#F5B300] text-[#111]" : th("border border-white/15 text-white/50 hover:border-[#F5B300]/50 hover:text-[#F5B300]", "border border-black/15 text-[#555] hover:border-[#F5B300] hover:text-[#C8860A]", "border border-[#F5EDD8]/15 text-[#F5EDD8]/50 hover:border-[#F5B300]/50 hover:text-[#F5B300]")}`}
+        <section className={`py-16 px-6 sm:px-8 ${"bg-[#FAF8F4]"}`}>
+          <div className="max-w-[1200px] mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+              <div>
+                <div className="text-[10px] font-mono tracking-[0.3em] uppercase mb-2 text-[#F5B300]">
+                  All Meals
+                </div>
+                <h2
+                  className={`font-display text-[32px] sm:text-[40px] font-extrabold ${"text-[#1A1A1A]"}`}
                 >
-                  {c}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px ${th("bg-white/8", "bg-[#E8E2D9]", "bg-[#F5EDD8]/8")}`}>
-            {filtered.map((meal) => {
-              const inCart = cart.find((i) => i.id === meal.id && i.type === "ready");
-              const justAdded = addedId === meal.id;
-              const mealReviews = MEAL_REVIEWS[meal.id];
-              const avgRating = mealReviews
-                ? (mealReviews.reduce((s, r) => s + r.rating, 0) / mealReviews.length).toFixed(1)
-                : "4.8";
-              const reviewCount = mealReviews?.length ?? 0;
-              return (
-                <div key={meal.id} className={`flex flex-col ${th("bg-[#111]", "bg-white", "bg-[#2A1C0D]")}`}>
+                  {filtered.length} meals available
+                  <span className="text-[#F5B300]">.</span>
+                </h2>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {CATS.map((c) => (
                   <button
-                    onClick={() => onSelectMeal(meal.id)}
-                    className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A] block w-full group"
-                    aria-label={`View ${meal.name} details`}
+                    key={c}
+                    onClick={() => setActiveCat(c)}
+                    className={`px-4 py-2 text-[10px] font-bold tracking-[0.2em] uppercase transition-colors ${
+                      activeCat === c
+                        ? "bg-[#F5B300] text-[#111]"
+                        : "border border-black/15 text-[#555] hover:border-[#F5B300] hover:text-[#C8860A]"
+                    }`}
                   >
-                    <img
-                      src={meal.img}
-                      alt={meal.name}
-                      onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1597958792579-bd3517df6399?w=600&h=450&fit=crop&auto=format&q=80"; }}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-[#F5B300] text-[#1A1A1A] text-[10px] font-extrabold tracking-[0.2em] uppercase px-4 py-2">VIEW DETAILS →</span>
-                    </div>
-                    {meal.badge && (
-                      <div className="absolute top-3 left-3 bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.15em] px-2 py-1">
-                        {meal.badge}
-                      </div>
-                    )}
-                    <div className="absolute top-3 right-3 bg-[#111]/80 text-white/60 text-[10px] font-mono px-2 py-1">
-                      {meal.cat}
-                    </div>
+                    {c}
                   </button>
-                  <div className="p-5 flex flex-col gap-3 flex-1">
-                    <button onClick={() => onSelectMeal(meal.id)} className={`font-display text-[15px] font-bold leading-snug text-left hover:text-[#F5B300] transition-colors ${th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]")}`}>{meal.name}</button>
-                    <div className={`flex gap-3 text-[10px] font-mono ${th("text-white/40", "text-[#888]", "text-[#F5EDD8]/45")}`}>
-                      <span>{meal.protein}g protein</span>
-                      <span>·</span>
-                      <span>{meal.cal} cal</span>
-                    </div>
+                ))}
+              </div>
+            </div>
+
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px ${"bg-[#E8E2D9]"}`}
+            >
+              {filtered.map((meal) => {
+                const inCart = cart.find(
+                  (i) => i.id === meal.id && i.type === "ready",
+                )
+                const justAdded = addedId === meal.id
+                const mealReviews = MEAL_REVIEWS[meal.id]
+                const avgRating = mealReviews
+                  ? (
+                      mealReviews.reduce((s, r) => s + r.rating, 0) /
+                      mealReviews.length
+                    ).toFixed(1)
+                  : "4.8"
+                const reviewCount = mealReviews?.length ?? 0
+                return (
+                  <div key={meal.id} className={`flex flex-col ${"bg-white"}`}>
                     <button
-                      onClick={() => mealReviews && setReviewMealId(meal.id)}
-                      className={`flex items-center gap-1.5 text-left ${mealReviews ? "hover:opacity-80" : "cursor-default"} transition-opacity`}
+                      onClick={() => onSelectMeal(meal.id)}
+                      className="relative aspect-[4/3] overflow-hidden bg-[#1A1A1A] block w-full group"
+                      aria-label={`View ${meal.name} details`}
                     >
-                      <div className="flex">
-                        {[1,2,3,4,5].map((s) => (
-                          <span key={s} className={`text-[11px] ${s <= Math.round(Number(avgRating)) ? "text-[#F5B300]" : th("text-white/20", "text-black/15", "text-[#F5EDD8]/20")}`}>★</span>
-                        ))}
+                      <img
+                        src={meal.img}
+                        alt={meal.name}
+                        onError={(event) => {
+                          event.currentTarget.src =
+                            "https://images.unsplash.com/photo-1597958792579-bd3517df6399?w=600&h=450&fit=crop&auto=format&q=80"
+                        }}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity bg-[#F5B300] text-[#1A1A1A] text-[10px] font-extrabold tracking-[0.2em] uppercase px-4 py-2">
+                          VIEW DETAILS →
+                        </span>
                       </div>
-                      <span className={`text-[11px] font-mono ${th("text-white/40", "text-[#888]", "text-[#F5EDD8]/45")}`}>{avgRating}</span>
-                      {reviewCount > 0 && <span className={`text-[10px] ${th("text-white/30", "text-[#aaa]", "text-[#F5EDD8]/30")}`}>({reviewCount} reviews)</span>}
+                      {meal.badge && (
+                        <div className="absolute top-3 left-3 bg-[#F5B300] text-[#111] text-[8px] font-extrabold tracking-[0.15em] px-2 py-1">
+                          {meal.badge}
+                        </div>
+                      )}
+                      <div className="absolute top-3 right-3 bg-[#111]/80 text-white/60 text-[10px] font-mono px-2 py-1">
+                        {meal.cat}
+                      </div>
                     </button>
-                    <div className={`mt-auto flex items-center justify-between gap-2 pt-3 border-t ${th("border-white/8", "border-[#E8E2D9]", "border-[#F5EDD8]/10")}`}>
-                      <span className={`font-display text-[18px] font-extrabold ${th("text-white", "text-[#1A1A1A]", "text-[#F5EDD8]")}`}>${meal.price.toFixed(2)}</span>
+                    <div className="p-5 flex flex-col gap-3 flex-1">
                       <button
-                        onClick={() => handleAdd(meal)}
-                        className={`px-4 py-2 text-[10px] font-extrabold tracking-[0.15em] uppercase transition-colors ${justAdded ? th("bg-white text-[#1A1A1A]", "bg-[#1A1A1A] text-white", "bg-[#F5EDD8] text-[#1C1108]") : inCart ? "bg-[#F5B300]/20 text-[#F5B300] border border-[#F5B300]/30 hover:bg-[#F5B300] hover:text-[#111]" : th("bg-[#F5B300] text-[#111] hover:bg-white", "bg-[#F5B300] text-[#111] hover:bg-[#1A1A1A] hover:text-white", "bg-[#F5B300] text-[#1C1108] hover:bg-[#F5EDD8]")}`}
+                        onClick={() => onSelectMeal(meal.id)}
+                        className={`font-display text-[15px] font-bold leading-snug text-left hover:text-[#F5B300] transition-colors ${"text-[#1A1A1A]"}`}
                       >
-                        {justAdded ? "✓ Added" : inCart ? `In Cart (${inCart.qty})` : "+ Add"}
+                        {meal.name}
                       </button>
+                      <div
+                        className={`flex gap-3 text-[10px] font-mono ${"text-[#888]"}`}
+                      >
+                        <span>{meal.protein}g protein</span>
+                        <span>·</span>
+                        <span>{meal.cal} cal</span>
+                      </div>
+                      <button
+                        onClick={() => mealReviews && setReviewMealId(meal.id)}
+                        className={`flex items-center gap-1.5 text-left ${
+                          mealReviews ? "hover:opacity-80" : "cursor-default"
+                        } transition-opacity`}
+                      >
+                        <div className="flex">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <span
+                              key={s}
+                              className={`text-[11px] ${
+                                s <= Math.round(Number(avgRating))
+                                  ? "text-[#F5B300]"
+                                  : "text-black/15"
+                              }`}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                        <span
+                          className={`text-[11px] font-mono ${"text-[#888]"}`}
+                        >
+                          {avgRating}
+                        </span>
+                        {reviewCount > 0 && (
+                          <span className={`text-[10px] ${"text-[#aaa]"}`}>
+                            ({reviewCount} reviews)
+                          </span>
+                        )}
+                      </button>
+                      <div
+                        className={`mt-auto flex items-center justify-between gap-2 pt-3 border-t ${"border-[#E8E2D9]"}`}
+                      >
+                        <span
+                          className={`font-display text-[18px] font-extrabold ${"text-[#1A1A1A]"}`}
+                        >
+                          ${meal.price.toFixed(2)}
+                        </span>
+                        <button
+                          onClick={() => handleAdd(meal)}
+                          className={`px-4 py-2 text-[10px] font-extrabold tracking-[0.15em] uppercase transition-colors ${
+                            justAdded
+                              ? "bg-[#1A1A1A] text-white"
+                              : inCart
+                                ? "bg-[#F5B300]/20 text-[#F5B300] border border-[#F5B300]/30 hover:bg-[#F5B300] hover:text-[#111]"
+                                : "bg-[#F5B300] text-[#111] hover:bg-[#1A1A1A] hover:text-white"
+                          }`}
+                        >
+                          {justAdded
+                            ? "✓ Added"
+                            : inCart
+                              ? `In Cart (${inCart.qty})`
+                              : "+ Add"}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                )
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       )}
 
       {/* ── WHY READY SERIES ── */}
@@ -933,54 +1712,122 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             <div>
               <div className="flex items-center gap-3 mb-5">
                 <span className="w-8 h-[2px] bg-[#F5B300]" />
-                <p className="text-[#806A2A] text-[10px] font-bold tracking-[0.22em] uppercase">Why Ready Series</p>
+                <p className="text-[#806A2A] text-[10px] font-bold tracking-[0.22em] uppercase">
+                  Why Ready Series
+                </p>
               </div>
               <h2 className="font-display text-[40px] sm:text-[54px] font-black leading-[0.94] tracking-[-0.035em] text-[#1A1A1A]">
-                Built for days<br />that move fast.
+                Built for days
+                <br />
+                that move fast.
               </h2>
             </div>
             <p className="text-[#6B6259] text-[15px] sm:text-[16px] leading-relaxed max-w-[540px] lg:justify-self-end">
-              Proper meals without the planning spiral. Keep a dependable option ready, see exactly what you are eating, and stay moving when the day changes.
+              Proper meals without the planning spiral. Keep a dependable option
+              ready, see exactly what you are eating, and stay moving when the
+              day changes.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: "freeze", label: "Frozen at peak", desc: "Quality and nutrition locked in, ready whenever you need it." },
-              { icon: "time", label: "Ready in 3 minutes", desc: "Heat straight from frozen. No chopping, thawing, or cleanup." },
-              { icon: "macro", label: "Macros made clear", desc: "Protein and calories shown upfront, so choosing stays simple." },
-              { icon: "delivery", label: "Free delivery $120+", desc: "Stock the freezer and delivery is on us across Singapore." },
+              {
+                icon: "freeze",
+                label: "Frozen at peak",
+                desc: "Quality and nutrition locked in, ready whenever you need it.",
+              },
+              {
+                icon: "time",
+                label: "Ready in 3 minutes",
+                desc: "Heat straight from frozen. No chopping, thawing, or cleanup.",
+              },
+              {
+                icon: "macro",
+                label: "Macros made clear",
+                desc: "Protein and calories shown upfront, so choosing stays simple.",
+              },
+              {
+                icon: "delivery",
+                label: "Free delivery $120+",
+                desc: "Stock the freezer and delivery is on us across Singapore.",
+              },
             ].map((feature, index) => (
-              <div key={feature.label} className="group relative overflow-hidden bg-white border border-[#DED7CD] rounded-2xl px-6 py-7 min-h-[280px] flex flex-col shadow-[0_8px_30px_rgba(52,42,30,0.04)] hover:-translate-y-1.5 hover:border-[#D5A52B] hover:shadow-[0_18px_45px_rgba(52,42,30,0.10)] transition-all duration-300">
+              <div
+                key={feature.label}
+                className="group relative overflow-hidden bg-white border border-[#DED7CD] rounded-2xl px-6 py-7 min-h-[280px] flex flex-col shadow-[0_8px_30px_rgba(52,42,30,0.04)] hover:-translate-y-1.5 hover:border-[#D5A52B] hover:shadow-[0_18px_45px_rgba(52,42,30,0.10)] transition-all duration-300"
+              >
                 <div className="absolute top-0 left-0 right-0 h-1 bg-[#F5B300] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
                 <div className="flex items-start justify-between">
                   <div className="w-12 h-12 rounded-full bg-[#FFF4CF] text-[#9B6B00] flex items-center justify-center group-hover:bg-[#F5B300] group-hover:text-[#1A1A1A] transition-colors duration-300">
                     {feature.icon === "freeze" && (
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                      >
                         <path d="M12 2v20M4.2 6.5l15.6 11M19.8 6.5l-15.6 11M9 4.5l3 2 3-2M9 19.5l3-2 3 2M4.8 10l.2 3.6-3.2 1.6M22.2 8.8L19 10.4l.2 3.6" />
                       </svg>
                     )}
                     {feature.icon === "time" && (
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="13" r="8" /><path d="M12 9v4l3 2M9 2h6M12 2v3" />
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="13" r="8" />
+                        <path d="M12 9v4l3 2M9 2h6M12 2v3" />
                       </svg>
                     )}
                     {feature.icon === "macro" && (
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                      >
                         <path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7M2 20h20" />
                       </svg>
                     )}
                     {feature.icon === "delivery" && (
-                      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 5h11v12H3zM14 9h4l3 4v4h-7z" /><circle cx="7" cy="18" r="2" /><circle cx="18" cy="18" r="2" />
+                      <svg
+                        width="23"
+                        height="23"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 5h11v12H3zM14 9h4l3 4v4h-7z" />
+                        <circle cx="7" cy="18" r="2" />
+                        <circle cx="18" cy="18" r="2" />
                       </svg>
                     )}
                   </div>
-                  <span className="font-mono text-[10px] text-[#A49B91]">0{index + 1}</span>
+                  <span className="font-mono text-[10px] text-[#A49B91]">
+                    0{index + 1}
+                  </span>
                 </div>
                 <div className="mt-auto pt-10">
-                  <h3 className="font-display text-[20px] font-extrabold text-[#1A1A1A] mb-3">{feature.label}</h3>
-                  <p className="text-[#71685F] text-[13px] leading-relaxed">{feature.desc}</p>
+                  <h3 className="font-display text-[20px] font-extrabold text-[#1A1A1A] mb-3">
+                    {feature.label}
+                  </h3>
+                  <p className="text-[#71685F] text-[13px] leading-relaxed">
+                    {feature.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -995,9 +1842,14 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
           {toFreeDelivery > 0 && purchaseMode !== "subscription" && (
             <div className="bg-[#111] px-6 py-2 flex items-center gap-4">
               <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-[#F5B300] rounded-full transition-all" style={{ width: `${freeDeliveryPct}%` }} />
+                <div
+                  className="h-full bg-[#F5B300] rounded-full transition-all"
+                  style={{ width: `${freeDeliveryPct}%` }}
+                />
               </div>
-              <span className="text-[11px] text-white/60 shrink-0">Add ${toFreeDelivery.toFixed(2)} for free delivery</span>
+              <span className="text-[11px] text-white/60 shrink-0">
+                Add ${toFreeDelivery.toFixed(2)} for free delivery
+              </span>
             </div>
           )}
           <button
@@ -1005,9 +1857,16 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
             onClick={() => setCartOpen(true)}
           >
             <div className="text-left">
-              <div className="font-extrabold text-[16px]">{cartQty} item{cartQty !== 1 ? "s" : ""} · ${cartTotal.toFixed(2)}</div>
+              <div className="font-extrabold text-[16px]">
+                {cartQty} item{cartQty !== 1 ? "s" : ""} · $
+                {cartTotal.toFixed(2)}
+              </div>
               <div className="text-[11px] opacity-60">
-                {purchaseMode === "subscription" ? "Delivery arranged after confirmation" : toFreeDelivery <= 0 ? "🎉 Free delivery" : `+ $${DELIVERY_FEE} delivery · Add $${toFreeDelivery.toFixed(2)} for free`}
+                {purchaseMode === "subscription"
+                  ? "Delivery arranged after confirmation"
+                  : toFreeDelivery <= 0
+                    ? "🎉 Free delivery"
+                    : `+ $${DELIVERY_FEE} delivery · Add $${toFreeDelivery.toFixed(2)} for free`}
               </div>
             </div>
             <div className="bg-[#111] text-white text-[11px] font-extrabold tracking-[0.2em] uppercase px-8 py-3">
@@ -1018,81 +1877,153 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
       )}
 
       {/* ── MEAL REVIEWS MODAL ── */}
-      {reviewMealId !== null && (() => {
-        const meal = MEALS.find((m) => m.id === reviewMealId)!;
-        const reviews = MEAL_REVIEWS[reviewMealId] ?? [];
-        const avgRating = reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
-        const starCounts = [5,4,3,2,1].map((s) => ({ star: s, count: reviews.filter((r) => r.rating === s).length }));
-        return (
-          <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
-            <div className="absolute inset-0 bg-black/75" onClick={() => setReviewMealId(null)} />
-            <div className="relative bg-[#1A1A1A] w-full sm:max-w-lg max-h-[85vh] overflow-y-auto border border-white/10">
-              <div className="sticky top-0 bg-[#1A1A1A] border-b border-white/8 px-6 py-4 flex items-start justify-between gap-3">
-                <div>
-                  <div className="font-bold text-[15px] text-white leading-snug">{meal.name}</div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <div className="flex">
-                      {[1,2,3,4,5].map((s) => (
-                        <span key={s} className={`text-[13px] ${s <= Math.round(avgRating) ? "text-[#F5B300]" : "text-white/20"}`}>★</span>
-                      ))}
+      {reviewMealId !== null &&
+        (() => {
+          const meal = MEALS.find((m) => m.id === reviewMealId)!
+          const reviews = MEAL_REVIEWS[reviewMealId] ?? []
+          const avgRating =
+            reviews.length > 0
+              ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length
+              : 0
+          const starCounts = [5, 4, 3, 2, 1].map((s) => ({
+            star: s,
+            count: reviews.filter((r) => r.rating === s).length,
+          }))
+          return (
+            <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+              <div
+                className="absolute inset-0 bg-black/75"
+                onClick={() => setReviewMealId(null)}
+              />
+              <div className="relative bg-[#1A1A1A] w-full sm:max-w-lg max-h-[85vh] overflow-y-auto border border-white/10">
+                <div className="sticky top-0 bg-[#1A1A1A] border-b border-white/8 px-6 py-4 flex items-start justify-between gap-3">
+                  <div>
+                    <div className="font-bold text-[15px] text-white leading-snug">
+                      {meal.name}
                     </div>
-                    <span className="text-white/60 text-[12px] font-mono">{avgRating.toFixed(1)} · {reviews.length} reviews</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="flex">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <span
+                            key={s}
+                            className={`text-[13px] ${
+                              s <= Math.round(avgRating)
+                                ? "text-[#F5B300]"
+                                : "text-white/20"
+                            }`}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-white/60 text-[12px] font-mono">
+                        {avgRating.toFixed(1)} · {reviews.length} reviews
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setReviewMealId(null)}
+                    className="text-white/40 hover:text-white transition-colors mt-0.5"
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M18 6 6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Star breakdown */}
+                <div className="px-6 py-4 border-b border-white/8">
+                  <div className="flex flex-col gap-2">
+                    {starCounts.map(({ star, count }) => (
+                      <div
+                        key={star}
+                        className="flex items-center gap-3 text-[12px]"
+                      >
+                        <span className="text-white/50 w-4 text-right">
+                          {star}★
+                        </span>
+                        <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-[#F5B300] rounded-full"
+                            style={{
+                              width:
+                                reviews.length > 0
+                                  ? `${(count / reviews.length) * 100}%`
+                                  : "0%",
+                            }}
+                          />
+                        </div>
+                        <span className="text-white/30 w-4">{count}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <button onClick={() => setReviewMealId(null)} className="text-white/40 hover:text-white transition-colors mt-0.5">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
-                </button>
-              </div>
 
-              {/* Star breakdown */}
-              <div className="px-6 py-4 border-b border-white/8">
-                <div className="flex flex-col gap-2">
-                  {starCounts.map(({ star, count }) => (
-                    <div key={star} className="flex items-center gap-3 text-[12px]">
-                      <span className="text-white/50 w-4 text-right">{star}★</span>
-                      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                        <div className="h-full bg-[#F5B300] rounded-full" style={{ width: reviews.length > 0 ? `${(count / reviews.length) * 100}%` : "0%" }} />
+                {/* Individual reviews */}
+                <div className="px-6 py-4 flex flex-col gap-5">
+                  {reviews.map((r, i) => (
+                    <div
+                      key={i}
+                      className="border-b border-white/5 pb-5 last:border-b-0 last:pb-0"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <span className="font-semibold text-[13px] text-white">
+                            {r.author}
+                          </span>
+                          <div className="flex mt-0.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <span
+                                key={s}
+                                className={`text-[11px] ${
+                                  s <= r.rating
+                                    ? "text-[#F5B300]"
+                                    : "text-white/20"
+                                }`}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <span className="text-[11px] text-white/30 font-mono">
+                          {r.date}
+                        </span>
                       </div>
-                      <span className="text-white/30 w-4">{count}</span>
+                      <p className="text-[13px] text-white/60 leading-relaxed">
+                        {r.text}
+                      </p>
                     </div>
                   ))}
+                  {reviews.length === 0 && (
+                    <p className="text-white/40 text-[13px] text-center py-4">
+                      No reviews yet for this meal. Be the first!
+                    </p>
+                  )}
+                </div>
+
+                <div className="px-6 pb-6">
+                  <button
+                    onClick={() => {
+                      setReviewMealId(null)
+                      handleAdd(meal)
+                    }}
+                    className="w-full bg-[#F5B300] text-[#111] py-3.5 font-bold text-[13px] tracking-wider uppercase hover:bg-white transition-colors"
+                  >
+                    Add to Cart — ${meal.price.toFixed(2)}
+                  </button>
                 </div>
               </div>
-
-              {/* Individual reviews */}
-              <div className="px-6 py-4 flex flex-col gap-5">
-                {reviews.map((r, i) => (
-                  <div key={i} className="border-b border-white/5 pb-5 last:border-b-0 last:pb-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <div>
-                        <span className="font-semibold text-[13px] text-white">{r.author}</span>
-                        <div className="flex mt-0.5">
-                          {[1,2,3,4,5].map((s) => (
-                            <span key={s} className={`text-[11px] ${s <= r.rating ? "text-[#F5B300]" : "text-white/20"}`}>★</span>
-                          ))}
-                        </div>
-                      </div>
-                      <span className="text-[11px] text-white/30 font-mono">{r.date}</span>
-                    </div>
-                    <p className="text-[13px] text-white/60 leading-relaxed">{r.text}</p>
-                  </div>
-                ))}
-                {reviews.length === 0 && (
-                  <p className="text-white/40 text-[13px] text-center py-4">No reviews yet for this meal. Be the first!</p>
-                )}
-              </div>
-
-              <div className="px-6 pb-6">
-                <button onClick={() => { setReviewMealId(null); handleAdd(meal); }}
-                  className="w-full bg-[#F5B300] text-[#111] py-3.5 font-bold text-[13px] tracking-wider uppercase hover:bg-white transition-colors">
-                  Add to Cart — ${meal.price.toFixed(2)}
-                </button>
-              </div>
             </div>
-          </div>
-        );
-      })()}
-
+          )
+        })()}
     </div>
-  );
+  )
 }

@@ -1,12 +1,11 @@
-import { Page } from "@/data";
-import { PerformanceMealsLogo } from "@/components/Logos";
+import { Page } from "@/data"
+import { PerformanceMealsLogo } from "@/components/Logos"
 
 interface FooterProps {
-  navigate: (page: Page) => void;
-  navigateToWizard: (plan?: string) => void;
+  navigate: (page: Page) => void
 }
 
-export default function Footer({ navigate, navigateToWizard }: FooterProps) {
+export default function Footer({ navigate }: FooterProps) {
   return (
     <footer className="bg-[#1A1A1A] border-t border-white/5">
       {/* Main row */}
@@ -20,12 +19,18 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
         <nav className="flex flex-wrap gap-x-7 gap-y-2">
           {[
             { label: "Ready Series", action: () => navigate("ready-series") },
-            { label: "Meal Plans", action: () => navigate("meal-plan-landing") },
+            {
+              label: "Meal Plans",
+              action: () => navigate("meal-plan-landing"),
+            },
             { label: "Gift Cards", action: () => navigate("gift-card") },
             { label: "About Us", action: () => navigate("about") },
           ].map((l) => (
-            <button key={l.label} onClick={l.action}
-              className="text-[11px] sm:text-[12px] text-white/60 hover:text-[#F5B300] transition-colors tracking-wide whitespace-nowrap">
+            <button
+              key={l.label}
+              onClick={l.action}
+              className="text-[11px] sm:text-[12px] text-white/60 hover:text-[#F5B300] transition-colors tracking-wide whitespace-nowrap"
+            >
               {l.label}
             </button>
           ))}
@@ -44,11 +49,17 @@ export default function Footer({ navigate, navigateToWizard }: FooterProps) {
           <span>© 2026 Performance Meals Pte. Ltd. · UEN 202512345A</span>
           <div className="flex gap-5 items-center">
             {["Privacy", "Terms", "Refunds"].map((l) => (
-              <a key={l} href="#" className="hover:text-white/70 transition-colors">{l}</a>
+              <a
+                key={l}
+                href="#"
+                className="hover:text-white/70 transition-colors"
+              >
+                {l}
+              </a>
             ))}
           </div>
         </div>
       </div>
     </footer>
-  );
+  )
 }
