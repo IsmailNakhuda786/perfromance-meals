@@ -238,70 +238,69 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
     <div className="bg-[#FAF8F4] text-[#1A1A1A] min-h-screen">
 
       {/* ── HERO ── */}
-      <div className="relative overflow-hidden min-h-[75svh] flex items-center">
-        {/* Full-bleed food photo background */}
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1600&h=900&fit=crop&auto=format&q=80"
-            alt="Ready-Series meal prep containers"
-            className="w-full h-full object-cover object-center"
-          />
-          {/* Deep freezer-blue overlay keeps the order experience distinct and highly legible. */}
-          <div className="absolute inset-0"
-            style={{ background: "linear-gradient(100deg, rgba(7,27,53,0.98) 0%, rgba(7,27,53,0.92) 45%, rgba(7,27,53,0.68) 75%, rgba(7,27,53,0.35) 100%)" }} />
-          {/* Yellow burst — top right, energetic */}
-          <div className="absolute top-0 right-0 w-[600px] h-[400px] pointer-events-none"
-            style={{ background: "radial-gradient(ellipse at 85% 10%, rgba(245,179,0,0.28) 0%, transparent 60%)" }} />
-        </div>
+      <section className="relative overflow-hidden bg-[#F7F2E8] border-t-[3px] border-[#F5B300]">
+        <div className="max-w-[1440px] mx-auto grid lg:grid-cols-[0.88fr_1.12fr] min-h-[680px]">
+          <div className="relative z-10 px-6 sm:px-10 lg:px-16 py-14 sm:py-18 lg:py-20 flex flex-col">
+            <button onClick={() => navigate("ready-series")} className="inline-flex self-start items-center gap-2 text-[#766D63] hover:text-[#1A1A1A] transition-colors text-[10px] font-semibold tracking-[0.18em] uppercase">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+              Ready Series overview
+            </button>
 
-        {/* Yellow top bar — brand identifier stripe */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#F5B300] z-20" />
-
-        <div className="relative z-10 w-full max-w-[1200px] mx-auto px-6 sm:px-8 py-20 sm:py-24">
-          <button onClick={() => navigate("ready-series")} className="inline-flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[11px] font-mono tracking-widest uppercase mb-8">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-            Ready Series overview
-          </button>
-
-          <div className="mb-7">
-            <ReadySeriesLogo size="md" variant="dark" />
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            <div>
-              <p className="text-[11px] font-mono tracking-[0.4em] uppercase text-[#72A7FF] mb-5">Order Ready Series · Choose one pathway</p>
-              <h1 className="font-display text-[36px] sm:text-[52px] lg:text-[68px] font-extrabold leading-[0.88] mb-6">
-                YOUR FREEZER.<br /><span className="text-[#F5B300]">YOUR WAY.</span>
-              </h1>
-              <p className="text-white/50 text-[15px] leading-relaxed max-w-[420px] mb-8">
-                Fast, enjoyable frozen meals that are ready when life gets busy. Keep your week moving.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() => document.getElementById("rs-shop")?.scrollIntoView({ behavior: "smooth" })}
-                  className="inline-flex items-center gap-3 bg-[#F5B300] text-[#1A1A1A] px-8 py-4 font-extrabold text-[12px] tracking-[0.2em] uppercase hover:bg-white transition-colors">
-                  Shop Now
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-                </button>
-              </div>
+            <div className="mt-10">
+              <ReadySeriesLogo size="md" variant="light" />
             </div>
 
-            {/* Stats — energetic tiles, yellow-accented */}
-            <div className="grid grid-cols-3 gap-3 lg:justify-items-end">
+            <div className="mt-auto pt-16 lg:pt-24 max-w-[610px]">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-8 h-[2px] bg-[#F5B300]" />
+                <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.25em] uppercase text-[#806A2A]">Fast food, properly done</p>
+              </div>
+              <h1 className="font-display text-[48px] sm:text-[64px] lg:text-[74px] font-black leading-[0.91] tracking-[-0.045em] text-[#171717]">
+                Your freezer,<br />
+                <span className="text-[#B47C00]">ready for anything.</span>
+              </h1>
+              <p className="text-[#625A52] text-[16px] sm:text-[17px] leading-relaxed max-w-[500px] mt-7">
+                High-protein meals for Singapore’s fullest days. Pick your favourites, heat in minutes, and get on with what matters.
+              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-9">
+                <button
+                  onClick={() => document.getElementById("rs-shop")?.scrollIntoView({ behavior: "smooth" })}
+                  className="group inline-flex items-center justify-between gap-7 rounded-full bg-[#1A1A1A] text-white pl-7 pr-2 py-2 text-[11px] font-bold tracking-[0.16em] uppercase hover:bg-[#B47C00] transition-colors duration-300">
+                  Choose your meals
+                  <span className="w-10 h-10 rounded-full bg-[#F5B300] text-[#1A1A1A] flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </span>
+                </button>
+                <span className="text-[#847A70] text-[11px] leading-relaxed">Individual meals from $8.90<br />Free delivery from $120</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative min-h-[480px] lg:min-h-full overflow-hidden">
+            <div className="absolute top-6 right-6 z-10 bg-[#F5B300] text-[#1A1A1A] rounded-full px-4 py-2 text-[9px] font-black tracking-[0.18em] uppercase">
+              Made for Singapore pace
+            </div>
+          <img
+            src="https://images.unsplash.com/photo-1543352632-5a4b24e4d2a6?w=1600&h=900&fit=crop&auto=format&q=80"
+              alt="Colourful Ready Series meals prepared for a busy week"
+              className="absolute inset-0 w-full h-full object-cover object-center"
+          />
+            <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black/75 to-transparent" />
+            <div className="absolute left-5 right-5 sm:left-8 sm:right-8 bottom-6 grid grid-cols-3 rounded-2xl overflow-hidden bg-white/90 backdrop-blur-md shadow-2xl">
               {[
-                { v: "01", l: "Individual" },
-                { v: "02", l: "Bundles" },
-                { v: "03", l: "Subscription" },
+                { v: "01", l: "Pick your meals" },
+                { v: "02", l: "Choose a bundle" },
+                { v: "03", l: "Keep it stocked" },
               ].map((s) => (
-                <div key={s.l} className="border border-[#F5B300]/25 bg-[#F5B300]/5 px-4 py-5 text-center">
-                  <div className="text-[#F5B300] font-display text-[28px] sm:text-[32px] font-extrabold leading-none">{s.v}</div>
-                  <div className="text-white/40 text-[10px] tracking-wide mt-2 uppercase">{s.l}</div>
+                <div key={s.l} className="px-3 sm:px-5 py-5 border-r border-[#D7D0C6] last:border-0">
+                  <div className="text-[#B47C00] font-display text-[22px] sm:text-[26px] font-black leading-none">{s.v}</div>
+                  <div className="text-[#4E4841] text-[9px] sm:text-[10px] font-bold tracking-[0.08em] mt-2 uppercase">{s.l}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ── ACTIVE PROMOS BAR ── */}
       <div className="bg-[#F5B300]/8 border-y border-[#F5B300]/15 px-6 py-4">
