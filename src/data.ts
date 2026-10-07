@@ -11,11 +11,7 @@ export type Page =
   | "confirmation"
   | "account"
   | "gift-card"
-  | "handoff"
-  | "blueprint"
-  | "wireframe"
   | "about"
-  | "screens-export"
   | "ready-series-product"
   | "rewards";
 
