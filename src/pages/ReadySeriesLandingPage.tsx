@@ -45,7 +45,7 @@ export default function ReadySeriesLandingPage({ navigate, navigateToReadyOrder 
           </div>
 
           <div className="relative min-h-[560px] lg:min-h-full overflow-hidden">
-            <img src="/13da6.png" alt="Busy professional enjoying a prepared meal at home" className="absolute inset-0 w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1625631980634-397b9e9a73f9?w=1200&h=1000&fit=crop&auto=format&q=85" alt="Busy professional enjoying a prepared meal at home" className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
             <div className="absolute top-6 right-6 bg-white text-[#1A1A1A] rounded-2xl px-5 py-4 shadow-xl">
               <div className="text-[9px] font-bold tracking-[0.18em] uppercase text-[#897F74]">From freezer to table</div>
@@ -103,7 +103,7 @@ export default function ReadySeriesLandingPage({ navigate, navigateToReadyOrder 
       <section className="bg-white px-6 sm:px-10 py-20 sm:py-24 border-y border-[#DED7CD]">
         <div className="max-w-[1280px] mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-20 items-center">
           <div className="relative overflow-hidden rounded-2xl min-h-[420px]">
-            <img src="/d006a.png" alt="A selection of balanced Ready Series meals" className="absolute inset-0 w-full h-full object-cover" />
+            <img src="https://images.unsplash.com/photo-1666819691716-827f78d892f3?w=1200&h=900&fit=crop&auto=format&q=85" alt="A selection of balanced Ready Series meals" className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute top-5 left-5 bg-[#F5B300] rounded-full px-4 py-2 text-[9px] font-extrabold uppercase tracking-[0.18em]">Frozen at peak</div>
           </div>
           <div>

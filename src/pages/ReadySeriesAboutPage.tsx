@@ -6,6 +6,7 @@ interface Props {
 }
 
 const familyImage = "https://images.unsplash.com/photo-1612698940563-143c627668e4?w=1600&h=1000&fit=crop&auto=format&q=85";
+const closingFamilyImage = "https://images.unsplash.com/photo-1577896850561-dc005e5b5689?w=1600&h=1000&fit=crop&auto=format&q=85";
 const kitchenImage = "https://images.unsplash.com/photo-1668838289210-e7665d947145?w=1200&h=900&fit=crop&auto=format&q=85";
 const preparationImage = "https://images.unsplash.com/photo-1668838225765-daa3a5da6207?w=1200&h=900&fit=crop&auto=format&q=85";
 
@@ -98,8 +99,8 @@ export default function ReadySeriesAboutPage({ navigate }: Props) {
           <div className="grid sm:grid-cols-2 gap-5 mb-12">
             <img src={kitchenImage} alt="Food being prepared in a professional kitchen" className="w-full aspect-[4/3] object-cover rounded-2xl" />
             <img src={preparationImage} alt="Prepared meals moving through a professional kitchen" className="w-full aspect-[4/3] object-cover rounded-2xl" />
-            <img src="/19606.png" alt="A balanced Ready Series salmon meal" className="w-full aspect-[4/3] object-cover rounded-2xl" />
-            <img src="/d006a.png" alt="A selection of Ready Series prepared meals" className="w-full aspect-[4/3] object-cover rounded-2xl" />
+            <img src="https://images.unsplash.com/photo-1604259597308-5321e8e4789c?w=900&h=675&fit=crop&auto=format&q=85" alt="A balanced Ready Series meal" className="w-full aspect-[4/3] object-cover rounded-2xl" />
+            <img src="https://images.unsplash.com/photo-1609710219624-201223bd6b1e?w=900&h=675&fit=crop&auto=format&q=85" alt="A prepared meal ready to store" className="w-full aspect-[4/3] object-cover rounded-2xl" />
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 border border-white/10">
@@ -175,7 +176,7 @@ export default function ReadySeriesAboutPage({ navigate }: Props) {
 
       {/* Emotional close */}
       <section className="relative min-h-[560px] flex items-center overflow-hidden">
-        <img src={familyImage} alt="People enjoying time together around a shared meal" className="absolute inset-0 w-full h-full object-cover object-center" />
+        <img src={closingFamilyImage} alt="Family enjoying time together around a shared meal" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-black/65" />
         <div className="relative z-10 max-w-[900px] mx-auto px-6 py-20 text-center text-white">
           <p className="text-[#F5B300] text-[10px] font-bold uppercase tracking-[0.25em] mb-6">Ready for the life around the meal</p>

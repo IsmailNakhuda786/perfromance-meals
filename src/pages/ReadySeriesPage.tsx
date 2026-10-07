@@ -12,7 +12,7 @@ interface Props {
 }
 
 const MEALS = [
-  { id: 101, name: "Teriyaki Chicken & Brown Rice", cat: "Just Protein", price: 12.90, protein: 42, carbs: 48, fat: 8, cal: 478, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80" },
+  { id: 101, name: "Teriyaki Chicken & Brown Rice", cat: "Just Protein", price: 12.90, protein: 42, carbs: 48, fat: 8, cal: 478, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1762631383520-df106b252f6a?w=600&h=450&fit=crop&auto=format&q=85" },
   { id: 102, name: "Spicy Korean Beef Bulgogi", cat: "Low Carb", price: 13.50, protein: 38, carbs: 12, fat: 14, cal: 326, badge: "HOT", img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80" },
   { id: 103, name: "Herb Chicken & Roasted Veg", cat: "Low Carb", price: 12.50, protein: 36, carbs: 14, fat: 10, cal: 290, badge: null, img: "https://images.unsplash.com/photo-1604909052743-94e838986d24?w=400&q=80" },
   { id: 104, name: "Salmon & Quinoa Power Bowl", cat: "Just Protein", price: 15.90, protein: 44, carbs: 38, fat: 16, cal: 468, badge: "NEW", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" },
@@ -21,9 +21,9 @@ const MEALS = [
   { id: 107, name: "Overnight Oats & Berry", cat: "High Carb", price: 8.90, protein: 18, carbs: 52, fat: 6, cal: 334, badge: null, img: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400&q=80" },
   { id: 108, name: "Greek Chicken Wrap", cat: "Just Protein", price: 12.90, protein: 34, carbs: 36, fat: 10, cal: 374, badge: null, img: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80" },
   { id: 109, name: "Egg White & Avocado Toast", cat: "High Carb", price: 9.50, protein: 22, carbs: 34, fat: 12, cal: 332, badge: "POPULAR", img: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&h=450&fit=crop&auto=format&q=85" },
-  { id: 110, name: "Beef Rendang & Cauliflower", cat: "Low Carb", price: 14.90, protein: 40, carbs: 10, fat: 22, cal: 398, badge: null, img: "https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80" },
+  { id: 110, name: "Beef Rendang & Cauliflower", cat: "Low Carb", price: 14.90, protein: 40, carbs: 10, fat: 22, cal: 398, badge: null, img: "https://images.unsplash.com/photo-1661257711676-79a0fc533569?w=600&h=450&fit=crop&auto=format&q=85" },
   { id: 111, name: "Chicken Burrito Bowl", cat: "High Carb", price: 12.50, protein: 30, carbs: 58, fat: 10, cal: 450, badge: null, img: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&q=80" },
-  { id: 112, name: "Prawn Fried Rice", cat: "High Carb", price: 13.90, protein: 26, carbs: 60, fat: 8, cal: 428, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&q=80" },
+  { id: 112, name: "Prawn Fried Rice", cat: "High Carb", price: 13.90, protein: 26, carbs: 60, fat: 8, cal: 428, badge: "BESTSELLER", img: "https://images.unsplash.com/photo-1580683742795-49989f7ecb72?w=600&h=450&fit=crop&auto=format&q=85" },
 ];
 
 const CATS = ["A-la-carte", "Low Carb", "High Carb", "Just Protein"];
@@ -379,7 +379,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                             <img
                               src={m.img}
                               alt={m.name}
-                              onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop&auto=format&q=80"; }}
+                              onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1633179498414-88e5b9ccb843?w=600&h=450&fit=crop&auto=format&q=80"; }}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
                           </div>
@@ -425,7 +425,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                             name: item.name,
                             price: item.price,
                             qty: 1,
-                            img: bundleMeals[0]?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                            img: bundleMeals[0]?.img ?? "https://images.unsplash.com/photo-1682568514220-c477d5432024?w=200&h=200&fit=crop&auto=format",
                             type: "box",
                             mealNames: bundleMeals.map((m) => m.name),
                             mealImgs: bundleMeals.map((m) => m.img),
@@ -698,7 +698,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                             name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
                             price,
                             qty: 1,
-                            img: previewMeals[0]?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                            img: previewMeals[0]?.img ?? "https://images.unsplash.com/photo-1555789185-76365931ffaa?w=200&h=200&fit=crop&auto=format",
                             type: "box",
                             mealNames: subMealNames,
                             mealImgs: subMealImgs,
@@ -796,7 +796,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                           name: `${sub.name} (${sub.variant}) — ${subTerm}-Month Subscription`,
                           price,
                           qty: 1,
-                          img: firstMeal?.img ?? "https://images.unsplash.com/photo-1547592180-85f173990554?w=200&h=200&fit=crop&auto=format",
+                          img: firstMeal?.img ?? "https://images.unsplash.com/photo-1562828358-432c7bdde45e?w=200&h=200&fit=crop&auto=format",
                           type: "box",
                           mealNames: subMealNames,
                           mealImgs: subMealImgs,
@@ -874,7 +874,7 @@ export default function ReadySeriesPage({ navigate, addToCart, cart, onSelectMea
                     <img
                       src={meal.img}
                       alt={meal.name}
-                      onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1547592180-85f173990554?w=600&h=450&fit=crop&auto=format&q=80"; }}
+                      onError={(event) => { event.currentTarget.src = "https://images.unsplash.com/photo-1597958792579-bd3517df6399?w=600&h=450&fit=crop&auto=format&q=80"; }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
