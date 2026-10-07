@@ -15,15 +15,11 @@ import CheckoutPage from "@/pages/CheckoutPage";
 import ConfirmationPage from "@/pages/ConfirmationPage";
 import AccountPage from "@/pages/AccountPage";
 import GiftCardPage from "@/pages/GiftCardPage";
-import HandoffPage from "@/pages/HandoffPage";
-import BlueprintPage from "@/pages/BlueprintPage";
-import WireframePage from "@/pages/WireframePage";
 import AboutPage from "@/pages/AboutPage";
-import ScreensExportPage from "@/pages/ScreensExportPage";
 import ReadySeriesProductPage from "@/pages/ReadySeriesProductPage";
 import RewardsPage from "@/pages/RewardsPage";
 
-const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "handoff", "blueprint", "wireframe", "screens-export", "ready-series-product"];
+const NO_FOOTER_PAGES: Page[] = ["checkout", "confirmation", "meal-plan-wizard", "ready-series-product"];
 
 export interface SavedAddress {
   name: string;
@@ -117,29 +113,6 @@ export default function App() {
     <div className="min-h-screen font-body">
       {showPromo && <PromoPopup onClose={() => setShowPromo(false)} navigate={navigate} navigateToWizard={navigateToWizard} />}
 
-      {/* Download banner */}
-      <div className="bg-[#1A1A1A] text-white flex items-center justify-between px-4 py-3 gap-3 flex-wrap">
-        <div>
-          <div className="text-[13px] font-semibold text-white">Download Prototype</div>
-          <div className="text-[11px] text-white/50">Single HTML file — open in any browser, no setup needed</div>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <a
-            href="/Performance-Meals-Complete-Prototype-Screens.pdf"
-            download="Performance-Meals-Complete-Prototype-Screens.pdf"
-            className="border border-[#F5B300] text-[#F5B300] text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-[#F5B300] hover:text-[#1A1A1A] transition-colors whitespace-nowrap shrink-0"
-          >
-            ↓ Download Screens PDF
-          </a>
-          <a
-            href="/performance-meals-prototype.html"
-            download="performance-meals-prototype.html"
-            className="bg-[#F5B300] text-[#1A1A1A] text-[12px] font-bold tracking-[0.15em] uppercase px-5 py-2.5 hover:bg-white transition-colors whitespace-nowrap shrink-0">
-            ↓ Download performance-meals-prototype.html
-          </a>
-        </div>
-      </div>
-
       <Nav
         currentPage={page}
         navigate={navigate}
@@ -172,10 +145,6 @@ export default function App() {
       {page === "confirmation" && <ConfirmationPage navigate={navigate} orderType={lastOrderType} isGuest={lastOrderGuest} promoCode={lastPromoCode} promoDiscount={lastPromoDiscount} orderTotal={lastOrderTotal} orderDetails={lastOrderDetails} />}
       {page === "account" && <AccountPage navigate={navigate} initialTab={accountInitialTab} initialSection={accountInitialSection} />}
       {page === "gift-card" && <GiftCardPage navigate={navigate} />}
-      {page === "handoff" && <HandoffPage navigate={navigate} navigateToWizard={navigateToWizard} />}
-      {page === "blueprint" && <BlueprintPage navigate={navigate} navigateToWizard={navigateToWizard} />}
-      {page === "screens-export" && <ScreensExportPage navigate={navigate} />}
-      {page === "wireframe" && <WireframePage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "about" && <AboutPage navigate={navigate} navigateToWizard={navigateToWizard} />}
       {page === "rewards" && <RewardsPage navigate={navigate} />}
 

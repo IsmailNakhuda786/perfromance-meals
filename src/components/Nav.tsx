@@ -182,7 +182,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   <span className="text-white/60 text-[11px] tracking-wide hidden lg:block">Jerome</span>
                 </button>
 
-                {/* Log out toggle (prototype only) */}
+                {/* Log out */}
                 <button onClick={handleLogout}
                   className="hidden lg:flex items-center gap-1 border border-white/15 text-white/50 hover:border-white/40 hover:text-white transition-colors text-[10px] tracking-widest uppercase px-2.5 py-1.5">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" /></svg>
@@ -253,7 +253,7 @@ export default function Nav({ currentPage, navigate, navigateToWizard, cart, car
                   </div>
                   {[
                     { label: "My Account", action: () => go("account") },
-                    { label: "↩ Log Out (prototype)", action: handleLogout },
+                    { label: "Log Out", action: handleLogout },
                   ].map((l) => (
                     <button key={l.label} onClick={l.action} className="w-full text-left py-3 px-3 text-[15px] text-white/70 hover:text-white hover:bg-white/5 transition-colors border-b border-white/5">{l.label}</button>
                   ))}
